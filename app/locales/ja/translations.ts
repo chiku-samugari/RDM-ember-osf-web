@@ -1971,13 +1971,15 @@ export default {
     integromat: {
         page_title: '{nodeTitle} Integromat',
         header: 'Integromat',
-        loading: 'ロード中...',
+        loading: 'ロード中',
         param1: 'Param 1',
         save_button: 'Save',
         failed_to_submit: 'Failed to save',
         failed_to_save: 'Failed to save',
-        placeholders: {
-            param1: 'anything',
+        workflows: {
+            web_meeting: {
+                microsoft_teams: 'Microsoft Teamsに会議登録などをしてSlackにメッセージを通知する',
+            },
         },
     },
 };

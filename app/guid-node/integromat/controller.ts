@@ -26,7 +26,10 @@ export default class GuidNodeIntegromat extends Controller {
 
     configCache?: DS.PromiseObject<IntegromatConfigModel>;
 
-    showRegisterMeetingDialog = false;
+    showCreateMeetingDialog = false;
+
+    showWorkflows = true;
+    showMicrosoftTeamsMeetings = false;
 
     teams_subject = '';
     teams_attendees = '';
@@ -59,7 +62,7 @@ export default class GuidNodeIntegromat extends Controller {
     }
 
     @action
-    startRegisterMeetingScenario(this: GuidNodeIntegromat) {
+    startCreateMeetingScenario(this: GuidNodeIntegromat) {
         const guid = this.model.guid;
         const teams_subject = this.teams_subject;
         const teams_attendees = this.teams_attendees;
@@ -88,7 +91,7 @@ export default class GuidNodeIntegromat extends Controller {
         const config = this.config.content as IntegromatConfigModel;
         const webhookUrl = config.webhook_url;
         console.log(payload + webhookUrl)
-        this.set('showRegisterMeetingDialog', false);
+        this.set('showCreateMeetingDialog', false);
 
         return $.post(webhookUrl, payload)
 
@@ -96,13 +99,33 @@ export default class GuidNodeIntegromat extends Controller {
 
     @action
     closeDialogs() {
-        this.set('showRegisterMeetingDialog', false);
+        this.set('showCreateMeetingDialog', false);
     }
 
     saveError(config: IntegromatConfigModel) {
         config.rollbackAttributes();
         const message = 'integromat.failed_to_save';
         this.toast.error(message);
+    }
+
+    @computed('config.microsoft_teams_meetings')
+    get microsoft_teams_meetings() {
+        if (!this.config || !this.config.get('isFulfilled')) {
+            return '';
+        }
+        const config = this.config.content as IntegromatConfigModel;
+        const microsoft_teams_meetings = JSON.parse(config.microsoft_teams_meetings);
+        return microsoft_teams_meetings;
+    }
+
+    @computed('config.workflows')
+    get workflows() {
+        if (!this.config || !this.config.get('isFulfilled')) {
+            return '';
+        }
+        const config = this.config.content as IntegromatConfigModel;
+        const workflows = JSON.parse(config.workflows);
+        return workflows;
     }
 
     @computed('node')

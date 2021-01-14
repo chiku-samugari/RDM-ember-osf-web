@@ -6,9 +6,28 @@
 }
 
 .Integromat__header {
-    margin-bottom: 0.5em;
+    background: #ecf0f1; 
+    margin-top:40px;
+}
+
+.Integromat__sidebar {
+    width: 25%; 
+    float:left; 
+    height:575px; 
+    border-right-style: inset;
+}
+
+.Integromat__menu {
+    list-style:none;
+}
+
+.Integromat__workflows {
+    width: 75%;
+    float:right;
+    height:575px;
 }
 
 .Integromat__buttons {
-    border: 1px solid #ddd;
+    border: 1px solid #DDD;
 }
+

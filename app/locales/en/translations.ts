@@ -1819,8 +1819,10 @@ export default {
         save_button: 'Save',
         failed_to_submit: 'Failed to save',
         failed_to_save: 'Failed to save',
-        placeholders: {
-            param1: 'anything',
+        workflows: {
+            web_meeting: {
+                microsoft_teams: 'Meeting action(regster, update,delete etc...) for Microsoft Teams, then notify slack messages.',
+            },
         },
     },
 };

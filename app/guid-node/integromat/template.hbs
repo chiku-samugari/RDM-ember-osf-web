@@ -46,7 +46,7 @@
                     {{#each this.workflows as |row|}}
                     <tr>
                         <td><a {{action (mut this.showMicrosoftTeamsMeetings) true}} {{action (mut this.showWorkflows) false}}>{{t row.fields.workflow_description}}</a></td>
-                        <td>{{t row.fields.workflow_apps}}</td>
+                        <td>{{row.fields.workflow_apps}}</td>
                     </tr>
                     {{/each}}
                 </tbody>
@@ -58,9 +58,9 @@
 <!-- manage meeting screen  -->
     {{#if this.showMicrosoftTeamsMeetings}}
     <div class="col-md-9 col-xs-12">
-    <div id="microsoftTeamsMeetings" class="main_screen" style="margin-top:30px; height:575px">
-      <div class="" style="background: #efefef; height:40px">
-            <label style="margin-top:10px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GakuNin RDM, Microsoft 365 Calendar, Slack</label>
+    <div id="microsoftTeamsMeetings" class="main_screen" local-class='Integromat__web_meeting_table'>
+      <div local-class='Integromat__web_meeting_navbar'>
+            <label style="margin-top:10px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{row.fields.workflow_apps}}</label>
             <button style="margin-top:10px;"
                 data-test-project-contributors-search-button
                 local-class='Integromat__buttons'
@@ -87,7 +87,7 @@
                 <i class='fa fa-plus'>&nbsp;Create Meeting</i>
             </button>
       </div>
-        <div class="row" id="teamsMeeting-table-row">
+        <div class="row" id="teamsMeeting-table-row" local-class='Integromat__web_meeting_table'>
             <div class="col-xs-12">
                 <table class="table table-bordered">
                     <thead>
@@ -98,26 +98,28 @@
                             <th width="11%">
                                 <span class="header_text m-r-sm">Subject</span>
                             </th>
-                            <th width="11%">
+                            <th width="12%">
                                 <span class="header_text m-r-sm">Organizer</span>
                             </th>
                             <th width="15%">
                                 <span class="header_text m-r-sm">Attendees</span>
                             </th>
-                            <th width="11%">
+                            <th width="12%">
                                 <span class="header_text m-r-sm">Start Date</span>
                             </th>
-                            <th width="11%">
+                            <th width="12%">
                                 <span class="header_text m-r-sm">End Date</span>
                             </th>
-                            <th width="11%">
+                            <th width="12%">
                                 <span class="header_text m-r-sm">Location</span>
                             </th>
                             <th width="15%">
                                 <span class="header_text m-r-sm">Content</span>
                             </th>
-                            <th width="5%">
+                            <th width="7%">
                                 <span class="header_text m-r-sm">URL</span>
+                            </th>
+                            <th local-class='Integromat__cell_right'>
                             </th>
                         </tr>
                     </thead>
@@ -137,7 +139,7 @@
                             <td >
                                 <button class="fa fa-copy"></button>
                             </td>
-                            <td style="background: white; border-top-style:hidden; border-bottom-style:hidden; border-right-style:hidden;">
+                            <td local-class='Integromat__cell_right'>
                                 <button onClick={{row.fields.join_url}}>Start</button>
                             </td>
                         </tr>

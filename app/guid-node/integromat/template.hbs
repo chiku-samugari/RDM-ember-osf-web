@@ -45,7 +45,7 @@
                 <tbody>
                     {{#each this.workflows as |row|}}
                     <tr>
-                        <td><a {{action (mut this.showMicrosoftTeamsMeetings) true}} {{action (mut this.showWorkflows) false}}>{{t row.fields.workflow_description}}</td>
+                        <td><a {{action (mut this.showMicrosoftTeamsMeetings) true}} {{action (mut this.showWorkflows) false}}>{{t row.fields.workflow_description}}</a></td>
                         <td>{{t row.fields.workflow_apps}}</td>
                     </tr>
                     {{/each}}

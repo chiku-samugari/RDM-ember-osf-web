@@ -86,6 +86,12 @@ export default class GuidNodeIntegromat extends Controller {
         const teams_location = this.teams_location;
         const teams_content = this.teams_content;
 
+/////// MAKE COLLECTION LATER ////////////
+        var arrayAttendees = [];
+        var attendeeJson = {"emailAddress": {"address": teams_attendees}};
+        arrayAttendees.push(attendeeJson);
+/////// MAKE COLLECTION LATER ////////////
+
         const payload = {
                 "nodeId": node_id,
                 "meetingAppName": app_name,
@@ -96,7 +102,7 @@ export default class GuidNodeIntegromat extends Controller {
                 "startDate": teams_start_date_time,
                 "endDate": teams_end_date_time,
                 "subject": teams_subject,
-                "attendees": teams_attendees,
+                "attendees": arrayAttendees,
                 "location": teams_location,
                 "content": teams_content
                 };

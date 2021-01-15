@@ -64,6 +64,10 @@ export default class GuidNodeIntegromat extends Controller {
     @action
     startCreateMeetingScenario(this: GuidNodeIntegromat) {
 
+        if (!this.config) {
+            throw new EmberError('Illegal config');
+        }
+
         const config = this.config.content as IntegromatConfigModel;
         const webhookUrl = config.webhook_url;
         const node_id = config.node_settings_id;
@@ -94,10 +98,6 @@ export default class GuidNodeIntegromat extends Controller {
                 "Location": teams_location,
                 "Content": teams_content
                 };
-
-        if (!this.config) {
-            throw new EmberError('Illegal config');
-        }
 
         this.set('showCreateMeetingDialog', false);
 

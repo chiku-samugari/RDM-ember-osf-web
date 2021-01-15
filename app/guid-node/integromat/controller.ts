@@ -26,7 +26,7 @@ export default class GuidNodeIntegromat extends Controller {
 
     configCache?: DS.PromiseObject<IntegromatConfigModel>;
 
-    showCreateMeetingDialog = false;
+    showCreateMicrosoftTeamsMeetingDialog = false;
 
     showWorkflows = true;
     showMicrosoftTeamsMeetings = false;
@@ -99,7 +99,7 @@ export default class GuidNodeIntegromat extends Controller {
                 "Content": teams_content
                 };
 
-        this.set('showCreateMeetingDialog', false);
+        this.set('showCreateMicrosoftTeamsMeetingDialog', false);
 
         return $.post(webhookUrl, payload)
 
@@ -107,7 +107,7 @@ export default class GuidNodeIntegromat extends Controller {
 
     @action
     closeDialogs() {
-        this.set('showCreateMeetingDialog', false);
+        this.set('showCreateMicrosoftTeamsMeetingDialog', false);
     }
 
     saveError(config: IntegromatConfigModel) {

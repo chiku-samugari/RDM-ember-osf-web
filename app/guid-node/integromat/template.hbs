@@ -82,7 +82,7 @@
                 local-class='Integromat__buttons'
                 class='text-success pull-right'
                 type='text'
-                onClick={{action (mut this.showRegisterMeetingDialog) true}}
+                onClick={{action (mut this.showCreateMicrosoftTeamsMeetingDialog) true}}
             >
                 <i class='fa fa-plus'>&nbsp;Create Meeting</i>
             </button>
@@ -156,9 +156,9 @@
 
 <BsModal
     data-test-paper-confirm-modal
-    @open={{this.showRegisterMeetingDialog}}
+    @open={{this.showCreateMicrosoftTeamsMeetingDialog}}
     @onSubmit={{action this.startCreateMeetingScenario}}
-    @onHidden={{action (mut this.showRegisterMeetingDialog) false}}
+    @onHidden={{action (mut this.showCreateMicrosoftTeamsMeetingDialog) false}}
     as |modal|
 >
     <modal.header>

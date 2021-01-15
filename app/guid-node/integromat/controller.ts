@@ -63,7 +63,13 @@ export default class GuidNodeIntegromat extends Controller {
 
     @action
     startCreateMeetingScenario(this: GuidNodeIntegromat) {
+
+        const config = this.config.content as IntegromatConfigModel;
+        const webhookUrl = config.webhook_url;
+        const node_id = config.node_settings_id;
+        const app_name = config.app_name_microsoft_teams;
         const guid = this.model.guid;
+        const info_grdm_scenario_processing = config.info_grdm_scenario_processing
         const teams_subject = this.teams_subject;
         const teams_attendees = this.teams_attendees;
         const teams_startDate = this.teams_startDate;
@@ -75,8 +81,12 @@ export default class GuidNodeIntegromat extends Controller {
         const teams_location = this.teams_location;
         const teams_content = this.teams_content;
         
-        const payload = { "guid": guid,
-                "Action": 'create',
+        const payload = {
+                "Node Id": node_id,
+                "Meeting App Name": app_name,
+                "guid": guid,
+                "Action": 'createMicrosoftTeamsMeeting',
+                "infoGrdmScenarioProcessing": info_grdm_scenario_processing,
                 "Start Date": teams_start_date_time,
                 "End Date": teams_end_date_time,
                 "Subject": teams_subject,
@@ -88,9 +98,7 @@ export default class GuidNodeIntegromat extends Controller {
         if (!this.config) {
             throw new EmberError('Illegal config');
         }
-        const config = this.config.content as IntegromatConfigModel;
-        const webhookUrl = config.webhook_url;
-        console.log(payload + webhookUrl)
+
         this.set('showCreateMeetingDialog', false);
 
         return $.post(webhookUrl, payload)
@@ -126,6 +134,16 @@ export default class GuidNodeIntegromat extends Controller {
         const config = this.config.content as IntegromatConfigModel;
         const workflows = JSON.parse(config.workflows);
         return workflows;
+    }
+
+    @computed('config.infoMsg')
+    get infoMsg() {
+        if (!this.config || !this.config.get('isFulfilled')) {
+            return '';
+        }
+        const config = this.config.content as IntegromatConfigModel;
+        const message = config.infoMsg;
+        return this.toast.info(message);
     }
 
     @computed('node')

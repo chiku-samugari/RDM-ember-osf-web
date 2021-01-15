@@ -58,7 +58,7 @@
 <!-- manage meeting screen  -->
     {{#if this.showMicrosoftTeamsMeetings}}
     <div class="col-md-9 col-xs-12">
-    <div id="microsoftTeamsMeetings" class="main_screen" local-class='Integromat__web_meeting_table'>
+    <div id="microsoftTeamsMeetings" class="main_screen">
       <div local-class='Integromat__web_meeting_navbar'>
             <label style="margin-top:10px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{row.fields.workflow_apps}}</label>
             <button style="margin-top:10px;"
@@ -157,7 +157,7 @@
 <BsModal
     data-test-paper-confirm-modal
     @open={{this.showCreateMicrosoftTeamsMeetingDialog}}
-    @onSubmit={{action this.startCreateMeetingScenario}}
+    @onSubmit={{action this.startCreateMicrosoftTeamsMeetingScenario}}
     @onHidden={{action (mut this.showCreateMicrosoftTeamsMeetingDialog) false}}
     as |modal|
 >

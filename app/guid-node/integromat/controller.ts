@@ -62,7 +62,7 @@ export default class GuidNodeIntegromat extends Controller {
     }
 
     @action
-    startCreateMeetingScenario(this: GuidNodeIntegromat) {
+    startCreateMicrosoftTeamsMeetingScenario(this: GuidNodeIntegromat) {
 
         if (!this.config) {
             throw new EmberError('Illegal config');
@@ -86,17 +86,17 @@ export default class GuidNodeIntegromat extends Controller {
         const teams_content = this.teams_content;
         
         const payload = {
-                "Node Id": node_id,
-                "Meeting App Name": app_name,
+                "nodeId": node_id,
+                "meetingAppName": app_name,
                 "guid": guid,
-                "Action": 'createMicrosoftTeamsMeeting',
+                "action": 'createMicrosoftTeamsMeeting',
                 "infoGrdmScenarioProcessing": info_grdm_scenario_processing,
-                "Start Date": teams_start_date_time,
-                "End Date": teams_end_date_time,
-                "Subject": teams_subject,
-                "Attendees": teams_attendees,
-                "Location": teams_location,
-                "Content": teams_content
+                "startDate": teams_start_date_time,
+                "endDate": teams_end_date_time,
+                "subject": teams_subject,
+                "attendees": teams_attendees,
+                "location": teams_location,
+                "content": teams_content
                 };
 
         this.set('showCreateMicrosoftTeamsMeetingDialog', false);

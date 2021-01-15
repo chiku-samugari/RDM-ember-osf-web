@@ -70,6 +70,7 @@ export default class GuidNodeIntegromat extends Controller {
 
         const config = this.config.content as IntegromatConfigModel;
         const webhookUrl = config.webhook_url;
+        const organizerId = config.organizer_id;
         const node_id = config.node_settings_id;
         const app_name = config.app_name_microsoft_teams;
         const guid = this.model.guid;
@@ -84,10 +85,11 @@ export default class GuidNodeIntegromat extends Controller {
         const teams_end_date_time = teams_endDate + ' ' + teams_endTime
         const teams_location = this.teams_location;
         const teams_content = this.teams_content;
-        
+
         const payload = {
                 "nodeId": node_id,
                 "meetingAppName": app_name,
+                "microsoftUserObjectId": organizerId,
                 "guid": guid,
                 "action": 'createMicrosoftTeamsMeeting',
                 "infoGrdmScenarioProcessing": info_grdm_scenario_processing,

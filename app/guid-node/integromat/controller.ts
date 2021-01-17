@@ -87,9 +87,11 @@ export default class GuidNodeIntegromat extends Controller {
         const teams_content = this.teams_content;
 
 /////// MAKE COLLECTION LATER ////////////
-        var arrayAttendees = [];
+        var arrayAttendeesCollection = [];
+        var arrayAttendees = []
         var attendeeJson = {"emailAddress": {"address": teams_attendees}};
-        arrayAttendees.push(attendeeJson);
+        arrayAttendeesCollection.push(attendeeJson);
+        arrayAttendees.push(teams_attendees);
 /////// MAKE COLLECTION LATER ////////////
 
         const payload = {
@@ -102,6 +104,7 @@ export default class GuidNodeIntegromat extends Controller {
                 "startDate": teams_start_date_time,
                 "endDate": teams_end_date_time,
                 "subject": teams_subject,
+                "attendeesCollection": arrayAttendeesCollection,
                 "attendees": arrayAttendees,
                 "location": teams_location,
                 "content": teams_content

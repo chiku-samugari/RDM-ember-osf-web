@@ -140,7 +140,7 @@
                                 <button class="fa fa-copy"></button>
                             </td>
                             <td local-class='Integromat__cell_right'>
-                                <button onClick={{action this.startMeeting value=row.fields.join_url}}>Start</button>
+                                <button id={{row.fields.join_url}} onClick={{action this.startMeeting value=target.id}}>Start</button>
                             </td>
                         </tr>
                         {{/each}}

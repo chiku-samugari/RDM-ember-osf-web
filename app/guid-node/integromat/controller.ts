@@ -117,6 +117,11 @@ export default class GuidNodeIntegromat extends Controller {
     }
 
     @action
+    startMeeting(this: GuidNodeIntegromat, v: string) {
+        window.open(v, '_blank');
+    }
+
+    @action
     closeDialogs() {
         this.set('showCreateMicrosoftTeamsMeetingDialog', false);
     }

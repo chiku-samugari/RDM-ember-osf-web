@@ -94,7 +94,7 @@
                     <thead>
                         <tr style="background-color: #f5f5f5;">
                             <th width="3%">
-                                <input type="checkBox" style="width: 15px; height: 15px;" id={{row.fields.meeting}} onchange={{action (action this.checkboxAction row.fields.meeting) value='target.checked'}}>
+                                <input type="checkBox" style="width: 15px; height: 15px;">
                             </th>
                             <th width="11%">
                                 <span class="header_text m-r-sm">Subject</span>
@@ -128,7 +128,7 @@
                         {{#each this.microsoft_teams_meetings as |row|}}
                         <tr>
                             <td>
-                                <input type="checkBox" style="width: 15px; height: 15px;" id={{row.fields.meetingid}}>
+                                <input type="checkBox" style="width: 15px; height: 15px;" id={{row.fields.meeting}} onchange={{action (action this.checkboxAction row.fields.meeting) value='target.checked'}}>
                             </td>
                             <td>{{row.fields.subject}}</td>
                             <td>{{row.fields.organizer}}</td>

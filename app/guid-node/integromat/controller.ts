@@ -93,7 +93,7 @@ export default class GuidNodeIntegromat extends Controller {
                 "nodeId": nodeId,
                 "meetingAppName": appName,
                 "action": 'deleteMicrosoftTeamsMeeting',
-                "microsoftTeamsMeetingIds": this.selectedTargetId
+                "microsoftTeamsMeetingIds": selectedMeetingId
                 };
 
         this.set('showDeleteMicrosoftTeamsMeetingDialog', false);

@@ -66,6 +66,7 @@
                 local-class='Integromat__buttons'
                 class='text-danger pull-right'
                 type='text'
+                onClick={{action (mut this.showDeleteMicrosoftTeamsMeetingDialog) true}}
             >
                 <i class='fa fa-trash'>&nbsp;Delete Meeting</i>
             </button>
@@ -264,6 +265,57 @@
                     @type='success'
                     @onClick={{action modal.submit}}>
                 Create
+            </OsfButton>
+    </modal.footer>
+</BsModal>
+
+<BsModal
+    data-test-paper-confirm-modal
+    @open={{this.showDeleteMicrosoftTeamsMeetingDialog}}
+    @onSubmit={{action this.startDeleteMicrosoftTeamsMeetingScenario}}
+    @onHidden={{action (mut this.showDeleteMicrosoftTeamsMeetingDialog) false}}
+    as |modal|
+>
+    <modal.header>
+        <h4 style="font-weight:normal;">
+            Delete Microsoft Teams Meeting
+        </h4>
+    </modal.header>
+    <modal.body>
+        <div class='form-group'>
+          <div>Are you sure you wanto to delete these Microsoft Teams meetings? : </div>
+          <div>
+                {{input
+                    name='node_id'
+                    class='form-control'
+                    type='hidden'
+                    value=this.node_settings_id
+                }}
+                {{input
+                    name='microsoft_teams_app_name'
+                    class='form-control'
+                    type='hidden'
+                    value=this.microsoftTeamsAppName
+                }}
+                {{input
+                    name='teams_meetingid'
+                    class='form-control'
+                    type='hidden'
+                    value=this.selectedTargetId
+                }}
+          </div>
+        </div>
+    </modal.body>
+    <modal.footer>
+        <BsButton
+            @onClick={{action modal.close}}
+        >
+            Cancel
+        </BsButton>
+            <OsfButton
+                    @type='danger'
+                    @onClick={{action modal.submit}}>
+                Delete
             </OsfButton>
     </modal.footer>
 </BsModal>

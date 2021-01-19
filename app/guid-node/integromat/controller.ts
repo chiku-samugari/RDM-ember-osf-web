@@ -27,9 +27,11 @@ export default class GuidNodeIntegromat extends Controller {
     configCache?: DS.PromiseObject<IntegromatConfigModel>;
 
     showCreateMicrosoftTeamsMeetingDialog = false;
-
+    showDeleteMicrosoftTeamsMeetingDialog = false;
     showWorkflows = true;
     showMicrosoftTeamsMeetings = false;
+
+    selectedTargetId : string[] = [];
 
     teams_subject = '';
     teams_attendees = '';
@@ -59,6 +61,46 @@ export default class GuidNodeIntegromat extends Controller {
             .catch(() => {
                 this.saveError(config);
             });
+    }
+
+    @action
+    checkboxAction(this: GuidNodeIntegromat, v: string, checked: boolean) {
+        if(checked){
+            this.selectedTargetId.push(v);
+        }else{
+            this.selectedTargetId.forEach((item, index) => {
+                if(item === v){
+                    this.selectedTargetId.splice(index, 1);
+                }
+            });
+        }
+    }
+
+    @action
+    startDeleteMicrosoftTeamsMeetingScenario(this: GuidNodeIntegromat) {
+
+        if (!this.config) {
+            throw new EmberError('Illegal config');
+        }
+
+        const selectedMeetingId = this.selectedTargetId;
+        const config = this.config.content as IntegromatConfigModel;
+        const webhookUrl = config.webhook_url;
+        const nodeId = config.node_settings_id;
+        const appName = config.app_name_microsoft_teams;
+
+        const payload = {
+                "nodeId": nodeId,
+                "meetingAppName": appName,
+                "action": 'deleteMicrosoftTeamsMeeting',
+                "microsoftTeamsMeetingIds": this.selectedTargetId
+                };
+
+        this.set('showDeleteMicrosoftTeamsMeetingDialog', false);
+
+        return $.post(webhookUrl, payload)
+
+
     }
 
     @action
@@ -134,7 +176,7 @@ export default class GuidNodeIntegromat extends Controller {
 
     @computed('config.microsoft_teams_meetings')
     get microsoft_teams_meetings() {
-        if (!this.config || !this.config.get('isFulfilled')) {
+        if (!this.config) {
             return '';
         }
         const config = this.config.content as IntegromatConfigModel;
@@ -144,12 +186,22 @@ export default class GuidNodeIntegromat extends Controller {
 
     @computed('config.workflows')
     get workflows() {
-        if (!this.config || !this.config.get('isFulfilled')) {
+        if (!this.config) {
             return '';
         }
         const config = this.config.content as IntegromatConfigModel;
         const workflows = JSON.parse(config.workflows);
         return workflows;
+    }
+
+    @computed('config.node_settings_id')
+    get node_settings_id() {
+        if (!this.config) {
+            return '';
+        }
+        const config = this.config.content as IntegromatConfigModel;
+        const node_settings_id = config.node_settings_id;
+        return node_settings_id;
     }
 
     @computed('config.infoMsg')

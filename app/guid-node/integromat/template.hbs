@@ -94,7 +94,7 @@
                     <thead>
                         <tr style="background-color: #f5f5f5;">
                             <th width="3%">
-                                <input type="checkBox" style="width: 15px; height: 15px;"/>
+                                <input type="checkBox" style="width: 15px; height: 15px;" id={{row.fields.meeting}} onchange={{action (action this.checkboxAction row.fields.meeting) value='target.checked'}}>
                             </th>
                             <th width="11%">
                                 <span class="header_text m-r-sm">Subject</span>
@@ -287,19 +287,16 @@
           <div>
                 {{input
                     name='node_id'
-                    class='form-control'
                     type='hidden'
                     value=this.node_settings_id
                 }}
                 {{input
                     name='microsoft_teams_app_name'
-                    class='form-control'
                     type='hidden'
                     value=this.microsoftTeamsAppName
                 }}
                 {{input
                     name='teams_meetingid'
-                    class='form-control'
                     type='hidden'
                     value=this.selectedTargetId
                 }}

@@ -134,7 +134,7 @@ export default class GuidNodeIntegromat extends Controller {
 
             for(var i=0 ; i < microsoftTeamsMeetings.length ; i++){
 
-                if(microsoftTeamsMeetings[i].fields.meeting == microsoftTeamsMeetingChecked[0].id){
+                if(microsoftTeamsMeetings[i].fields.meetingid == microsoftTeamsMeetingChecked[0].id){
                     this.set('teams_subject', microsoftTeamsMeetings[i].fields.subject);
                     this.set('teams_attendees', microsoftTeamsMeetings[i].fields.attendees);
                     this.set('teams_startTime', microsoftTeamsMeetings[i].fields.start_datetime);

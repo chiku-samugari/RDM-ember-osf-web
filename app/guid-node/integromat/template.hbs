@@ -75,6 +75,7 @@
                 local-class='Integromat__buttons'
                 class='text-info pull-right'
                 type='text'
+                onClick={{action this.makeUpdateMeetingDialog}}
             >
                 <i class='fa fa-edit'>&nbsp;Update Meeting</i>
             </button>
@@ -165,6 +166,120 @@
     <modal.header>
         <h4 style="font-weight:normal;">
             Create Microsoft Teams Meeting
+        </h4>
+    </modal.header>
+    <modal.body>
+        <div class='form-group'>
+          <div>
+            <label>Subject</label>
+                {{input
+                    name='teams_Subject'
+                    placeholder='Input teams meeting subject'
+                    class='form-control'
+                    type='text'
+                    value=this.teams_subject
+                }}
+          </div>
+          <div>
+            <label>Attendees</label>
+                {{input
+                    name='teams_Attendees'
+                    placeholder='Input teams meeting attendees'
+                    class='form-control'
+                    type='text'
+                    value=this.teams_attendees
+                }}
+          </div>
+          <div>
+            <table>
+            <tr>
+                <td><label>Start Datetime</label></td><td></td><td></td>
+            <td><label>End Datetime</label></td><td></td>
+            </tr>
+            <tr>
+            <td>
+                {{input
+                    name='teams_Start_Date'
+                    placeholder='YYYY/MM/DD'
+                    class='form-control'
+                    type='text'
+                    value=this.teams_startDate
+                }}
+            </td>
+            <td>
+                {{input
+                    name='teams_Start_Time'
+                    class='form-control'
+                    type='time'
+                    value=this.teams_startTime
+                }}
+            </td>
+            <td><label>&nbsp;〜&nbsp;</label></td>
+            <td>
+                {{input
+                    name='teams_End_Date'
+                    placeholder='YYYY/MM/DD'
+                    class='form-control'
+                    type='text'
+                    value=this.teams_endDate
+                }}
+            </td>
+            <td>
+                {{input
+                    name='teams_End_Time'
+                    class='form-control'
+                    type='time'
+                    value=this.teams_endTime
+                }}
+            </td>
+            </tr>
+            </table>
+          </div>
+          <div>
+            <label>Location</label>
+                {{input
+                    name='teams_Location'
+                    placeholder='Input teams meeting location'
+                    class='form-control'
+                    type='text'
+                    value=this.teams_location
+                }}
+          </div>
+          <div>
+            <label>Content</label>
+                {{textarea
+                    name='teams_Content'
+                    class='form-control'
+                    value=this.teams_content
+                    placeholder='Input the detail of this meeting'
+                }}
+          </div>
+        </div>
+    </modal.body>
+    <modal.footer>
+        <BsButton
+            @onClick={{action modal.close}}
+        >
+            Cancel
+        </BsButton>
+            <OsfButton
+                    @type='success'
+                    @onClick={{action modal.submit}}>
+                Create
+            </OsfButton>
+    </modal.footer>
+</BsModal>
+
+<BsModal
+    update-microsoft-teams-meeting
+    @open={{this.showUpdateMicrosoftTeamsMeetingDialog}}
+    @onSubmit={{action this.startUpdateMicrosoftTeamsMeetingScenario}}
+    @onHidden={{action (mut this.showUpdateMicrosoftTeamsMeetingDialog) false}}
+    as |modal|
+>
+    <modal.header>
+        <h4 style="font-weight:normal;">
+            Update Microsoft Teams Meeting
         </h4>
     </modal.header>
     <modal.body>

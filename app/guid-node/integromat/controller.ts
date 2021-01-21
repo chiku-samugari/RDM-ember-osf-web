@@ -14,6 +14,20 @@ import Toast from 'ember-toastr/services/toast';
 
 import $ from 'jquery';
 
+interface microsoftTeamsMeetingInfo {
+    subject: string;
+    attendees: string[];
+    start_datetime: string;
+    end_datetime: string;
+    location: string;
+    content: string;
+    meeting: string;
+}
+
+interface microsoftTeamsMeetings {
+    [fields: string]: microsoftTeamsMeetingInfo;
+}
+
 export default class GuidNodeIntegromat extends Controller {
     @service toast!: Toast;
     @service statusMessages!: StatusMessages;
@@ -27,14 +41,16 @@ export default class GuidNodeIntegromat extends Controller {
     configCache?: DS.PromiseObject<IntegromatConfigModel>;
 
     showCreateMicrosoftTeamsMeetingDialog = false;
+    showUpdateMicrosoftTeamsMeetingDialog = false;
     showDeleteMicrosoftTeamsMeetingDialog = false;
     showWorkflows = true;
     showMicrosoftTeamsMeetings = false;
 
     selectedTargetId : string[] = [];
+    microsoftTeamsMeetings : microsoftTeamsMeetings[] = [];
 
     teams_subject = '';
-    teams_attendees = '';
+    teams_attendees : string[] = [];
     teams_startDate = '';
     teams_startTime = '';
     teams_endDate = '';
@@ -99,7 +115,83 @@ export default class GuidNodeIntegromat extends Controller {
         this.set('showDeleteMicrosoftTeamsMeetingDialog', false);
 
         return $.post(webhookUrl, payload)
+    }
 
+    @action
+    makeUpdateMeetingDialog(this: GuidNodeIntegromat) {
+
+        const microsoftTeamsMeetingChecked = document.querySelectorAll('input[class=microsoftTeamsMeetingCheck]:checked');
+        const microsoftTeamsMeetingsInfo = this.microsoftTeamsMeetings;
+
+        if(microsoftTeamsMeetingChecked.length != 1){
+            this.toast.error('Select only one meeting information.');
+        }else{
+            this.set('showUpdateMeetingDialog', true);
+
+            for(var i=0 ; i < microsoftTeamsMeetingsInfo.length ; i++){
+
+                if(microsoftTeamsMeetingsInfo[i].fields.meeting == microsoftTeamsMeetingChecked[0].id){
+                    this.set('teams_subject', microsoftTeamsMeetingsInfo[i].fields.subject);
+                    this.set('teams_attendees', microsoftTeamsMeetingsInfo[i].fields.attendees);
+                    this.set('teams_startTime', microsoftTeamsMeetingsInfo[i].fields.start_datetime);
+                    this.set('teams_endTime', microsoftTeamsMeetingsInfo[i].fields.end_datetime);
+                    this.set('teams_location', microsoftTeamsMeetingsInfo[i].fields.location);
+                    this.set('teams_content', microsoftTeamsMeetingsInfo[i].fields.content);
+                    break;
+                }
+            }
+        }
+    }
+
+    @action
+    startUpdateMicrosoftTeamsMeetingScenario(this: GuidNodeIntegromat) {
+
+        if (!this.config) {
+            throw new EmberError('Illegal config');
+        }
+
+        const config = this.config.content as IntegromatConfigModel;
+        const webhookUrl = config.webhook_url;
+        const node_id = config.node_settings_id;
+        const app_name = config.app_name_microsoft_teams;
+        const info_grdm_scenario_processing = config.info_grdm_scenario_processing
+        const teams_subject = this.teams_subject;
+        const teams_attendees = this.teams_attendees;
+        const teams_startDate = this.teams_startDate;
+        const teams_startTime = this.teams_startTime;
+        const teams_start_date_time = teams_startDate + ' ' + teams_startTime
+        const teams_endDate = this.teams_endDate;
+        const teams_endTime = this.teams_endTime;
+        const teams_end_date_time = teams_endDate + ' ' + teams_endTime
+        const teams_location = this.teams_location;
+        const teams_content = this.teams_content;
+
+/////// MAKE COLLECTION LATER ////////////
+        var arrayAttendeesCollection = [];
+        var arrayAttendees = []
+        var attendeeJson = {"emailAddress": {"address": teams_attendees}};
+        arrayAttendeesCollection.push(attendeeJson);
+        arrayAttendees.push(teams_attendees);
+/////// MAKE COLLECTION LATER ////////////
+
+        const payload = {
+                "nodeId": node_id,
+                "meetingAppName": app_name,
+                "microsoftUserObjectId": organizerId,
+                "action": 'updateMicrosoftTeamsMeeting',
+                "infoGrdmScenarioProcessing": info_grdm_scenario_processing,
+                "startDate": teams_start_date_time,
+                "endDate": teams_end_date_time,
+                "subject": teams_subject,
+                "attendeesCollection": arrayAttendeesCollection,
+                "attendees": arrayAttendees,
+                "location": teams_location,
+                "content": teams_content
+                };
+
+        this.set('showUpdateMicrosoftTeamsMeetingDialog', false);
+
+        return $.post(webhookUrl, payload)
 
     }
 
@@ -166,6 +258,7 @@ export default class GuidNodeIntegromat extends Controller {
     @action
     closeDialogs() {
         this.set('showCreateMicrosoftTeamsMeetingDialog', false);
+        this.set('showUpdateMicrosoftTeamsMeetingDialog', false);
     }
 
     saveError(config: IntegromatConfigModel) {

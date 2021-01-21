@@ -120,23 +120,27 @@ export default class GuidNodeIntegromat extends Controller {
     @action
     makeUpdateMeetingDialog(this: GuidNodeIntegromat) {
 
+        if (!this.config) {
+            return '';
+        }
+        const config = this.config.content as IntegromatConfigModel;
+        const microsoftTeamsMeetings = JSON.parse(config.microsoft_teams_meetings);
         const microsoftTeamsMeetingChecked = document.querySelectorAll('input[class=microsoftTeamsMeetingCheck]:checked');
-        const microsoftTeamsMeetingsInfo = this.microsoftTeamsMeetings;
 
         if(microsoftTeamsMeetingChecked.length != 1){
             this.toast.error('Select only one meeting information.');
         }else{
             this.set('showUpdateMicrosoftTeamsMeetingDialog', true);
 
-            for(var i=0 ; i < microsoftTeamsMeetingsInfo.length ; i++){
+            for(var i=0 ; i < microsoftTeamsMeetings.length ; i++){
 
-                if(microsoftTeamsMeetingsInfo[i].fields.meeting == microsoftTeamsMeetingChecked[0].id){
-                    this.set('teams_subject', microsoftTeamsMeetingsInfo[i].fields.subject);
-                    this.set('teams_attendees', microsoftTeamsMeetingsInfo[i].fields.attendees);
-                    this.set('teams_startTime', microsoftTeamsMeetingsInfo[i].fields.start_datetime);
-                    this.set('teams_endTime', microsoftTeamsMeetingsInfo[i].fields.end_datetime);
-                    this.set('teams_location', microsoftTeamsMeetingsInfo[i].fields.location);
-                    this.set('teams_content', microsoftTeamsMeetingsInfo[i].fields.content);
+                if(microsoftTeamsMeetings[i].fields.meeting == microsoftTeamsMeetingChecked[0].id){
+                    this.set('teams_subject', microsoftTeamsMeetings[i].fields.subject);
+                    this.set('teams_attendees', microsoftTeamsMeetings[i].fields.attendees);
+                    this.set('teams_startTime', microsoftTeamsMeetings[i].fields.start_datetime);
+                    this.set('teams_endTime', microsoftTeamsMeetings[i].fields.end_datetime);
+                    this.set('teams_location', microsoftTeamsMeetings[i].fields.location);
+                    this.set('teams_content', microsoftTeamsMeetings[i].fields.content);
                     break;
                 }
             }

@@ -177,7 +177,6 @@ export default class GuidNodeIntegromat extends Controller {
         const payload = {
                 "nodeId": node_id,
                 "meetingAppName": app_name,
-                "microsoftUserObjectId": organizerId,
                 "action": 'updateMicrosoftTeamsMeeting',
                 "infoGrdmScenarioProcessing": info_grdm_scenario_processing,
                 "startDate": teams_start_date_time,

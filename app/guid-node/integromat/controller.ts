@@ -145,6 +145,7 @@ export default class GuidNodeIntegromat extends Controller {
                 }
             }
         }
+        return '';
     }
 
     @action

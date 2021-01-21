@@ -126,7 +126,7 @@ export default class GuidNodeIntegromat extends Controller {
         if(microsoftTeamsMeetingChecked.length != 1){
             this.toast.error('Select only one meeting information.');
         }else{
-            this.set('showUpdateMeetingDialog', true);
+            this.set('showUpdateMicrosoftTeamsMeetingDialog', true);
 
             for(var i=0 ; i < microsoftTeamsMeetingsInfo.length ; i++){
 
@@ -165,6 +165,7 @@ export default class GuidNodeIntegromat extends Controller {
         const teams_end_date_time = teams_endDate + ' ' + teams_endTime
         const teams_location = this.teams_location;
         const teams_content = this.teams_content;
+        const microsoft_teams_meeting_id = document.querySelectorAll('input[class=microsoftTeamsMeetingCheck]:checked')[0].id;
 
 /////// MAKE COLLECTION LATER ////////////
         var arrayAttendeesCollection = [];
@@ -177,6 +178,7 @@ export default class GuidNodeIntegromat extends Controller {
         const payload = {
                 "nodeId": node_id,
                 "meetingAppName": app_name,
+                "microsoftTeamsMeetingIds": microsoft_teams_meeting_id,
                 "action": 'updateMicrosoftTeamsMeeting',
                 "infoGrdmScenarioProcessing": info_grdm_scenario_processing,
                 "startDate": teams_start_date_time,

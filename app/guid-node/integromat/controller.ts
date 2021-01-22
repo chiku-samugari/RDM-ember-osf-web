@@ -171,7 +171,7 @@ export default class GuidNodeIntegromat extends Controller {
         const teams_location = this.teams_location;
         const teams_content = this.teams_content;
         const microsoftTeamsMeetingChecked = document.querySelectorAll('input[class=microsoftTeamsMeetingCheck]:checked');
-        const microsoft_teams_meeting_id = microsoftTeamsMeetingChecked.id;
+        const microsoft_teams_meeting_id = microsoftTeamsMeetingChecked[0].id;
         const microsoft_teams_meeting_join_url = (<HTMLElement>microsoftTeamsMeetingChecked[0]).dataset.joinUrl;
 
 /////// MAKE COLLECTION LATER ////////////

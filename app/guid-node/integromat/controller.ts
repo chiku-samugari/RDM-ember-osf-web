@@ -175,7 +175,7 @@ export default class GuidNodeIntegromat extends Controller {
 /////// MAKE COLLECTION LATER ////////////
         var arrayAttendeesCollection = [];
         var arrayAttendees = []
-        var attendeeJson = {"emailAddress": {"address": teams_attendees}};
+        var attendeeJson = {"Email Address": {"Address": teams_attendees}, "Name": "name"};
         arrayAttendeesCollection.push(attendeeJson);
         arrayAttendees.push(teams_attendees);
 /////// MAKE COLLECTION LATER ////////////
@@ -183,7 +183,7 @@ export default class GuidNodeIntegromat extends Controller {
         const payload = {
                 "nodeId": node_id,
                 "meetingAppName": app_name,
-                "microsoftTeamsMeetingIds": microsoft_teams_meeting_id,
+                "microsoftTeamsMeetingId": microsoft_teams_meeting_id,
                 "action": 'updateMicrosoftTeamsMeeting',
                 "infoGrdmScenarioProcessing": info_grdm_scenario_processing,
                 "startDate": teams_start_date_time,

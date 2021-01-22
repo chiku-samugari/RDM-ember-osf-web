@@ -175,7 +175,7 @@ export default class GuidNodeIntegromat extends Controller {
 /////// MAKE COLLECTION LATER ////////////
         var arrayAttendeesCollection = [];
         var arrayAttendees = []
-        var attendeeJson = {"Email Address": teams_attendees, "Name": "name"};
+        var attendeeJson = {"address": teams_attendees, "name": "dummy"};
         arrayAttendeesCollection.push(attendeeJson);
         arrayAttendees.push(teams_attendees);
 /////// MAKE COLLECTION LATER ////////////

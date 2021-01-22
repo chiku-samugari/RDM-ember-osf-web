@@ -170,7 +170,9 @@ export default class GuidNodeIntegromat extends Controller {
         const teams_end_date_time = teams_endDate + ' ' + teams_endTime
         const teams_location = this.teams_location;
         const teams_content = this.teams_content;
-        const microsoft_teams_meeting_id = document.querySelectorAll('input[class=microsoftTeamsMeetingCheck]:checked')[0].id;
+        const microsoftTeamsMeetingChecked = document.querySelectorAll('input[class=microsoftTeamsMeetingCheck]:checked');
+        const microsoft_teams_meeting_id = microsoftTeamsMeetingChecked.id;
+        const microsoft_teams_meeting_join_url = (<HTMLElement>microsoftTeamsMeetingChecked[0]).dataset.joinUrl;
 
 /////// MAKE COLLECTION LATER ////////////
         var arrayAttendeesCollection = [];
@@ -184,6 +186,7 @@ export default class GuidNodeIntegromat extends Controller {
                 "nodeId": node_id,
                 "meetingAppName": app_name,
                 "microsoftTeamsMeetingId": microsoft_teams_meeting_id,
+                "microsoftTeamsJoinUrl": microsoft_teams_meeting_join_url,
                 "action": 'updateMicrosoftTeamsMeeting',
                 "infoGrdmScenarioProcessing": info_grdm_scenario_processing,
                 "startDate": teams_start_date_time,

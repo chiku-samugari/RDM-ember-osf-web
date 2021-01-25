@@ -269,13 +269,13 @@ export default class GuidNodeIntegromat extends Controller {
 
     @action
     setStartTime(this: GuidNodeIntegromat) {
-        const startDate = document.querySelector('select[name=select-start-time]');
+        const startDate = document.querySelector('select[name=select-start-time]').value;
         this.set('teams_startTime', startDate);
     }
 
     @action
     setEndTime(this: GuidNodeIntegromat) {
-        const endDate = document.querySelector('select[name=select-end-time]');
+        const endDate = document.querySelector('select[name=select-end-time]').value;
         this.set('teams_endTime', endDate);
     }
 

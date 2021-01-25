@@ -209,11 +209,12 @@
                 }}
             </td>
             <td>
-            <select name='select-start-time' class="form-control" onchange={{action this.setStartTime}}>
-                {{#each this.times as |time|}}
-                <option value={{time}}>{{time}}</option>
-                {{/each}}
-            </select>
+                {{input
+                    name='teams_Start_Time'
+                    class='form-control'
+                    type='time'
+                    value=this.teams_startTime
+                }}
             </td>
             <td><label>&nbsp;〜&nbsp;</label></td>
             <td>
@@ -228,11 +229,12 @@
                 }}
             </td>
             <td>
-            <select name='select-end-time' class="form-control" onchange={{action this.setEndTime}}>
-                {{#each this.times as |time|}}
-                <option value={{time}}>{{time}}</option>
-                {{/each}}
-            </select>
+                {{input
+                    name='teams_Start_Time'
+                    class='form-control'
+                    type='time'
+                    value=this.teams_startTime
+                }}
             </td>
             </tr>
             </table>
@@ -325,11 +327,12 @@
                 }}
             </td>
             <td>
-            <select class="form-control">
-                {{#each this.times as |time|}}
-                <option value={{time}}>{{time}}</option>
-                {{/each}}
-            </select>
+                {{input
+                    name='teams_Start_Time'
+                    class='form-control'
+                    type='time'
+                    value=this.teams_startTime
+                }}
             </td>
             <td><label>&nbsp;〜&nbsp;</label></td>
             <td>
@@ -344,11 +347,12 @@
                 }}
             </td>
             <td>
-            <select class="form-control">
-                {{#each this.times as |time|}}
-                <option value={{time}}>{{time}}</option>
-                {{/each}}
-            </select>
+                {{input
+                    name='teams_Start_Time'
+                    class='form-control'
+                    type='time'
+                    value=this.teams_startTime
+                }}
             </td>
             </tr>
             </table>

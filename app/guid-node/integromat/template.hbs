@@ -305,7 +305,7 @@
             <label>Attendees</label>
                 {{#each this.microsoft_teams_attendees as |row|}}
                 {{input
-                    id={{row.fields.microsoft_teams_mail}}
+                    id=row.fields.microsoft_teams_mail
                     class='form-control microsoftTeamsAttendeesCheck'
                     type='checkbox'
                 }}

@@ -182,13 +182,16 @@
           </div>
           <div>
             <label>Attendees</label>
+            <span id='attendees_inputs'>
+                {{#each this.microsoft_teams_attendees as |row|}}
                 {{input
-                    name='teams_Attendees'
-                    placeholder='Input teams meeting attendees'
-                    class='form-control'
-                    type='text'
-                    value=this.teams_attendees
+                    id={{row.fields.microsoft_teams_mail}}
+                    class='form-control microsoftTeamsAttendeesCheck'
+                    type='checkbox'
                 }}
+                {{row.fields.microsoft_teams_mail}}
+                {{/each}}
+            </span>
           </div>
           <div>
             <table>
@@ -300,13 +303,14 @@
           </div>
           <div>
             <label>Attendees</label>
+                {{#each this.microsoft_teams_attendees as |row|}}
                 {{input
-                    name='teams_Attendees'
-                    placeholder='Input teams meeting attendees'
-                    class='form-control'
-                    type='text'
-                    value=this.teams_attendees
+                    id={{row.fields.microsoft_teams_mail}}
+                    class='form-control microsoftTeamsAttendeesCheck'
+                    type='checkbox'
                 }}
+                {{row.fields.microsoft_teams_mail}}
+                {{/each}}
           </div>
           <div>
             <table>

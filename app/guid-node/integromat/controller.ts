@@ -170,12 +170,14 @@ export default class GuidNodeIntegromat extends Controller {
         const teams_start_date_time = teams_startDate + ' ' + teams_startTime
         const teams_endDate = moment(this.teams_endDate).format('YYYY-MM-DD');
         const teams_endTime = this.teams_endTime;
-        const teams_end_date_time = teams_endDate + ' ' + teams_endTime
+        const teams_end_date_time = teams_endDate + ' ' + teams_endTime;
         const teams_location = this.teams_location;
         const teams_content = this.teams_content;
         const microsoftTeamsMeetingChecked = document.querySelectorAll('input[class=microsoftTeamsMeetingCheck]:checked');
         const microsoft_teams_meeting_id = microsoftTeamsMeetingChecked[0].id;
         const microsoft_teams_meeting_join_url = (<HTMLElement>microsoftTeamsMeetingChecked[0]).dataset.joinUrl;
+
+
 
 /////// MAKE COLLECTION LATER ////////////
         var arrayAttendeesCollection = [];
@@ -228,17 +230,19 @@ export default class GuidNodeIntegromat extends Controller {
         const teams_start_date_time = teams_startDate + ' ' + teams_startTime
         const teams_endDate = moment(this.teams_endDate).format('YYYY-MM-DD');
         const teams_endTime = this.teams_endTime;
-        const teams_end_date_time = teams_endDate + ' ' + teams_endTime
+        const teams_end_date_time = teams_endDate + ' ' + teams_endTime;
         const teams_location = this.teams_location;
         const teams_content = this.teams_content;
 
-/////// MAKE COLLECTION LATER ////////////
+        const microsoftTeamsAttendeesChecked = document.querySelectorAll('input[class=microsoftTeamsAttendeesCheck]:checked');
+
         var arrayAttendeesCollection = [];
         var arrayAttendees = []
-        var attendeeJson = {"emailAddress": {"address": teams_attendees}};
-        arrayAttendeesCollection.push(attendeeJson);
-        arrayAttendees.push(teams_attendees);
-/////// MAKE COLLECTION LATER ////////////
+
+        for(var i=0 ; i < microsoftTeamsAttendeesChecked.length ; i++){
+            arrayAttendeesCollection.push({"emailAddress": {"address": microsoftTeamsAttendeesChecked[i].id}}); 
+            arrayAttendees.push(microsoftTeamsAttendeesChecked[i].id);
+        }
 
         const payload = {
                 "nodeId": node_id,
@@ -289,6 +293,15 @@ export default class GuidNodeIntegromat extends Controller {
         return microsoft_teams_meetings;
     }
 
+    @computed('config.microsoft_teams_attendees')
+    get microsoft_teams_attendees() {
+        if (!this.config) {
+            return '';
+        }
+        const config = this.config.content as IntegromatConfigModel;
+        const microsoft_teams_attendees = JSON.parse(config.microsoft_teams_attendees);
+        return microsoft_teams_attendees;
+    }
     @computed('config.workflows')
     get workflows() {
         if (!this.config) {

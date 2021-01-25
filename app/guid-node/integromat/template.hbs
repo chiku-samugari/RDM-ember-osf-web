@@ -198,39 +198,41 @@
             </tr>
             <tr>
             <td>
-                {{input
-                    name='teams_Start_Date'
+                {{bootstrap-datepicker
+                    name='teams_start_date'
                     placeholder='YYYY/MM/DD'
                     class='form-control'
                     type='text'
                     value=this.teams_startDate
+                    format='yyyy/mm/dd'
+                    todayHighlight=true
                 }}
             </td>
             <td>
-                {{input
-                    name='teams_Start_Time'
-                    class='form-control'
-                    type='time'
-                    value=this.teams_startTime
-                }}
+            <select class="form-control">
+                {{#each this.times as |time|}}
+                <option value={{time}}>{{time}}</option>
+                {{/each}}
+            </select>
             </td>
             <td><label>&nbsp;〜&nbsp;</label></td>
             <td>
-                {{input
-                    name='teams_End_Date'
+                {{bootstrap-datepicker
+                    name='teams_end_date'
                     placeholder='YYYY/MM/DD'
                     class='form-control'
                     type='text'
                     value=this.teams_endDate
+                    format='yyyy/mm/dd'
+                    todayHighlight=true
                 }}
             </td>
             <td>
-                {{input
-                    name='teams_End_Time'
-                    class='form-control'
-                    type='time'
-                    value=this.teams_endTime
-                }}
+            <select class="form-control">
+                {{#each this.times as |time|}}
+                <option value={{time}}>{{time}}</option>
+                {{/each}}
+            </select>
             </td>
             </tr>
             </table>
@@ -312,39 +314,41 @@
             </tr>
             <tr>
             <td>
-                {{input
-                    name='teams_Start_Date'
+                {{bootstrap-datepicker
+                    name='teams_start_date'
                     placeholder='YYYY/MM/DD'
                     class='form-control'
                     type='text'
-                    value=this.teams_startDate
+                    defaultViewDate=this.teams_startDate
+                    format='yyyy/mm/dd'
+                    todayHighlight=true
                 }}
             </td>
             <td>
-                {{input
-                    name='teams_Start_Time'
-                    class='form-control'
-                    type='time'
-                    value=this.teams_startTime
-                }}
+            <select class="form-control">
+                {{#each this.times as |time|}}
+                <option value={{time}}>{{time}}</option>
+                {{/each}}
+            </select>
             </td>
             <td><label>&nbsp;〜&nbsp;</label></td>
             <td>
-                {{input
-                    name='teams_End_Date'
+                {{bootstrap-datepicker
+                    name='teams_end_date'
                     placeholder='YYYY/MM/DD'
                     class='form-control'
                     type='text'
-                    value=this.teams_endDate
+                    defaultViewDate=this.teams_endDate
+                    format='yyyy/mm/dd'
+                    todayHighlight=true
                 }}
             </td>
             <td>
-                {{input
-                    name='teams_End_Time'
-                    class='form-control'
-                    type='time'
-                    value=this.teams_endTime
-                }}
+            <select class="form-control">
+                {{#each this.times as |time|}}
+                <option value={{time}}>{{time}}</option>
+                {{/each}}
+            </select>
             </td>
             </tr>
             </table>

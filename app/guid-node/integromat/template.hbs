@@ -182,16 +182,19 @@
           </div>
           <div>
             <label>Attendees</label>
+            <div>
             <span id='attendees_inputs'>
+
                 {{#each this.microsoft_teams_attendees as |row|}}
                 {{input
                     id=row.fields.microsoft_teams_mail
-                    class='form-control microsoftTeamsAttendeesCheck'
+                    class='microsoftTeamsAttendeesCheck'
                     type='checkbox'
                 }}
                 {{row.fields.microsoft_teams_mail}}
                 {{/each}}
             </span>
+            </div>
           </div>
           <div>
             <table>
@@ -303,14 +306,19 @@
           </div>
           <div>
             <label>Attendees</label>
+            <div>
+            <span id='attendees_inputs'>
+
                 {{#each this.microsoft_teams_attendees as |row|}}
                 {{input
                     id=row.fields.microsoft_teams_mail
-                    class='form-control microsoftTeamsAttendeesCheck'
+                    class='microsoftTeamsAttendeesCheck'
                     type='checkbox'
                 }}
                 {{row.fields.microsoft_teams_mail}}
                 {{/each}}
+            </span>
+            </div>
           </div>
           <div>
             <table>

@@ -53,7 +53,6 @@ export default class GuidNodeIntegromat extends Controller {
 
 
     teams_subject = '';
-    teams_attendees : string[] = [];
     teams_startDate = '';
     teams_startTime = '';
     teams_endDate = '';
@@ -164,7 +163,6 @@ export default class GuidNodeIntegromat extends Controller {
         const app_name = config.app_name_microsoft_teams;
         const info_grdm_scenario_processing = config.info_grdm_scenario_processing
         const teams_subject = this.teams_subject;
-        const teams_attendees = this.teams_attendees;
         const teams_startDate = moment(this.teams_startDate).format('YYYY-MM-DD');
         const teams_startTime = this.teams_startTime;
         const teams_start_date_time = teams_startDate + ' ' + teams_startTime
@@ -224,7 +222,6 @@ export default class GuidNodeIntegromat extends Controller {
         const guid = this.model.guid;
         const info_grdm_scenario_processing = config.info_grdm_scenario_processing
         const teams_subject = this.teams_subject;
-        const teams_attendees = this.teams_attendees;
         const teams_startDate = moment(this.teams_startDate).format('YYYY-MM-DD');
         const teams_startTime = this.teams_startTime;
         const teams_start_date_time = teams_startDate + ' ' + teams_startTime

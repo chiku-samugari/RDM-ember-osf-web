@@ -209,7 +209,7 @@
                 }}
             </td>
             <td>
-            <select class="form-control">
+            <select name='select-start-time' class="form-control" onchange={{action this.setStartTime}}>
                 {{#each this.times as |time|}}
                 <option value={{time}}>{{time}}</option>
                 {{/each}}
@@ -228,7 +228,7 @@
                 }}
             </td>
             <td>
-            <select class="form-control">
+            <select name='select-end-time' class="form-control" onchange={{action this.setEndTime}}>
                 {{#each this.times as |time|}}
                 <option value={{time}}>{{time}}</option>
                 {{/each}}
@@ -319,7 +319,7 @@
                     placeholder='YYYY/MM/DD'
                     class='form-control'
                     type='text'
-                    defaultViewDate=this.teams_startDate
+                    value=this.teams_startDate
                     format='yyyy/mm/dd'
                     todayHighlight=true
                 }}
@@ -338,7 +338,7 @@
                     placeholder='YYYY/MM/DD'
                     class='form-control'
                     type='text'
-                    defaultViewDate=this.teams_endDate
+                    value=this.teams_endDate
                     format='yyyy/mm/dd'
                     todayHighlight=true
                 }}

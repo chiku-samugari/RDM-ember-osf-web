@@ -223,10 +223,10 @@ export default class GuidNodeIntegromat extends Controller {
         const info_grdm_scenario_processing = config.info_grdm_scenario_processing
         const teams_subject = this.teams_subject;
         const teams_attendees = this.teams_attendees;
-        const teams_startDate = this.teams_startDate;
+        const teams_startDate = moment(this.teams_startDate).format('YYYY-MM-DD');
         const teams_startTime = this.teams_startTime;
         const teams_start_date_time = teams_startDate + ' ' + teams_startTime
-        const teams_endDate = this.teams_endDate;
+        const teams_endDate = moment(this.teams_endDate).format('YYYY-MM-DD');
         const teams_endTime = this.teams_endTime;
         const teams_end_date_time = teams_endDate + ' ' + teams_endTime
         const teams_location = this.teams_location;
@@ -268,13 +268,13 @@ export default class GuidNodeIntegromat extends Controller {
     }
 
     @action
-    setStartTime() {
+    setStartTime(this: GuidNodeIntegromat) {
         const startDate = document.querySelector('select[name=select-start-time]');
         this.set('teams_startTime', startDate);
     }
 
     @action
-    setEndTime() {
+    setEndTime(this: GuidNodeIntegromat) {
         const endDate = document.querySelector('select[name=select-end-time]');
         this.set('teams_endTime', endDate);
     }

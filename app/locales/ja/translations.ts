@@ -1986,7 +1986,7 @@ export default {
             deleteLabel: '会議削除',
             createHeader: 'Microsoft Teams会議作成',
             updateHeader: 'Microsoft Teams会議更新',
-            deleteHeader: 'Microsoft Teams削除',
+            deleteHeader: 'Microsoft Teams会議削除',
             deleteBody: 'これらのMicrosoft Teams会議を削除しますか？:',
             subject: 'タイトル',
             attendees: '出席者',

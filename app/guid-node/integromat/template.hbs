@@ -210,12 +210,12 @@
                 }}
             </td>
             <td>
-                {{input
-                    name='teams_Start_Time'
-                    class='form-control'
-                    type='time'
-                    value=this.teams_startTime
-                }}
+                <select name='teams_Start_Time' class='form-control'>
+                    <option value={{this.defaultStartTime}} selected>{{this.defaultStartTime}}</option>
+                {{#each this.times as |times|}}
+                    <option value={{times}}>{{times}}</option>
+                {{/each}}
+                </select>
             </td>
             <td><label>&nbsp;〜&nbsp;</label></td>
             <td>
@@ -230,12 +230,12 @@
                 }}
             </td>
             <td>
-                {{input
-                    name='teams_End_Time'
-                    class='form-control'
-                    type='time'
-                    value=this.teams_endTime
-                }}
+                <select name='teams_Start_Time' class='form-control'>
+                    <option value={{this.defaultStartTime}} selected>{{this.defaultStartTime}}</option>
+                {{#each this.times as |times|}}
+                    <option value={{times}}>{{times}}</option>
+                {{/each}}
+                </select>
             </td>
             </tr>
             </table>
@@ -333,12 +333,15 @@
                 }}
             </td>
             <td>
-                {{input
-                    name='teams_Start_Time'
-                    class='form-control'
-                    type='time'
-                    value=this.teams_startTime
-                }}
+                <select name='teams_Start_Time' class='form-control'>
+                {{#each this.times as |times|}}
+                    {{#if (eq times this.teams_startTime)}}
+                        <option value={{times}} selected>{{times}}</option>
+                    {{else}}
+                        <option value={{times}}>{{times}}</option>
+                    {{/if}}
+                {{/each}}
+                </select>
             </td>
             <td><label>&nbsp;〜&nbsp;</label></td>
             <td>
@@ -353,12 +356,15 @@
                 }}
             </td>
             <td>
-                {{input
-                    name='teams_End_Time'
-                    class='form-control'
-                    type='time'
-                    value=this.teams_endTime
-                }}
+                <select name='teams_End_Time' class='form-control'>
+                {{#each this.times as |times|}}
+                    {{#if (eq times this.teams_endTime)}}
+                        <option value={{times}} selected>{{times}}</option>
+                    {{else}}
+                        <option value={{times}}>{{times}}</option>
+                    {{/if}}
+                {{/each}}
+                </select>
             </td>
             </tr>
             </table>

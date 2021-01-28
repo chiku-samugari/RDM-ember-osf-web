@@ -99,7 +99,7 @@ export default class GuidNodeIntegromat extends Controller {
 
         var selectedMeetingId : string[] = [];
 
-        for(var i ; i < microsoftTeamsMeetingChecked.length ; i++){
+        for(var i=0 ; i < microsoftTeamsMeetingChecked.length ; i++){
             selectedMeetingId.push(microsoftTeamsMeetingChecked[i].id);
         }
 

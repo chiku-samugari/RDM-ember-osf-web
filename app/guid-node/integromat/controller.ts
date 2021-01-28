@@ -46,7 +46,6 @@ export default class GuidNodeIntegromat extends Controller {
     showWorkflows = true;
     showMicrosoftTeamsMeetings = false;
 
-    selectedTargetId : string[] = [];
     microsoftTeamsMeetings : microsoftTeamsMeetings[] = [];
 
     currentTime = new Date();
@@ -90,26 +89,20 @@ export default class GuidNodeIntegromat extends Controller {
     }
 
     @action
-    checkboxAction(this: GuidNodeIntegromat, v: string, checked: boolean) {
-        if(checked){
-            this.selectedTargetId.push(v);
-        }else{
-            this.selectedTargetId.forEach((item, index) => {
-                if(item === v){
-                    this.selectedTargetId.splice(index, 1);
-                }
-            });
-        }
-    }
-
-    @action
     startDeleteMicrosoftTeamsMeetingScenario(this: GuidNodeIntegromat) {
 
         if (!this.config) {
             throw new EmberError('Illegal config');
         }
 
-        const selectedMeetingId = this.selectedTargetId;
+        const microsoftTeamsMeetingChecked = document.querySelectorAll('input[class=microsoftTeamsMeetingCheck]:checked');
+
+        var selectedMeetingId : string[] = [];
+
+        for(var i ; i < microsoft_teams_meeting_id.length ; i++){
+            selectedMeetingId.push(microsoft_teams_meeting_id[i].id);
+        }
+
         const config = this.config.content as IntegromatConfigModel;
         const webhookUrl = config.webhook_url;
         const nodeId = config.node_settings_id;
@@ -175,12 +168,6 @@ export default class GuidNodeIntegromat extends Controller {
                     }
                 }
             }
-
-
-
-
-
-
         }
         return '';
     }

@@ -204,7 +204,7 @@ export default class GuidNodeIntegromat extends Controller {
         var arrayAttendees = []
 
         for(var i=0 ; i < microsoftTeamsAttendeesChecked.length ; i++){
-            arrayAttendeesCollection.push({"address": microsoftTeamsAttendeesChecked[i].id, "name": "dummy"}); 
+            arrayAttendeesCollection.push({"address": microsoftTeamsAttendeesChecked[i].id, "name": "Unregistered"}); 
             arrayAttendees.push(microsoftTeamsAttendeesChecked[i].id);
         }
 

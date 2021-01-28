@@ -61,6 +61,9 @@ export default class GuidNodeIntegromat extends Controller {
     teams_location = '';
     teams_content = '';
 
+    teamsMeetingAttendees : string[] = [];
+    notTeamsMeetingAttendees : string[] = [];
+
     @computed('config.isFulfilled')
     get loading(): boolean {
         return !this.config || !this.config.get('isFulfilled');
@@ -147,6 +150,33 @@ export default class GuidNodeIntegromat extends Controller {
                     break;
                 }
             }
+
+            if (!this.config) {
+                return '';
+            }
+            const config = this.config.content as IntegromatConfigModel;
+            const microsoft_teams_attendees = JSON.parse(config.microsoft_teams_attendees);
+
+            for(var j=0 ; j < microsoft_teams_attendees.length ; j++){
+
+                this.notTeamsMeetingAttendees.push(microsoft_teams_attendees[j].fields.microsoft_teams_mail)
+
+                for(var k=0 ; k< this.teams_attendees.length ; k++){
+
+                    if(microsoft_teams_attendees[j].pk == this.teams_attendees[k]){
+
+                        this.teamsMeetingAttendees.push(microsoft_teams_attendees[j].fields.microsoft_teams_mail);
+                        this.notTeamsMeetingAttendees.pop();
+                        break;
+                    }
+                }
+            }
+
+
+
+
+
+
         }
         return '';
     }

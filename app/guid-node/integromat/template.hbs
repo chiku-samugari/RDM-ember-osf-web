@@ -185,8 +185,8 @@
             <div>
             <span id='attendees_inputs'>
                 {{#each this.microsoft_teams_attendees as |row|}}
-                <input class='microsoftTeamsAttendeesCheck' type="checkBox" style="width: 15px; height: 15px;" id={{row.fields.microsoft_teams_mail}}>
-                {{row.fields.microsoft_teams_mail}}
+                    <input class='microsoftTeamsAttendeesCheck' type="checkBox" style="width: 15px; height: 15px;" id={{row.fields.microsoft_teams_mail}}>
+                    {{row.fields.microsoft_teams_mail}}
                 {{/each}}
             </span>
             </div>
@@ -303,9 +303,13 @@
             <label>{{t 'integromat.attendees'}}</label>
             <div>
             <span id='attendees_inputs'>
-                {{#each this.microsoft_teams_attendees as |row|}}
-                <input class='microsoftTeamsAttendeesCheck' type="checkBox" style="width: 15px; height: 15px;" id={{row.fields.microsoft_teams_mail}}>
-                {{row.fields.microsoft_teams_mail}}
+                {{#each this.teamsMeetingAttendees as |mail|}}
+                        <input class='microsoftTeamsAttendeesCheck' type="checkBox" style="width: 15px; height: 15px;" id={{mail}} checked>
+                        {{mail}}
+                {{/each}}
+                {{#each this.notTeamsMeetingAttendees as |mail|}}
+                        <input class='microsoftTeamsAttendeesCheck' type="checkBox" style="width: 15px; height: 15px;" id={{mail}}>
+                        {{mail}}
                 {{/each}}
             </span>
             </div>

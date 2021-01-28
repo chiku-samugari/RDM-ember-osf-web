@@ -148,11 +148,9 @@ export default class GuidNodeIntegromat extends Controller {
                 }
             }
 
-            if (!this.config) {
-                return '';
-            }
-            const config = this.config.content as IntegromatConfigModel;
             const microsoft_teams_attendees = JSON.parse(config.microsoft_teams_attendees);
+
+            this.notTeamsMeetingAttendees.length = 0;
 
             for(var j=0 ; j < microsoft_teams_attendees.length ; j++){
 

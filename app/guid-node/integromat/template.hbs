@@ -210,7 +210,7 @@
                 }}
             </td>
             <td>
-                <select name='teams_Start_Time' class='form-control'>
+                <select id='create_teams_start_time' class='form-control'>
                     <option value={{this.defaultStartTime}} selected>{{this.defaultStartTime}}</option>
                 {{#each this.times as |times|}}
                     <option value={{times}}>{{times}}</option>
@@ -230,7 +230,7 @@
                 }}
             </td>
             <td>
-                <select name='teams_End_Time' class='form-control'>
+                <select id='create_teams_end_time' class='form-control'>
                     <option value={{this.defaultEndTime}} selected>{{this.defaultEndTime}}</option>
                 {{#each this.times as |times|}}
                     <option value={{times}}>{{times}}</option>
@@ -333,7 +333,7 @@
                 }}
             </td>
             <td>
-                <select name='teams_Start_Time' class='form-control'>
+                <select id='update_teams_start_time' class='form-control'>
                 {{#each this.times as |times|}}
                     {{#if (eq times this.teams_startTime)}}
                         <option value={{times}} selected>{{times}}</option>
@@ -356,7 +356,7 @@
                 }}
             </td>
             <td>
-                <select name='teams_End_Time' class='form-control'>
+                <select id='update_teams_end_time' class='form-control'>
                 {{#each this.times as |times|}}
                     {{#if (eq times this.teams_endTime)}}
                         <option value={{times}} selected>{{times}}</option>

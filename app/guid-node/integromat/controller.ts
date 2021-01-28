@@ -187,10 +187,10 @@ export default class GuidNodeIntegromat extends Controller {
         const info_grdm_scenario_processing = config.info_grdm_scenario_processing
         const teams_subject = this.teams_subject;
         const teams_startDate = moment(this.teams_startDate).format('YYYY-MM-DD');
-        const teams_startTime = this.teams_startTime;
+        const teams_startTime = (<HTMLInputElement>document.querySelectorAll('select[id=update_teams_start_time]')[0]).value;
         const teams_start_date_time = teams_startDate + ' ' + teams_startTime
         const teams_endDate = moment(this.teams_endDate).format('YYYY-MM-DD');
-        const teams_endTime = this.teams_endTime;
+        const teams_endTime = (<HTMLInputElement>document.querySelectorAll('select[id=update_teams_end_time]')[0]).value;
         const teams_end_date_time = teams_endDate + ' ' + teams_endTime;
         const teams_location = this.teams_location;
         const teams_content = this.teams_content;
@@ -246,10 +246,10 @@ export default class GuidNodeIntegromat extends Controller {
         const info_grdm_scenario_processing = config.info_grdm_scenario_processing
         const teams_subject = this.teams_subject;
         const teams_startDate = moment(this.teams_startDate).format('YYYY-MM-DD');
-        const teams_startTime = this.teams_startTime;
+        const teams_startTime = (<HTMLInputElement>document.querySelectorAll('select[id=create_teams_start_time]')[0]).value;
         const teams_start_date_time = teams_startDate + ' ' + teams_startTime
         const teams_endDate = moment(this.teams_endDate).format('YYYY-MM-DD');
-        const teams_endTime = this.teams_endTime;
+        const teams_endTime = (<HTMLInputElement>document.querySelectorAll('select[id=create_teams_end_time]')[0]).value;
         const teams_end_date_time = teams_endDate + ' ' + teams_endTime;
         const teams_location = this.teams_location;
         const teams_content = this.teams_content;

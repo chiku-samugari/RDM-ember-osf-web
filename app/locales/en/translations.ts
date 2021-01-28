@@ -1820,7 +1820,7 @@ export default {
         failed_to_save: 'Failed to save',
         categoryLabel: 'categories',
         categoryDesp: 'Categories are classification of workflows.',
-        workflowListLabel: 'Workflow List',
+        workflowListLabel: 'All Workflow',
         workflowLabel: 'Workflow',
         integratedAppsLabel: 'Integrated Apps',
         meetingDialog: {

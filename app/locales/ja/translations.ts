@@ -1977,7 +1977,7 @@ export default {
         failed_to_save: 'Failed to save',
         categoryLabel: 'カテゴリ',
         categoryDesp: 'ワークフローをカテゴリに分類できます',
-        workflowListLabel: 'ワークフロー一覧',
+        workflowListLabel: '全てのワークフロー',
         workflowLabel: 'ワークフロー',
         integratedAppsLabel: '連携アプリ',
         meetingDialog: {

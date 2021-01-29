@@ -89,35 +89,59 @@ export default class GuidNodeIntegromat extends Controller {
     }
 
     @action
-    startDeleteMicrosoftTeamsMeetingScenario(this: GuidNodeIntegromat) {
+    startCreateMicrosoftTeamsMeetingScenario(this: GuidNodeIntegromat) {
 
         if (!this.config) {
             throw new EmberError('Illegal config');
         }
 
-        const microsoftTeamsMeetingChecked = document.querySelectorAll('input[class=microsoftTeamsMeetingCheck]:checked');
-
-        var selectedMeetingId : string[] = [];
-
-        for(var i=0 ; i < microsoftTeamsMeetingChecked.length ; i++){
-            selectedMeetingId.push(microsoftTeamsMeetingChecked[i].id);
-        }
-
         const config = this.config.content as IntegromatConfigModel;
         const webhookUrl = config.webhook_url;
-        const nodeId = config.node_settings_id;
-        const appName = config.app_name_microsoft_teams;
+        const organizerId = config.organizer_id;
+        const node_id = config.node_settings_id;
+        const app_name = config.app_name_microsoft_teams;
+        const guid = this.model.guid;
+        const info_grdm_scenario_processing = config.info_grdm_scenario_processing
+        const teams_subject = this.teams_subject;
+        const teams_startDate = moment(this.teams_startDate).format('YYYY-MM-DD');
+        const teams_startTime = (<HTMLInputElement>document.querySelectorAll('select[id=create_teams_start_time]')[0]).value;
+        const teams_start_date_time = teams_startDate + ' ' + teams_startTime
+        const teams_endDate = moment(this.teams_endDate).format('YYYY-MM-DD');
+        const teams_endTime = (<HTMLInputElement>document.querySelectorAll('select[id=create_teams_end_time]')[0]).value;
+        const teams_end_date_time = teams_endDate + ' ' + teams_endTime;
+        const teams_location = this.teams_location;
+        const teams_content = this.teams_content;
+
+        const microsoftTeamsAttendeesChecked = document.querySelectorAll('input[class=microsoftTeamsAttendeesCheck]:checked');
+
+        var arrayAttendeesCollection = [];
+        var arrayAttendees = []
+
+        for(var i=0 ; i < microsoftTeamsAttendeesChecked.length ; i++){
+            arrayAttendeesCollection.push({"emailAddress": {"address": microsoftTeamsAttendeesChecked[i].id}}); 
+            arrayAttendees.push(microsoftTeamsAttendeesChecked[i].id);
+        }
 
         const payload = {
-                "nodeId": nodeId,
-                "meetingAppName": appName,
-                "action": 'deleteMicrosoftTeamsMeeting',
-                "microsoftTeamsMeetingIds": selectedMeetingId
+                "nodeId": node_id,
+                "meetingAppName": app_name,
+                "microsoftUserObjectId": organizerId,
+                "guid": guid,
+                "action": 'createMicrosoftTeamsMeeting',
+                "infoGrdmScenarioProcessing": info_grdm_scenario_processing,
+                "startDate": teams_start_date_time,
+                "endDate": teams_end_date_time,
+                "subject": teams_subject,
+                "attendeesCollection": arrayAttendeesCollection,
+                "attendees": arrayAttendees,
+                "location": teams_location,
+                "content": teams_content
                 };
 
-        this.set('showDeleteMicrosoftTeamsMeetingDialog', false);
+        this.set('showCreateMicrosoftTeamsMeetingDialog', false);
 
         return $.post(webhookUrl, payload)
+
     }
 
     @action
@@ -239,59 +263,35 @@ export default class GuidNodeIntegromat extends Controller {
     }
 
     @action
-    startCreateMicrosoftTeamsMeetingScenario(this: GuidNodeIntegromat) {
+    startDeleteMicrosoftTeamsMeetingScenario(this: GuidNodeIntegromat) {
 
         if (!this.config) {
             throw new EmberError('Illegal config');
         }
 
-        const config = this.config.content as IntegromatConfigModel;
-        const webhookUrl = config.webhook_url;
-        const organizerId = config.organizer_id;
-        const node_id = config.node_settings_id;
-        const app_name = config.app_name_microsoft_teams;
-        const guid = this.model.guid;
-        const info_grdm_scenario_processing = config.info_grdm_scenario_processing
-        const teams_subject = this.teams_subject;
-        const teams_startDate = moment(this.teams_startDate).format('YYYY-MM-DD');
-        const teams_startTime = (<HTMLInputElement>document.querySelectorAll('select[id=create_teams_start_time]')[0]).value;
-        const teams_start_date_time = teams_startDate + ' ' + teams_startTime
-        const teams_endDate = moment(this.teams_endDate).format('YYYY-MM-DD');
-        const teams_endTime = (<HTMLInputElement>document.querySelectorAll('select[id=create_teams_end_time]')[0]).value;
-        const teams_end_date_time = teams_endDate + ' ' + teams_endTime;
-        const teams_location = this.teams_location;
-        const teams_content = this.teams_content;
+        const microsoftTeamsMeetingChecked = document.querySelectorAll('input[class=microsoftTeamsMeetingCheck]:checked');
 
-        const microsoftTeamsAttendeesChecked = document.querySelectorAll('input[class=microsoftTeamsAttendeesCheck]:checked');
+        var selectedMeetingId : string[] = [];
 
-        var arrayAttendeesCollection = [];
-        var arrayAttendees = []
-
-        for(var i=0 ; i < microsoftTeamsAttendeesChecked.length ; i++){
-            arrayAttendeesCollection.push({"emailAddress": {"address": microsoftTeamsAttendeesChecked[i].id}}); 
-            arrayAttendees.push(microsoftTeamsAttendeesChecked[i].id);
+        for(var i=0 ; i < microsoftTeamsMeetingChecked.length ; i++){
+            selectedMeetingId.push(microsoftTeamsMeetingChecked[i].id);
         }
 
+        const config = this.config.content as IntegromatConfigModel;
+        const webhookUrl = config.webhook_url;
+        const nodeId = config.node_settings_id;
+        const appName = config.app_name_microsoft_teams;
+
         const payload = {
-                "nodeId": node_id,
-                "meetingAppName": app_name,
-                "microsoftUserObjectId": organizerId,
-                "guid": guid,
-                "action": 'createMicrosoftTeamsMeeting',
-                "infoGrdmScenarioProcessing": info_grdm_scenario_processing,
-                "startDate": teams_start_date_time,
-                "endDate": teams_end_date_time,
-                "subject": teams_subject,
-                "attendeesCollection": arrayAttendeesCollection,
-                "attendees": arrayAttendees,
-                "location": teams_location,
-                "content": teams_content
+                "nodeId": nodeId,
+                "meetingAppName": appName,
+                "action": 'deleteMicrosoftTeamsMeeting',
+                "microsoftTeamsMeetingIds": selectedMeetingId
                 };
 
-        this.set('showCreateMicrosoftTeamsMeetingDialog', false);
+        this.set('showDeleteMicrosoftTeamsMeetingDialog', false);
 
         return $.post(webhookUrl, payload)
-
     }
 
     @action

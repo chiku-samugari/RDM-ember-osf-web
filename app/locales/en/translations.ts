@@ -1830,7 +1830,7 @@ export default {
             createHeader: 'Create Microsoft Teams Meeting',
             updateHeader: 'Update Microsoft Teams Meeting',
             deleteHeader: 'Delete Microsoft Teams Meeting',
-            deleteBody: 'Are you sure want to delete these Microsoft Teams meetings?:',
+            deleteBody: 'Are you sure want to delete these Microsoft Teams meetings?',
             createBtn: 'Create',
             updateBtn: 'Update',
             deleteBtn: 'Delete',

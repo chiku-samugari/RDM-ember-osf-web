@@ -66,6 +66,7 @@ export default class GuidNodeIntegromat extends Controller {
 
     teamsMeetingAttendees : string[] = [];
     notTeamsMeetingAttendees : string[] = [];
+    willDeleteMeetings : string[] = [];
 
     @computed('config.isFulfilled')
     get loading(): boolean {
@@ -277,8 +278,12 @@ export default class GuidNodeIntegromat extends Controller {
         if(microsoftTeamsMeetingChecked.length < 1){
             this.toast.error('Select meeting information.');
         }else{
+            for(var i ; i <microsoftTeamsMeetingChecked.length ; i++){
+
+                this.set('this.willDeleteMeetings', (<HTMLElement>microsoftTeamsMeetingChecked[i]).dataset.subject);
+            }
             this.set('showDeleteMicrosoftTeamsMeetingDialog', true);
-		}
+        }
     }
 
     @action

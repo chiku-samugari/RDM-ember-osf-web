@@ -1844,6 +1844,7 @@ export default {
         workflows: {
             web_meeting: {
                 microsoft_teams: 'Meeting action(regster, update,delete etc...) for Microsoft Teams, then notify slack messages.',
+                microsoft_teas_apps: 'GakuNinRDM, Microsoft 365 Calendar, Slack',
             },
         },
         subject: 'Subject',

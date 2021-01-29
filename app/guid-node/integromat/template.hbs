@@ -16,29 +16,21 @@
                     {{t 'integromat.categoryLabel'}}<i title={{t 'integromat.categoryDesp'}} class="fa fa-question-circle text-muted"></i>
                 </h5>
                 <ul local-class='Integromat__menu'>
-                    <li><span><a>{{t 'integromat.workflowListLabel'}}</a></span></li>
+                    <li><span><a {{action this.displayWorkflows}}>{{t 'integromat.workflowListLabel'}}</a></span></li>
                 </ul>
             </div>
         </div>
 <!-- main screen  -->
     {{#if this.showWorkflows}}
         <div id="workflows" class="main_screen" local-class='Integromat__workflows'>
-            <table class="table table-bordered table-addon-terms">
-                <thead class="block-head">
+            <table class="table table-bordered">
+                <thead>
                     <tr style="background-color: #f5f5f5;">
                         <th width="50%">
-                            <span class="sorter">
-                                <i id="sort_up_provider" class="fa fa-chevron-up tb-sort-inactive asc-btn m-r-xs"></i>
-                                <i id="sort_down_provider" class="fa fa-chevron-down tb-sort-inactive desc-btn"></i>
-                            </span>
-                            <span class="header_text m-r-sm" title="Provider">{{t 'integromat.workflowLabel'}}</span>
+                            <span>{{t 'integromat.workflowLabel'}}</span>
                         </th>
                         <th width="50%">
-                            <span class="sorter">
-                                <i id="sort_up_file_path" class="fa fa-chevron-up tb-sort-inactive asc-btn m-r-xs"></i>
-                                <i id="sort_down_file_path" class="fa fa-chevron-down tb-sort-inactive desc-btn"></i>
-                            </span>
-                            <span class="header_text m-r-sm" title="File Path">{{t 'integromat.integratedAppsLabel'}}</span>
+                            <span>{{t 'integromat.integratedAppsLabel'}}</span>
                         </th>
                     </tr>
                 </thead>
@@ -46,7 +38,7 @@
                     {{#each this.workflows as |row|}}
                     <tr>
                         <td><a {{action (mut this.showMicrosoftTeamsMeetings) true}} {{action (mut this.showWorkflows) false}}>{{t row.fields.workflow_description}}</a></td>
-                        <td>{{row.fields.workflow_apps}}</td>
+                        <td>{{t row.fields.workflow_apps}}</td>
                     </tr>
                     {{/each}}
                 </tbody>
@@ -170,7 +162,7 @@
     </modal.header>
     <modal.body>
         <div class='form-group'>
-          <div>
+          <div local-class='Integromat__input_items'>
             <label>{{t 'integromat.subject'}}</label>
                 {{input
                     name='teams_Subject'
@@ -180,7 +172,7 @@
                     value=this.teams_subject
                 }}
           </div>
-          <div>
+          <div local-class='Integromat__input_items'>
             <label>{{t 'integromat.attendees'}}</label>
             <div>
             <span id='attendees_inputs'>
@@ -191,7 +183,7 @@
             </span>
             </div>
           </div>
-          <div>
+          <div local-class='Integromat__input_items'>
             <table>
             <tr>
                 <td><label>{{t 'integromat.start_datetime'}}</label></td><td></td><td></td>
@@ -246,7 +238,7 @@
             </tr>
             </table>
           </div>
-          <div>
+          <div local-class='Integromat__input_items'>
             <label>{{t 'integromat.location'}}</label>
                 {{input
                     name='teams_Location'
@@ -256,7 +248,7 @@
                     value=this.teams_location
                 }}
           </div>
-          <div>
+          <div local-class='Integromat__input_items'>
             <label>{{t 'integromat.content'}}</label>
                 {{textarea
                     name='teams_Content'

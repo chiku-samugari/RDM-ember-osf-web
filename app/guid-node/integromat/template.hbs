@@ -211,9 +211,12 @@
             </td>
             <td>
                 <select id='create_teams_start_time' class='form-control'>
-                    <option value={{this.defaultStartTime}} selected>{{this.defaultStartTime}}</option>
                 {{#each this.times as |times|}}
+                    {{#if (eq times this.defaultStartTime)}}
+                    <option value={{times}} selected>{{times}}</option>
+                    {{else}}
                     <option value={{times}}>{{times}}</option>
+                    {{/if}}
                 {{/each}}
                 </select>
             </td>
@@ -231,9 +234,12 @@
             </td>
             <td>
                 <select id='create_teams_end_time' class='form-control'>
-                    <option value={{this.defaultEndTime}} selected>{{this.defaultEndTime}}</option>
                 {{#each this.times as |times|}}
+                    {{#if (eq times this.defaultEndTime)}}
+                    <option value={{times}} selected>{{times}}</option>
+                    {{else}}
                     <option value={{times}}>{{times}}</option>
+                    {{/if}}
                 {{/each}}
                 </select>
             </td>
@@ -325,7 +331,6 @@
             <td>
                 {{bootstrap-datepicker
                     id='update_start_date'
-                    placeholder='YYYY/MM/DD'
                     class='form-control'
                     type='text'
                     value=this.teams_startDate
@@ -348,7 +353,6 @@
             <td>
                 {{bootstrap-datepicker
                     id='update_end_date'
-                    placeholder='YYYY/MM/DD'
                     class='form-control'
                     type='text'
                     value=this.teams_endDate

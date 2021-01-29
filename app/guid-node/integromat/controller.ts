@@ -284,7 +284,7 @@ export default class GuidNodeIntegromat extends Controller {
 
             for(var i=0 ; i < microsoftTeamsMeetingChecked.length ; i++){
 
-                this.willDeleteMeetings.push(((<HTMLElement>microsoftTeamsMeetingChecked[i]).dataset.subject).toString());
+                this.willDeleteMeetings.push(((<HTMLElement>microsoftTeamsMeetingChecked[i]).dataset.subject || '').toString());
             }
             this.set('showDeleteMicrosoftTeamsMeetingDialog', true);
         }

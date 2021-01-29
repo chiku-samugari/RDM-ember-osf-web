@@ -280,6 +280,7 @@
     @open={{this.showUpdateMicrosoftTeamsMeetingDialog}}
     @onSubmit={{action this.startUpdateMicrosoftTeamsMeetingScenario}}
     @onHidden={{action (mut this.showUpdateMicrosoftTeamsMeetingDialog) false}}
+    @onShown={{action this.setDefaultDate}}
     as |modal|
 >
     <modal.header>
@@ -323,7 +324,7 @@
             <tr>
             <td>
                 {{bootstrap-datepicker
-                    name='teams_start_date'
+                    id='update_start_date'
                     placeholder='YYYY/MM/DD'
                     class='form-control'
                     type='text'
@@ -346,7 +347,7 @@
             <td><label>&nbsp;〜&nbsp;</label></td>
             <td>
                 {{bootstrap-datepicker
-                    name='teams_end_date'
+                    id='update_end_date'
                     placeholder='YYYY/MM/DD'
                     class='form-control'
                     type='text'

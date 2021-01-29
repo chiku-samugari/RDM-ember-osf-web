@@ -140,9 +140,9 @@ export default class GuidNodeIntegromat extends Controller {
                 if(microsoftTeamsMeetings[i].fields.meetingid == microsoftTeamsMeetingChecked[0].id){
                     this.set('teams_subject', microsoftTeamsMeetings[i].fields.subject);
                     this.set('teams_attendees', microsoftTeamsMeetings[i].fields.attendees);
-                    this.set('teams_startDate', microsoftTeamsMeetings[i].fields.start_datetime);
+                    this.set('teams_startDate', moment(microsoftTeamsMeetings[i].fields.start_datetime).format('YYYY/MM/DD'));
                     this.set('teams_startTime', moment(microsoftTeamsMeetings[i].fields.start_datetime).format('HH:mm'));
-                    this.set('teams_endDate', microsoftTeamsMeetings[i].fields.end_datetime);
+                    this.set('teams_endDate', moment(microsoftTeamsMeetings[i].fields.end_datetime).format('YYYY/MM/DD'));
                     this.set('teams_endTime', moment(microsoftTeamsMeetings[i].fields.end_datetime).format('HH:mm'));
                     this.set('teams_location', microsoftTeamsMeetings[i].fields.location);
                     this.set('teams_content', microsoftTeamsMeetings[i].fields.content);
@@ -171,6 +171,14 @@ export default class GuidNodeIntegromat extends Controller {
             }
         }
         return '';
+    }
+
+    @action
+    setDefaultDate(this: GuidNodeIntegromat) {
+
+        (<any>$('#update_start_date')[0]).value = this.teams_startDate;
+        (<any>$('#update_end_date')[0]).value = this.teams_endDate;
+
     }
 
     @action

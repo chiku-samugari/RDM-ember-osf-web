@@ -220,7 +220,7 @@
                 {{/each}}
                 </select>
             </td>
-            <td><label>&nbsp;〜&nbsp;</label></td>
+            <td><label local-class='Integromat__input_items'>〜</label></td>
             <td>
                 {{bootstrap-datepicker
                     name='teams_end_date'
@@ -296,7 +296,7 @@
     </modal.header>
     <modal.body>
         <div class='form-group'>
-          <div>
+          <div local-class='Integromat__input_items'>
             <label>{{t 'integromat.subject'}}</label>
                 {{input
                     name='teams_Subject'
@@ -306,7 +306,7 @@
                     value=this.teams_subject
                 }}
           </div>
-          <div>
+          <div local-class='Integromat__input_items'>
             <label>{{t 'integromat.attendees'}}</label>
             <div>
             <span id='attendees_inputs'>
@@ -321,7 +321,7 @@
             </span>
             </div>
           </div>
-          <div>
+          <div local-class='Integromat__input_items'>
             <table>
             <tr>
                 <td><label>{{t 'integromat.start_datetime'}}</label></td><td></td><td></td>
@@ -349,7 +349,7 @@
                 {{/each}}
                 </select>
             </td>
-            <td><label>&nbsp;〜&nbsp;</label></td>
+            <td><label local-class='Integromat__input_items'>〜</label></td>
             <td>
                 {{bootstrap-datepicker
                     id='update_end_date'
@@ -374,7 +374,7 @@
             </tr>
             </table>
           </div>
-          <div>
+          <div local-class='Integromat__input_items'>
             <label>{{t 'integromat.location'}}</label>
                 {{input
                     name='teams_Location'
@@ -384,7 +384,7 @@
                     value=this.teams_location
                 }}
           </div>
-          <div>
+          <div local-class='Integromat__input_items'>
             <label>{{t 'integromat.content'}}</label>
                 {{textarea
                     name='teams_Content'

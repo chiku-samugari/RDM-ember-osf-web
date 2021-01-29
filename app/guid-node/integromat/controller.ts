@@ -278,7 +278,7 @@ export default class GuidNodeIntegromat extends Controller {
         if(microsoftTeamsMeetingChecked.length < 1){
             this.toast.error('Select meeting information.');
         }else{
-            for(var i ; i <microsoftTeamsMeetingChecked.length ; i++){
+            for(var i=0 ; i < microsoftTeamsMeetingChecked.length ; i++){
 
                 this.set('this.willDeleteMeetings', (<HTMLElement>microsoftTeamsMeetingChecked[i]).dataset.subject);
             }

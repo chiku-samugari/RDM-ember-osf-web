@@ -7,43 +7,43 @@
 
 .Integromat__header {
     background: #ecf0f1; 
-    margin-top:40px;
+    margin-top: 40px;
 }
 
 .Integromat__sidebar {
     width: 25%; 
-    float:left; 
-    height:575px; 
+    float: left; 
+    height: 575px; 
     border-right-style: inset;
 }
 
 .Integromat__menu {
-    list-style:none;
+    list-style: none;
 }
 
 .Integromat__workflows {
     width: 75%;
-    float:right;
-    height:575px;
+    float: right;
+    height: 575px;
 }
 
 .Integromat__web_meeting_table {
-    margin-top:65px;
+    margin-top: 65px;
 }
 
 .Integromat__microsoftTeamsMeetings {
-    margin-top:30px;
-    height:575px;
+    margin-top: 30px;
+    height: 575px;
 }
 
 .Integromat__web_meeting_navbar {
     background: #efefef;
-    margin-top:30px;
-    height:40px;
+    margin-top: 30px;
+    height: 40px;
 }
 
 .Integromat__cell_right {
-    background: white; 
+    background: #ffffff; 
     border-top-style: hidden; 
     border-bottom-style: hidden; 
     border-right-style: hidden;
@@ -55,6 +55,6 @@
 }
 
 .Integromat__buttons {
-    border: 1px solid #DDD;
+    border: 1px solid #ddd;
 }
 

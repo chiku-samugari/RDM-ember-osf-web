@@ -1818,6 +1818,8 @@ export default {
         save_button: 'Save',
         failed_to_submit: 'Failed to save',
         failed_to_save: 'Failed to save',
+        select_one: 'Select one meeting information.',
+        select_one_or_more: 'Select one or more meeting information.',
         categoryLabel: 'categories',
         categoryDesp: 'Categories are classification of workflows.',
         workflowListLabel: 'All Workflow',

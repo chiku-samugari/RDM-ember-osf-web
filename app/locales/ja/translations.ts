@@ -1975,6 +1975,8 @@ export default {
         save_button: 'Save',
         failed_to_submit: 'Failed to save',
         failed_to_save: 'Failed to save',
+        select_one: '会議情報を1つ選択してください',
+        select_one_or_more: '会議情報を１つ以上選択してください',
         categoryLabel: 'カテゴリ',
         categoryDesp: 'ワークフローをカテゴリに分類できます',
         workflowListLabel: '全てのワークフロー',

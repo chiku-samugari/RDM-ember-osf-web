@@ -1,3 +1,4 @@
+import I18N from 'ember-i18n/services/i18n';
 import Controller from '@ember/controller';
 import EmberError from '@ember/error';
 import { action, computed } from '@ember-decorators/object';
@@ -32,6 +33,7 @@ export default class GuidNodeIntegromat extends Controller {
     @service toast!: Toast;
     @service statusMessages!: StatusMessages;
     @service analytics!: Analytics;
+    @service i18n!: I18N;
 
     @reads('model.taskInstance.value')
     node?: Node;
@@ -163,7 +165,7 @@ export default class GuidNodeIntegromat extends Controller {
         const microsoftTeamsMeetingChecked = document.querySelectorAll('input[class=microsoftTeamsMeetingCheck]:checked');
 
         if(microsoftTeamsMeetingChecked.length != 1){
-            this.toast.error('Select only one meeting information.');
+            this.toast.error(this.i18n.t('integromat.select_one'));
         }else{
             this.set('showUpdateMicrosoftTeamsMeetingDialog', true);
 
@@ -276,7 +278,7 @@ export default class GuidNodeIntegromat extends Controller {
         const microsoftTeamsMeetingChecked = document.querySelectorAll('input[class=microsoftTeamsMeetingCheck]:checked');
 
         if(microsoftTeamsMeetingChecked.length < 1){
-            this.toast.error('Select meeting information.');
+            this.toast.error(this.i18n.t('integromat.select_one_or_more'));
         }else{
             this.willDeleteMeetings.length = 0;
 

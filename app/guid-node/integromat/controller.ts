@@ -270,6 +270,18 @@ export default class GuidNodeIntegromat extends Controller {
     }
 
     @action
+    makeDeleteDialog(this: GuidNodeIntegromat) {
+
+        const microsoftTeamsMeetingChecked = document.querySelectorAll('input[class=microsoftTeamsMeetingCheck]:checked');
+
+        if(microsoftTeamsMeetingChecked.length < 1){
+            this.toast.error('Select meeting information.');
+        }else{
+            this.set('showDeleteMicrosoftTeamsMeetingDialog', true);
+		}
+    }
+
+    @action
     startDeleteMicrosoftTeamsMeetingScenario(this: GuidNodeIntegromat) {
 
         if (!this.config) {

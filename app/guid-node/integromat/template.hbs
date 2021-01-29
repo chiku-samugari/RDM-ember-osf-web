@@ -52,13 +52,13 @@
     <div class="col-md-9 col-xs-12">
     <div id="microsoftTeamsMeetings" class="main_screen">
       <div local-class='Integromat__web_meeting_navbar'>
-            <label style="margin-top:10px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{row.fields.workflow_apps}}</label>
+            <label style="margin-top:10px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{t 'integromat.workflows.web_meeting.microsoft_teams_apps'}}</label>
             <button style="margin-top:10px;"
                 data-test-project-contributors-search-button
                 local-class='Integromat__buttons'
                 class='text-danger pull-right'
                 type='text'
-                onClick={{action (mut this.showDeleteMicrosoftTeamsMeetingDialog) true}}
+                onClick={{action this.makeDeleteDialog}}
             >
                 <i class='fa fa-trash'>&nbsp;{{t 'integromat.meetingDialog.deleteLabel'}}</i>
             </button>

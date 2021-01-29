@@ -91,7 +91,7 @@ export default class GuidNodeIntegromat extends Controller {
     @action
     displayWorkflows(this: GuidNodeIntegromat) {
 
-        this.set('showWorkflows', false);
+        this.set('showWorkflows', true);
         this.set('showMicrosoftTeamsMeetings', false);
     }
 

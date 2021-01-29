@@ -125,7 +125,15 @@
                             </td>
                             <td>{{row.fields.subject}}</td>
                             <td>{{row.fields.organizer}}</td>
-                            <td>{{row.fields.attendees}}</td>
+                            <td>
+                            {{#each row.fields.attendees as |attendee|}}
+                                {{#each this.microsoft_teams_attendees as |all_attendees|}}
+                                    {{#if (eq attendee all_attendees.pk)}}
+                                        {{all_attendees.fields.microsoft_teams_mail}},&nbsp;
+                                    {{/if}}
+                                {{/each}}
+                            {{/each}}
+                            </td>
                             <td>{{row.fields.start_datetime}}</td>
                             <td>{{row.fields.end_datetime}}</td>
                             <td>{{row.fields.location}}</td>

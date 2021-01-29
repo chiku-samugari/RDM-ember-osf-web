@@ -2006,6 +2006,7 @@ export default {
         workflows: {
             web_meeting: {
                 microsoft_teams: 'Microsoft Teamsに会議登録などをしてSlackにメッセージを通知する',
+                microsoft_teams_apps: 'GakuNinRDM, Microsoft 365 Calendar, Slack',
             },
         },
         subject: 'タイトル',

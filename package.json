@@ -216,5 +216,8 @@
       "lib/osf-components",
       "lib/registries"
     ]
+  },
+  "dependencies": {
+    "axios": "^0.21.1"
   }
 }

@@ -1999,6 +1999,7 @@ export default {
             subject: 'タイトルを入力してください',
             location: '場所を入力してください',
             content: '詳細を入力してください',
+            date_form: 'YYYY/MM/DD',
         },
         workflows: {
             web_meeting: {
@@ -2014,5 +2015,6 @@ export default {
         location: '場所',
         content: '内容',
         url: 'URL',
+        from_symbol: '〜',
     },
 };

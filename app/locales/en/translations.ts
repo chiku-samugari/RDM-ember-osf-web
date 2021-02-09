@@ -1842,6 +1842,7 @@ export default {
             subject: 'Input Teams Meeting Subject',
             location: 'Input Teams Meeting Location',
             content: 'Input the detail of this meeting',
+            date_form: 'YYYY/MM/DD',
         },
         workflows: {
             web_meeting: {
@@ -1857,5 +1858,6 @@ export default {
         location: 'Location',
         content: 'Content',
         url: 'URL',
+        from_symbol: '〜',
     },
 };

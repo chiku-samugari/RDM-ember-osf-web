@@ -98,7 +98,7 @@ export default class GuidNodeIntegromat extends Controller {
     }
 
     @action
-    createMicrosoftTeamsMeetingScenario(this: GuidNodeIntegromat) {
+    createMicrosoftTeamsMeeting(this: GuidNodeIntegromat) {
         if (!this.config) {
             throw new EmberError('Illegal config');
         }

@@ -29,6 +29,20 @@ interface microsoftTeamsMeetings {
     [fields: string]: microsoftTeamsMeetingInfo;
 }
 
+interface reqBody {
+    nodeId: string;
+    preMsg: string;
+}
+
+const {
+    OSF: {
+        url: host,
+        webApiNamespace: namespace,
+    },
+} = config;
+
+import axios from 'axios'
+
 export default class GuidNodeIntegromat extends Controller {
     @service toast!: Toast;
     @service statusMessages!: StatusMessages;
@@ -109,7 +123,6 @@ export default class GuidNodeIntegromat extends Controller {
         const node_id = config.node_settings_id;
         const app_name = config.app_name_microsoft_teams;
         const guid = this.model.guid;
-        const info_grdm_scenario_processing = config.info_grdm_scenario_processing;
         const teams_subject = this.teams_subject;
         const teams_startDate = moment(this.teams_startDate).format('YYYY-MM-DD');
         const teams_startTime = (<HTMLInputElement>document.querySelectorAll('select[id=create_teams_start_time]')[0]).value;
@@ -119,7 +132,6 @@ export default class GuidNodeIntegromat extends Controller {
         const teams_end_date_time = teams_endDate + ' ' + teams_endTime;
         const teams_location = this.teams_location;
         const teams_content = this.teams_content;
-
         const microsoftTeamsAttendeesChecked = document.querySelectorAll('input[class=microsoftTeamsAttendeesCheck]:checked');
 
         let arrayAttendeesCollection = [];
@@ -130,13 +142,41 @@ export default class GuidNodeIntegromat extends Controller {
             arrayAttendees.push(microsoftTeamsAttendeesChecked[i].id);
         }
 
+        const pathIntegromat = 'integromat';
+
+        const startIntegromatScenarioUrl = host + namespace + '/' + integromat + '/' + 'start_scenario';
+        const reqestMessagesUrl =  host + namespace + '/' + integromat + '/' + 'requestNextMessages';
+
+        const action = 'createMicrosoftTeamsMeeting';
+        const infoGrdmScenarioStarted = 'integromat.info.started';
+        const infoGrdmScenarioCompleted = 'integromat.info.completed';
+        const errorMicrosoftTeamsCreateMeeting = 'integromat.error.microsoftTeamsCreateMeeting';
+        const errorGrdmCreateMeeting = 'integromat.error.grdmCreateMeeting';
+        const errorSlackCreateMeeting = 'integromat.error.slackCreateMeeting';
+        const errorMicrosoftTeamsUpdateMeeting = 'integromat.error.microsoftTeamsUpdateMeeting';
+        const errorGrdmUpdateMeeting = 'integromat.error.grdmUpdateMeeting';
+        const errorSlackUpdateMeeting = 'integromat.error.slackUpdateMeeting';
+        const errorMicrosoftTeamsDeleteMeeting = 'integromat.error.microsoftTeamsDeleteMeeting';
+        const errorGrdmUpdateMeeting = 'integromat.error.grdmDeleteMeeting';
+        const errorSlackUpdateMeeting = 'integromat.error.slackDeleteMeeting';
+        const errorScenarioProcessing = 'integromat.error.scenarioProcessing';
+
         const payload = {
             'nodeId': node_id,
             'meetingAppName': app_name,
             'microsoftUserObjectId': organizerId,
             'guid': guid,
-            'action': 'createMicrosoftTeamsMeeting',
-            'infoGrdmScenarioProcessing': info_grdm_scenario_processing,
+            'action': action,
+            'errorMicrosoftTeamsCreateMeeting': errorMicrosoftTeamsCreateMeeting,
+            'errorGrdmCreateMeeting': errorGrdmCreateMeeting,
+            'errorSlackCreateMeeting': errorSlackCreateMeeting,
+            'errorMicrosoftTeamsUpdateMeeting': errorMicrosoftTeamsUpdateMeeting,
+            'errorGrdmUpdateMeeting': errorGrdmUpdateMeeting,
+            'errorSlackUpdateMeeting': errorSlackUpdateMeeting,
+            'errorMicrosoftTeamsDeleteMeeting': errorMicrosoftTeamsDeleteMeeting,
+            'errorGrdmUpdateMeeting': errorGrdmUpdateMeeting,
+            'errorSlackUpdateMeeting': errorSlackUpdateMeeting,
+            'errorScenarioProcessing': errorScenarioProcessing,
             'startDate': teams_start_date_time,
             'endDate': teams_end_date_time,
             'subject': teams_subject,
@@ -148,8 +188,47 @@ export default class GuidNodeIntegromat extends Controller {
 
         this.set('showCreateMicrosoftTeamsMeetingDialog', false);
 
-        return $.post(webhookUrl, payload);
-    }
+        return axios
+        .post(startIntegromatScenarioUrl, payload)
+        .then(res => {
+                if(res.data.integromatMsg.match('.error.')){
+                    this.toast.error(res.data.integromatMsg)
+                }else{
+                    this.toast.info(res.data.integromatMsg)
+                }
+                let reqBody = {
+                    'nodeId': res.data.nodeId,
+                    'preMsg': res.data.integromatMsg,
+                }
+                this.reqMessage(reqestMessagesUrl, reqBody)
+            })
+            .catch((error) => {
+                this.toast.error('Failed to request.');
+            })
+
+        reqMessage(apiUrl: string, body: reqBody) {
+        axios
+        .post(apiUrl, body)
+        .then(res => {
+                if(res.data.integromatMsg === 'integromat.info.completed'){
+                    this.toast.info(this.i18n.t('integromat.info.completed'));
+                }else if(res.data.integromatMsg.match('.error.')){
+                    this.toast.error(res.data.integromatMsg);
+                }else{
+                    if(res.data.notify){
+                        this.toast.info(res.data.integromatMsg);
+                    }
+                    let reqBody = {
+                        'nodeId': res.data.nodeId,
+                        'preMsg': res.data.integromatMsg
+                    }
+                    this.reqMessage(apiUrl, reqBody)
+                }
+            })
+            .catch((error) => {
+                this.toast.error('Failed to get message from Integromat');
+            })
+        }
 
     @action
     makeUpdateMeetingDialog(this: GuidNodeIntegromat) {
@@ -368,17 +447,6 @@ export default class GuidNodeIntegromat extends Controller {
         const config = this.config.content as IntegromatConfigModel;
         const appNameMicrosoftTeams = config.app_name_microsoft_teams;
         return appNameMicrosoftTeams;
-    }
-
-
-    @computed('config.infoMsg')
-    get infoMsg() {
-        if (!this.config || !this.config.get('isFulfilled')) {
-            return '';
-        }
-        const config = this.config.content as IntegromatConfigModel;
-        const message = config.infoMsg;
-        return this.toast.info(message);
     }
 
     @computed('node')

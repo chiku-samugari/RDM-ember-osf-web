@@ -1859,5 +1859,22 @@ export default {
         content: 'Content',
         url: 'URL',
         from_symbol: '〜',
+        info: {
+            started: 'The workflow has started!'
+            completed: 'The workflow is complete!',
+        },
+        error:{
+            notStart: 'The workflow did NOT start.',
+            microsoftTeamsCreateMeeting: 'Failed to create the Microsoft Teams meeting.',
+            grdmCreateMeeting: 'The meeting was created on Micorosoft Teams, but the meeting information linkage failed.',
+            slackCreateMeeting: 'Failed to notify meeting creation in Slack.',
+            microsoftTeamsUpdateMeeting: 'Failed to update the Microsoft Teams meeting.',
+            grdmUpdateMeeting: 'The meeting was updated on Micorosoft Teams, but the meeting information linkage failed.',
+            slackUpdateMeeting: 'Failed to notify meeting update in Slack.',
+            microsoftTeamsDeleteMeeting: 'Failed to delete the Microsoft Teams meeting.',
+            grdmDeleteMeeting: 'The meeting was deleted on Micorosoft Teams, but the meeting information linkage failed.',
+            slackDeleteMeeting: 'Failed to notify meeting deletion in Slack.',
+            scenarioProcessing: 'An error occurred in the linked app while executing the Integromat scenario.',
+        },
     },
 };

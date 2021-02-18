@@ -2016,5 +2016,22 @@ export default {
         content: '内容',
         url: 'URL',
         from_symbol: '〜',
+        info: {
+            started: 'ワークフローを開始しました。'
+            completed: 'ワークフローを完了しました。',
+        },
+        error:{
+            notStart: 'ワークフローが開始されませんでした。',
+            microsoftTeamsCreateMeeting: 'MicrosoftTeams会議の作成に失敗しました。',
+            grdmCreateMeeting: 'Microsoft Teams上で会議が作成されましたが、会議情報連携に失敗しました。',
+            slackCreateMeeting: 'Slackでの会議作成通知に失敗しました。',
+            microsoftTeamsUpdateMeeting: 'MicrosoftTeams開銀の更新に失敗しました。',
+            grdmUpdateMeeting: 'Microsoft Teams上で会議が更新されましたが、会議情報連携に失敗しました。',
+            slackUpdateMeeting: 'Slackでの会議更新通知に失敗しました。',
+            microsoftTeamsDeleteMeeting: 'MicrosoftTeams開銀の更新に失敗しました。',
+            grdmDeleteMeeting: 'Microsoft Teams上で会議が削除されましたが、会議情報連携に失敗しました。',
+            slackDeleteMeeting: 'Slackでの会議削除通知に失敗しました。',
+            scenarioProcessing: 'Integromatシナリオ実行中にエラーが発生しました。',
+        }
     },
 };

@@ -1860,7 +1860,7 @@ export default {
         url: 'URL',
         from_symbol: '〜',
         info: {
-            started: 'The workflow has started!'
+            started: 'The workflow has started!',
             completed: 'The workflow is complete!',
         },
         error:{

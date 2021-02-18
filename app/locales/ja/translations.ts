@@ -2017,7 +2017,7 @@ export default {
         url: 'URL',
         from_symbol: '〜',
         info: {
-            started: 'ワークフローを開始しました。'
+            started: 'ワークフローを開始しました。',
             completed: 'ワークフローを完了しました。',
         },
         error:{

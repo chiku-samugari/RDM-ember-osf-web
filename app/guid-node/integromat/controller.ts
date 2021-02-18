@@ -4,6 +4,7 @@ import EmberError from '@ember/error';
 import { action, computed } from '@ember-decorators/object';
 import { reads } from '@ember-decorators/object/computed';
 import { service } from '@ember-decorators/service';
+import config from 'ember-get-config';
 
 import DS from 'ember-data';
 import moment from 'moment';
@@ -142,10 +143,8 @@ export default class GuidNodeIntegromat extends Controller {
             arrayAttendees.push(microsoftTeamsAttendeesChecked[i].id);
         }
 
-        const pathIntegromat = 'integromat';
-
-        const startIntegromatScenarioUrl = host + namespace + '/' + integromat + '/' + 'start_scenario';
-        const reqestMessagesUrl =  host + namespace + '/' + integromat + '/' + 'requestNextMessages';
+        const startIntegromatScenarioUrl = host + namespace + '/integromat/' + 'start_scenario';
+        const reqestMessagesUrl =  host + namespace + '/integromat/' + 'requestNextMessages';
 
         const action = 'createMicrosoftTeamsMeeting';
         const infoGrdmScenarioStarted = 'integromat.info.started';
@@ -157,8 +156,8 @@ export default class GuidNodeIntegromat extends Controller {
         const errorGrdmUpdateMeeting = 'integromat.error.grdmUpdateMeeting';
         const errorSlackUpdateMeeting = 'integromat.error.slackUpdateMeeting';
         const errorMicrosoftTeamsDeleteMeeting = 'integromat.error.microsoftTeamsDeleteMeeting';
-        const errorGrdmUpdateMeeting = 'integromat.error.grdmDeleteMeeting';
-        const errorSlackUpdateMeeting = 'integromat.error.slackDeleteMeeting';
+        const errorGrdmDeleteMeeting = 'integromat.error.grdmDeleteMeeting';
+        const errorSlackDeleteMeeting = 'integromat.error.slackDeleteMeeting';
         const errorScenarioProcessing = 'integromat.error.scenarioProcessing';
 
         const payload = {
@@ -167,6 +166,8 @@ export default class GuidNodeIntegromat extends Controller {
             'microsoftUserObjectId': organizerId,
             'guid': guid,
             'action': action,
+            'infoGrdmScenarioStarted': infoGrdmScenarioStarted,
+            'infoGrdmScenarioCompleted': infoGrdmScenarioCompleted,
             'errorMicrosoftTeamsCreateMeeting': errorMicrosoftTeamsCreateMeeting,
             'errorGrdmCreateMeeting': errorGrdmCreateMeeting,
             'errorSlackCreateMeeting': errorSlackCreateMeeting,
@@ -174,8 +175,8 @@ export default class GuidNodeIntegromat extends Controller {
             'errorGrdmUpdateMeeting': errorGrdmUpdateMeeting,
             'errorSlackUpdateMeeting': errorSlackUpdateMeeting,
             'errorMicrosoftTeamsDeleteMeeting': errorMicrosoftTeamsDeleteMeeting,
-            'errorGrdmUpdateMeeting': errorGrdmUpdateMeeting,
-            'errorSlackUpdateMeeting': errorSlackUpdateMeeting,
+            'errorGrdmDeleteMeeting': errorGrdmUpdateMeeting,
+            'errorSlackDeleteMeeting': errorSlackUpdateMeeting,
             'errorScenarioProcessing': errorScenarioProcessing,
             'startDate': teams_start_date_time,
             'endDate': teams_end_date_time,
@@ -184,6 +185,7 @@ export default class GuidNodeIntegromat extends Controller {
             'attendees': arrayAttendees,
             'location': teams_location,
             'content': teams_content,
+            'webhook_url': webhookUrl,
         };
 
         this.set('showCreateMicrosoftTeamsMeetingDialog', false);
@@ -202,7 +204,7 @@ export default class GuidNodeIntegromat extends Controller {
                 }
                 this.reqMessage(reqestMessagesUrl, reqBody)
             })
-            .catch((error) => {
+            .catch(() => {
                 this.toast.error('Failed to request.');
             })
     }
@@ -326,7 +328,6 @@ export default class GuidNodeIntegromat extends Controller {
             'microsoftTeamsMeetingId': microsoft_teams_meeting_id,
             'microsoftTeamsJoinUrl': microsoft_teams_meeting_join_url,
             'action': 'updateMicrosoftTeamsMeeting',
-            'infoGrdmScenarioProcessing': info_grdm_scenario_processing,
             'startDate': teams_start_date_time,
             'endDate': teams_end_date_time,
             'subject': teams_subject,

@@ -175,8 +175,8 @@ export default class GuidNodeIntegromat extends Controller {
             'errorGrdmUpdateMeeting': errorGrdmUpdateMeeting,
             'errorSlackUpdateMeeting': errorSlackUpdateMeeting,
             'errorMicrosoftTeamsDeleteMeeting': errorMicrosoftTeamsDeleteMeeting,
-            'errorGrdmDeleteMeeting': errorGrdmUpdateMeeting,
-            'errorSlackDeleteMeeting': errorSlackUpdateMeeting,
+            'errorGrdmDeleteMeeting': errorGrdmDeleteMeeting,
+            'errorSlackDeleteMeeting': errorSlackDeleteMeeting,
             'errorScenarioProcessing': errorScenarioProcessing,
             'startDate': teams_start_date_time,
             'endDate': teams_end_date_time,
@@ -228,7 +228,7 @@ export default class GuidNodeIntegromat extends Controller {
                 this.reqMessage(apiUrl, reqBody)
             }
         })
-        .catch((error) => {
+        .catch(() => {
             this.toast.error('Failed to get message from Integromat');
         })
     }
@@ -298,7 +298,6 @@ export default class GuidNodeIntegromat extends Controller {
         const webhookUrl = config.webhook_url;
         const node_id = config.node_settings_id;
         const app_name = config.app_name_microsoft_teams;
-        const info_grdm_scenario_processing = config.info_grdm_scenario_processing;
         const teams_subject = this.teams_subject;
         const teams_startDate = moment(this.teams_startDate).format('YYYY-MM-DD');
         const teams_startTime = (<HTMLInputElement>document.querySelectorAll('select[id=update_teams_start_time]')[0]).value;

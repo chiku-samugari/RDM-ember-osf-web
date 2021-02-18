@@ -1875,6 +1875,7 @@ export default {
             grdmDeleteMeeting: 'The meeting was deleted on Micorosoft Teams, but the meeting information linkage failed.',
             slackDeleteMeeting: 'Failed to notify meeting deletion in Slack.',
             scenarioProcessing: 'An error occurred in the linked app while executing the Integromat scenario.',
+            canNotGetMsg: 'Failed to get the message',
         },
     },
 };

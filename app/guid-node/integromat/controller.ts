@@ -205,30 +205,31 @@ export default class GuidNodeIntegromat extends Controller {
             .catch((error) => {
                 this.toast.error('Failed to request.');
             })
+    }
 
-        reqMessage(apiUrl: string, body: reqBody) {
+    reqMessage(apiUrl: string, body: reqBody) {
         axios
         .post(apiUrl, body)
         .then(res => {
-                if(res.data.integromatMsg === 'integromat.info.completed'){
-                    this.toast.info(this.i18n.t('integromat.info.completed'));
-                }else if(res.data.integromatMsg.match('.error.')){
-                    this.toast.error(res.data.integromatMsg);
-                }else{
-                    if(res.data.notify){
-                        this.toast.info(res.data.integromatMsg);
-                    }
-                    let reqBody = {
-                        'nodeId': res.data.nodeId,
-                        'preMsg': res.data.integromatMsg
-                    }
-                    this.reqMessage(apiUrl, reqBody)
+            if(res.data.integromatMsg === 'integromat.info.completed'){
+                this.toast.info(this.i18n.t('integromat.info.completed'));
+            }else if(res.data.integromatMsg.match('.error.')){
+                this.toast.error(res.data.integromatMsg);
+            }else{
+                if(res.data.notify){
+                    this.toast.info(res.data.integromatMsg);
                 }
-            })
-            .catch((error) => {
-                this.toast.error('Failed to get message from Integromat');
-            })
-        }
+                let reqBody = {
+                    'nodeId': res.data.nodeId,
+                    'preMsg': res.data.integromatMsg
+                }
+                this.reqMessage(apiUrl, reqBody)
+            }
+        })
+        .catch((error) => {
+            this.toast.error('Failed to get message from Integromat');
+        })
+    }
 
     @action
     makeUpdateMeetingDialog(this: GuidNodeIntegromat) {

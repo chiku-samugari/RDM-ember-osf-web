@@ -2032,7 +2032,8 @@ export default {
             grdmDeleteMeeting: 'Microsoft Teams上で会議が削除されましたが、会議情報連携に失敗しました。',
             slackDeleteMeeting: 'Slackでの会議削除通知に失敗しました。',
             scenarioProcessing: 'Integromatシナリオ実行中にエラーが発生しました。',
-            canNotGetMsg: 'メッセージの取得に失敗しました。',
+            failedToRequest: 'リクエストに失敗しました。',
+            failedToGetMessage: 'メッセージの取得に失敗しました。',
         }
     },
 };

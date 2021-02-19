@@ -148,13 +148,13 @@ export default class GuidNodeIntegromat extends Controller {
         const infoGrdmScenarioStarted = 'integromat.info.started';
         const infoGrdmScenarioCompleted = 'integromat.info.completed';
         const errorMicrosoftTeamsCreateMeeting = 'integromat.error.microsoftTeamsCreateMeeting';
-        const errorGrdmCreateMeeting = 'integromat.error.grdmCreateMeeting';
+        const errorGrdmCreateMeetingInfo = 'integromat.error.grdmCreateMeeting';
         const errorSlackCreateMeeting = 'integromat.error.slackCreateMeeting';
         const errorMicrosoftTeamsUpdateMeeting = 'integromat.error.microsoftTeamsUpdateMeeting';
-        const errorGrdmUpdateMeeting = 'integromat.error.grdmUpdateMeeting';
+        const errorGrdmUpdateMeetingInfo = 'integromat.error.grdmUpdateMeeting';
         const errorSlackUpdateMeeting = 'integromat.error.slackUpdateMeeting';
         const errorMicrosoftTeamsDeleteMeeting = 'integromat.error.microsoftTeamsDeleteMeeting';
-        const errorGrdmDeleteMeeting = 'integromat.error.grdmDeleteMeeting';
+        const errorGrdmDeleteMeetingInfo = 'integromat.error.grdmDeleteMeeting';
         const errorSlackDeleteMeeting = 'integromat.error.slackDeleteMeeting';
         const errorScenarioProcessing = 'integromat.error.scenarioProcessing';
 
@@ -167,13 +167,13 @@ export default class GuidNodeIntegromat extends Controller {
             'infoGrdmScenarioStarted': infoGrdmScenarioStarted,
             'infoGrdmScenarioCompleted': infoGrdmScenarioCompleted,
             'errorMicrosoftTeamsCreateMeeting': errorMicrosoftTeamsCreateMeeting,
-            'errorGrdmCreateMeeting': errorGrdmCreateMeeting,
+            'errorGrdmCreateMeetingInfo': errorGrdmCreateMeetingInfo,
             'errorSlackCreateMeeting': errorSlackCreateMeeting,
             'errorMicrosoftTeamsUpdateMeeting': errorMicrosoftTeamsUpdateMeeting,
-            'errorGrdmUpdateMeeting': errorGrdmUpdateMeeting,
+            'errorGrdmUpdateMeetingInfo': errorGrdmUpdateMeetingInfo,
             'errorSlackUpdateMeeting': errorSlackUpdateMeeting,
             'errorMicrosoftTeamsDeleteMeeting': errorMicrosoftTeamsDeleteMeeting,
-            'errorGrdmDeleteMeeting': errorGrdmDeleteMeeting,
+            'errorGrdmDeleteMeetingInfo': errorGrdmDeleteMeetingInfo,
             'errorSlackDeleteMeeting': errorSlackDeleteMeeting,
             'errorScenarioProcessing': errorScenarioProcessing,
             'startDate': teams_start_date_time,
@@ -211,7 +211,7 @@ export default class GuidNodeIntegromat extends Controller {
                 this.reqMessage(reqestMessagesUrl, reqBody)
             })
             .catch(() => {
-                this.toast.error('Failed to request.');
+                this.toast.error(this.i18n.t('integromat.error.failedToRequest'));
             })
     }
 
@@ -244,7 +244,7 @@ export default class GuidNodeIntegromat extends Controller {
             }
         })
         .catch(() => {
-            this.toast.error('Failed to get message from Integromat');
+            this.toast.error(this.i18n.t('integromat.error.failedToGetMessage'));
         })
     }
 

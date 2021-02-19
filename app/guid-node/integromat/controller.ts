@@ -203,12 +203,12 @@ export default class GuidNodeIntegromat extends Controller {
                     this.toast.error(this.i18n.t(data.integromatMsg))
                 }else{
                     this.toast.info(this.i18n.t(data.integromatMsg))
+                    let reqBody = {
+                        'nodeId': data.nodeId,
+                        'preMsg': data.integromatMsg,
+                    }
+                    this.reqMessage(reqestMessagesUrl, reqBody)
                 }
-                let reqBody = {
-                    'nodeId': data.nodeId,
-                    'preMsg': data.integromatMsg,
-                }
-                this.reqMessage(reqestMessagesUrl, reqBody)
             })
             .catch(() => {
                 this.toast.error(this.i18n.t('integromat.error.failedToRequest'));

@@ -2021,7 +2021,7 @@ export default {
             completed: 'ワークフローを完了しました。',
         },
         error:{
-            notStart: 'ワークフローが開始されませんでした。',
+            didNotStart: 'ワークフローが開始されませんでした。',
             microsoftTeamsCreateMeeting: 'MicrosoftTeams会議の作成に失敗しました。',
             grdmCreateMeeting: 'Microsoft Teams上で会議が作成されましたが、会議情報連携に失敗しました。',
             slackCreateMeeting: 'Slackでの会議作成通知に失敗しました。',

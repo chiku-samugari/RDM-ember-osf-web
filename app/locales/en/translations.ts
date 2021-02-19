@@ -1864,7 +1864,7 @@ export default {
             completed: 'The workflow is complete!',
         },
         error:{
-            notStart: 'The workflow did NOT start.',
+            didNotStart: 'The workflow did NOT start.',
             microsoftTeamsCreateMeeting: 'Failed to create the Microsoft Teams meeting.',
             grdmCreateMeeting: 'The meeting was created on Micorosoft Teams, but the meeting information linkage failed.',
             slackCreateMeeting: 'Failed to notify meeting creation in Slack.',

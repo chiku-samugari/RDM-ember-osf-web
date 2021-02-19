@@ -42,8 +42,6 @@ const {
     },
 } = config;
 
-import axios from 'axios'
-
 export default class GuidNodeIntegromat extends Controller {
     @service toast!: Toast;
     @service statusMessages!: StatusMessages;
@@ -190,17 +188,25 @@ export default class GuidNodeIntegromat extends Controller {
 
         this.set('showCreateMicrosoftTeamsMeetingDialog', false);
 
-        return axios
-        .post(startIntegromatScenarioUrl, payload)
-        .then(res => {
+        return fetch(
+            apiUrl,
+            {
+                method: 'POST',
+                headers:{
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(data => {
                 if(res.data.integromatMsg.match('.error.')){
-                    this.toast.error(res.data.integromatMsg)
+                    this.toast.error(data.integromatMsg)
                 }else{
-                    this.toast.info(res.data.integromatMsg)
+                    this.toast.info(data.integromatMsg)
                 }
                 let reqBody = {
-                    'nodeId': res.data.nodeId,
-                    'preMsg': res.data.integromatMsg,
+                    'nodeId': data.nodeId,
+                    'preMsg': data.integromatMsg,
                 }
                 this.reqMessage(reqestMessagesUrl, reqBody)
             })
@@ -210,20 +216,29 @@ export default class GuidNodeIntegromat extends Controller {
     }
 
     reqMessage(apiUrl: string, body: reqBody) {
-        axios
-        .post(apiUrl, body)
-        .then(res => {
-            if(res.data.integromatMsg === 'integromat.info.completed'){
+
+        return fetch(
+            apiUrl,
+            {
+                method: 'POST',
+                headers:{
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(reqBody)
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.integromatMsg === 'integromat.info.completed'){
                 this.toast.info(this.i18n.t('integromat.info.completed'));
-            }else if(res.data.integromatMsg.match('.error.')){
-                this.toast.error(res.data.integromatMsg);
+            }else if(data.integromatMsg.match('.error.')){
+                this.toast.error(data.integromatMsg);
             }else{
-                if(res.data.notify){
-                    this.toast.info(res.data.integromatMsg);
+                if(data.notify){
+                    this.toast.info(data.integromatMsg);
                 }
                 let reqBody = {
-                    'nodeId': res.data.nodeId,
-                    'preMsg': res.data.integromatMsg
+                    'nodeId': data.nodeId,
+                    'preMsg': data.integromatMsg
                 }
                 this.reqMessage(apiUrl, reqBody)
             }

@@ -240,7 +240,7 @@ export default class GuidNodeIntegromat extends Controller {
                     'nodeId': data.nodeId,
                     'preMsg': data.integromatMsg
                 }
-                this.reqMessage(apiUrl, reqBody)
+                this.reqMessage(reqestMessagesUrl, reqBody)
             }
         })
         .catch(() => {

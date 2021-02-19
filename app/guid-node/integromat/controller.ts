@@ -189,7 +189,7 @@ export default class GuidNodeIntegromat extends Controller {
         this.set('showCreateMicrosoftTeamsMeetingDialog', false);
 
         return fetch(
-            apiUrl,
+            startIntegromatScenarioUrl,
             {
                 method: 'POST',
                 headers:{
@@ -199,7 +199,7 @@ export default class GuidNodeIntegromat extends Controller {
         })
         .then(res => res.json())
         .then(data => {
-                if(res.data.integromatMsg.match('.error.')){
+                if(data.integromatMsg.match('.error.')){
                     this.toast.error(data.integromatMsg)
                 }else{
                     this.toast.info(data.integromatMsg)
@@ -215,10 +215,10 @@ export default class GuidNodeIntegromat extends Controller {
             })
     }
 
-    reqMessage(apiUrl: string, body: reqBody) {
+    reqMessage(reqestMessagesUrl: string, reqBody: reqBody) {
 
         return fetch(
-            apiUrl,
+            reqestMessagesUrl,
             {
                 method: 'POST',
                 headers:{

@@ -200,9 +200,9 @@ export default class GuidNodeIntegromat extends Controller {
         .then(res => res.json())
         .then(data => {
                 if(data.integromatMsg.match('.error.')){
-                    this.toast.error(data.integromatMsg)
+                    this.toast.error(this.i18n.t(data.integromatMsg))
                 }else{
-                    this.toast.info(data.integromatMsg)
+                    this.toast.info(this.i18n.t(data.integromatMsg))
                 }
                 let reqBody = {
                     'nodeId': data.nodeId,
@@ -229,12 +229,12 @@ export default class GuidNodeIntegromat extends Controller {
         .then(res => res.json())
         .then(data => {
             if(data.integromatMsg === 'integromat.info.completed'){
-                this.toast.info(this.i18n.t('integromat.info.completed'));
+                this.toast.info(this.i18n.t(data.integromatMsg));
             }else if(data.integromatMsg.match('.error.')){
-                this.toast.error(data.integromatMsg);
+                this.toast.error(this.i18n.t(data.integromatMsg));
             }else{
                 if(data.notify){
-                    this.toast.info(data.integromatMsg);
+                    this.toast.info(this.i18n.t(data.integromatMsg));
                 }
                 let reqBody = {
                     'nodeId': data.nodeId,

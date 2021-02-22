@@ -32,7 +32,7 @@ interface microsoftTeamsMeetings {
 
 interface reqBody {
     nodeId: string;
-    preMsg: string;
+    timestamp: string;
 }
 
 const {
@@ -157,6 +157,7 @@ export default class GuidNodeIntegromat extends Controller {
         const errorGrdmDeleteMeetingInfo = 'integromat.error.grdmDeleteMeeting';
         const errorSlackDeleteMeeting = 'integromat.error.slackDeleteMeeting';
         const errorScenarioProcessing = 'integromat.error.scenarioProcessing';
+        const timestamp = new Date().getTime();
 
         const payload = {
             'nodeId': node_id,
@@ -184,6 +185,7 @@ export default class GuidNodeIntegromat extends Controller {
             'location': teams_location,
             'content': teams_content,
             'webhook_url': webhookUrl,
+            'timestamp': timestamp,
         };
 
         this.set('showCreateMicrosoftTeamsMeetingDialog', false);
@@ -205,7 +207,7 @@ export default class GuidNodeIntegromat extends Controller {
                     this.toast.info(this.i18n.t(data.integromatMsg))
                     let reqBody = {
                         'nodeId': data.nodeId,
-                        'preMsg': data.integromatMsg,
+                        'timestamp': data.timestamp,
                     }
                     this.reqMessage(reqestMessagesUrl, reqBody)
                 }
@@ -238,7 +240,7 @@ export default class GuidNodeIntegromat extends Controller {
                 }
                 let reqBody = {
                     'nodeId': data.nodeId,
-                    'preMsg': data.integromatMsg
+                    'timestamp': data.timestamp
                 }
                 this.reqMessage(reqestMessagesUrl, reqBody)
             }

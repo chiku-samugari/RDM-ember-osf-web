@@ -55,6 +55,9 @@ const errorGrdmDeleteMeetingInfo = 'integromat.error.grdmDeleteMeeting';
 const errorSlackDeleteMeeting = 'integromat.error.slackDeleteMeeting';
 const errorScenarioProcessing = 'integromat.error.scenarioProcessing';
 
+const startIntegromatScenarioUrl = host + namespace + '/integromat/' + 'start_scenario';
+const reqestMessagesUrl =  host + namespace + '/integromat/' + 'requestNextMessages';
+
 export default class GuidNodeIntegromat extends Controller {
     @service toast!: Toast;
     @service statusMessages!: StatusMessages;
@@ -436,7 +439,6 @@ export default class GuidNodeIntegromat extends Controller {
         const payload = {
             'nodeId': nodeId,
             'meetingAppName': appName,
-            'action': 'deleteMicrosoftTeamsMeeting',
             'microsoftTeamsMeetingIds': selectedMeetingId,
             'action': action,
             'infoGrdmScenarioStarted': infoGrdmScenarioStarted,

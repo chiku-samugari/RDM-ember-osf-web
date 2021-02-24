@@ -42,6 +42,19 @@ const {
     },
 } = config;
 
+const infoGrdmScenarioStarted = 'integromat.info.started';
+const infoGrdmScenarioCompleted = 'integromat.info.completed';
+const errorMicrosoftTeamsCreateMeeting = 'integromat.error.microsoftTeamsCreateMeeting';
+const errorGrdmCreateMeetingInfo = 'integromat.error.grdmCreateMeeting';
+const errorSlackCreateMeeting = 'integromat.error.slackCreateMeeting';
+const errorMicrosoftTeamsUpdateMeeting = 'integromat.error.microsoftTeamsUpdateMeeting';
+const errorGrdmUpdateMeetingInfo = 'integromat.error.grdmUpdateMeeting';
+const errorSlackUpdateMeeting = 'integromat.error.slackUpdateMeeting';
+const errorMicrosoftTeamsDeleteMeeting = 'integromat.error.microsoftTeamsDeleteMeeting';
+const errorGrdmDeleteMeetingInfo = 'integromat.error.grdmDeleteMeeting';
+const errorSlackDeleteMeeting = 'integromat.error.slackDeleteMeeting';
+const errorScenarioProcessing = 'integromat.error.scenarioProcessing';
+
 export default class GuidNodeIntegromat extends Controller {
     @service toast!: Toast;
     @service statusMessages!: StatusMessages;
@@ -145,18 +158,6 @@ export default class GuidNodeIntegromat extends Controller {
         const reqestMessagesUrl =  host + namespace + '/integromat/' + 'requestNextMessages';
 
         const action = 'createMicrosoftTeamsMeeting';
-        const infoGrdmScenarioStarted = 'integromat.info.started';
-        const infoGrdmScenarioCompleted = 'integromat.info.completed';
-        const errorMicrosoftTeamsCreateMeeting = 'integromat.error.microsoftTeamsCreateMeeting';
-        const errorGrdmCreateMeetingInfo = 'integromat.error.grdmCreateMeeting';
-        const errorSlackCreateMeeting = 'integromat.error.slackCreateMeeting';
-        const errorMicrosoftTeamsUpdateMeeting = 'integromat.error.microsoftTeamsUpdateMeeting';
-        const errorGrdmUpdateMeetingInfo = 'integromat.error.grdmUpdateMeeting';
-        const errorSlackUpdateMeeting = 'integromat.error.slackUpdateMeeting';
-        const errorMicrosoftTeamsDeleteMeeting = 'integromat.error.microsoftTeamsDeleteMeeting';
-        const errorGrdmDeleteMeetingInfo = 'integromat.error.grdmDeleteMeeting';
-        const errorSlackDeleteMeeting = 'integromat.error.slackDeleteMeeting';
-        const errorScenarioProcessing = 'integromat.error.scenarioProcessing';
         const timestamp = new Date().getTime();
 
         const payload = {
@@ -232,6 +233,7 @@ export default class GuidNodeIntegromat extends Controller {
         .then(data => {
             if(data.integromatMsg === 'integromat.info.completed'){
                 this.toast.info(this.i18n.t(data.integromatMsg));
+                window.location.reload();
             }else if(data.integromatMsg.match('.error.')){
                 this.toast.error(this.i18n.t(data.integromatMsg));
             }else{
@@ -327,7 +329,6 @@ export default class GuidNodeIntegromat extends Controller {
         const microsoftTeamsMeetingChecked = document.querySelectorAll('input[class=microsoftTeamsMeetingCheck]:checked');
         const microsoft_teams_meeting_id = microsoftTeamsMeetingChecked[0].id;
         const microsoft_teams_meeting_join_url = (<HTMLElement>microsoftTeamsMeetingChecked[0]).dataset.joinUrl;
-
         const microsoftTeamsAttendeesChecked = document.querySelectorAll('input[class=microsoftTeamsAttendeesCheck]:checked');
 
         let arrayAttendeesCollection = [];
@@ -338,12 +339,27 @@ export default class GuidNodeIntegromat extends Controller {
             arrayAttendees.push(microsoftTeamsAttendeesChecked[i].id);
         }
 
+        const action = 'updateMicrosoftTeamsMeeting';
+        const timestamp = new Date().getTime();
+
         const payload = {
             'nodeId': node_id,
             'meetingAppName': app_name,
             'microsoftTeamsMeetingId': microsoft_teams_meeting_id,
             'microsoftTeamsJoinUrl': microsoft_teams_meeting_join_url,
-            'action': 'updateMicrosoftTeamsMeeting',
+            'action': action,
+            'infoGrdmScenarioStarted': infoGrdmScenarioStarted,
+            'infoGrdmScenarioCompleted': infoGrdmScenarioCompleted,
+            'errorMicrosoftTeamsCreateMeeting': errorMicrosoftTeamsCreateMeeting,
+            'errorGrdmCreateMeetingInfo': errorGrdmCreateMeetingInfo,
+            'errorSlackCreateMeeting': errorSlackCreateMeeting,
+            'errorMicrosoftTeamsUpdateMeeting': errorMicrosoftTeamsUpdateMeeting,
+            'errorGrdmUpdateMeetingInfo': errorGrdmUpdateMeetingInfo,
+            'errorSlackUpdateMeeting': errorSlackUpdateMeeting,
+            'errorMicrosoftTeamsDeleteMeeting': errorMicrosoftTeamsDeleteMeeting,
+            'errorGrdmDeleteMeetingInfo': errorGrdmDeleteMeetingInfo,
+            'errorSlackDeleteMeeting': errorSlackDeleteMeeting,
+            'errorScenarioProcessing': errorScenarioProcessing,
             'startDate': teams_start_date_time,
             'endDate': teams_end_date_time,
             'subject': teams_subject,
@@ -351,12 +367,37 @@ export default class GuidNodeIntegromat extends Controller {
             'attendees': arrayAttendees,
             'location': teams_location,
             'content': teams_content,
+            'webhook_url': webhookUrl,
+            'timestamp': timestamp,
         };
 
         this.set('showUpdateMicrosoftTeamsMeetingDialog', false);
 
-        return $.post(webhookUrl, payload);
-
+        return fetch(
+            startIntegromatScenarioUrl,
+            {
+                method: 'POST',
+                headers:{
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(data => {
+                if(data.integromatMsg.match('.error.')){
+                    this.toast.error(this.i18n.t(data.integromatMsg))
+                }else{
+                    this.toast.info(this.i18n.t(data.integromatMsg))
+                    let reqBody = {
+                        'nodeId': data.nodeId,
+                        'timestamp': data.timestamp,
+                    }
+                    this.reqMessage(reqestMessagesUrl, reqBody)
+                }
+            })
+            .catch(() => {
+                this.toast.error(this.i18n.t('integromat.error.failedToRequest'));
+            })
     }
 
     @action
@@ -390,16 +431,57 @@ export default class GuidNodeIntegromat extends Controller {
         const webhookUrl = config.webhook_url;
         const nodeId = config.node_settings_id;
         const appName = config.app_name_microsoft_teams;
+        const action = 'deleteMicrosoftTeamsMeeting';
+        const timestamp = new Date().getTime();
         const payload = {
             'nodeId': nodeId,
             'meetingAppName': appName,
             'action': 'deleteMicrosoftTeamsMeeting',
             'microsoftTeamsMeetingIds': selectedMeetingId,
+            'action': action,
+            'infoGrdmScenarioStarted': infoGrdmScenarioStarted,
+            'infoGrdmScenarioCompleted': infoGrdmScenarioCompleted,
+            'errorMicrosoftTeamsCreateMeeting': errorMicrosoftTeamsCreateMeeting,
+            'errorGrdmCreateMeetingInfo': errorGrdmCreateMeetingInfo,
+            'errorSlackCreateMeeting': errorSlackCreateMeeting,
+            'errorMicrosoftTeamsUpdateMeeting': errorMicrosoftTeamsUpdateMeeting,
+            'errorGrdmUpdateMeetingInfo': errorGrdmUpdateMeetingInfo,
+            'errorSlackUpdateMeeting': errorSlackUpdateMeeting,
+            'errorMicrosoftTeamsDeleteMeeting': errorMicrosoftTeamsDeleteMeeting,
+            'errorGrdmDeleteMeetingInfo': errorGrdmDeleteMeetingInfo,
+            'errorSlackDeleteMeeting': errorSlackDeleteMeeting,
+            'errorScenarioProcessing': errorScenarioProcessing,
+            'webhook_url': webhookUrl,
+            'timestamp': timestamp,
         };
 
         this.set('showDeleteMicrosoftTeamsMeetingDialog', false);
 
-        return $.post(webhookUrl, payload);
+        return fetch(
+            startIntegromatScenarioUrl,
+            {
+                method: 'POST',
+                headers:{
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(data => {
+                if(data.integromatMsg.match('.error.')){
+                    this.toast.error(this.i18n.t(data.integromatMsg))
+                }else{
+                    this.toast.info(this.i18n.t(data.integromatMsg))
+                    let reqBody = {
+                        'nodeId': data.nodeId,
+                        'timestamp': data.timestamp,
+                    }
+                    this.reqMessage(reqestMessagesUrl, reqBody)
+                }
+            })
+            .catch(() => {
+                this.toast.error(this.i18n.t('integromat.error.failedToRequest'));
+            })
     }
 
     @action

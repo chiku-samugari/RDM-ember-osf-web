@@ -1,0 +1,19 @@
+<span class='input-group-btn'>
+    <CopyButton
+        @clipboardText={{this.text}}
+        @success={{action this._success}}
+        @error={{action this._error}}
+        @disabled={{this.disabled}}
+        @class='btn btn-default btn-sm'
+        local-class='CopyButton'
+        aria-label={{t 'osf-components.copyable-text.copyToClipboard'}}
+    >
+        {{fa-icon 'copy'}}
+        <BsTooltip
+            @triggerEvents=''
+            @visible={{this.showTooltip}}
+        >
+            {{t 'osf-components.copyable-text.copied'}}
+        </BsTooltip>
+    </CopyButton>
+</span>

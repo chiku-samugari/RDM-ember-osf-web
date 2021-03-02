@@ -140,8 +140,8 @@
                                                     {{/each}}
                                                 {{/each}}
                                             </td>
-                                            <td>{{moment row.fields.start_datetime 'YYYY-MM-DD HH:mm:ss'}}</td>
-                                            <td>{{moment row.fields.end_datetime 'YYYY-MM-DD HH:mm:ss'}}</td>
+                                            <td>{{moment-format row.fields.start_datetime 'YYYY-MM-DD HH:mm:ss'}}</td>
+                                            <td>{{moment-format row.fields.end_datetime 'YYYY-MM-DD HH:mm:ss'}}</td>
                                             <td>{{row.fields.location}}</td>
                                             <td>{{row.fields.content}}</td>
                                             <td>

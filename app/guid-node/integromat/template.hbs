@@ -117,7 +117,7 @@
                                             <span class='header_text m-r-sm'>{{t 'integromat.content'}}</span>
                                         </th>
                                         <th width='7%'>
-                                            <span class='header_text m-r-sm'>{{t 'integromat.url'}}</span>
+                                            <span class='header_text m-r-sm'>{{t 'integromat.joinUrl'}}</span>
                                         </th>
                                         <th local-class='Integromat__cell_right'>
                                         </th>
@@ -140,12 +140,14 @@
                                                     {{/each}}
                                                 {{/each}}
                                             </td>
-                                            <td>{{row.fields.start_datetime}}</td>
-                                            <td>{{row.fields.end_datetime}}</td>
+                                            <td>{{moment row.fields.start_datetime 'YYYY-MM-DD HH:mm:ss'}}</td>
+                                            <td>{{moment row.fields.end_datetime 'YYYY-MM-DD HH:mm:ss'}}</td>
                                             <td>{{row.fields.location}}</td>
                                             <td>{{row.fields.content}}</td>
                                             <td>
-                                                <button class='fa fa-copy'></button>
+                                                <CopyableText
+                                                    @text={{row.fields.join_url}}
+                                                />
                                             </td>
                                             <td local-class='Integromat__cell_right'>
                                                 <button class='fa fa-play' onClick={{action (action this.startMeeting row.fields.join_url)}}></button>

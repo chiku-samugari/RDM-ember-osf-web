@@ -2014,8 +2014,8 @@ export default {
         end_datetime: '終了日時',
         location: '場所',
         content: '内容',
-        url: 'URL',
-        from_symbol: '〜',
+        joinUrl: '招待URL',
+        from_symbol: '～',
         info: {
             started: 'ワークフローを開始しました。',
             completed: 'ワークフローを完了しました。',

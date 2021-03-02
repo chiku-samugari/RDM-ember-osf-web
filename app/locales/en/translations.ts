@@ -1857,8 +1857,8 @@ export default {
         end_datetime: 'End Datetime',
         location: 'Location',
         content: 'Content',
-        url: 'URL',
-        from_symbol: '〜',
+        joinUrl: 'Join URL',
+        from_symbol: '～',
         info: {
             started: 'The workflow has started!',
             completed: 'The workflow is complete!',

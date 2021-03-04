@@ -95,6 +95,7 @@ export default class GuidNodeIntegromat extends Controller {
     teams_endTime = '';
     teams_location = '';
     teams_content = '';
+    teams_meetingId = '';
     teams_joinUrl = '';
 
     teamsMeetingAttendees : string[] = [];
@@ -279,6 +280,8 @@ export default class GuidNodeIntegromat extends Controller {
                 this.set('teams_endTime', moment(microsoftTeamsMeetings[i].fields.end_datetime).format('HH:mm'));
                 this.set('teams_location', microsoftTeamsMeetings[i].fields.location);
                 this.set('teams_content', microsoftTeamsMeetings[i].fields.content);
+                this.set('teams_meetingId', microsoftTeamsMeetings[i].fields.meetingid);
+                this.set('teams_joinUrl', microsoftTeamsMeetings[i].fields.join_url);
                 break;
             }
         }
@@ -327,8 +330,8 @@ export default class GuidNodeIntegromat extends Controller {
         const teams_location = this.teams_location;
         const teams_content = this.teams_content;
         const microsoftTeamsMeetingChecked = document.querySelectorAll('input[class=microsoftTeamsMeetingCheck]:checked');
-        const microsoft_teams_meeting_id = microsoftTeamsMeetingChecked[0].id;
-        const microsoft_teams_meeting_join_url = (<HTMLElement>microsoftTeamsMeetingChecked[0]).dataset.joinUrl;
+        const microsoft_teams_meeting_id = this.teams_meetingId;
+        const microsoft_teams_meeting_join_url = this.teams_joinUrl;
         const microsoftTeamsAttendeesChecked = document.querySelectorAll('input[class=microsoftTeamsAttendeesCheck]:checked');
 
         let arrayAttendeesCollection = [];

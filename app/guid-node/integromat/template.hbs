@@ -133,7 +133,7 @@
                                                     <input data-join-url={{row.fields.join_url}} data-subject={{row.fields.subject}} class='microsoftTeamsMeetingCheck' type='checkBox' style='width: 15px; height: 15px;' id={{row.fields.meetingid}}>
                                                 </td>
                                                 <td>
-                                                    <a href='javasript:void(0)' onClick={{action (action this.makeDetailMeetingDialog row.fields.join_url)}}>
+                                                    <a href='javasript:void(0)' onClick={{action (action this.makeDetailMeetingDialog row.fields.meetingid)}}>
                                                         {{row.fields.subject}}
                                                     </a>
                                                 </td>
@@ -158,6 +158,9 @@
                                                 </td>
                                                 <td local-class='Integromat__cell_right'>
                                                     <button class='fa fa-play' onClick={{action (action this.startMeeting row.fields.join_url)}}></button>
+                                                </td>
+                                                <td local-class='Integromat__cell_right'>
+                                                    <button class='fa fa-edit' onClick={{action (action this.makeUpdateMeetingDialog row.fields.meetingid)}}></button>
                                                 </td>
                                             </tr>
                                         {{/each}}
@@ -483,7 +486,7 @@
 >
     <modal.header>
         <h4 style='font-weight:normal;'>
-            The Meeting Detail
+            The Meeting Detail({{this.teams_subject}})
         </h4>
     </modal.header>
     <modal.body>

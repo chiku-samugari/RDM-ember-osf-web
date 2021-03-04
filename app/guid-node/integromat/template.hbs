@@ -133,7 +133,7 @@
                                                     <input data-join-url={{row.fields.join_url}} data-subject={{row.fields.subject}} class='microsoftTeamsMeetingCheck' type='checkBox' style='width: 15px; height: 15px;' id={{row.fields.meetingid}}>
                                                 </td>
                                                 <td>
-                                                    <a href='javasript:void(0)' onClick={{action this.makeDetailMeetingDialog value=row.fields.meetingid}}>
+                                                    <a href='javasript:void(0)' onClick={{action (action this.makeDetailMeetingDialog row.fields.join_url)}}>
                                                         {{row.fields.subject}}
                                                     </a>
                                                 </td>

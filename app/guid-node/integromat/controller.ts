@@ -329,7 +329,6 @@ export default class GuidNodeIntegromat extends Controller {
         const teams_end_date_time = teams_endDate + ' ' + teams_endTime;
         const teams_location = this.teams_location;
         const teams_content = this.teams_content;
-        const microsoftTeamsMeetingChecked = document.querySelectorAll('input[class=microsoftTeamsMeetingCheck]:checked');
         const microsoft_teams_meeting_id = this.teams_meetingId;
         const microsoft_teams_meeting_join_url = this.teams_joinUrl;
         const microsoftTeamsAttendeesChecked = document.querySelectorAll('input[class=microsoftTeamsAttendeesCheck]:checked');

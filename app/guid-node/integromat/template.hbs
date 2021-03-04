@@ -98,18 +98,20 @@
                                             <th width='3%'>
                                                 <input type='checkBox' style='width: 15px; height: 15px;'>
                                             </th>
-                                            <th width='11%'>
+                                            <th width='25%'>
                                                 <span class='header_text m-r-sm'>{{t 'integromat.subject'}}</span>
                                             </th>
-                                            <th width='12%'>
+                                            <th width='25%'>
                                                 <span class='header_text m-r-sm'>{{t 'integromat.organizer'}}</span>
                                             </th>
-                                            <th width='14%'>
+                                            <th width='20%'>
                                                 <span class='header_text m-r-sm'>{{t 'integromat.start_datetime'}}</span>
                                             </th>
-                                            <th width='7%'>
+                                            <th width='30%'>
                                                 <span class='header_text m-r-sm'>{{t 'integromat.joinUrl'}}</span>
                                             </th>
+                                            <th></th>
+                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -488,7 +490,7 @@
                     </tr>
                     <tr>
                         <td>
-                            {{this.teams_startDate}}{{teams_startTime}}
+                            {{this.teams_startDate}}&nbsp;{{teams_startTime}}
                         </td>
                         <td><label local-class='Integromat__input_items'>{{t 'integromat.from_symbol'}}</label></td>
                         <td>

@@ -92,7 +92,7 @@
                     {{else}}
                         <div class='row' id='teamsMeeting-table-row' local-class='Integromat__web_meeting_table'>
                             <div class='col-xs-12'>
-                                <table class='table table-bordered'>
+                                <table class='table'>
                                     <thead>
                                         <tr style='background-color: #f5f5f5;'>
                                             <th width='3%'>
@@ -104,25 +104,11 @@
                                             <th width='12%'>
                                                 <span class='header_text m-r-sm'>{{t 'integromat.organizer'}}</span>
                                             </th>
-                                            <th width='15%'>
-                                                <span class='header_text m-r-sm'>{{t 'integromat.attendees'}}</span>
-                                            </th>
                                             <th width='14%'>
                                                 <span class='header_text m-r-sm'>{{t 'integromat.start_datetime'}}</span>
                                             </th>
-                                            <th width='12%'>
-                                                <span class='header_text m-r-sm'>{{t 'integromat.end_datetime'}}</span>
-                                            </th>
-                                            <th width='11%'>
-                                                <span class='header_text m-r-sm'>{{t 'integromat.location'}}</span>
-                                            </th>
-                                            <th width='15%'>
-                                                <span class='header_text m-r-sm'>{{t 'integromat.content'}}</span>
-                                            </th>
                                             <th width='7%'>
                                                 <span class='header_text m-r-sm'>{{t 'integromat.joinUrl'}}</span>
-                                            </th>
-                                            <th local-class='Integromat__cell_right'>
                                             </th>
                                         </tr>
                                     </thead>
@@ -138,19 +124,8 @@
                                                     </a>
                                                 </td>
                                                 <td>{{row.fields.organizer}}</td>
-                                                <td>
-                                                    {{#each row.fields.attendees as |attendee|}}
-                                                        {{#each this.microsoft_teams_attendees as |all_attendees|}}
-                                                            {{#if (eq attendee all_attendees.pk)}}
-                                                                {{all_attendees.fields.microsoft_teams_mail}},&nbsp;
-                                                            {{/if}}
-                                                        {{/each}}
-                                                    {{/each}}
-                                                </td>
+
                                                 <td>{{moment-format row.fields.start_datetime 'YYYY-MM-DD HH:mm'}}</td>
-                                                <td>{{moment-format row.fields.end_datetime 'YYYY-MM-DD HH:mm'}}</td>
-                                                <td>{{row.fields.location}}</td>
-                                                <td>{{row.fields.content}}</td>
                                                 <td>
                                                     <CopyableText
                                                         @text={{row.fields.join_url}}

@@ -88,7 +88,7 @@
                         </button>
                     </div>
                     {{#if (eq this.microsoft_teams_meetings.length 0)}}
-                        The meeting is not registered.
+                        {{t 'integromat.noMeeting'}}
                     {{else}}
                         <div class='row' id='teamsMeeting-table-row' local-class='Integromat__web_meeting_table'>
                             <div class='col-xs-12'>
@@ -463,7 +463,7 @@
 >
     <modal.header>
         <h4 style='font-weight:normal;'>
-            The Meeting Detail({{this.teams_subject}})
+            {{t 'integromat.meetingDialog.detailLabel'}}&nbsp;({{this.teams_subject}})
         </h4>
     </modal.header>
     <modal.body>
@@ -494,7 +494,7 @@
                         </td>
                         <td><label local-class='Integromat__input_items'>{{t 'integromat.from_symbol'}}</label></td>
                         <td>
-                            {{this.teams_endDate}}{{teams_endTime}}
+                            {{this.teams_endDate}}&nbsp;{{teams_endTime}}
                         </td>
                     </tr>
                 </table>
@@ -513,13 +513,13 @@
         <BsButton
             @onClick={{action modal.close}}
         >
-            Close
+            {{t 'integromat.meetingDialog.closeBtn'}}
         </BsButton>
         <OsfButton
             @type='success'
             @onClick={{action (action this.startMeeting this.teams_joinUrl)}}
         >
-            Start
+            {{t 'integromat.meetingDialog.startBtn'}}
         </OsfButton>
     </modal.footer>
 </BsModal>

@@ -132,7 +132,11 @@
                                                 <td>
                                                     <input data-join-url={{row.fields.join_url}} data-subject={{row.fields.subject}} class='microsoftTeamsMeetingCheck' type='checkBox' style='width: 15px; height: 15px;' id={{row.fields.meetingid}}>
                                                 </td>
-                                                <td>{{row.fields.subject}}</td>
+                                                <td>
+                                                    <a href='javasript:void(0)' onClick={{action this.makeDetailMeetingDialog value=row.fields.meetingid}}>
+                                                        {{row.fields.subject}}
+                                                    </a>
+                                                </td>
                                                 <td>{{row.fields.organizer}}</td>
                                                 <td>
                                                     {{#each row.fields.attendees as |attendee|}}
@@ -467,6 +471,75 @@
             @onClick={{action modal.submit}}
         >
             {{t 'integromat.meetingDialog.deleteBtn'}}
+        </OsfButton>
+    </modal.footer>
+</BsModal>
+
+<BsModal
+    detail-microsoft-teams-meeting-modal
+    @open={{this.showDetailMicrosoftTeamsMeetingDialog}}
+    @onHidden={{action (mut this.showDetailMicrosoftTeamsMeetingDialog) false}}
+    as |modal|
+>
+    <modal.header>
+        <h4 style='font-weight:normal;'>
+            The Meeting Detail
+        </h4>
+    </modal.header>
+    <modal.body>
+        <div class='form-group'>
+            <div local-class='Integromat__input_items'>
+                <label>{{t 'integromat.subject'}}</label>
+                <div>{{this.teams_subject}}</div>
+            </div>
+            <div local-class='Integromat__input_items'>
+                <label>{{t 'integromat.attendees'}}</label>
+                <div>
+                    <span id='attendees_inputs'>
+                        {{#each this.teamsMeetingAttendees as |mail|}}
+                            {{mail}},
+                        {{/each}}
+                    </span>
+                </div>
+            </div>
+            <div local-class='Integromat__input_items'>
+                <table>
+                    <tr>
+                        <td><label>{{t 'integromat.start_datetime'}}</label></td><td></td>
+                        <td><label>{{t 'integromat.end_datetime'}}</label></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            {{this.teams_startDate}}{{teams_startTime}}
+                        </td>
+                        <td><label local-class='Integromat__input_items'>{{t 'integromat.from_symbol'}}</label></td>
+                        <td>
+                            {{this.teams_endDate}}{{teams_endTime}}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div local-class='Integromat__input_items'>
+                <label>{{t 'integromat.location'}}</label>
+                <div>{{this.teams_location}}</div>
+            </div>
+            <div local-class='Integromat__input_items'>
+                <label>{{t 'integromat.content'}}</label>
+                <div>{{this.teams_content}}</div>
+            </div>
+        </div>
+    </modal.body>
+    <modal.footer>
+        <BsButton
+            @onClick={{action modal.close}}
+        >
+            Close
+        </BsButton>
+        <OsfButton
+            @type='success'
+            @onClick={{action (action this.startMeeting this.teams_joinUrl)}}
+        >
+            Start
         </OsfButton>
     </modal.footer>
 </BsModal>

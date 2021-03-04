@@ -74,6 +74,7 @@ export default class GuidNodeIntegromat extends Controller {
     showCreateMicrosoftTeamsMeetingDialog = false;
     showUpdateMicrosoftTeamsMeetingDialog = false;
     showDeleteMicrosoftTeamsMeetingDialog = false;
+    showDetailMicrosoftTeamsMeetingDialog = false;
     showWorkflows = true;
     showMicrosoftTeamsMeetings = false;
 
@@ -94,6 +95,7 @@ export default class GuidNodeIntegromat extends Controller {
     teams_endTime = '';
     teams_location = '';
     teams_content = '';
+    teams_joinUrl = '';
 
     teamsMeetingAttendees : string[] = [];
     notTeamsMeetingAttendees : string[] = [];
@@ -484,6 +486,52 @@ export default class GuidNodeIntegromat extends Controller {
             .catch(() => {
                 this.toast.error(this.i18n.t('integromat.error.failedToRequest'));
             })
+    }
+
+    @action
+    makeDetailMeetingDialog(this: GuidNodeIntegromat, v: string) {
+
+        if (!this.config) {
+            return '';
+        }
+        const config = this.config.content as IntegromatConfigModel;
+        const microsoftTeamsMeetings = JSON.parse(config.microsoft_teams_meetings);
+
+        this.set('showDetailMicrosoftTeamsMeetingDialog', true);
+
+        for(let i=0; i < microsoftTeamsMeetings.length; i++){
+
+            if(microsoftTeamsMeetings[i].fields.meetingid === v){
+                this.set('teams_subject', microsoftTeamsMeetings[i].fields.subject);
+                this.set('teams_attendees', microsoftTeamsMeetings[i].fields.attendees);
+                this.set('teams_startDate', moment(microsoftTeamsMeetings[i].fields.start_datetime).format('YYYY/MM/DD'));
+                this.set('teams_startTime', moment(microsoftTeamsMeetings[i].fields.start_datetime).format('HH:mm'));
+                this.set('teams_endDate', moment(microsoftTeamsMeetings[i].fields.end_datetime).format('YYYY/MM/DD'));
+                this.set('teams_endTime', moment(microsoftTeamsMeetings[i].fields.end_datetime).format('HH:mm'));
+                this.set('teams_location', microsoftTeamsMeetings[i].fields.location);
+                this.set('teams_content', microsoftTeamsMeetings[i].fields.content);
+                this.set('teams_joinUrl', microsoftTeamsMeetings[i].fields.join_url);
+                break;
+            }
+        }
+
+        const microsoft_teams_attendees = JSON.parse(config.microsoft_teams_attendees);
+
+        this.teamsMeetingAttendees.length = 0;
+        this.notTeamsMeetingAttendees.length = 0;
+
+        for(let j = 0; j < microsoft_teams_attendees.length; j++){
+            this.notTeamsMeetingAttendees.push(microsoft_teams_attendees[j].fields.microsoft_teams_mail);
+
+            for(let k = 0; k < this.teams_attendees.length; k++){
+                if(microsoft_teams_attendees[j].pk === this.teams_attendees[k]){
+                    this.teamsMeetingAttendees.push(microsoft_teams_attendees[j].fields.microsoft_teams_mail);
+                    this.notTeamsMeetingAttendees.pop();
+                    break;
+                }
+            }
+        }
+        return '';
     }
 
     @action

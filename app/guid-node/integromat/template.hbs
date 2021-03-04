@@ -128,15 +128,15 @@
                                                 <td>{{row.fields.organizer}}</td>
 
                                                 <td>{{moment-format row.fields.start_datetime 'YYYY-MM-DD HH:mm'}}</td>
-                                                <td>
+                                                <td local-class='Integromat__cell'>
                                                     <CopyableText
                                                         @text={{row.fields.join_url}}
                                                     />
                                                 </td>
-                                                <td local-class='Integromat__cell_right'>
+                                                <td local-class='Integromat__cell'>
                                                     <button class='fa fa-play' onClick={{action (action this.startMeeting row.fields.join_url)}}></button>
                                                 </td>
-                                                <td local-class='Integromat__cell_right'>
+                                                <td local-class='Integromat__cell'>
                                                     <button class='fa fa-edit' onClick={{action (action this.makeUpdateMeetingDialog row.fields.meetingid)}}></button>
                                                 </td>
                                             </tr>

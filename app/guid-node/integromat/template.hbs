@@ -87,12 +87,12 @@
                             <i class='fa fa-plus'>&nbsp;{{t 'integromat.meetingDialog.createLabel'}}</i>
                         </button>
                     </div>
-                    <BsTab as |tab|>
-                        <tab.pane @title='Upcoming'>
+                    <BsTab local-class='Integromat__web_meeting_tab' as |tab|>
+                        <tab.pane @title={{t 'integromat.upcoming'}}>
                             {{#if (eq this.upcoming_microsoft_teams_meetings.length 0)}}
                                 <h5 style='margin-left: 20px; margin-top: 20px;'>{{t 'integromat.noUpcomingMeeting'}}</h5>
                             {{else}}
-                                <div class='row' id='upcoming-teamsMeeting-table-row' local-class='Integromat__web_meeting_table'>
+                                <div class='row' id='upcoming-teamsMeeting-table-row'>
                                     <div class='col-xs-12'>
                                         <table class='table'>
                                             <thead>
@@ -149,11 +149,11 @@
                                 </div>
                             {{/if}}
                         </tab.pane>
-                        <tab.pane @title='Previous'>
+                        <tab.pane @title={{t 'integromat.previous'}}>
                             {{#if (eq this.previous_microsoft_teams_meetings.length 0)}}
                                 <h5 style='margin-left: 20px; margin-top: 20px;'>{{t 'integromat.noPreviousMeeting'}}</h5>
                             {{else}}
-                                <div class='row' id='previous-teamsMeeting-table-row' local-class='Integromat__web_meeting_table'>
+                                <div class='row' id='previous-teamsMeeting-table-row'>
                                     <div class='col-xs-12'>
                                         <table class='table'>
                                             <thead>

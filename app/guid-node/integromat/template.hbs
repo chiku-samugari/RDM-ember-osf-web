@@ -90,7 +90,7 @@
                     <BsTab local-class='Integromat__web_meeting_tab' as |tab|>
                         <tab.pane @title={{t 'integromat.upcoming'}}>
                             {{#if (eq this.upcoming_microsoft_teams_meetings.length 0)}}
-                                <h5 style='margin-left: 20px; margin-top: 20px;'>{{t 'integromat.noUpcomingMeeting'}}</h5>
+                                <p style='margin-left: 20px; margin-top: 20px;'>{{t 'integromat.noUpcomingMeetings'}}</p>
                             {{else}}
                                 <div class='row' id='upcoming-teamsMeeting-table-row'>
                                     <div class='col-xs-12'>
@@ -151,7 +151,7 @@
                         </tab.pane>
                         <tab.pane @title={{t 'integromat.previous'}}>
                             {{#if (eq this.previous_microsoft_teams_meetings.length 0)}}
-                                <h5 style='margin-left: 20px; margin-top: 20px;'>{{t 'integromat.noPreviousMeeting'}}</h5>
+                                <p style='margin-left: 20px; margin-top: 20px;'>{{t 'integromat.noPreviousMeetings'}}</p>
                             {{else}}
                                 <div class='row' id='previous-teamsMeeting-table-row'>
                                     <div class='col-xs-12'>
@@ -253,7 +253,7 @@
                                 </label>
                             {{/each}}
                         {{else}}
-                            <p>{{t 'integromat.noAttendee'}}</p>
+                            <p>{{t 'integromat.noAttendees'}}</p>
                         {{/if}}
                     </span>
                 </div>
@@ -391,7 +391,7 @@
                                 </label>
                             {{/each}}
                         {{else}}
-                            <p>{{t 'integromat.noAttendee'}}</p>
+                            <p>{{t 'integromat.noAttendees'}}</p>
                         {{/if}}
                     </span>
                 </div>

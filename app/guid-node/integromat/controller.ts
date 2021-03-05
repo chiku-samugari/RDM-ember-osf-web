@@ -137,7 +137,7 @@ export default class GuidNodeIntegromat extends Controller {
 
         const config = this.config.content as IntegromatConfigModel;
         const webhookUrl = config.webhook_url;
-        const organizerId = config.organizer_id;
+        const organizerId = config.microsoft_teams_organizer_id;
         const node_id = config.node_settings_id;
         const app_name = config.app_name_microsoft_teams;
         const guid = this.model.guid;

@@ -246,8 +246,10 @@
                 <div>
                     <span id='attendees_inputs'>
                         {{#each this.microsoft_teams_attendees as |row|}}
-                            <input class='microsoftTeamsAttendeesCheck' type='checkBox' style='width: 15px; height: 15px;' id={{row.fields.microsoft_teams_mail}}>
-                            {{row.fields.microsoft_teams_mail}}
+                            <label local-class=‘Integromat__label_normal’>
+                                <input class='microsoftTeamsAttendeesCheck' type='checkBox' style='width: 15px; height: 15px;' id={{row.fields.microsoft_teams_mail}}>
+                                {{row.fields.microsoft_teams_mail}}
+                            </label>
                         {{/each}}
                     </span>
                 </div>

@@ -87,65 +87,130 @@
                             <i class='fa fa-plus'>&nbsp;{{t 'integromat.meetingDialog.createLabel'}}</i>
                         </button>
                     </div>
-                    {{#if (eq this.microsoft_teams_meetings.length 0)}}
-                        <h5 style="margin-left: 20px; margin-top: 20px;">{{t 'integromat.noMeeting'}}</h5>
-                    {{else}}
-                        <div class='row' id='teamsMeeting-table-row' local-class='Integromat__web_meeting_table'>
-                            <div class='col-xs-12'>
-                                <table class='table'>
-                                    <thead>
-                                        <tr style='background-color: #f5f5f5;'>
-                                            <th width='3%'>
-                                                <input type='checkBox' style='width: 15px; height: 15px;'>
-                                            </th>
-                                            <th width='25%'>
-                                                <span class='header_text m-r-sm'>{{t 'integromat.subject'}}</span>
-                                            </th>
-                                            <th width='25%'>
-                                                <span class='header_text m-r-sm'>{{t 'integromat.organizer'}}</span>
-                                            </th>
-                                            <th width='20%'>
-                                                <span class='header_text m-r-sm'>{{t 'integromat.start_datetime'}}</span>
-                                            </th>
-                                            <th width='30%'>
-                                                <span class='header_text m-r-sm'>{{t 'integromat.joinUrl'}}</span>
-                                            </th>
-                                            <th></th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {{#each this.microsoft_teams_meetings as |row|}}
-                                            <tr>
-                                                <td>
-                                                    <input data-join-url={{row.fields.join_url}} data-subject={{row.fields.subject}} class='microsoftTeamsMeetingCheck' type='checkBox' style='width: 15px; height: 15px;' id={{row.fields.meetingid}}>
-                                                </td>
-                                                <td>
-                                                    <a href='javasript:void(0)' onClick={{action (action this.makeDetailMeetingDialog row.fields.meetingid)}}>
-                                                        {{row.fields.subject}}
-                                                    </a>
-                                                </td>
-                                                <td>{{row.fields.organizer}}</td>
+                    <BsTab as |tab|>
+                        <tab.pane @title='Upcoming'>
+                            {{#if (eq this.upcoming_microsoft_teams_meetings.length 0)}}
+                                <h5 style='margin-left: 20px; margin-top: 20px;'>{{t 'integromat.noUpcomingMeeting'}}</h5>
+                            {{else}}
+                                <div class='row' id='upcoming-teamsMeeting-table-row' local-class='Integromat__web_meeting_table'>
+                                    <div class='col-xs-12'>
+                                        <table class='table'>
+                                            <thead>
+                                                <tr style='background-color: #f5f5f5;'>
+                                                    <th width='3%'>
+                                                        <input type='checkBox' style='width: 15px; height: 15px;'>
+                                                    </th>
+                                                    <th width='25%'>
+                                                        <span class='header_text m-r-sm'>{{t 'integromat.subject'}}</span>
+                                                    </th>
+                                                    <th width='25%'>
+                                                        <span class='header_text m-r-sm'>{{t 'integromat.organizer'}}</span>
+                                                    </th>
+                                                    <th width='20%'>
+                                                        <span class='header_text m-r-sm'>{{t 'integromat.start_datetime'}}</span>
+                                                    </th>
+                                                    <th width='30%'>
+                                                        <span class='header_text m-r-sm'>{{t 'integromat.joinUrl'}}</span>
+                                                    </th>
+                                                    <th></th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {{#each this.upcoming_microsoft_teams_meetings as |row|}}
+                                                    <tr>
+                                                        <td>
+                                                            <input data-join-url={{row.fields.join_url}} data-subject={{row.fields.subject}} class='microsoftTeamsMeetingCheck' type='checkBox' style='width: 15px; height: 15px;' id={{row.fields.meetingid}}>
+                                                        </td>
+                                                        <td>
+                                                            <a href='javasript:void(0)' onClick={{action (action this.makeDetailMeetingDialog row.fields.meetingid)}}>
+                                                                {{row.fields.subject}}
+                                                            </a>
+                                                        </td>
+                                                        <td>{{row.fields.organizer}}</td>
 
-                                                <td>{{moment-format row.fields.start_datetime 'YYYY-MM-DD HH:mm'}}</td>
-                                                <td style="vertical-align: middle;">
-                                                    <CopyableText
-                                                        @text={{row.fields.join_url}}
-                                                    />
-                                                </td>
-                                                <td style="vertical-align: middle;">
-                                                    <button class='fa fa-play' onClick={{action (action this.startMeeting row.fields.join_url)}}></button>
-                                                </td>
-                                                <td style="vertical-align: middle;">
-                                                    <button class='fa fa-edit' onClick={{action (action this.makeUpdateMeetingDialog row.fields.meetingid)}}></button>
-                                                </td>
-                                            </tr>
-                                        {{/each}}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    {{/if}}
+                                                        <td>{{moment-format row.fields.start_datetime 'YYYY-MM-DD HH:mm'}}</td>
+                                                        <td style='vertical-align: middle;'>
+                                                            <CopyableText
+                                                                @text={{row.fields.join_url}}
+                                                            />
+                                                        </td>
+                                                        <td style='vertical-align: middle;'>
+                                                            <button class='fa fa-play' onClick={{action (action this.startMeeting row.fields.join_url)}}></button>
+                                                        </td>
+                                                        <td style='vertical-align: middle;'>
+                                                            <button class='fa fa-edit' onClick={{action (action this.makeUpdateMeetingDialog row.fields.meetingid)}}></button>
+                                                        </td>
+                                                    </tr>
+                                                {{/each}}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            {{/if}}
+                        </tab.pane>
+                        <tab.pane @title='Previous'>
+                            {{#if (eq this.previous_microsoft_teams_meetings.length 0)}}
+                                <h5 style='margin-left: 20px; margin-top: 20px;'>{{t 'integromat.noPreviousMeeting'}}</h5>
+                            {{else}}
+                                <div class='row' id='previous-teamsMeeting-table-row' local-class='Integromat__web_meeting_table'>
+                                    <div class='col-xs-12'>
+                                        <table class='table'>
+                                            <thead>
+                                                <tr style='background-color: #f5f5f5;'>
+                                                    <th width='3%'>
+                                                        <input type='checkBox' style='width: 15px; height: 15px;'>
+                                                    </th>
+                                                    <th width='25%'>
+                                                        <span class='header_text m-r-sm'>{{t 'integromat.subject'}}</span>
+                                                    </th>
+                                                    <th width='25%'>
+                                                        <span class='header_text m-r-sm'>{{t 'integromat.organizer'}}</span>
+                                                    </th>
+                                                    <th width='20%'>
+                                                        <span class='header_text m-r-sm'>{{t 'integromat.start_datetime'}}</span>
+                                                    </th>
+                                                    <th width='30%'>
+                                                        <span class='header_text m-r-sm'>{{t 'integromat.joinUrl'}}</span>
+                                                    </th>
+                                                    <th></th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {{#each this.previous_microsoft_teams_meetings as |row|}}
+                                                    <tr>
+                                                        <td>
+                                                            <input data-join-url={{row.fields.join_url}} data-subject={{row.fields.subject}} class='microsoftTeamsMeetingCheck' type='checkBox' style='width: 15px; height: 15px;' id={{row.fields.meetingid}}>
+                                                        </td>
+                                                        <td>
+                                                            <a href='javasript:void(0)' onClick={{action (action this.makeDetailMeetingDialog row.fields.meetingid)}}>
+                                                                {{row.fields.subject}}
+                                                            </a>
+                                                        </td>
+                                                        <td>{{row.fields.organizer}}</td>
+
+                                                        <td>{{moment-format row.fields.start_datetime 'YYYY-MM-DD HH:mm'}}</td>
+                                                        <td style='vertical-align: middle;'>
+                                                            <CopyableText
+                                                                @text={{row.fields.join_url}}
+                                                            />
+                                                        </td>
+                                                        <td style='vertical-align: middle;'>
+                                                            <button class='fa fa-play' onClick={{action (action this.startMeeting row.fields.join_url)}}></button>
+                                                        </td>
+                                                        <td style='vertical-align: middle;'>
+                                                            <button class='fa fa-edit' onClick={{action (action this.makeUpdateMeetingDialog row.fields.meetingid)}}></button>
+                                                        </td>
+                                                    </tr>
+                                                {{/each}}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            {{/if}}
+                        </tab.pane>
+                    </BsTab>
                 </div>
             </div>
         {{/if}}
@@ -490,11 +555,11 @@
                     </tr>
                     <tr>
                         <td>
-                            {{this.teams_startDate}}&nbsp;{{teams_startTime}}
+                            {{this.teams_startDate}}&nbsp;{{this.teams_startTime}}
                         </td>
                         <td><label local-class='Integromat__input_items'>{{t 'integromat.from_symbol'}}</label></td>
                         <td>
-                            {{this.teams_endDate}}&nbsp;{{teams_endTime}}
+                            {{this.teams_endDate}}&nbsp;{{this.teams_endTime}}
                         </td>
                     </tr>
                 </table>

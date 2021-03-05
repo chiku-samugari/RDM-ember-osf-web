@@ -558,6 +558,26 @@ export default class GuidNodeIntegromat extends Controller {
         return microsoft_teams_meetings;
     }
 
+    @computed('config.upcoming_microsoft_teams_meetings')
+    get upcoming_microsoft_teams_meetings() {
+        if (!this.config) {
+            return '';
+        }
+        const config = this.config.content as IntegromatConfigModel;
+        const upcoming_microsoft_teams_meetings = JSON.parse(config.upcoming_microsoft_teams_meetings);
+        return upcoming_microsoft_teams_meetings;
+    }
+
+    @computed('config.previous_microsoft_teams_meetings')
+    get previous_microsoft_teams_meetings() {
+        if (!this.config) {
+            return '';
+        }
+        const config = this.config.content as IntegromatConfigModel;
+        const previous_microsoft_teams_meetings = JSON.parse(config.previous_microsoft_teams_meetings);
+        return previous_microsoft_teams_meetings;
+    }
+
     @computed('config.microsoft_teams_attendees')
     get microsoft_teams_attendees() {
         if (!this.config) {

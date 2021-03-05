@@ -245,12 +245,16 @@
                 <label>{{t 'integromat.attendees'}}</label>
                 <div>
                     <span id='attendees_inputs'>
-                        {{#each this.microsoft_teams_attendees as |row|}}
-                            <label local-class='Integromat__label_normal'>
-                                <input class='microsoftTeamsAttendeesCheck' type='checkBox' style='width: 15px; height: 15px;' id={{row.fields.microsoft_teams_mail}}>
-                                {{row.fields.microsoft_teams_mail}}
-                            </label>
-                        {{/each}}
+                        {{#if this.microsoft_teams_attendees}}
+                            {{#each this.microsoft_teams_attendees as |row|}}
+                                <label local-class='Integromat__label_normal'>
+                                    <input class='microsoftTeamsAttendeesCheck' type='checkBox' style='width: 15px; height: 15px;' id={{row.fields.microsoft_teams_mail}}>
+                                    {{row.fields.microsoft_teams_mail}}
+                                </label>
+                            {{/each}}
+                        {{else}}
+                            <p>{{t 'integromat.noAttendee'}}</p>
+                        {{/if}}
                     </span>
                 </div>
             </div>
@@ -373,18 +377,22 @@
                 <label>{{t 'integromat.attendees'}}</label>
                 <div>
                     <span id='attendees_inputs'>
-                        {{#each this.teamsMeetingAttendees as |mail|}}
-                            <label local-class='Integromat__label_normal'>
-                                <input class='microsoftTeamsAttendeesCheck' type='checkBox' style='width: 15px; height: 15px;' id={{mail}} checked>
-                                {{mail}}
-                            </label>
-                        {{/each}}
-                        {{#each this.notTeamsMeetingAttendees as |mail|}}
-                            <label local-class='Integromat__label_normal'>
-                                <input class='microsoftTeamsAttendeesCheck' type='checkBox' style='width: 15px; height: 15px;' id={{mail}}>
-                                {{mail}}
-                            </label>
-                        {{/each}}
+                        {{#if this.microsoft_teams_attendees}}
+                            {{#each this.teamsMeetingAttendees as |mail|}}
+                                <label local-class='Integromat__label_normal'>
+                                    <input class='microsoftTeamsAttendeesCheck' type='checkBox' style='width: 15px; height: 15px;' id={{mail}} checked>
+                                    {{mail}}
+                                </label>
+                            {{/each}}
+                            {{#each this.notTeamsMeetingAttendees as |mail|}}
+                                <label local-class='Integromat__label_normal'>
+                                    <input class='microsoftTeamsAttendeesCheck' type='checkBox' style='width: 15px; height: 15px;' id={{mail}}>
+                                    {{mail}}
+                                </label>
+                            {{/each}}
+                        {{else}}
+                            <p>{{t 'integromat.noAttendee'}}</p>
+                        {{/if}}
                     </span>
                 </div>
             </div>

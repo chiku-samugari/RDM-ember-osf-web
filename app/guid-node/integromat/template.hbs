@@ -372,7 +372,7 @@
             <div local-class='Integromat__input_items'>
                 <label>{{t 'integromat.attendees'}}</label>
                 <div>
-                    <span id=‘attendees_inputs’>
+                    <span id='attendees_inputs'>
                         {{#each this.teamsMeetingAttendees as |mail|}}
                             <label local-class=‘Integromat__label_normal’>
                                 <input class=‘microsoftTeamsAttendeesCheck’ type=‘checkBox’ style=‘width: 15px; height: 15px;’ id={{mail}} checked>
@@ -548,7 +548,7 @@
                 <div>
                     <span id='attendees_inputs'>
                         {{#each this.teamsMeetingAttendees as |mail|}}
-                            {{mail}},
+                            {{mail}}&nbsp;&nbsp;
                         {{/each}}
                     </span>
                 </div>

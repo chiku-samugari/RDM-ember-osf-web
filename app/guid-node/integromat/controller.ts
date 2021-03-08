@@ -408,6 +408,7 @@ export default class GuidNodeIntegromat extends Controller {
     @action
     makeDeleteDialog(this: GuidNodeIntegromat, id: string) {
 
+        this.set('showDeleteMicrosoftTeamsMeetingDialog', true);
         this.set('teams_deleteMeetingId', id);
 
     }

@@ -135,6 +135,9 @@
                                                         <td style='vertical-align: middle;'>
                                                             <button class='fa fa-edit' onClick={{action (action this.makeUpdateMeetingDialog row.fields.meetingid)}}></button>
                                                         </td>
+                                                        <td style='vertical-align: middle;'>
+                                                            <button class='fa fa-trash' onClick={{action (action this.startDeleteMicrosoftTeamsMeetingScenario row.fields.meetingid)}}></button>
+                                                        </td>
                                                     </tr>
                                                 {{/each}}
                                             </tbody>
@@ -503,9 +506,9 @@
                     value=this.app_name_microsoft_teams
                 }}
                 {{input
-                    name='teams_meetingid'
+                    name='teams_deleteMeetingId'
                     type='hidden'
-                    value=this.selectedTargetId
+                    value=this.teams_deleteMeetingId
                 }}
             </div>
         </div>

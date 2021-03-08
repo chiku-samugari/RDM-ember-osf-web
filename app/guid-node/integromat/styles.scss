@@ -11,10 +11,11 @@
 }
 
 .Integromat__sidebar {
-    width: 25%;
+    width: 20%;
     float: left;
     height: 575px;
     border-right-style: inset;
+    margin-left: 15px;
 }
 
 .Integromat__menu {
@@ -22,9 +23,10 @@
 }
 
 .Integromat__workflows {
-    width: 75%;
+    width: 80%;
     float: right;
     height: 575px;
+    margin-right: -15px;
 }
 
 .Integromat__web_meeting_tab {

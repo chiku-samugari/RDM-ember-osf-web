@@ -97,9 +97,6 @@
                                         <table class='table'>
                                             <thead>
                                                 <tr style='background-color: #f5f5f5;'>
-                                                    <th width='3%'>
-                                                        <input type='checkBox' style='width: 15px; height: 15px;'>
-                                                    </th>
                                                     <th width='25%'>
                                                         <span class='header_text m-r-sm'>{{t 'integromat.subject'}}</span>
                                                     </th>
@@ -119,9 +116,6 @@
                                             <tbody>
                                                 {{#each this.upcoming_microsoft_teams_meetings as |row|}}
                                                     <tr>
-                                                        <td style='vertical-align: middle;'>
-                                                            <input data-join-url={{row.fields.join_url}} data-subject={{row.fields.subject}} class='microsoftTeamsMeetingCheck' type='checkBox' style='width: 15px; height: 15px;' id={{row.fields.meetingid}}>
-                                                        </td>
                                                         <td style='vertical-align: middle;'>
                                                             <a href='javasript:void(0)' onClick={{action (action this.makeDetailMeetingDialog row.fields.meetingid)}}>
                                                                 {{row.fields.subject}}
@@ -158,9 +152,6 @@
                                         <table class='table'>
                                             <thead>
                                                 <tr style='background-color: #f5f5f5;'>
-                                                    <th width='3%'>
-                                                        <input type='checkBox' style='width: 15px; height: 15px;'>
-                                                    </th>
                                                     <th width='25%'>
                                                         <span class='header_text m-r-sm'>{{t 'integromat.subject'}}</span>
                                                     </th>
@@ -181,9 +172,6 @@
                                                 {{#each this.previous_microsoft_teams_meetings as |row|}}
                                                     <tr>
                                                         <td style='vertical-align: middle;'>
-                                                            <input data-join-url={{row.fields.join_url}} data-subject={{row.fields.subject}} class='microsoftTeamsMeetingCheck' type='checkBox' style='width: 15px; height: 15px;' id={{row.fields.meetingid}}>
-                                                        </td>
-                                                        <td style='vertical-align: middle;'>
                                                             <a href='javasript:void(0)' onClick={{action (action this.makeDetailMeetingDialog row.fields.meetingid)}}>
                                                                 {{row.fields.subject}}
                                                             </a>
@@ -201,6 +189,9 @@
                                                         </td>
                                                         <td style='vertical-align: middle;'>
                                                             <button class='fa fa-edit' onClick={{action (action this.makeUpdateMeetingDialog row.fields.meetingid)}}></button>
+                                                        </td>
+                                                        <td style='vertical-align: middle;'>
+                                                            <button class='fa fa-trash' onClick={{action (action this.startDeleteMicrosoftTeamsMeetingScenario row.fields.meetingid)}}></button>
                                                         </td>
                                                     </tr>
                                                 {{/each}}
@@ -253,7 +244,7 @@
                                 </label>
                             {{/each}}
                         {{else}}
-                            <p>{{t 'integromat.noAttendees'}}</p>
+                            <p>{{t 'integromat.meetingDialog.noAttendees'}}</p>
                         {{/if}}
                     </span>
                 </div>
@@ -391,7 +382,7 @@
                                 </label>
                             {{/each}}
                         {{else}}
-                            <p>{{t 'integromat.noAttendees'}}</p>
+                            <p>{{t 'integromat.meetingDialog.noAttendees'}}</p>
                         {{/if}}
                     </span>
                 </div>

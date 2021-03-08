@@ -419,16 +419,12 @@ export default class GuidNodeIntegromat extends Controller {
     }
 
     @action
-    startDeleteMicrosoftTeamsMeetingScenario(this: GuidNodeIntegromat) {
+    startDeleteMicrosoftTeamsMeetingScenario(this: GuidNodeIntegromat, id: string) {
 
         if (!this.config) {
             throw new EmberError('Illegal config');
         }
-        const microsoftTeamsMeetingChecked = document.querySelectorAll('input[class=microsoftTeamsMeetingCheck]:checked');
-        let selectedMeetingId : string[] = [];
-        for(let i = 0; i < microsoftTeamsMeetingChecked.length; i++){
-            selectedMeetingId.push(microsoftTeamsMeetingChecked[i].id);
-        }
+
         const config = this.config.content as IntegromatConfigModel;
         const webhookUrl = config.webhook_url;
         const nodeId = config.node_settings_id;
@@ -438,7 +434,7 @@ export default class GuidNodeIntegromat extends Controller {
         const payload = {
             'nodeId': nodeId,
             'meetingAppName': appName,
-            'microsoftTeamsMeetingIds': selectedMeetingId,
+            'microsoftTeamsMeetingId': id,
             'action': action,
             'infoGrdmScenarioStarted': infoGrdmScenarioStarted,
             'infoGrdmScenarioCompleted': infoGrdmScenarioCompleted,

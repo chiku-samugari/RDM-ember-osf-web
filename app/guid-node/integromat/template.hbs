@@ -55,7 +55,7 @@
             {{/if}}
         </div>
         {{#if this.showMicrosoftTeamsMeetings}}
-            <div class='col-md-9' style='width: 78%;'>
+            <div class='col-md-9' local-class='Integromat__webApp_screen'>
                 <div id='microsoftTeamsMeetings' class='main_screen'>
                     <div local-class='Integromat__web_meeting_navbar'>
                         <label style='margin-top:10px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{t 'integromat.workflows.web_meeting.microsoft_teams_apps'}}</label>
@@ -115,10 +115,10 @@
                                                         <td style='vertical-align: middle;'>
                                                             <button class='fa fa-play' onClick={{action (action this.startMeeting row.fields.join_url)}}></button>
                                                         </td>
-                                                        <td style='vertical-align: middle;'>
+                                                        <td class='text-info' style='vertical-align: middle;'>
                                                             <button class='fa fa-edit' onClick={{action (action this.makeUpdateMeetingDialog row.fields.meetingid)}}></button>
                                                         </td>
-                                                        <td style='vertical-align: middle;'>
+                                                        <td class='text-danger' style='vertical-align: middle;'>
                                                             <button class='fa fa-trash' onClick={{action (action this.makeDeleteDialog row.fields.meetingid)}}></button>
                                                         </td>
                                                     </tr>
@@ -174,10 +174,10 @@
                                                         <td style='vertical-align: middle;'>
                                                             <button class='fa fa-play' onClick={{action (action this.startMeeting row.fields.join_url)}}></button>
                                                         </td>
-                                                        <td style='vertical-align: middle;'>
+                                                        <td class='text-info' style='vertical-align: middle;'>
                                                             <button class='fa fa-edit' onClick={{action (action this.makeUpdateMeetingDialog row.fields.meetingid)}}></button>
                                                         </td>
-                                                        <td style='vertical-align: middle;'>
+                                                        <td class='text-danger' style='vertical-align: middle;'>
                                                             <button class='fa fa-trash' onClick={{action (action this.makeDeleteDialog row.fields.meetingid)}}></button>
                                                         </td>
                                                     </tr>

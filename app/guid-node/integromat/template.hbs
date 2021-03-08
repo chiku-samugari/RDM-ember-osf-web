@@ -62,24 +62,6 @@
                         <button style='margin-top:10px;'
                               data-test-project-contributors-search-button
                               local-class='Integromat__buttons'
-                              class='text-danger pull-right'
-                              type='text'
-                              onClick={{action this.makeDeleteDialog}}
-                          >
-                            <i class='fa fa-trash'>&nbsp;{{t 'integromat.meetingDialog.deleteLabel'}}</i>
-                        </button>
-                        <button style='margin-top:10px;'
-                              data-test-project-contributors-search-button
-                              local-class='Integromat__buttons'
-                              class='text-info pull-right'
-                              type='text'
-                              onClick={{action this.makeUpdateMeetingDialog}}
-                          >
-                            <i class='fa fa-edit'>&nbsp;{{t 'integromat.meetingDialog.updateLabel'}}</i>
-                        </button>
-                        <button style='margin-top:10px;'
-                              data-test-project-contributors-search-button
-                              local-class='Integromat__buttons'
                               class='text-success pull-right'
                               type='text'
                               onClick={{action (mut this.showCreateMicrosoftTeamsMeetingDialog) true}}
@@ -109,6 +91,7 @@
                                                     <th width='30%'>
                                                         <span class='header_text m-r-sm'>{{t 'integromat.joinUrl'}}</span>
                                                     </th>
+                                                    <th></th>
                                                     <th></th>
                                                     <th></th>
                                                 </tr>
@@ -167,6 +150,7 @@
                                                     <th width='30%'>
                                                         <span class='header_text m-r-sm'>{{t 'integromat.joinUrl'}}</span>
                                                     </th>
+                                                    <th></th>
                                                     <th></th>
                                                     <th></th>
                                                 </tr>

@@ -53,6 +53,22 @@ export default class NodeNavbar extends Component {
         })();
     }
 
+    @computed('node.addons.[]')
+    get integromatEnabled(): Promise<boolean> | null {
+        if (!this.node) {
+            return null;
+        }
+        let node = this.node;
+        return (async () => {
+            const addons = await node.addons;
+            if (!addons) {
+                return false;
+            }
+            const integromat = addons.filter(addon => addon.id === 'integromat');
+            return integromat.length > 0;
+        })();
+    }
+
     @action
     toggleNav() {
         this.toggleProperty('collapsedNav');

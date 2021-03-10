@@ -59,9 +59,6 @@
                         {{#if (if @node.isRegistration @node.userHasWritePermission @node.userHasReadPermission)}}
                             {{node-navbar/link node=@node useLinkTo=false destination='settings'}}
                         {{/if}}
-                        {{#if this.integromatEnabled }}
-                            {{node-navbar/link node=@node useLinkTo=false destination='integromat'}}
-                        {{/if}}
                     </ul>
                 </BsCollapse>
             </div>

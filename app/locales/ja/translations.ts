@@ -614,6 +614,7 @@ export default {
         files: 'ファイル',
         contributors: 'メンバー',
         addons: 'アドオン',
+        integromat: 'アプリ',
         settings: '設定',
         comments: 'コメント',
     },

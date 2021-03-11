@@ -18,7 +18,7 @@ module('Acceptance | guid-node/integromat', hooks => {
         assert.equal(currentURL(), url, `We are on ${url}`);
         assert.equal(currentRouteName(), 'guid-node.integromat', 'We are at guid-node.integromat');
         await percySnapshot(assert);
-        assert.dom('[data-test-workflows-table] table').exists();
-        assert.dom('[data-test-microsoft-teams-screen] div').doesNotExist();
+        assert.dom('[data-test-workflows-table]').exists();
+        assert.dom('[data-test-microsoft-teams-screen]').doesNotExist();
     });
 });

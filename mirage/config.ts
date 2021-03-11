@@ -7,6 +7,7 @@ import { createDeveloperApp, resetClientSecret } from './views/developer-app';
 import { createFork, createRegistrationFork } from './views/fork';
 import { guidDetail } from './views/guid';
 import { iqbrimsStatus } from './views/iqbrims-status';
+import { integromatConfig } from './views/integromat-config';
 import { createNode } from './views/node';
 import { osfNestedResource, osfResource, osfToManyRelationship } from './views/osf-resource';
 import { forkRegistration, registrationDetail } from './views/registration';
@@ -166,6 +167,7 @@ export default function(this: Server) {
     this.namespace = '/api/v1';
 
     this.get('/project/:id/iqbrims/status', iqbrimsStatus);
+    this.get('/project/:id/integromat/config', integromatConfig);
 
     this.urlPrefix = apiUrl;
     this.namespace = apiNamespace;

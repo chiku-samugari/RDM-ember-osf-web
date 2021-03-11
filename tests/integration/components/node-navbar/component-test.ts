@@ -8,7 +8,7 @@ import { OsfLinkRouterStub } from '../../helpers/osf-link-router-stub';
 
 enum NavCondition {
     HasParent,
-	IQBRIMSEnabled,
+    IQBRIMSEnabled,
     IntegromatEnabled,
     IsRegistration = 'isRegistration',
     IsPublic = 'public',

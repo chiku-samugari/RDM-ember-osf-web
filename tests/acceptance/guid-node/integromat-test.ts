@@ -11,7 +11,7 @@ module('Acceptance | guid-node/integromat', hooks => {
 
     test('logged in', async assert => {
         const node = server.create('node', { id: 'i9bri' });
-        server.create('integromat-config', { id: node.id });
+        server.create('integromat-config', { id: node.id, webhook_url: '123' });
         const url = `/${node.id}/integromat`;
 
         await visit(url);

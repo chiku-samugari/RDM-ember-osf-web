@@ -8,8 +8,7 @@ import { OsfLinkRouterStub } from '../../helpers/osf-link-router-stub';
 
 enum NavCondition {
     HasParent,
-	IQBRIMSEnabled,
-    IntegromatEnabled,
+    IQBRIMSEnabled,
     IsRegistration = 'isRegistration',
     IsPublic = 'public',
     UserCanRead = 'userHasReadPermission',
@@ -23,7 +22,6 @@ enum NavLink {
     ThisNode,
     Files = 'files',
     IQBRIMS = 'iqbrims',
-	Integromat = 'integromat',
     Wiki = 'wiki',
     Analytics = 'analytics',
     Registrations = 'registrations',
@@ -55,7 +53,7 @@ export class FakeNode {
         for (const condition of conditions) {
             if (condition === NavCondition.HasParent) {
                 this.parentId = faker.random.uuid();
-            } else if (condition !== NavCondition.IQBRIMSEnabled && condition !== NavCondition.IntegromatEnabled) {
+            } else if (condition !== NavCondition.IQBRIMSEnabled) {
                 this[condition] = true;
             }
         }
@@ -284,17 +282,6 @@ module('Integration | Component | node-navbar', () => {
                     NavLink.Registrations,
                 ],
             },
-            {
-                conditions: [
-                    NavCondition.IntegromatEnabled,
-                ],
-                links: [
-                    NavLink.ThisNode,
-                    NavLink.Files,
-                    NavLink.Integromat,
-                    NavLink.Registrations,
-                ],
-            },
         ];
 
         testCases.forEach((testCase, i) => {
@@ -305,10 +292,8 @@ module('Integration | Component | node-navbar', () => {
                 this.set('node', node);
                 const iqbrimsEnabled = testCase.conditions.filter((c) => c === NavCondition.IQBRIMSEnabled);
                 this.set('iqbrimsEnabled', iqbrimsEnabled.length > 0);
-                const integromatEnabled = testCase.conditions.filter((c) => c === NavCondition.IntegromatEnabled);
-                this.set('integromatEnabled', integromatEnabled.length > 0);
 
-                await render(hbs`{{node-navbar node=this.node iqbrimsEnabled=this.iqbrimsEnabled integromatEnabled=this.integromatEnabled renderInPlace=true}}`);
+                await render(hbs`{{node-navbar node=this.node iqbrimsEnabled=this.iqbrimsEnabled renderInPlace=true}}`);
 
                 assert.dom('[data-test-node-navbar-link]').exists({ count: testCase.links.length });
 

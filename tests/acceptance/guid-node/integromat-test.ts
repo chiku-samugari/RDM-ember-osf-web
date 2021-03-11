@@ -10,7 +10,7 @@ module('Acceptance | guid-node/integromat', hooks => {
     setupMirage(hooks);
 
     test('logged in', async assert => {
-        const node = server.create('node', { id: 'i9bri' });
+        const node = server.create('node', { id: 'in2g6' });
         server.create('integromat-config', { id: node.id, webhook_url: '123' });
         const url = `/${node.id}/integromat`;
 

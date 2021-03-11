@@ -11,15 +11,14 @@ module('Acceptance | guid-node/integromat', hooks => {
 
     test('logged in', async assert => {
         const node = server.create('node', { id: 'i9bri' });
-        server.create('integromat-config', { id: node.id, param1: '123' });
+        server.create('integromat-config', { id: node.id });
         const url = `/${node.id}/integromat`;
 
         await visit(url);
         assert.equal(currentURL(), url, `We are on ${url}`);
         assert.equal(currentRouteName(), 'guid-node.integromat', 'We are at guid-node.integromat');
         await percySnapshot(assert);
-        assert.dom('[data-test-param1] input').exists()
-            .hasValue('123');
-        assert.dom('[data-test-save-button]').exists();
+        assert.dom('[data-test-workflows-table] table').exists();
+        assert.dom('[data-test-microsoft-teams-screen] div').doesNotExist();
     });
 });

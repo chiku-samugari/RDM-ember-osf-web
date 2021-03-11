@@ -27,7 +27,7 @@
             </div>
             {{#if this.showWorkflows}}
                 <div id='workflows' class='main_screen' local-class='Integromat__workflows'>
-                    <table class='table table-bordered'>
+                    <table data-test-workflows-table class='table table-bordered'>
                         <thead>
                             <tr style='background-color: #f5f5f5;'>
                                 <th width='50%'>
@@ -55,7 +55,7 @@
             {{/if}}
         </div>
         {{#if this.showMicrosoftTeamsMeetings}}
-            <div class='col-md-9' local-class='Integromat__webApp_screen'>
+            <div  data-test-microsoft-teams-screen class='col-md-9' local-class='Integromat__webApp_screen'>
                 <div id='microsoftTeamsMeetings' class='main_screen'>
                     <div local-class='Integromat__web_meeting_navbar'>
                         <label style='margin-top:10px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{t 'integromat.workflows.web_meeting.microsoft_teams_apps'}}</label>

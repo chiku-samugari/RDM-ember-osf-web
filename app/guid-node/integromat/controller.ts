@@ -589,16 +589,6 @@ export default class GuidNodeIntegromat extends Controller {
         return workflows;
     }
 
-    @computed('config.app_name_microsoft_teams')
-    get app_name_microsoft_teams() {
-        if (!this.config) {
-            return '';
-        }
-        const config = this.config.content as IntegromatConfigModel;
-        const appNameMicrosoftTeams = config.app_name_microsoft_teams;
-        return appNameMicrosoftTeams;
-    }
-
     @computed('node')
     get config(): DS.PromiseObject<IntegromatConfigModel> | undefined {
         if (this.configCache) {

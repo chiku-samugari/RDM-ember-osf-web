@@ -30,7 +30,7 @@ module('Acceptance | logged-out home page test', hooks => {
             .containsText(t('osf-components.hero-banner.subheading').toString());
 
         // Check support
-        assert.dom('[data-test-support-heading]').hasText('How OSF supports your research');
+        assert.dom('[data-test-support-heading]').hasText('How GakuNin RDM supports your research');
         assert.dom('[data-test-support-search]').exists();
         assert.dom('[data-test-support-design]').exists();
         assert.dom('[data-test-support-analyze]').exists();

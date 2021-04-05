@@ -9,9 +9,9 @@ function calculateLocale(locales) {
 export default {
     name: 'i18n',
     initialize(app) {
-        const i18n = app.lookup('service:i18n');
+        const intl = app.lookup('service:intl');
 
-        i18n.addTranslations('ja-jp');
-        i18n.set('locale', calculateLocale(i18n.get('locales')));
+        intl.addTranslations('ja-jp');
+        intl.set('locale', calculateLocale(intl.get('locales')));
     },
 };

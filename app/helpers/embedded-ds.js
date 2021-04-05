@@ -18,7 +18,7 @@ export function embeddedDs(parentId) {
         || window.navigator.userLanguage
         || window.navigator.browserLanguage;
     if (language) {
-        language = language.split('-')[0];
+        ([language] = language.split('-'));
     }
     if (!['ja', 'en'].includes(language)) {
         language = 'ja';

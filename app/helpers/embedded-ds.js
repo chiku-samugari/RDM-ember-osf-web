@@ -29,7 +29,7 @@ export function embeddedDs(parentId) {
         type: 'application/javascript',
     });
     const script = $('<script />', {
-        src: wayfScript + '.' + language,
+        src: `${wayfScript}.${language}`,
         type: 'application/javascript',
     });
 

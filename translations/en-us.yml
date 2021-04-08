@@ -195,7 +195,7 @@ dashboard:
         other_links: |-
             'Go to <a href="/myprojects/">My Projects</a> to organize your work {useSearch, select, 
                 true { 'or <a href="/search/">search</a>' }
-                false { 'in' }
+                other { 'in' }
             } GakuNin RDM'
         no_results: 'No results found.'
         no_projects:

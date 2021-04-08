@@ -94,6 +94,7 @@ general:
         institutions: 機関
         preprints: プレプリント
         registries: 登録
+    other: Other
 node_categories:
     analysis: 分析
     communication: コミュニケーション
@@ -182,14 +183,20 @@ file_browser:
     file_replaced: このファイルは置換されました。
     file_deleted: このファイルは削除されました。
     delete_failed: 削除に失敗しました。
+    rename_failed: 'Unable to rename file'
     successfully_moved: 移動に成功しました
+    successfully_renamed: 'This file has been successfully renamed.'
 dashboard:
     page_title: ホーム
     title: ダッシュボード
     create_new_project_button: 新規プロジェクト作成
     quicksearch:
         search: プロジェクトを検索
-        other_links: 'あなたのプロジェクトを整理、<a href="/search/">検索</a>するには、<a href="/myprojects/">マイプロジェクト</a>を開きます'
+        other_links: |-
+            'あなたのプロジェクトを整理{useSearch, select,
+                true { '、<a href="/search/">検索</a>' }
+                other { '' }
+            }するには、<a href="/myprojects/">マイプロジェクト</a>を開きます'
         no_results: プロジェクトが見つかりません。
         no_projects:
             line1: まだプロジェクトがありません。画面右上のボタンからプロジェクトを作成して下さい。
@@ -229,6 +236,7 @@ new_project:
     stay_here: このページに留まる
     go_to_new: 作成したプロジェクトへ移動
     storage_region: ストレージの場所
+    could_not_create_project: 'Could not create project'
     creating: プロジェクトを保存中...
     create_failed_header: プロジェクトを作成できませんでした
     create_failed_msg: '不明なエラーが発生しました。 後でもう一度やり直してください。'
@@ -283,6 +291,7 @@ navbar:
     login: ログイン
     join: ジョイン
     osf_logo: 'GakuNin RDM ロゴ'
+    search_bar: 'Search bar for registries'
 auth_dropdown:
     log_out: ログアウト
     my_profile: プロフィール
@@ -471,6 +480,7 @@ tos_consent:
     paragraph: '<a href="{link1}">利用規約</a>と<a href="{link2}">プライバシーポリシー</a>を更新しました。注意深くお読みください。'
     have_read_and_agree: これらの規約を読み、同意します
     continue: 続ける
+    failed_save: 'Unable to save Terms of Services consent.'
 validationErrors:
     description: このフィールド
     inclusion: '{description}はリストに含まれていません。'
@@ -478,8 +488,8 @@ validationErrors:
     invalid: '{description}は無効です。'
     confirmation: '{description}は{on}と一致しません。'
     accepted: '{description}に同意する必要があります。'
-    empty: '{description}を空白にはできません。'
-    blank: '{description}をブランクにはできません。'
+    empty: 'このフィールドを空白にはできません。'
+    blank: 'このフィールドをブランクにはできません。'
     present: '{description}は空白にする必要があります。'
     collection: '{description}はコレクションでなければいけません。'
     singular: '{description}はコレクションにすることはできません。.'
@@ -516,10 +526,16 @@ validationErrors:
     password_match: パスワードは一致しなければなりません。
     recaptcha: reCAPTCHAを完了させてください。
     affirm_terms: 利用規約とプライバシーポリシーを読み、同意する必要があります。
-    min_subjects: '少なくとも{minLength}件の件名を選択する必要があります。'
+    min_subjects: '少なくとも1件の件名を選択する必要があります。'
     node_license_invalid: ライセンスの無効な必須項目
     node_license_missing_fields: '次の必須項目がありません。: {missingFields}'
     invalid_doi: 有効なDOI形式(10.xxxx/xxxxx)を使用してください
+    mustSelect: 'You must select a value for this field.'
+    mustSelectMinOne: 'You must select at least one value for this field.'
+    mustSelectFileMinOne: 'You must select at least one file for this field.'
+    onlyProjectOrComponentFiles: 'The {numOfFiles, plural, =1 {file} other {files}} "{missingFilesList}" cannot be found on this {projectOrComponent}.'
+    new_folder_name: 'Folder name must not be blank.'
+    year_format: 'Please specify a valid year.'
 validated_input_form:
     discard_changes: 変更を破棄
 node_navbar:
@@ -637,6 +653,25 @@ institutions:
     contact_us: お問い合わせ
     title: 機関
     search_placeholder: 機関を検索
+    dashboard:
+        title: '{institutionName} Dashboard'
+        last_update: 'Updated every 24 hours'
+        download_csv: 'Download CSV'
+        select_default: 'All Departments'
+        users_list:
+            name: Name
+            department: Department
+            projects: Projects
+            public_projects: 'Public Projects'
+            private_projects: 'Private Projects'
+            empty: 'No users found matching search criteria.'
+        users_connected_panel: 'SSO Users Connected'
+        projects_panel: 'Total Projects'
+        departments_panel: Departments
+        public: Public
+        private: Private
+        users: Users
+        empty: 'No data for institution found.'
 registration:
     project_alert: 'この登録は、<a class="link-solid" href="/{projectId}/">このプロジェクト</a>の凍結された編集不可バージョンです。'
 list:
@@ -851,8 +886,8 @@ collections:
         update_button: 更新
         add_save_success: '{title}がコレクションに追加されました。'
         update_save_success: 'コレクションで{title}が更新されました。'
-        add_save_error: "コレクションへの{title}の追加エラー:\n{error}"
-        update_save_error: "コレクションの{title}の更新エラー:\n{error}"
+        add_save_error: "コレクションへの{title}の追加エラー."
+        update_save_error: "コレクションの{title}の更新エラー."
         warning_body: '提出に対する変更を破棄してもよろしいですか？ プロジェクトに保存された変更は持続します.'
     collection_submission_confirmation_modal:
         header: プロジェクトを提出する
@@ -920,6 +955,7 @@ registries:
     discover:
         page_title: 検索
         SHARE: 共有
+        registrations: Registrations
         sort_by: 並び替え
         powered_by: 'powered by'
         no_results: 検索結果が見つかりません。
@@ -953,10 +989,27 @@ registries:
         draft:
             metadata:
                 title: 基本的な登録情報を記入してください
+                page_label: Metadata
+                failed_auto_save: 'Failed to auto-save draft registration metadata'
+                save_institutions_error: 'Failed to save affiliated institutions'
+                load_institutions_error: 'Failed to load affiliated institutions'
             form:
                 title: 登録フォームに記入
+                next: Next
+                back: Back
+                save_draft: 'Save draft'
+                new_registration: 'New registration'
+                last_saved: 'Auto-saved: '
+                save_failed: 'Save failed. Unsaved changes present.'
+                failed_auto_save: 'Failed to auto-save draft registration form'
             review:
                 title: 送信前に登録を確認する
+                page_label: Review
+                start_review: Review
+                invalid_warning: 'Please address invalid or missing entries to complete registration.'
+                toggle_dropdown: 'Toggle navigation dropdown'
+            register: Register
+            submit_error: 'Unable to create a registration.'
     index:
         lead: '<span class="f-w-lg">オープン</span> レジストリネットワーク'
         see_example: 例を見る
@@ -984,6 +1037,7 @@ registries:
         add_license: ライセンスを追加
         affiliated_institutions: 所属機関
         category: カテゴリー
+        choose_license: 'Choose a License'
         citation: 引用
         contributors: メンバー
         create_doi: DOIを作成する
@@ -993,12 +1047,18 @@ registries:
         disciplines: 分野
         edit_field: '{field}を編集'
         license: ライセンス
+        metadata_page_heading: 'Registration Metadata'
+        metadata_page_description: 'This metadata applies only to the registration you are creating, and will not be applied to your project.'
+        no_affiliated_institutions: 'No affiliated institutions'
+        no_copyrightHolders: 'No copyright holders'
         no_description: 説明なし
         no_doi: DOIが割りあてられていません。
         no_license: ライセンスがありません。
         no_matches: 一致がありません。
         no_publication_doi: パブリケーションDOIがありません。
         no_subjects: 学科がありません。
+        no_title: 'No title'
+        no_year: 'No year'
         publication_doi: 'パブリケーション DOI'
         registered_from: 登録元
         registration_doi: '登録 DOI'
@@ -1008,6 +1068,7 @@ registries:
         show_more: もっと表示
         subjects: 学科
         tags: タグ
+        title: Title
         edit_description:
             success: 説明が正常に更新されました。
             error: 説明を保存できません。
@@ -1031,7 +1092,11 @@ registries:
         edit_tags:
             success: タグが正常に更新されました。
             error: タグを保存できません。
+        nodeLicense:
+            year: 'Year'
+            copyrightHolders: 'Copyright Holders'
         save_subjects_error: 件名を保存できません
+        load_subjects_error: 'Unable to load subjects'
     form_view:
         none_selected: 何も選択されていません。
     overview:
@@ -1161,6 +1226,15 @@ registries:
         cancelButton: キャンセル
         selectAll: 全選択
         clearAll: 全クリア
+    finalizeRegistrationModal:
+        title: 'Almost done...'
+        notice: "Please keep in mind that:\n                <ul>\n                    <li>\n                        Registrations cannot be modified or deleted once completed.\n                    </li>\n                    <li>\n                        The content and version history of Wiki and GakuNin RDM Storage will be copied to the registration.\n                    </li>\n                    <li>\n                        This project contains links to other projects. These links will be copied into your registration, but the\n                        projects that they link to will not be registered. If you wish to register the linked projects, they must be\n                        registered separately. <a href='{learnMoreLink}' target='_blank' rel='noopener noreferrer'>Learn more about links</a>.\n                    </li>\n                </ul>"
+        immediateOption: 'Make registration public immediately'
+        embargoOption: 'Enter registration into embargo'
+        createDoi: 'Create DOI'
+        submit: Submit
+        back: Back
+        datePlaceholder: 'Choose embargo end date'
 meetings:
     index:
         meetings-list:
@@ -1274,9 +1348,10 @@ routes:
 osf-components:
     draft-registration-card:
         initiated_by: '次によって開始される:'
+        form_type: 'Form:'
         started: '開始しました:'
         last_updated: '最終更新日:'
-        register: 登録
+        review: Review
         delete_draft_confirm: このドラフト登録を削除してもよろしいですか？
     copyable-text:
         copyToClipboard: クリップボードへコピー
@@ -1322,7 +1397,8 @@ osf-components:
         placeholder: 検索分野、著者...
         search: 検索
     hero-banner:
-        heading: 研究を共有する場所
+        headingA: 'The place to share your research'
+        headingB: 'There’s a better way to manage your research'
         subheading: 'GakuNin RDMは、研究をサポートし、コラボレーションを可能にする無料のオープンプラットフォームです。'
         add_your_research:
             heading: あなたの研究を追加
@@ -1335,18 +1411,59 @@ osf-components:
     registries:
         read-only-contributors-list:
             editContributorsOnYourProject: プロジェクトのメンバーを編集する
+        schema-block-renderer/label:
+            showExample: 'Show example'
+            hideExample: 'Hide example'
+            editButtonAriaLabel: 'Edit {questionLabel}'
+        schema-block-renderer/editable/files:
+            instructions: 'You may attach up to 5 file(s) to this question. You may attach files that you already have in GakuNin RDM Storage in this <a href={nodeUrl}>{projectOrComponent}</a> or upload (drag and drop) a new file from your computer. Uploaded files will automatically be added to this <a href={nodeUrl}>{projectOrComponent}</a> so that they can be registered. To attach files from other components or an add-on, first add them to this <a href={nodeUrl}>{projectOrComponent}</a>.'
+        schema-block-renderer/read-only/response:
+            noResponse: 'No response'
+        schema-block-renderer/read-only/files:
+            noFilesSelected: 'No files selected'
     files-widget:
-        no_files: ここにファイルをドラッグアンドドロップして、このフォルダーにファイルをアップロードします
-        message: 'GakuNin RDMストレージのルートプロジェクトのファイルのみを添付できます。 コンポーネントまたは非「OSFストレージ」アドオンからファイルを添付するには、まずそれらをルートプロジェクトファイルに追加します。'
+        drag_drop_files: ここにファイルをドラッグアンドドロップして、このフォルダーにファイルをアップロードします
+        load_more: 'Load more files'
+        unselect_file: 'Unselect file'
+        upload_file: 'Upload file'
+        expand_files_menu: 'Expand files menu'
+        create_folder: 'Create folder'
+        create: Create
+        folder_name_placeholder: 'New folder name'
+        create_folder_failed: 'Failed to create folder'
     subjects:
         browse:
             browse_all: 全ての学科を閲覧する
+            show_child_subjects: 'Show child subjects'
+            hide_child_subjects: 'Hide child subjects'
         search:
             search_all: 学科を検索
             placeholder: 入力して検索
             no_results: '一致する学科は見つかりませんでした。 より限定的な検索を試してください。'
         display:
             placeholder: ここに選択内容が表示されます
+            remove_subject: 'Remove subject'
+    registries-side-nav:
+        expandSideNav: 'Expand registration form navigation'
+        collapseSideNav: 'Collapse registration form navigation'
+    registries-top-nav:
+        showRegistrationNavigation: 'Show registration form navigation'
+        metadata: 'Return to metadata'
+        previousPage: 'Previous page'
+        nextPage: 'Next page'
+        reviewRegistration: 'Review registration'
+    contributors:
+        headings:
+            name: 'Name'
+            permission: 'Permission'
+            citation: 'Citation'
+        permissions:
+            admin: 'Administrator'
+            write: 'Read + Write'
+            read: 'Read'
+        citation:
+            true: 'Yes'
+            false: 'No'
 settings:
     toggleNav: ナビゲーションを切り替える
     profile:

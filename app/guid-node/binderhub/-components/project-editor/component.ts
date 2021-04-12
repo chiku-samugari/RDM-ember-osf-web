@@ -314,7 +314,7 @@ export default class ProjectEditor extends Component {
             condaPackages = condaPackages.concat(imageURL.params.map(pkg => getCondaPackageId(pkg)));
         }
         let content = `name: "${imageURL.fullurl}"\n`;
-        if (condaPackages.length > 0 && this.condaSupported) {
+        if (condaPackages.length > 0) {
             content += 'dependencies:\n';
             content += condaPackages.map(item => `- ${item}\n`).join('');
         }

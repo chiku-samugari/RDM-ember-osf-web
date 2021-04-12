@@ -88,9 +88,10 @@ export default class BuildConsole extends Component {
     scrollToBottom() {
         const terminal = $('#binderhub-build-terminal');
         const terminalContent = $('#binderhub-build-terminal pre');
-        console.log('scrollToBottom', terminalContent.height());
-        terminal.delay(10).animate({
-            scrollTop: terminalContent.height(),
-        }, 500);
+        const height = terminalContent.height();
+        if (!height) {
+            return;
+        }
+        terminal.scrollTop(height);
     }
 }

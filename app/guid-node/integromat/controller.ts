@@ -287,7 +287,7 @@ export default class GuidNodeIntegromat extends Controller {
             }
         }
 
-        const microsoft_webMeetingAttendees = JSON.parse(config.microsoft_webMeetingAttendees);
+        const microsoft_webMeetingAttendees = JSON.parse(config.microsoft_teams_attendees);
 
         this.teamsMeetingAttendees.length = 0;
         this.notTeamsMeetingAttendees.length = 0;
@@ -504,7 +504,7 @@ export default class GuidNodeIntegromat extends Controller {
             }
         }
 
-        const microsoft_webMeetingAttendees = JSON.parse(config.microsoft_webMeetingAttendees);
+        const microsoft_webMeetingAttendees = JSON.parse(config.microsoft_teams_attendees);
 
         this.teamsMeetingAttendees.length = 0;
         this.notTeamsMeetingAttendees.length = 0;
@@ -576,7 +576,7 @@ export default class GuidNodeIntegromat extends Controller {
             return '';
         }
         const config = this.config.content as IntegromatConfigModel;
-        const microsoft_webMeetingAttendees = JSON.parse(config.microsoft_webMeetingAttendees);
+        const microsoft_webMeetingAttendees = JSON.parse(config.microsoft_teams_attendees);
         return microsoft_webMeetingAttendees;
     }
     @computed('config.workflows')

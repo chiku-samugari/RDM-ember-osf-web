@@ -87,17 +87,17 @@ export default class GuidNodeIntegromat extends Controller {
     times = ['0:00', '0:30', '1:00', '1:30', '2:00', '2:30', '3:00', '3:30', '4:00', '4:30', '5:00', '5:30', '6:00', '6:30', '7:00', '7:30', '8:00', '8:30', '9:00', '9:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30', '22:00', '22:30', '23:00', '23:30'];
 
 
-    teams_subject = '';
-    teams_attendees : string[] = [];
-    teams_startDate = '';
-    teams_startTime = '';
-    teams_endDate = '';
-    teams_endTime = '';
-    teams_location = '';
-    teams_content = '';
-    teams_updateMeetingId = '';
-    teams_deleteMeetingId = '';
-    teams_joinUrl = '';
+    webMeetingSubject = '';
+    webMeetingAttendees : string[] = [];
+    webMeetingStartDate = '';
+    webMeetingStartTime = '';
+    webMeetingEndDate = '';
+    webMeetingEndTime = '';
+    webMeetingLocation = '';
+    webMeetingContent = '';
+    webMeetingUpdateMeetingId = '';
+    webMeetingDeleteMeetingId = '';
+    webMeetingJoinUrl = '';
 
     teamsMeetingAttendees : string[] = [];
     notTeamsMeetingAttendees : string[] = [];
@@ -142,15 +142,15 @@ export default class GuidNodeIntegromat extends Controller {
         const node_id = config.node_settings_id;
         const app_name = config.app_name_microsoft_teams;
         const guid = this.model.guid;
-        const teams_subject = this.teams_subject;
-        const teams_startDate = moment(this.teams_startDate).format('YYYY-MM-DD');
-        const teams_startTime = (<HTMLInputElement>document.querySelectorAll('select[id=create_teams_start_time]')[0]).value;
-        const teams_start_date_time = teams_startDate + ' ' + teams_startTime;
-        const teams_endDate = moment(this.teams_endDate).format('YYYY-MM-DD');
-        const teams_endTime = (<HTMLInputElement>document.querySelectorAll('select[id=create_teams_end_time]')[0]).value;
-        const teams_end_date_time = teams_endDate + ' ' + teams_endTime;
-        const teams_location = this.teams_location;
-        const teams_content = this.teams_content;
+        const webMeetingSubject = this.webMeetingSubject;
+        const webMeetingStartDate = moment(this.webMeetingStartDate).format('YYYY-MM-DD');
+        const webMeetingStartTime = (<HTMLInputElement>document.querySelectorAll('select[id=create_teams_start_time]')[0]).value;
+        const webMeetingStartDatetime = webMeetingStartDate + ' ' + webMeetingStartTime;
+        const webMeetingEndDate = moment(this.webMeetingEndDate).format('YYYY-MM-DD');
+        const webMeetingEndTime = (<HTMLInputElement>document.querySelectorAll('select[id=create_teams_end_time]')[0]).value;
+        const webMeetingEndDatetime = webMeetingEndDate + ' ' + webMeetingEndTime;
+        const webMeetingLocation = this.webMeetingLocation;
+        const webMeetingContent = this.webMeetingContent;
         const microsoftTeamsAttendeesChecked = document.querySelectorAll('input[class=microsoftTeamsAttendeesCheck]:checked');
 
         let arrayAttendeesCollection = [];
@@ -185,13 +185,13 @@ export default class GuidNodeIntegromat extends Controller {
             'errorGrdmDeleteMeetingInfo': errorGrdmDeleteMeetingInfo,
             'errorSlackDeleteMeeting': errorSlackDeleteMeeting,
             'errorScenarioProcessing': errorScenarioProcessing,
-            'startDate': teams_start_date_time,
-            'endDate': teams_end_date_time,
-            'subject': teams_subject,
+            'startDate': webMeetingStartDatetime,
+            'endDate': webMeetingEndDatetime,
+            'subject': webMeetingSubject,
             'attendeesCollection': arrayAttendeesCollection,
             'attendees': arrayAttendees,
-            'location': teams_location,
-            'content': teams_content,
+            'location': webMeetingLocation,
+            'content': webMeetingContent,
             'webhook_url': webhookUrl,
             'timestamp': timestamp,
         };
@@ -273,31 +273,31 @@ export default class GuidNodeIntegromat extends Controller {
         for(let i=0; i < microsoftTeamsMeetings.length; i++){
 
             if(microsoftTeamsMeetings[i].fields.meetingid === v){
-                this.set('teams_subject', microsoftTeamsMeetings[i].fields.subject);
-                this.set('teams_attendees', microsoftTeamsMeetings[i].fields.attendees);
-                this.set('teams_startDate', moment(microsoftTeamsMeetings[i].fields.start_datetime).format('YYYY/MM/DD'));
-                this.set('teams_startTime', moment(microsoftTeamsMeetings[i].fields.start_datetime).format('HH:mm'));
-                this.set('teams_endDate', moment(microsoftTeamsMeetings[i].fields.end_datetime).format('YYYY/MM/DD'));
-                this.set('teams_endTime', moment(microsoftTeamsMeetings[i].fields.end_datetime).format('HH:mm'));
-                this.set('teams_location', microsoftTeamsMeetings[i].fields.location);
-                this.set('teams_content', microsoftTeamsMeetings[i].fields.content);
-                this.set('teams_updateMeetingId', microsoftTeamsMeetings[i].fields.meetingid);
-                this.set('teams_joinUrl', microsoftTeamsMeetings[i].fields.join_url);
+                this.set('webMeetingSubject', microsoftTeamsMeetings[i].fields.subject);
+                this.set('webMeetingAttendees', microsoftTeamsMeetings[i].fields.attendees);
+                this.set('webMeetingStartDate', moment(microsoftTeamsMeetings[i].fields.start_datetime).format('YYYY/MM/DD'));
+                this.set('webMeetingStartTime', moment(microsoftTeamsMeetings[i].fields.start_datetime).format('HH:mm'));
+                this.set('webMeetingEndDate', moment(microsoftTeamsMeetings[i].fields.end_datetime).format('YYYY/MM/DD'));
+                this.set('webMeetingEndTime', moment(microsoftTeamsMeetings[i].fields.end_datetime).format('HH:mm'));
+                this.set('webMeetingLocation', microsoftTeamsMeetings[i].fields.location);
+                this.set('webMeetingContent', microsoftTeamsMeetings[i].fields.content);
+                this.set('webMeetingUpdateMeetingId', microsoftTeamsMeetings[i].fields.meetingid);
+                this.set('webMeetingJoinUrl', microsoftTeamsMeetings[i].fields.join_url);
                 break;
             }
         }
 
-        const microsoft_teams_attendees = JSON.parse(config.microsoft_teams_attendees);
+        const microsoft_webMeetingAttendees = JSON.parse(config.microsoft_webMeetingAttendees);
 
         this.teamsMeetingAttendees.length = 0;
         this.notTeamsMeetingAttendees.length = 0;
 
-        for(let j = 0; j < microsoft_teams_attendees.length; j++){
-            this.notTeamsMeetingAttendees.push(microsoft_teams_attendees[j].fields.microsoft_teams_mail);
+        for(let j = 0; j < microsoft_webMeetingAttendees.length; j++){
+            this.notTeamsMeetingAttendees.push(microsoft_webMeetingAttendees[j].fields.microsoft_teams_mail);
 
-            for(let k = 0; k < this.teams_attendees.length; k++){
-                if(microsoft_teams_attendees[j].pk === this.teams_attendees[k]){
-                    this.teamsMeetingAttendees.push(microsoft_teams_attendees[j].fields.microsoft_teams_mail);
+            for(let k = 0; k < this.webMeetingAttendees.length; k++){
+                if(microsoft_webMeetingAttendees[j].pk === this.webMeetingAttendees[k]){
+                    this.teamsMeetingAttendees.push(microsoft_webMeetingAttendees[j].fields.microsoft_teams_mail);
                     this.notTeamsMeetingAttendees.pop();
                     break;
                 }
@@ -308,8 +308,8 @@ export default class GuidNodeIntegromat extends Controller {
 
     @action
     setDefaultDate(this: GuidNodeIntegromat) {
-        (<any>$('#update_start_date')[0]).value = this.teams_startDate;
-        (<any>$('#update_end_date')[0]).value = this.teams_endDate;
+        (<any>$('#update_start_date')[0]).value = this.webMeetingStartDate;
+        (<any>$('#update_end_date')[0]).value = this.webMeetingEndDate;
     }
 
     @action
@@ -321,17 +321,17 @@ export default class GuidNodeIntegromat extends Controller {
         const webhookUrl = config.webhook_url;
         const node_id = config.node_settings_id;
         const app_name = config.app_name_microsoft_teams;
-        const teams_subject = this.teams_subject;
-        const teams_startDate = moment(this.teams_startDate).format('YYYY-MM-DD');
-        const teams_startTime = (<HTMLInputElement>document.querySelectorAll('select[id=update_teams_start_time]')[0]).value;
-        const teams_start_date_time = teams_startDate + ' ' + teams_startTime;
-        const teams_endDate = moment(this.teams_endDate).format('YYYY-MM-DD');
-        const teams_endTime = (<HTMLInputElement>document.querySelectorAll('select[id=update_teams_end_time]')[0]).value;
-        const teams_end_date_time = teams_endDate + ' ' + teams_endTime;
-        const teams_location = this.teams_location;
-        const teams_content = this.teams_content;
-        const microsoft_teams_meeting_id = this.teams_updateMeetingId;
-        const microsoft_teams_meeting_join_url = this.teams_joinUrl;
+        const webMeetingSubject = this.webMeetingSubject;
+        const webMeetingStartDate = moment(this.webMeetingStartDate).format('YYYY-MM-DD');
+        const webMeetingStartTime = (<HTMLInputElement>document.querySelectorAll('select[id=update_teams_start_time]')[0]).value;
+        const webMeetingStartDatetime = webMeetingStartDate + ' ' + webMeetingStartTime;
+        const webMeetingEndDate = moment(this.webMeetingEndDate).format('YYYY-MM-DD');
+        const webMeetingEndTime = (<HTMLInputElement>document.querySelectorAll('select[id=update_teams_end_time]')[0]).value;
+        const webMeetingEndDatetime = webMeetingEndDate + ' ' + webMeetingEndTime;
+        const webMeetingLocation = this.webMeetingLocation;
+        const webMeetingContent = this.webMeetingContent;
+        const microsoft_teams_meeting_id = this.webMeetingUpdateMeetingId;
+        const microsoft_teams_meeting_join_url = this.webMeetingJoinUrl;
         const microsoftTeamsAttendeesChecked = document.querySelectorAll('input[class=microsoftTeamsAttendeesCheck]:checked');
 
         let arrayAttendeesCollection = [];
@@ -345,7 +345,7 @@ export default class GuidNodeIntegromat extends Controller {
         const action = 'updateMicrosoftTeamsMeeting';
         const timestamp = new Date().getTime();
 
-        this.set('teams_updateMeetingId', '');
+        this.set('webMeetingUpdateMeetingId', '');
 
         const payload = {
             'nodeId': node_id,
@@ -365,13 +365,13 @@ export default class GuidNodeIntegromat extends Controller {
             'errorGrdmDeleteMeetingInfo': errorGrdmDeleteMeetingInfo,
             'errorSlackDeleteMeeting': errorSlackDeleteMeeting,
             'errorScenarioProcessing': errorScenarioProcessing,
-            'startDate': teams_start_date_time,
-            'endDate': teams_end_date_time,
-            'subject': teams_subject,
+            'startDate': webMeetingStartDatetime,
+            'endDate': webMeetingEndDatetime,
+            'subject': webMeetingSubject,
             'attendeesCollection': arrayAttendeesCollection,
             'attendees': arrayAttendees,
-            'location': teams_location,
-            'content': teams_content,
+            'location': webMeetingLocation,
+            'content': webMeetingContent,
             'webhook_url': webhookUrl,
             'timestamp': timestamp,
         };
@@ -409,7 +409,7 @@ export default class GuidNodeIntegromat extends Controller {
     makeDeleteDialog(this: GuidNodeIntegromat, id: string) {
 
         this.set('showDeleteMicrosoftTeamsMeetingDialog', true);
-        this.set('teams_deleteMeetingId', id);
+        this.set('webMeetingDeleteMeetingId', id);
 
     }
 
@@ -429,7 +429,7 @@ export default class GuidNodeIntegromat extends Controller {
         const payload = {
             'nodeId': nodeId,
             'meetingAppName': appName,
-            'microsoftTeamsMeetingId': this.teams_deleteMeetingId,
+            'microsoftTeamsMeetingId': this.webMeetingDeleteMeetingId,
             'action': action,
             'infoGrdmScenarioStarted': infoGrdmScenarioStarted,
             'infoGrdmScenarioCompleted': infoGrdmScenarioCompleted,
@@ -447,7 +447,7 @@ export default class GuidNodeIntegromat extends Controller {
             'timestamp': timestamp,
         };
 
-        this.set('teams_deleteMeetingId', '');
+        this.set('webMeetingDeleteMeetingId', '');
         this.set('showDeleteMicrosoftTeamsMeetingDialog', false);
 
         return fetch(
@@ -491,30 +491,30 @@ export default class GuidNodeIntegromat extends Controller {
         for(let i=0; i < microsoftTeamsMeetings.length; i++){
 
             if(microsoftTeamsMeetings[i].fields.meetingid === v){
-                this.set('teams_subject', microsoftTeamsMeetings[i].fields.subject);
-                this.set('teams_attendees', microsoftTeamsMeetings[i].fields.attendees);
-                this.set('teams_startDate', moment(microsoftTeamsMeetings[i].fields.start_datetime).format('YYYY/MM/DD'));
-                this.set('teams_startTime', moment(microsoftTeamsMeetings[i].fields.start_datetime).format('HH:mm'));
-                this.set('teams_endDate', moment(microsoftTeamsMeetings[i].fields.end_datetime).format('YYYY/MM/DD'));
-                this.set('teams_endTime', moment(microsoftTeamsMeetings[i].fields.end_datetime).format('HH:mm'));
-                this.set('teams_location', microsoftTeamsMeetings[i].fields.location);
-                this.set('teams_content', microsoftTeamsMeetings[i].fields.content);
-                this.set('teams_joinUrl', microsoftTeamsMeetings[i].fields.join_url);
+                this.set('webMeetingSubject', microsoftTeamsMeetings[i].fields.subject);
+                this.set('webMeetingAttendees', microsoftTeamsMeetings[i].fields.attendees);
+                this.set('webMeetingStartDate', moment(microsoftTeamsMeetings[i].fields.start_datetime).format('YYYY/MM/DD'));
+                this.set('webMeetingStartTime', moment(microsoftTeamsMeetings[i].fields.start_datetime).format('HH:mm'));
+                this.set('webMeetingEndDate', moment(microsoftTeamsMeetings[i].fields.end_datetime).format('YYYY/MM/DD'));
+                this.set('webMeetingEndTime', moment(microsoftTeamsMeetings[i].fields.end_datetime).format('HH:mm'));
+                this.set('webMeetingLocation', microsoftTeamsMeetings[i].fields.location);
+                this.set('webMeetingContent', microsoftTeamsMeetings[i].fields.content);
+                this.set('webMeetingJoinUrl', microsoftTeamsMeetings[i].fields.join_url);
                 break;
             }
         }
 
-        const microsoft_teams_attendees = JSON.parse(config.microsoft_teams_attendees);
+        const microsoft_webMeetingAttendees = JSON.parse(config.microsoft_webMeetingAttendees);
 
         this.teamsMeetingAttendees.length = 0;
         this.notTeamsMeetingAttendees.length = 0;
 
-        for(let j = 0; j < microsoft_teams_attendees.length; j++){
-            this.notTeamsMeetingAttendees.push(microsoft_teams_attendees[j].fields.microsoft_teams_mail);
+        for(let j = 0; j < microsoft_webMeetingAttendees.length; j++){
+            this.notTeamsMeetingAttendees.push(microsoft_webMeetingAttendees[j].fields.microsoft_teams_mail);
 
-            for(let k = 0; k < this.teams_attendees.length; k++){
-                if(microsoft_teams_attendees[j].pk === this.teams_attendees[k]){
-                    this.teamsMeetingAttendees.push(microsoft_teams_attendees[j].fields.microsoft_teams_mail);
+            for(let k = 0; k < this.webMeetingAttendees.length; k++){
+                if(microsoft_webMeetingAttendees[j].pk === this.webMeetingAttendees[k]){
+                    this.teamsMeetingAttendees.push(microsoft_webMeetingAttendees[j].fields.microsoft_teams_mail);
                     this.notTeamsMeetingAttendees.pop();
                     break;
                 }
@@ -570,14 +570,14 @@ export default class GuidNodeIntegromat extends Controller {
         return previous_microsoft_teams_meetings;
     }
 
-    @computed('config.microsoft_teams_attendees')
-    get microsoft_teams_attendees() {
+    @computed('config.microsoft_webMeetingAttendees')
+    get microsoft_webMeetingAttendees() {
         if (!this.config) {
             return '';
         }
         const config = this.config.content as IntegromatConfigModel;
-        const microsoft_teams_attendees = JSON.parse(config.microsoft_teams_attendees);
-        return microsoft_teams_attendees;
+        const microsoft_webMeetingAttendees = JSON.parse(config.microsoft_webMeetingAttendees);
+        return microsoft_webMeetingAttendees;
     }
     @computed('config.workflows')
     get workflows() {

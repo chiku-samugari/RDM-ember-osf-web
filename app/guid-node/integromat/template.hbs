@@ -220,19 +220,19 @@
             <div local-class='Integromat__input_items'>
                 <label>{{t 'integromat.subject'}}</label>
                 {{input
-                    name='teams_Subject'
+                    name='webMeetingSubject'
                     placeholder=(t 'integromat.placeholders.subject')
                     class='form-control'
                     type='text'
-                    value=this.teams_subject
+                    value=this.webMeetingSubject
                 }}
             </div>
             <div local-class='Integromat__input_items'>
                 <label>{{t 'integromat.attendees'}}</label>
                 <div>
                     <span id='attendees_inputs'>
-                        {{#if this.microsoft_teams_attendees}}
-                            {{#each this.microsoft_teams_attendees as |row|}}
+                        {{#if this.microsoft_webMeetingAttendees}}
+                            {{#each this.microsoft_webMeetingAttendees as |row|}}
                                 <label local-class='Integromat__label_normal'>
                                     <input class='microsoftTeamsAttendeesCheck' type='checkBox' style='width: 15px; height: 15px;' id={{row.fields.microsoft_teams_mail}}>
                                     {{row.fields.microsoft_teams_mail}}
@@ -257,7 +257,7 @@
                                 placeholder=(t 'integromat.placeholders.date_form')
                                 class='form-control'
                                 type='text'
-                                value=this.teams_startDate
+                                value=this.webMeetingStartDate
                                 format='yyyy/mm/dd'
                                 todayHighlight=true
                             }}
@@ -280,7 +280,7 @@
                                 placeholder=(t 'integromat.placeholders.date_form')
                                 class='form-control'
                                 type='text'
-                                value=this.teams_endDate
+                                value=this.webMeetingEndDate
                                 format='yyyy/mm/dd'
                                 todayHighlight=true
                             }}
@@ -302,19 +302,19 @@
             <div local-class='Integromat__input_items'>
                 <label>{{t 'integromat.location'}}</label>
                 {{input
-                    name='teams_Location'
+                    name='webMeetingLocation'
                     placeholder=(t 'integromat.placeholders.location')
                     class='form-control'
                     type='text'
-                    value=this.teams_location
+                    value=this.webMeetingLocation
                 }}
             </div>
             <div local-class='Integromat__input_items'>
                 <label>{{t 'integromat.content'}}</label>
                 {{textarea
-                    name='teams_Content'
+                    name='webMeetingContent'
                     class='form-control'
-                    value=this.teams_content
+                    value=this.webMeetingContent
                     placeholder=(t 'integromat.placeholders.content')
                 }}
             </div>
@@ -352,18 +352,18 @@
             <div local-class='Integromat__input_items'>
                 <label>{{t 'integromat.subject'}}</label>
                 {{input
-                    name='teams_Subject'
+                    name='webMeetingSubject'
                     placeholder=(t 'integromat.placeholders.subject')
                     class='form-control'
                     type='text'
-                    value=this.teams_subject
+                    value=this.webMeetingSubject
                 }}
             </div>
             <div local-class='Integromat__input_items'>
                 <label>{{t 'integromat.attendees'}}</label>
                 <div>
                     <span id='attendees_inputs'>
-                        {{#if this.microsoft_teams_attendees}}
+                        {{#if this.microsoft_webMeetingAttendees}}
                             {{#each this.teamsMeetingAttendees as |mail|}}
                                 <label local-class='Integromat__label_normal'>
                                     <input class='microsoftTeamsAttendeesCheck' type='checkBox' style='width: 15px; height: 15px;' id={{mail}} checked>
@@ -394,7 +394,7 @@
                                 id='update_start_date'
                                 class='form-control'
                                 type='text'
-                                value=this.teams_startDate
+                                value=this.webMeetingStartDate
                                 format='yyyy/mm/dd'
                                 todayHighlight=true
                             }}
@@ -402,7 +402,7 @@
                         <td>
                             <select id='update_teams_start_time' class='form-control'>
                                 {{#each this.times as |times|}}
-                                    {{#if (eq times this.teams_startTime)}}
+                                    {{#if (eq times this.webMeetingStartTime)}}
                                         <option value={{times}} selected>{{times}}</option>
                                     {{else}}
                                         <option value={{times}}>{{times}}</option>
@@ -416,7 +416,7 @@
                             id='update_end_date'
                             class='form-control'
                             type='text'
-                            value=this.teams_endDate
+                            value=this.webMeetingEndDate
                             format='yyyy/mm/dd'
                             todayHighlight=true
                             }}
@@ -424,7 +424,7 @@
                         <td>
                             <select id='update_teams_end_time' class='form-control'>
                                 {{#each this.times as |times|}}
-                                    {{#if (eq times this.teams_endTime)}}
+                                    {{#if (eq times this.webMeetingEndTime)}}
                                         <option value={{times}} selected>{{times}}</option>
                                     {{else}}
                                         <option value={{times}}>{{times}}</option>
@@ -438,19 +438,19 @@
             <div local-class='Integromat__input_items'>
                 <label>{{t 'integromat.location'}}</label>
                 {{input
-                    name='teams_Location'
+                    name='webMeetingLocation'
                     placeholder=(t 'integromat.placeholders.location')
                     class='form-control'
                     type='text'
-                    value=this.teams_location
+                    value=this.webMeetingLocation
                 }}
             </div>
             <div local-class='Integromat__input_items'>
                 <label>{{t 'integromat.content'}}</label>
                 {{textarea
-                    name='teams_Content'
+                    name='webMeetingContent'
                     class='form-control'
-                    value=this.teams_content
+                    value=this.webMeetingContent
                     placeholder=(t 'integromat.placeholders.content')
                 }}
             </div>
@@ -498,9 +498,9 @@
                     value=this.app_name_microsoft_teams
                 }}
                 {{input
-                    name='teams_deleteMeetingId'
+                    name='webMeetingDeleteMeetingId'
                     type='hidden'
-                    value=this.teams_deleteMeetingId
+                    value=this.webMeetingDeleteMeetingId
                 }}
             </div>
         </div>
@@ -528,14 +528,14 @@
 >
     <modal.header>
         <h4 style='font-weight:normal;'>
-            {{t 'integromat.meetingDialog.detailLabel'}}&nbsp;({{this.teams_subject}})
+            {{t 'integromat.meetingDialog.detailLabel'}}&nbsp;({{this.webMeetingSubject}})
         </h4>
     </modal.header>
     <modal.body>
         <div class='form-group'>
             <div local-class='Integromat__input_items'>
                 <label>{{t 'integromat.subject'}}</label>
-                <div>{{this.teams_subject}}</div>
+                <div>{{this.webMeetingSubject}}</div>
             </div>
             <div local-class='Integromat__input_items'>
                 <label>{{t 'integromat.attendees'}}</label>
@@ -555,22 +555,22 @@
                     </tr>
                     <tr>
                         <td>
-                            {{this.teams_startDate}}&nbsp;{{this.teams_startTime}}
+                            {{this.webMeetingStartDate}}&nbsp;{{this.webMeetingStartTime}}
                         </td>
                         <td><label local-class='Integromat__input_items'>{{t 'integromat.from_symbol'}}</label></td>
                         <td>
-                            {{this.teams_endDate}}&nbsp;{{this.teams_endTime}}
+                            {{this.webMeetingEndDate}}&nbsp;{{this.webMeetingEndTime}}
                         </td>
                     </tr>
                 </table>
             </div>
             <div local-class='Integromat__input_items'>
                 <label>{{t 'integromat.location'}}</label>
-                <div>{{this.teams_location}}</div>
+                <div>{{this.webMeetingLocation}}</div>
             </div>
             <div local-class='Integromat__input_items'>
                 <label>{{t 'integromat.content'}}</label>
-                <div>{{this.teams_content}}</div>
+                <div>{{this.webMeetingContent}}</div>
             </div>
         </div>
     </modal.body>
@@ -582,7 +582,7 @@
         </BsButton>
         <OsfButton
             @type='success'
-            @onClick={{action (action this.startMeeting this.teams_joinUrl)}}
+            @onClick={{action (action this.startMeeting this.webMeetingJoinUrl)}}
         >
             {{t 'integromat.meetingDialog.startBtn'}}
         </OsfButton>

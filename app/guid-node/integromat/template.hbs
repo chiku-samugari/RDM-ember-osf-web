@@ -6,13 +6,19 @@
     {{else}}
 
         <div class='row' local-class='Integromat__header'>
-            <ul local-class='Integromat__menu'><li><span class='btn btn-link'>{{t 'integromat.workflowListLabel'}}</span><i class='fa fa-angle-right'></i></li></ul>
+            <ul local-class='Integromat__menu'><li><span class='btn btn-link'>{{t 'integromat.workflowListLabel'}}</span>{{fa-icon 'angle-right'}}</li></ul>
         </div>
         <div>
             <div local-class='Integromat__sidebar' >
                 <div>
                     <h5>
-                        {{t 'integromat.categoryLabel'}}<i title={{t 'integromat.categoryDesp'}} class='fa fa-question-circle text-muted'></i>
+                        {{t 'integromat.categoryLabel'}}
+                        <span>
+                            {{fa-icon 'info-circle'}}
+                            <BsTooltip>
+                                {{t 'integromat.categoryDesp'}}
+                            </BsTooltip>
+                        </span>
                     </h5>
                     <ul local-class='Integromat__menu'>
                         <li>
@@ -26,7 +32,7 @@
                 </div>
             </div>
             {{#if this.showWorkflows}}
-                <div id='workflows' class='main_screen' local-class='Integromat__workflows'>
+                <div id='workflows' class='main-screen' local-class='Integromat__workflows'>
                     <table data-test-workflows-table class='table table-bordered'>
                         <thead>
                             <tr style='background-color: #f5f5f5;'>
@@ -46,7 +52,9 @@
                                             {{t row.fields.workflow_description}}
                                         </a>
                                     </td>
-                                    <td>{{t row.fields.workflow_apps}}</td>
+                                    <td>
+                                        {{t row.fields.workflow_apps}}
+                                    </td>
                                 </tr>
                             {{/each}}
                         </tbody>

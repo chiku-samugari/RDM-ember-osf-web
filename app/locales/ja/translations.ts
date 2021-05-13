@@ -1986,7 +1986,7 @@ export default {
         categoryDesp: 'ワークフローをカテゴリに分類できます',
         workflowListLabel: '全てのワークフロー',
         workflowLabel: 'ワークフロー',
-        integratedAppsLabel: '連携アプリ',
+        integratedAppsLabel: 'ワークフローを構成するアプリ',
         meetingDialog: {
             createLabel: '会議作成',
             updateLabel: '会議更新',

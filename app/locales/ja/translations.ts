@@ -2012,8 +2012,8 @@ export default {
         },
         workflows: {
             web_meeting: {
-                microsoft_teams: 'Microsoft Teamsに会議登録などをしてSlackにメッセージを通知する',
-                microsoft_teams_apps: 'GakuNinRDM, Microsoft 365 Calendar, Slack',
+                description: 'ウェブ会議登録などをしてSlackにメッセージを通知する',
+                apps: 'GakuNinRDM, Web Meeting Apps, Slack',
             },
         },
         subject: 'タイトル',
@@ -2025,6 +2025,7 @@ export default {
         content: '内容',
         joinUrl: '招待URL',
         from_symbol: '～',
+        colon: '：',
         info: {
             started: 'ワークフローを開始しました。',
             completed: 'ワークフローを完了しました。',

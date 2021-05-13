@@ -1855,8 +1855,8 @@ export default {
         },
         workflows: {
             web_meeting: {
-                microsoft_teams: 'Meeting action(regster, update,delete etc...) for Microsoft Teams, then notify slack messages.',
-                microsoft_teas_apps: 'GakuNinRDM, Microsoft 365 Calendar, Slack',
+                description: 'Meeting action(regster, update,delete etc...) for web meeting apps, then notify slack messages.',
+                apps: 'GakuNinRDM, Web Meeting Apps, Slack',
             },
         },
         subject: 'Subject',
@@ -1868,6 +1868,7 @@ export default {
         content: 'Content',
         joinUrl: 'Join URL',
         from_symbol: '～',
+        colon: ':',
         info: {
             started: 'The workflow has started!',
             completed: 'The workflow is complete!',

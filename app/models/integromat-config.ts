@@ -10,7 +10,6 @@ export default class IntegromatConfigModel extends OsfModel {
     @attr('string') workflows!: string;
     @attr('string') node_settings_id!: string;
     @attr('string') app_name_microsoft_teams!: string;
-    @attr('string') microsoft_teams_organizer_id!: string;
 }
 
 declare module 'ember-data/types/registries/model' {

@@ -48,7 +48,7 @@
                             {{#each this.workflows as |row|}}
                                 <tr>
                                     <td>
-                                        <a {{action (mut this.showMicrosoftTeamsMeetings) true}} {{action (mut this.showWorkflows) false}}>
+                                        <a {{action (mut this.showAllWebMeetings) true}} {{action (mut this.showWorkflows) false}}>
                                             {{t row.fields.workflow_description}}
                                         </a>
                                     </td>
@@ -62,19 +62,19 @@
                 </div>
             {{/if}}
         </div>
-        {{#if this.showMicrosoftTeamsMeetings}}
-            <div  data-test-microsoft-teams-screen class='col-md-9' local-class='Integromat__webApp_screen'>
-                <div id='microsoftTeamsMeetings' class='main_screen'>
+        {{#if this.showAllWebMeetings}}
+            <div  data-test-web-meeting-screen class='col-md-9' local-class='Integromat__webApp_screen'>
+                <div id='allWebMeetings' class='main-screen'>
                     <div local-class='Integromat__web_meeting_navbar'>
                         <label style='margin-top:10px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{t 'integromat.integratedAppsLabel'}}{{t 'integromat.colon'}}{{t 'integromat.workflows.web_meeting.apps'}}</label>
                         <button style='margin-top:10px; margin-right:10px;'
-                              data-test-project-contributors-search-button
+                              data-test-craete-meeting-button
                               local-class='Integromat__buttons'
                               class='text-success pull-right'
                               type='text'
                               onClick={{action (mut this.showCreateMicrosoftTeamsMeetingDialog) true}}
                           >
-                            <i class='fa fa-plus'>&nbsp;{{t 'integromat.meetingDialog.createLabel'}}</i>
+                            {{fa-icon 'plus'}}&nbsp;{{t 'integromat.meetingDialog.createLabel'}}</i>
                         </button>
                     </div>
                     <BsTab local-class='Integromat__web_meeting_tab' as |tab|>

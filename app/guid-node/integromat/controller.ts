@@ -264,7 +264,7 @@ export default class GuidNodeIntegromat extends Controller {
             return '';
         }
         const config = this.config.content as IntegromatConfigModel;
-        const microsoftTeamsMeetings = JSON.parse(config.microsoft_teams_meetings);
+        const microsoftTeamsMeetings = JSON.parse(config.all_web_meetings);
 
         this.set('showUpdateMicrosoftTeamsMeetingDialog', true);
 
@@ -482,7 +482,7 @@ export default class GuidNodeIntegromat extends Controller {
             return '';
         }
         const config = this.config.content as IntegromatConfigModel;
-        const microsoftTeamsMeetings = JSON.parse(config.microsoft_teams_meetings);
+        const microsoftTeamsMeetings = JSON.parse(config.all_web_meetings);
 
         this.set('showDetailMicrosoftTeamsMeetingDialog', true);
 
@@ -538,34 +538,34 @@ export default class GuidNodeIntegromat extends Controller {
         this.toast.error(message);
     }
 
-    @computed('config.microsoft_teams_meetings')
-    get microsoft_teams_meetings() {
+    @computed('config.all_web_meetings')
+    get all_web_meetings() {
         if (!this.config) {
             return '';
         }
         const config = this.config.content as IntegromatConfigModel;
-        const microsoft_teams_meetings = JSON.parse(config.microsoft_teams_meetings);
-        return microsoft_teams_meetings;
+        const all_web_meetings = JSON.parse(config.all_web_meetings);
+        return all_web_meetings;
     }
 
-    @computed('config.upcoming_microsoft_teams_meetings')
-    get upcoming_microsoft_teams_meetings() {
+    @computed('config.upcoming_web_meetings')
+    get upcoming_web_meetings() {
         if (!this.config) {
             return '';
         }
         const config = this.config.content as IntegromatConfigModel;
-        const upcoming_microsoft_teams_meetings = JSON.parse(config.upcoming_microsoft_teams_meetings);
-        return upcoming_microsoft_teams_meetings;
+        const upcoming_web_meetings = JSON.parse(config.upcoming_web_meetings);
+        return upcoming_web_meetings;
     }
 
-    @computed('config.previous_microsoft_teams_meetings')
-    get previous_microsoft_teams_meetings() {
+    @computed('config.previous_web_meetings')
+    get previous_web_meetings() {
         if (!this.config) {
             return '';
         }
         const config = this.config.content as IntegromatConfigModel;
-        const previous_microsoft_teams_meetings = JSON.parse(config.previous_microsoft_teams_meetings);
-        return previous_microsoft_teams_meetings;
+        const previous_web_meetings = JSON.parse(config.previous_web_meetings);
+        return previous_web_meetings;
     }
 
     @computed('config.microsoft_webMeetingAttendees')

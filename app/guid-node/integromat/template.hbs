@@ -79,7 +79,7 @@
                     </div>
                     <BsTab local-class='Integromat__web_meeting_tab' as |tab|>
                         <tab.pane @title={{t 'integromat.upcoming'}}>
-                            {{#if (eq this.upcoming_microsoft_teams_meetings.length 0)}}
+                            {{#if (eq this.upcoming_web_meetings.length 0)}}
                                 <p style='margin-left: 20px; margin-top: 20px;'>{{t 'integromat.noUpcomingMeetings'}}</p>
                             {{else}}
                                 <div class='row' id='upcoming-teamsMeeting-table-row'>
@@ -105,7 +105,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {{#each this.upcoming_microsoft_teams_meetings as |row|}}
+                                                {{#each this.upcoming_web_meetings as |row|}}
                                                     <tr>
                                                         <td style='vertical-align: middle;'>
                                                             <a href='javasript:void(0)' onClick={{action (action this.makeDetailMeetingDialog row.fields.meetingid)}}>
@@ -138,7 +138,7 @@
                             {{/if}}
                         </tab.pane>
                         <tab.pane @title={{t 'integromat.previous'}}>
-                            {{#if (eq this.previous_microsoft_teams_meetings.length 0)}}
+                            {{#if (eq this.previous_web_meetings.length 0)}}
                                 <p style='margin-left: 20px; margin-top: 20px;'>{{t 'integromat.noPreviousMeetings'}}</p>
                             {{else}}
                                 <div class='row' id='previous-teamsMeeting-table-row'>
@@ -164,7 +164,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {{#each this.previous_microsoft_teams_meetings as |row|}}
+                                                {{#each this.previous_web_meetings as |row|}}
                                                     <tr>
                                                         <td style='vertical-align: middle;'>
                                                             <a href='javasript:void(0)' onClick={{action (action this.makeDetailMeetingDialog row.fields.meetingid)}}>

@@ -328,8 +328,8 @@ export default class GuidNodeIntegromat extends Controller {
         const webMeetingEndDatetime = webMeetingEndDate + ' ' + webMeetingEndTime;
         const webMeetingLocation = this.webMeetingLocation;
         const webMeetingContent = this.webMeetingContent;
-        const microsoft_teams_meeting_id = this.webMeetingUpdateMeetingId;
-        const microsoft_teams_meeting_join_url = this.webMeetingJoinUrl;
+        const webMeetingId = this.webMeetingUpdateMeetingId;
+        const webMeetingJoinUrl = this.webMeetingJoinUrl;
         const microsoftTeamsAttendeesChecked = document.querySelectorAll('input[class=microsoftTeamsAttendeesCheck]:checked');
 
         let arrayAttendeesCollection = [];
@@ -348,8 +348,8 @@ export default class GuidNodeIntegromat extends Controller {
         const payload = {
             'nodeId': node_id,
             'meetingAppName': app_name,
-            'microsoftTeamsMeetingId': microsoft_teams_meeting_id,
-            'microsoftTeamsJoinUrl': microsoft_teams_meeting_join_url,
+            'meetingId': webMeetingId,
+            'joinUrl': webMeetingJoinUrl,
             'action': action,
             'infoGrdmScenarioStarted': infoGrdmScenarioStarted,
             'infoGrdmScenarioCompleted': infoGrdmScenarioCompleted,
@@ -427,7 +427,7 @@ export default class GuidNodeIntegromat extends Controller {
         const payload = {
             'nodeId': nodeId,
             'meetingAppName': appName,
-            'microsoftTeamsMeetingId': this.webMeetingDeleteMeetingId,
+            'meetingId': this.webMeetingDeleteMeetingId,
             'action': action,
             'infoGrdmScenarioStarted': infoGrdmScenarioStarted,
             'infoGrdmScenarioCompleted': infoGrdmScenarioCompleted,

@@ -3,9 +3,9 @@ import OsfModel from './osf-model';
 
 export default class IntegromatConfigModel extends OsfModel {
     @attr('string') webhook_url!: string;
-    @attr('string') microsoft_teams_meetings!: string;
-    @attr('string') upcoming_microsoft_teams_meetings!: string;
-    @attr('string') previous_microsoft_teams_meetings!: string;
+    @attr('string') all_web_meetings!: string;
+    @attr('string') upcoming_web_meetings!: string;
+    @attr('string') previous_web_meetings!: string;
     @attr('string') microsoft_teams_attendees!: string;
     @attr('string') workflows!: string;
     @attr('string') node_settings_id!: string;

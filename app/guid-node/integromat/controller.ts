@@ -155,7 +155,7 @@ export default class GuidNodeIntegromat extends Controller {
         const config = this.config.content as IntegromatConfigModel;
         const webhookUrl = config.webhook_url;
         const node_id = config.node_settings_id;
-        const app_name = config.app_name_microsoft_teams;
+        const appName = config.app_name_microsoft_teams;
         const guid = this.model.guid;
         const webMeetingSubject = this.webMeetingSubject;
         const webMeetingStartDate = moment(this.webMeetingStartDate).format('YYYY-MM-DD');
@@ -184,7 +184,7 @@ export default class GuidNodeIntegromat extends Controller {
 
         const payload = {
             'nodeId': node_id,
-            'meetingAppName': app_name,
+            'meetingAppName': appName,
             'guid': guid,
             'action': action,
             'infoGrdmScenarioStarted': infoGrdmScenarioStarted,
@@ -212,31 +212,7 @@ export default class GuidNodeIntegromat extends Controller {
 
         this.set('showCreateMicrosoftTeamsMeetingDialog', false);
 
-        return fetch(
-            startIntegromatScenarioUrl,
-            {
-                method: 'POST',
-                headers:{
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(payload)
-        })
-        .then(res => res.json())
-        .then(data => {
-                if(data.integromatMsg.match('.error.')){
-                    this.toast.error(this.i18n.t(data.integromatMsg))
-                }else{
-                    this.toast.info(this.i18n.t(data.integromatMsg))
-                    let reqBody = {
-                        'nodeId': data.nodeId,
-                        'timestamp': data.timestamp,
-                    }
-                    this.reqMessage(reqestMessagesUrl, reqBody, app_name)
-                }
-            })
-            .catch(() => {
-                this.toast.error(this.i18n.t('integromat.error.failedToRequest'));
-            })
+        return reqLaunch(startIntegromatScenarioUrl, payload, appName);
     }
 
     @action
@@ -300,7 +276,7 @@ export default class GuidNodeIntegromat extends Controller {
         const config = this.config.content as IntegromatConfigModel;
         const webhookUrl = config.webhook_url;
         const node_id = config.node_settings_id;
-        const app_name = config.app_name_microsoft_teams;
+        const appName = config.app_name_microsoft_teams;
         const webMeetingSubject = this.webMeetingSubject;
         const webMeetingStartDate = moment(this.webMeetingStartDate).format('YYYY-MM-DD');
         const webMeetingStartTime = (<HTMLInputElement>document.querySelectorAll('select[id=update_teams_start_time]')[0]).value;
@@ -329,7 +305,7 @@ export default class GuidNodeIntegromat extends Controller {
 
         const payload = {
             'nodeId': node_id,
-            'meetingAppName': app_name,
+            'meetingAppName': appName,
             'meetingId': webMeetingId,
             'joinUrl': webMeetingJoinUrl,
             'action': action,
@@ -358,31 +334,7 @@ export default class GuidNodeIntegromat extends Controller {
 
         this.set('showUpdateMicrosoftTeamsMeetingDialog', false);
 
-        return fetch(
-            startIntegromatScenarioUrl,
-            {
-                method: 'POST',
-                headers:{
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(payload)
-        })
-        .then(res => res.json())
-        .then(data => {
-                if(data.integromatMsg.match('.error.')){
-                    this.toast.error(this.i18n.t(data.integromatMsg))
-                }else{
-                    this.toast.info(this.i18n.t(data.integromatMsg))
-                    let reqBody = {
-                        'nodeId': data.nodeId,
-                        'timestamp': data.timestamp,
-                    }
-                    this.reqMessage(reqestMessagesUrl, reqBody, app_name)
-                }
-            })
-            .catch(() => {
-                this.toast.error(this.i18n.t('integromat.error.failedToRequest'));
-            })
+        return reqLaunch(startIntegromatScenarioUrl, payload, appName);
     }
 
     @action
@@ -430,31 +382,7 @@ export default class GuidNodeIntegromat extends Controller {
         this.set('webMeetingDeleteMeetingId', '');
         this.set('showDeleteMicrosoftTeamsMeetingDialog', false);
 
-        return fetch(
-            startIntegromatScenarioUrl,
-            {
-                method: 'POST',
-                headers:{
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(payload)
-        })
-        .then(res => res.json())
-        .then(data => {
-                if(data.integromatMsg.match('.error.')){
-                    this.toast.error(this.i18n.t(data.integromatMsg))
-                }else{
-                    this.toast.info(this.i18n.t(data.integromatMsg))
-                    let reqBody = {
-                        'nodeId': data.nodeId,
-                        'timestamp': data.timestamp,
-                    }
-                    this.reqMessage(reqestMessagesUrl, reqBody, appName)
-                }
-            })
-            .catch(() => {
-                this.toast.error(this.i18n.t('integromat.error.failedToRequest'));
-            })
+        return reqLaunch(startIntegromatScenarioUrl, payload, appName);
     }
 
     @action
@@ -502,6 +430,37 @@ export default class GuidNodeIntegromat extends Controller {
         }
         return '';
     }
+
+    reqLaunch(startIntegromatScenarioUrl: string, paylaod: string, appName: string){
+
+        this.toast.info(this.i18n.t('integromat.info.launch'))
+
+        return fetch(
+            startIntegromatScenarioUrl,
+            {
+                method: 'POST',
+                headers:{
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(data => {
+                if(data.integromatMsg.match('.error.')){
+                    this.toast.error(this.i18n.t(data.integromatMsg))
+                }else{
+                    this.toast.info(this.i18n.t(data.integromatMsg))
+                    let reqBody = {
+                        'nodeId': data.nodeId,
+                        'timestamp': data.timestamp,
+                    }
+                    this.reqMessage(reqestMessagesUrl, reqBody, appName)
+                }
+            })
+            .catch(() => {
+                this.toast.error(this.i18n.t('integromat.error.failedToRequest'));
+            })
+	}
 
     reqMessage(reqestMessagesUrl: string, reqBody: reqBody, appName: string) {
 

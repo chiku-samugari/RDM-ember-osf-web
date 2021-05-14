@@ -534,7 +534,7 @@ export default class GuidNodeIntegromat extends Controller {
 
     saveError(config: IntegromatConfigModel) {
         config.rollbackAttributes();
-        const message = 'integromat.failed_to_save';
+        const message = this.i18n.t('integromat.failed_to_save');
         this.toast.error(message);
     }
 

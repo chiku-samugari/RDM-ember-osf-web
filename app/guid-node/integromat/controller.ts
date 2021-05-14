@@ -176,9 +176,6 @@ export default class GuidNodeIntegromat extends Controller {
             arrayAttendees.push(microsoftTeamsAttendeesChecked[i].id);
         }
 
-        const startIntegromatScenarioUrl = host + namespace + '/integromat/' + 'start_scenario';
-        const reqestMessagesUrl =  host + namespace + '/integromat/' + 'requestNextMessages';
-
         const action = 'createMicrosoftTeamsMeeting';
         const timestamp = new Date().getTime();
 
@@ -212,7 +209,7 @@ export default class GuidNodeIntegromat extends Controller {
 
         this.set('showCreateMicrosoftTeamsMeetingDialog', false);
 
-        return reqLaunch(startIntegromatScenarioUrl, payload, appName);
+        return this.reqLaunch(startIntegromatScenarioUrl, payload, appName);
     }
 
     @action
@@ -334,7 +331,7 @@ export default class GuidNodeIntegromat extends Controller {
 
         this.set('showUpdateMicrosoftTeamsMeetingDialog', false);
 
-        return reqLaunch(startIntegromatScenarioUrl, payload, appName);
+        return this.reqLaunch(startIntegromatScenarioUrl, payload, appName);
     }
 
     @action
@@ -382,7 +379,7 @@ export default class GuidNodeIntegromat extends Controller {
         this.set('webMeetingDeleteMeetingId', '');
         this.set('showDeleteMicrosoftTeamsMeetingDialog', false);
 
-        return reqLaunch(startIntegromatScenarioUrl, payload, appName);
+        return this.reqLaunch(startIntegromatScenarioUrl, payload, appName);
     }
 
     @action
@@ -431,12 +428,12 @@ export default class GuidNodeIntegromat extends Controller {
         return '';
     }
 
-    reqLaunch(startIntegromatScenarioUrl: string, paylaod: string, appName: string){
+    reqLaunch(url: string, payload: string, appName: string){
 
         this.toast.info(this.i18n.t('integromat.info.launch'))
 
         return fetch(
-            startIntegromatScenarioUrl,
+            url,
             {
                 method: 'POST',
                 headers:{
@@ -462,10 +459,10 @@ export default class GuidNodeIntegromat extends Controller {
             })
 	}
 
-    reqMessage(reqestMessagesUrl: string, reqBody: reqBody, appName: string) {
+    reqMessage(url: string, reqBody: reqBody, appName: string) {
 
         return fetch(
-            reqestMessagesUrl,
+            url,
             {
                 method: 'POST',
                 headers:{
@@ -488,7 +485,7 @@ export default class GuidNodeIntegromat extends Controller {
                     'nodeId': data.nodeId,
                     'timestamp': data.timestamp
                 }
-                this.reqMessage(reqestMessagesUrl, reqBody, appName)
+                this.reqMessage(url, reqBody, appName)
             }
         })
         .catch(() => {

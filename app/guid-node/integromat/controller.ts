@@ -68,7 +68,7 @@ interface payload {
     subject: string;
     attendeesCollectionAtCreate: attendeeAtCreate[];
     attendeesCollectionAtUpdate: attendeeAtUpdate[];
-    attendees: string;
+    attendees: string[];
     location: string;
     content: string;
     webhook_url: string;
@@ -332,7 +332,7 @@ export default class GuidNodeIntegromat extends Controller {
         const webMeetingJoinUrl = this.webMeetingJoinUrl;
         const microsoftTeamsAttendeesChecked = document.querySelectorAll('input[class=microsoftTeamsAttendeesCheck]:checked');
         const empty = '';
-        const emptyList = '';
+        const emptyList = [];
 
         let arrayAttendeesCollection = [];
         let arrayAttendees = [];
@@ -405,6 +405,7 @@ export default class GuidNodeIntegromat extends Controller {
         const action = 'deleteMicrosoftTeamsMeeting';
         const timestamp = new Date().getTime();
         const empty = '';
+        const emptyList = [];
 
         const payload = {
             'nodeId': nodeId,
@@ -428,8 +429,9 @@ export default class GuidNodeIntegromat extends Controller {
             'startDate': empty,
             'endDate': empty,
             'subject': empty,
-            'attendeesCollection': empty,
-            'attendees': empty,
+            'attendeesCollectionAtCreate': emptyList,
+            'attendeesCollectionAtUpdate': emptyList,
+            'attendees': emptyList,
             'location': empty,
             'content': empty,
             'webhook_url': webhookUrl,

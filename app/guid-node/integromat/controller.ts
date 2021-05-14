@@ -62,7 +62,7 @@ interface payload {
     location: string;
     content: string;
     webhook_url: string;
-    timestamp: string;
+    timestamp: number;
 }
 
 const {
@@ -186,7 +186,7 @@ export default class GuidNodeIntegromat extends Controller {
         const webhookUrl = config.webhook_url;
         const node_id = config.node_settings_id;
         const appName = config.app_name_microsoft_teams;
-        const guid = this.model.guid;
+        const guid = String(this.model.guid);
         const webMeetingSubject = this.webMeetingSubject;
         const webMeetingStartDate = moment(this.webMeetingStartDate).format('YYYY-MM-DD');
         const webMeetingStartTime = (<HTMLInputElement>document.querySelectorAll('select[id=create_teams_start_time]')[0]).value;

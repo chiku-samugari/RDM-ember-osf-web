@@ -197,6 +197,7 @@ export default class GuidNodeIntegromat extends Controller {
         const webMeetingLocation = this.webMeetingLocation;
         const webMeetingContent = this.webMeetingContent;
         const microsoftTeamsAttendeesChecked = document.querySelectorAll('input[class=microsoftTeamsAttendeesCheck]:checked');
+        const empty = '';
 
         let arrayAttendeesCollection = [];
         let arrayAttendees = [];
@@ -213,6 +214,8 @@ export default class GuidNodeIntegromat extends Controller {
             'nodeId': node_id,
             'meetingAppName': appName,
             'guid': guid,
+            'meetingId': empty,
+            'joinUrl': empty,
             'action': action,
             'infoGrdmScenarioStarted': infoGrdmScenarioStarted,
             'infoGrdmScenarioCompleted': infoGrdmScenarioCompleted,
@@ -316,6 +319,7 @@ export default class GuidNodeIntegromat extends Controller {
         const webMeetingId = this.webMeetingUpdateMeetingId;
         const webMeetingJoinUrl = this.webMeetingJoinUrl;
         const microsoftTeamsAttendeesChecked = document.querySelectorAll('input[class=microsoftTeamsAttendeesCheck]:checked');
+        const empty = '';
 
         let arrayAttendeesCollection = [];
         let arrayAttendees = [];
@@ -333,6 +337,7 @@ export default class GuidNodeIntegromat extends Controller {
         const payload = {
             'nodeId': node_id,
             'meetingAppName': appName,
+            'guid': empty,
             'meetingId': webMeetingId,
             'joinUrl': webMeetingJoinUrl,
             'action': action,
@@ -385,10 +390,13 @@ export default class GuidNodeIntegromat extends Controller {
         const appName = config.app_name_microsoft_teams;
         const action = 'deleteMicrosoftTeamsMeeting';
         const timestamp = new Date().getTime();
+        const empty = '';
+
         const payload = {
             'nodeId': nodeId,
             'meetingAppName': appName,
             'meetingId': this.webMeetingDeleteMeetingId,
+            'joinUrl': empty,
             'action': action,
             'infoGrdmScenarioStarted': infoGrdmScenarioStarted,
             'infoGrdmScenarioCompleted': infoGrdmScenarioCompleted,
@@ -402,6 +410,13 @@ export default class GuidNodeIntegromat extends Controller {
             'errorGrdmDeleteMeetingInfo': errorGrdmDeleteMeetingInfo,
             'errorSlackDeleteMeeting': errorSlackDeleteMeeting,
             'errorScenarioProcessing': errorScenarioProcessing,
+            'startDate': empty,
+            'endDate': empty,
+            'subject': empty,
+            'attendeesCollection': empty,
+            'attendees': empty,
+            'location': empty,
+            'content': empty,
             'webhook_url': webhookUrl,
             'timestamp': timestamp,
         };

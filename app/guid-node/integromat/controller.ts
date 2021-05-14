@@ -44,13 +44,13 @@ const {
 
 const infoGrdmScenarioStarted = 'integromat.info.started';
 const infoGrdmScenarioCompleted = 'integromat.info.completed';
-const errorMicrosoftTeamsCreateMeeting = 'integromat.error.microsoftTeamsCreateMeeting';
+const errorWebappsCreateMeeting = 'integromat.error.webappsCreateMeeting';
 const errorGrdmCreateMeetingInfo = 'integromat.error.grdmCreateMeeting';
 const errorSlackCreateMeeting = 'integromat.error.slackCreateMeeting';
-const errorMicrosoftTeamsUpdateMeeting = 'integromat.error.microsoftTeamsUpdateMeeting';
+const errorWebappsUpdateMeeting = 'integromat.error.webappsUpdateMeeting';
 const errorGrdmUpdateMeetingInfo = 'integromat.error.grdmUpdateMeeting';
 const errorSlackUpdateMeeting = 'integromat.error.slackUpdateMeeting';
-const errorMicrosoftTeamsDeleteMeeting = 'integromat.error.microsoftTeamsDeleteMeeting';
+const errorWebappsDeleteMeeting = 'integromat.error.webappsDeleteMeeting';
 const errorGrdmDeleteMeetingInfo = 'integromat.error.grdmDeleteMeeting';
 const errorSlackDeleteMeeting = 'integromat.error.slackDeleteMeeting';
 const errorScenarioProcessing = 'integromat.error.scenarioProcessing';
@@ -173,13 +173,13 @@ export default class GuidNodeIntegromat extends Controller {
             'action': action,
             'infoGrdmScenarioStarted': infoGrdmScenarioStarted,
             'infoGrdmScenarioCompleted': infoGrdmScenarioCompleted,
-            'errorMicrosoftTeamsCreateMeeting': errorMicrosoftTeamsCreateMeeting,
+            'errorWebappsCreateMeeting': errorWebappsCreateMeeting,
             'errorGrdmCreateMeetingInfo': errorGrdmCreateMeetingInfo,
             'errorSlackCreateMeeting': errorSlackCreateMeeting,
-            'errorMicrosoftTeamsUpdateMeeting': errorMicrosoftTeamsUpdateMeeting,
+            'errorWebappsUpdateMeeting': errorWebappsUpdateMeeting,
             'errorGrdmUpdateMeetingInfo': errorGrdmUpdateMeetingInfo,
             'errorSlackUpdateMeeting': errorSlackUpdateMeeting,
-            'errorMicrosoftTeamsDeleteMeeting': errorMicrosoftTeamsDeleteMeeting,
+            'errorWebappsDeleteMeeting': errorWebappsDeleteMeeting,
             'errorGrdmDeleteMeetingInfo': errorGrdmDeleteMeetingInfo,
             'errorSlackDeleteMeeting': errorSlackDeleteMeeting,
             'errorScenarioProcessing': errorScenarioProcessing,
@@ -353,13 +353,13 @@ export default class GuidNodeIntegromat extends Controller {
             'action': action,
             'infoGrdmScenarioStarted': infoGrdmScenarioStarted,
             'infoGrdmScenarioCompleted': infoGrdmScenarioCompleted,
-            'errorMicrosoftTeamsCreateMeeting': errorMicrosoftTeamsCreateMeeting,
+            'errorWebappsCreateMeeting': errorWebappsCreateMeeting,
             'errorGrdmCreateMeetingInfo': errorGrdmCreateMeetingInfo,
             'errorSlackCreateMeeting': errorSlackCreateMeeting,
-            'errorMicrosoftTeamsUpdateMeeting': errorMicrosoftTeamsUpdateMeeting,
+            'errorWebappsUpdateMeeting': errorWebappsUpdateMeeting,
             'errorGrdmUpdateMeetingInfo': errorGrdmUpdateMeetingInfo,
             'errorSlackUpdateMeeting': errorSlackUpdateMeeting,
-            'errorMicrosoftTeamsDeleteMeeting': errorMicrosoftTeamsDeleteMeeting,
+            'errorWebappsDeleteMeeting': errorWebappsDeleteMeeting,
             'errorGrdmDeleteMeetingInfo': errorGrdmDeleteMeetingInfo,
             'errorSlackDeleteMeeting': errorSlackDeleteMeeting,
             'errorScenarioProcessing': errorScenarioProcessing,
@@ -431,13 +431,13 @@ export default class GuidNodeIntegromat extends Controller {
             'action': action,
             'infoGrdmScenarioStarted': infoGrdmScenarioStarted,
             'infoGrdmScenarioCompleted': infoGrdmScenarioCompleted,
-            'errorMicrosoftTeamsCreateMeeting': errorMicrosoftTeamsCreateMeeting,
+            'errorWebappsCreateMeeting': errorWebappsCreateMeeting,
             'errorGrdmCreateMeetingInfo': errorGrdmCreateMeetingInfo,
             'errorSlackCreateMeeting': errorSlackCreateMeeting,
-            'errorMicrosoftTeamsUpdateMeeting': errorMicrosoftTeamsUpdateMeeting,
+            'errorWebappsUpdateMeeting': errorWebappsUpdateMeeting,
             'errorGrdmUpdateMeetingInfo': errorGrdmUpdateMeetingInfo,
             'errorSlackUpdateMeeting': errorSlackUpdateMeeting,
-            'errorMicrosoftTeamsDeleteMeeting': errorMicrosoftTeamsDeleteMeeting,
+            'errorWebappsDeleteMeeting': errorWebappsDeleteMeeting,
             'errorGrdmDeleteMeetingInfo': errorGrdmDeleteMeetingInfo,
             'errorSlackDeleteMeeting': errorSlackDeleteMeeting,
             'errorScenarioProcessing': errorScenarioProcessing,

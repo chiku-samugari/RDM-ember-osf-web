@@ -35,6 +35,36 @@ interface reqBody {
     timestamp: string;
 }
 
+interface payload {
+    nodeId: string;
+    meetingAppName: string;
+    guid: string;
+    meetingId: string;
+    joinUrl: string;
+    action: string;
+    infoGrdmScenarioStarted: string;
+    infoGrdmScenarioCompleted: string;
+    errorWebappsCreateMeeting: string;
+    errorGrdmCreateMeetingInfo: string;
+    errorSlackCreateMeeting: string;
+    errorWebappsUpdateMeeting: string;
+    errorGrdmUpdateMeetingInfo: string;
+    errorSlackUpdateMeeting: string;
+    errorWebappsDeleteMeeting: string;
+    errorGrdmDeleteMeetingInfo: string;
+    errorSlackDeleteMeeting: string;
+    errorScenarioProcessing: string;
+    startDate: string;
+    endDate: string;
+    subject: string;
+    attendeesCollection: string;
+    attendees: string;
+    location: string;
+    content: string;
+    webhook_url: string;
+    timestamp: string;
+}
+
 const {
     OSF: {
         url: host,
@@ -428,7 +458,7 @@ export default class GuidNodeIntegromat extends Controller {
         return '';
     }
 
-    reqLaunch(url: string, payload: string, appName: string){
+    reqLaunch(url: string, payload: payload, appName: string){
 
         this.toast.info(this.i18n.t('integromat.info.launch'))
 

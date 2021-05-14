@@ -35,6 +35,15 @@ interface reqBody {
     timestamp: string;
 }
 
+interface attendeeAtCreate {
+    emailAddress: { address: string; };
+}
+
+interface attendeeAtUpdate {
+    address: string;
+    name: string;
+}
+
 interface payload {
     nodeId: string;
     meetingAppName: string;
@@ -57,7 +66,8 @@ interface payload {
     startDate: string;
     endDate: string;
     subject: string;
-    attendeesCollection: string[];
+    attendeesCollectionAtCreate: attendeeAtCreate[];
+    attendeesCollectionAtUpdate: attendeeAtUpdate[];
     attendees: string;
     location: string;
     content: string;
@@ -198,6 +208,7 @@ export default class GuidNodeIntegromat extends Controller {
         const webMeetingContent = this.webMeetingContent;
         const microsoftTeamsAttendeesChecked = document.querySelectorAll('input[class=microsoftTeamsAttendeesCheck]:checked');
         const empty = '';
+        const emptyList = [];
 
         let arrayAttendeesCollection = [];
         let arrayAttendees = [];
@@ -232,7 +243,8 @@ export default class GuidNodeIntegromat extends Controller {
             'startDate': webMeetingStartDatetime,
             'endDate': webMeetingEndDatetime,
             'subject': webMeetingSubject,
-            'attendeesCollection': arrayAttendeesCollection,
+            'attendeesCollectionAtCreate': arrayAttendeesCollection,
+            'attendeesCollectionAtUpdate': emptyList,
             'attendees': arrayAttendees,
             'location': webMeetingLocation,
             'content': webMeetingContent,
@@ -320,6 +332,7 @@ export default class GuidNodeIntegromat extends Controller {
         const webMeetingJoinUrl = this.webMeetingJoinUrl;
         const microsoftTeamsAttendeesChecked = document.querySelectorAll('input[class=microsoftTeamsAttendeesCheck]:checked');
         const empty = '';
+        const emptyList = '';
 
         let arrayAttendeesCollection = [];
         let arrayAttendees = [];
@@ -356,7 +369,8 @@ export default class GuidNodeIntegromat extends Controller {
             'startDate': webMeetingStartDatetime,
             'endDate': webMeetingEndDatetime,
             'subject': webMeetingSubject,
-            'attendeesCollection': arrayAttendeesCollection,
+            'attendeesCollectionAtCreate': emptyList,
+            'attendeesCollectionAtUpdate': arrayAttendeesCollection,
             'attendees': arrayAttendees,
             'location': webMeetingLocation,
             'content': webMeetingContent,

@@ -215,7 +215,7 @@ export default class GuidNodeIntegromat extends Controller {
                         'nodeId': data.nodeId,
                         'timestamp': data.timestamp,
                     }
-                    this.reqMessage(reqestMessagesUrl, reqBody)
+                    this.reqMessage(reqestMessagesUrl, reqBody, app_name)
                 }
             })
             .catch(() => {
@@ -223,7 +223,7 @@ export default class GuidNodeIntegromat extends Controller {
             })
     }
 
-    reqMessage(reqestMessagesUrl: string, reqBody: reqBody) {
+    reqMessage(reqestMessagesUrl: string, reqBody: reqBody, appName: string) {
 
         return fetch(
             reqestMessagesUrl,
@@ -240,7 +240,7 @@ export default class GuidNodeIntegromat extends Controller {
                 this.toast.info(this.i18n.t(data.integromatMsg));
                 window.setTimeout(() => window.location.reload(), 1000);
             }else if(data.integromatMsg.match('.error.')){
-                this.toast.error(this.i18n.t(data.integromatMsg));
+                this.toast.error(this.i18n.t(data.integromatMsg), {appName: appName});
             }else{
                 if(data.notify){
                     this.toast.info(this.i18n.t(data.integromatMsg));

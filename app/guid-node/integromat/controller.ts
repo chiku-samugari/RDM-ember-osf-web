@@ -208,7 +208,7 @@ export default class GuidNodeIntegromat extends Controller {
         const webMeetingContent = this.webMeetingContent;
         const microsoftTeamsAttendeesChecked = document.querySelectorAll('input[class=microsoftTeamsAttendeesCheck]:checked');
         const empty = '';
-        const attendeeAtCreateEmpty : attendeeAtCreate[] = [];
+        const attendeeAtUpdateEmpty : attendeeAtUpdate[] = [];
 
         let arrayAttendeesCollection = [];
         let arrayAttendees = [];
@@ -244,7 +244,7 @@ export default class GuidNodeIntegromat extends Controller {
             'endDate': webMeetingEndDatetime,
             'subject': webMeetingSubject,
             'attendeesCollectionAtCreate': arrayAttendeesCollection,
-            'attendeesCollectionAtUpdate': attendeeAtCreateEmpty,
+            'attendeesCollectionAtUpdate': attendeeAtUpdateEmpty,
             'attendees': arrayAttendees,
             'location': webMeetingLocation,
             'content': webMeetingContent,
@@ -332,7 +332,7 @@ export default class GuidNodeIntegromat extends Controller {
         const webMeetingJoinUrl = this.webMeetingJoinUrl;
         const microsoftTeamsAttendeesChecked = document.querySelectorAll('input[class=microsoftTeamsAttendeesCheck]:checked');
         const empty = '';
-        const attendeeAtUpdateEmpty : attendeeAtUpdate[] = [];
+        const attendeeAtCreateEmpty : attendeeAtCreate[] = [];
 
         let arrayAttendeesCollection = [];
         let arrayAttendees = [];
@@ -369,7 +369,7 @@ export default class GuidNodeIntegromat extends Controller {
             'startDate': webMeetingStartDatetime,
             'endDate': webMeetingEndDatetime,
             'subject': webMeetingSubject,
-            'attendeesCollectionAtCreate': attendeeAtUpdateEmpty,
+            'attendeesCollectionAtCreate': attendeeAtCreateEmpty,
             'attendeesCollectionAtUpdate': arrayAttendeesCollection,
             'attendees': arrayAttendees,
             'location': webMeetingLocation,

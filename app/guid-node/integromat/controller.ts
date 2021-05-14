@@ -57,7 +57,7 @@ interface payload {
     startDate: string;
     endDate: string;
     subject: string;
-    attendeesCollection: string;
+    attendeesCollection: string[];
     attendees: string;
     location: string;
     content: string;
@@ -395,6 +395,7 @@ export default class GuidNodeIntegromat extends Controller {
         const payload = {
             'nodeId': nodeId,
             'meetingAppName': appName,
+            'guid': empty,
             'meetingId': this.webMeetingDeleteMeetingId,
             'joinUrl': empty,
             'action': action,

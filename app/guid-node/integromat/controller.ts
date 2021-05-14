@@ -101,7 +101,6 @@ export default class GuidNodeIntegromat extends Controller {
 
     teamsMeetingAttendees : string[] = [];
     notTeamsMeetingAttendees : string[] = [];
-    willDeleteMeetings : string[] = [];
 
     @computed('config.isFulfilled')
     get loading(): boolean {
@@ -122,6 +121,23 @@ export default class GuidNodeIntegromat extends Controller {
             .catch(() => {
                 this.saveError(config);
             });
+    }
+
+    saveError(config: IntegromatConfigModel) {
+        config.rollbackAttributes();
+        const message = this.i18n.t('integromat.failed_to_save');
+        this.toast.error(message);
+    }
+
+    @action
+    startMeeting(this: GuidNodeIntegromat, v: string) {
+        window.open(v, '_blank');
+    }
+
+    @action
+    closeDialogs() {
+        this.set('showCreateMicrosoftTeamsMeetingDialog', false);
+        this.set('showUpdateMicrosoftTeamsMeetingDialog', false);
     }
 
     @action
@@ -221,40 +237,6 @@ export default class GuidNodeIntegromat extends Controller {
             .catch(() => {
                 this.toast.error(this.i18n.t('integromat.error.failedToRequest'));
             })
-    }
-
-    reqMessage(reqestMessagesUrl: string, reqBody: reqBody, appName: string) {
-
-        return fetch(
-            reqestMessagesUrl,
-            {
-                method: 'POST',
-                headers:{
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(reqBody)
-        })
-        .then(res => res.json())
-        .then(data => {
-            if(data.integromatMsg === 'integromat.info.completed'){
-                this.toast.info(this.i18n.t(data.integromatMsg));
-                this.save();
-            }else if(data.integromatMsg.match('.error.')){
-                this.toast.error(this.i18n.t(data.integromatMsg, {appName: appName}));
-            }else{
-                if(data.notify){
-                    this.toast.info(this.i18n.t(data.integromatMsg));
-                }
-                let reqBody = {
-                    'nodeId': data.nodeId,
-                    'timestamp': data.timestamp
-                }
-                this.reqMessage(reqestMessagesUrl, reqBody, appName)
-            }
-        })
-        .catch(() => {
-            this.toast.error(this.i18n.t('integromat.error.failedToGetMessage'));
-        })
     }
 
     @action
@@ -521,21 +503,38 @@ export default class GuidNodeIntegromat extends Controller {
         return '';
     }
 
-    @action
-    startMeeting(this: GuidNodeIntegromat, v: string) {
-        window.open(v, '_blank');
-    }
+    reqMessage(reqestMessagesUrl: string, reqBody: reqBody, appName: string) {
 
-    @action
-    closeDialogs() {
-        this.set('showCreateMicrosoftTeamsMeetingDialog', false);
-        this.set('showUpdateMicrosoftTeamsMeetingDialog', false);
-    }
-
-    saveError(config: IntegromatConfigModel) {
-        config.rollbackAttributes();
-        const message = this.i18n.t('integromat.failed_to_save');
-        this.toast.error(message);
+        return fetch(
+            reqestMessagesUrl,
+            {
+                method: 'POST',
+                headers:{
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(reqBody)
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.integromatMsg === 'integromat.info.completed'){
+                this.toast.info(this.i18n.t(data.integromatMsg));
+                this.save();
+            }else if(data.integromatMsg.match('.error.')){
+                this.toast.error(this.i18n.t(data.integromatMsg, {appName: appName}));
+            }else{
+                if(data.notify){
+                    this.toast.info(this.i18n.t(data.integromatMsg));
+                }
+                let reqBody = {
+                    'nodeId': data.nodeId,
+                    'timestamp': data.timestamp
+                }
+                this.reqMessage(reqestMessagesUrl, reqBody, appName)
+            }
+        })
+        .catch(() => {
+            this.toast.error(this.i18n.t('integromat.error.failedToGetMessage'));
+        })
     }
 
     @computed('config.all_web_meetings')

@@ -249,7 +249,7 @@ export default class GuidNodeIntegromat extends Controller {
                     'nodeId': data.nodeId,
                     'timestamp': data.timestamp
                 }
-                this.reqMessage(reqestMessagesUrl, reqBody)
+                this.reqMessage(reqestMessagesUrl, reqBody, app_name)
             }
         })
         .catch(() => {
@@ -395,7 +395,7 @@ export default class GuidNodeIntegromat extends Controller {
                         'nodeId': data.nodeId,
                         'timestamp': data.timestamp,
                     }
-                    this.reqMessage(reqestMessagesUrl, reqBody)
+                    this.reqMessage(reqestMessagesUrl, reqBody, app_name)
                 }
             })
             .catch(() => {
@@ -467,7 +467,7 @@ export default class GuidNodeIntegromat extends Controller {
                         'nodeId': data.nodeId,
                         'timestamp': data.timestamp,
                     }
-                    this.reqMessage(reqestMessagesUrl, reqBody)
+                    this.reqMessage(reqestMessagesUrl, reqBody, appName)
                 }
             })
             .catch(() => {

@@ -1869,7 +1869,8 @@ export default {
         from_symbol: '～',
         colon: ':',
         info: {
-            started: 'The workflow has started!',
+            launch: 'Launching workflow.',
+            started: 'The workflow has started.',
             completed: 'The workflow is complete!',
         },
         error:{

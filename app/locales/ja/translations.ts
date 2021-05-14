@@ -1973,7 +1973,6 @@ export default {
         page_title: '{nodeTitle} Integromat',
         header: 'Integromat',
         loading: 'ロード中',
-        save_button: 'Save',
         failed_to_save: 'エラーが発生しました。',
         upcoming: '今後の会議',
         previous: '過去の会議',
@@ -2026,6 +2025,7 @@ export default {
         from_symbol: '～',
         colon: '：',
         info: {
+            launch: 'ワークフローを起動しています。',
             started: 'ワークフローを開始しました。',
             completed: 'ワークフローを完了しました。',
         },

@@ -240,7 +240,7 @@ export default class GuidNodeIntegromat extends Controller {
                 this.toast.info(this.i18n.t(data.integromatMsg));
                 window.setTimeout(() => window.location.reload(), 1000);
             }else if(data.integromatMsg.match('.error.')){
-                this.toast.error(this.i18n.t(data.integromatMsg), {appName: appName});
+                this.toast.error(this.i18n.t(data.integromatMsg, {appName: appName}));
             }else{
                 if(data.notify){
                     this.toast.info(this.i18n.t(data.integromatMsg));

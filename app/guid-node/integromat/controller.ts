@@ -208,7 +208,7 @@ export default class GuidNodeIntegromat extends Controller {
         const webMeetingContent = this.webMeetingContent;
         const microsoftTeamsAttendeesChecked = document.querySelectorAll('input[class=microsoftTeamsAttendeesCheck]:checked');
         const empty = '';
-        const emptyList = [];
+        const attendeeAtCreateEmpty : attendeeAtCreate[] = [];
 
         let arrayAttendeesCollection = [];
         let arrayAttendees = [];
@@ -244,7 +244,7 @@ export default class GuidNodeIntegromat extends Controller {
             'endDate': webMeetingEndDatetime,
             'subject': webMeetingSubject,
             'attendeesCollectionAtCreate': arrayAttendeesCollection,
-            'attendeesCollectionAtUpdate': emptyList,
+            'attendeesCollectionAtUpdate': attendeeAtCreateEmpty,
             'attendees': arrayAttendees,
             'location': webMeetingLocation,
             'content': webMeetingContent,
@@ -332,7 +332,7 @@ export default class GuidNodeIntegromat extends Controller {
         const webMeetingJoinUrl = this.webMeetingJoinUrl;
         const microsoftTeamsAttendeesChecked = document.querySelectorAll('input[class=microsoftTeamsAttendeesCheck]:checked');
         const empty = '';
-        const emptyList = [];
+        const attendeeAtUpdateEmpty : attendeeAtUpdate[] = [];
 
         let arrayAttendeesCollection = [];
         let arrayAttendees = [];
@@ -369,7 +369,7 @@ export default class GuidNodeIntegromat extends Controller {
             'startDate': webMeetingStartDatetime,
             'endDate': webMeetingEndDatetime,
             'subject': webMeetingSubject,
-            'attendeesCollectionAtCreate': emptyList,
+            'attendeesCollectionAtCreate': attendeeAtUpdateEmpty,
             'attendeesCollectionAtUpdate': arrayAttendeesCollection,
             'attendees': arrayAttendees,
             'location': webMeetingLocation,
@@ -405,7 +405,9 @@ export default class GuidNodeIntegromat extends Controller {
         const action = 'deleteMicrosoftTeamsMeeting';
         const timestamp = new Date().getTime();
         const empty = '';
-        const emptyList = [];
+        const emptyList : string[] = [];
+        const attendeeAtCraeteEmpty : attendeeAtCreate[] = [];
+        const attendeeAtUpdateEmpty : attendeeAtUpdate[] = [];
 
         const payload = {
             'nodeId': nodeId,
@@ -429,8 +431,8 @@ export default class GuidNodeIntegromat extends Controller {
             'startDate': empty,
             'endDate': empty,
             'subject': empty,
-            'attendeesCollectionAtCreate': emptyList,
-            'attendeesCollectionAtUpdate': emptyList,
+            'attendeesCollectionAtCreate': attendeeAtCraeteEmpty,
+            'attendeesCollectionAtUpdate': attendeeAtUpdateEmpty,
             'attendees': emptyList,
             'location': empty,
             'content': empty,

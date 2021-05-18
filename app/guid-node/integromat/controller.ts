@@ -39,6 +39,11 @@ interface attendeeAtCreate {
     emailAddress: { address: string; };
 }
 
+interface webexMeetingsattendeeAtCreate {
+    email: string;
+    displayName: string;
+}
+
 interface attendeeAtUpdate {
     address: string;
     name: string;
@@ -323,7 +328,7 @@ export default class GuidNodeIntegromat extends Controller {
         let arrayAttendees = [];
 
         for(let i = 0; i < webexMeetingsAttendeesChecked.length; i++){
-            arrayAttendeesCollection.push({'email': webexMeetingsAttendeesChecked[i].id, 'displayName': webexMeetingsAttendeesChecked[i].name});
+            arrayAttendeesCollection.push({'email': webexMeetingsAttendeesChecked[i].id, 'displayName': String(webexMeetingsAttendeesChecked[i].name}));
             arrayAttendees.push(webexMeetingsAttendeesChecked[i].id);
         }
 
@@ -394,7 +399,7 @@ export default class GuidNodeIntegromat extends Controller {
             }
         }
 
-        const microsoft_teams_attendees = JSON.parse(config.microsoft_teams_attendees);
+        const microsoft_teams_attendees = JSON.parse(config.web_meeting_attendees);
 
         this.teamsMeetingAttendees.length = 0;
         this.notTeamsMeetingAttendees.length = 0;
@@ -582,7 +587,7 @@ export default class GuidNodeIntegromat extends Controller {
             }
         }
 
-        const microsoft_teams_attendees = JSON.parse(config.microsoft_teams_attendees);
+        const microsoft_teams_attendees = JSON.parse(config.web_meeting_attendees);
 
         this.teamsMeetingAttendees.length = 0;
         this.notTeamsMeetingAttendees.length = 0;

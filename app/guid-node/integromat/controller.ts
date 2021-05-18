@@ -199,6 +199,14 @@ export default class GuidNodeIntegromat extends Controller {
     }
 
     @action
+    createWebMeeting(this: GuidNodeIntegromat) {
+
+        if (this.webMeetingAppName === microsoftTeamsName) {
+            this.createMicrosoftTeamsMeeting();
+        }
+    }
+
+    @action
     createMicrosoftTeamsMeeting(this: GuidNodeIntegromat) {
         if (!this.config) {
             throw new EmberError('Illegal config');
@@ -207,7 +215,7 @@ export default class GuidNodeIntegromat extends Controller {
         const config = this.config.content as IntegromatConfigModel;
         const webhookUrl = config.webhook_url;
         const node_id = config.node_settings_id;
-        const appName = config.app_name_microsoft_teams;
+        const appName = this.webMeetingAppName;
         const guid = String(this.model.guid);
         const webMeetingSubject = this.webMeetingSubject;
         const webMeetingStartDate = moment(this.webMeetingStartDate).format('YYYY-MM-DD');

@@ -618,6 +618,16 @@ export default class GuidNodeIntegromat extends Controller {
         return workflows;
     }
 
+    @computed('config.web_meeting_apps')
+    get web_meeting_apps() {
+        if (!this.config) {
+            return '';
+        }
+        const config = this.config.content as IntegromatConfigModel;
+        const web_meeting_apps = JSON.parse(config.web_meeting_apps);
+        return web_meeting_apps;
+    }
+
     @computed('node')
     get config(): DS.PromiseObject<IntegromatConfigModel> | undefined {
         if (this.configCache) {

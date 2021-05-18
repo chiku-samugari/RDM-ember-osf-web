@@ -252,6 +252,8 @@ export default class GuidNodeIntegromat extends Controller {
         const microsoftTeamsAttendeesChecked = document.querySelectorAll('input[class=microsoftTeamsAttendeesCheck]:checked');
         const empty = '';
         const attendeeAtUpdateEmpty : attendeeAtUpdate[] = [];
+        const webexMeetingsAttendeesEmpty: webexMeetingsAttendee[] = [];
+
 
         let arrayAttendeesCollection = [];
         let arrayAttendees = [];
@@ -288,6 +290,7 @@ export default class GuidNodeIntegromat extends Controller {
             'subject': webMeetingSubject,
             'attendeesCollectionAtCreate': arrayAttendeesCollection,
             'attendeesCollectionAtUpdate': attendeeAtUpdateEmpty,
+            'webexMeetingsAttendeesCollection': webexMeetingsAttendeesEmpty,
             'attendees': arrayAttendees,
             'location': webMeetingLocation,
             'content': webMeetingContent,
@@ -449,6 +452,7 @@ export default class GuidNodeIntegromat extends Controller {
         const microsoftTeamsAttendeesChecked = document.querySelectorAll('input[class=microsoftTeamsAttendeesCheck]:checked');
         const empty = '';
         const attendeeAtCreateEmpty : attendeeAtCreate[] = [];
+		const webexMeetingsAttendeesEmpty: webexMeetingsAttendee[] = [];
 
         let arrayAttendeesCollection = [];
         let arrayAttendees = [];
@@ -487,6 +491,7 @@ export default class GuidNodeIntegromat extends Controller {
             'subject': webMeetingSubject,
             'attendeesCollectionAtCreate': attendeeAtCreateEmpty,
             'attendeesCollectionAtUpdate': arrayAttendeesCollection,
+            'webexMeetingsAttendeesCollection': webexMeetingsAttendeesEmpty,
             'attendees': arrayAttendees,
             'location': webMeetingLocation,
             'content': webMeetingContent,
@@ -524,6 +529,7 @@ export default class GuidNodeIntegromat extends Controller {
         const emptyList : string[] = [];
         const attendeeAtCraeteEmpty : attendeeAtCreate[] = [];
         const attendeeAtUpdateEmpty : attendeeAtUpdate[] = [];
+		const webexMeetingsAttendeesEmpty: webexMeetingsAttendee[] = [];
 
         const payload = {
             'nodeId': nodeId,
@@ -549,6 +555,7 @@ export default class GuidNodeIntegromat extends Controller {
             'subject': empty,
             'attendeesCollectionAtCreate': attendeeAtCraeteEmpty,
             'attendeesCollectionAtUpdate': attendeeAtUpdateEmpty,
+            'webexMeetingsAttendeesCollection': webexMeetingsAttendeesEmpty,
             'attendees': emptyList,
             'location': empty,
             'content': empty,

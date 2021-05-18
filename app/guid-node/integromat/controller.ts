@@ -39,11 +39,6 @@ interface attendeeAtCreate {
     emailAddress: { address: string; };
 }
 
-interface webexMeetingsattendeeAtCreate {
-    email: string;
-    displayName: string;
-}
-
 interface attendeeAtUpdate {
     address: string;
     name: string;
@@ -322,16 +317,17 @@ export default class GuidNodeIntegromat extends Controller {
         const webMeetingContent = this.webMeetingContent;
         const webexMeetingsAttendeesChecked = document.querySelectorAll('input[class=webexMeetingsAttendeesCheck]:checked');
         const empty = '';
+        const attendeeAtCreateEmpty : attendeeAtCreate[] = [];
         const attendeeAtUpdateEmpty : attendeeAtUpdate[] = [];
 
         let arrayAttendeesCollection = [];
         let arrayAttendees = [];
-
+        /*
         for(let i = 0; i < webexMeetingsAttendeesChecked.length; i++){
-            arrayAttendeesCollection.push({'email': webexMeetingsAttendeesChecked[i].id, 'displayName': String(webexMeetingsAttendeesChecked[i].name}));
+            arrayAttendeesCollection.push({'email': webexMeetingsAttendeesChecked[i].id, 'displayName': String(webexMeetingsAttendeesChecked[i].name)});
             arrayAttendees.push(webexMeetingsAttendeesChecked[i].id);
         }
-
+        */
         const action = 'createWebexMeeting';
         const timestamp = new Date().getTime();
 
@@ -357,7 +353,7 @@ export default class GuidNodeIntegromat extends Controller {
             'startDate': webMeetingStartDatetime,
             'endDate': webMeetingEndDatetime,
             'subject': webMeetingSubject,
-            'attendeesCollectionAtCreate': arrayAttendeesCollection,
+            'attendeesCollectionAtCreate': attendeeAtCreateEmpty,
             'attendeesCollectionAtUpdate': attendeeAtUpdateEmpty,
             'attendees': arrayAttendees,
             'location': webMeetingLocation,

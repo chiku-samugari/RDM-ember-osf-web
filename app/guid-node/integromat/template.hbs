@@ -249,7 +249,7 @@
                             {{#if this.microsoft_teams_attendees}}
                                 {{#each this.microsoft_teams_attendees as |row|}}
                                     <label local-class='Integromat__label_normal'>
-                                        <input class='microsoftTeamsAttendeesCheck' type='checkBox' style='width: 15px; height: 15px;' id={{row.fields.microsoft_teams_mail}}>
+                                        <input class='microsoftTeamsAttendeesCheck' type='checkBox' style='width: 15px; height: 15px;' id={{row.fields.microsoft_teams_mail}}  name={{row.fields.microsoft_teams_user_name}}>
                                         {{row.fields.microsoft_teams_mail}}
                                     </label>
                                 {{/each}}
@@ -323,6 +323,100 @@
                         type='text'
                         value=this.webMeetingLocation
                     }}
+                </div>
+                <div local-class='Integromat__input_items'>
+                    <label>{{t 'integromat.content'}}</label>
+                    {{textarea
+                        name='webMeetingContent'
+                        class='form-control'
+                        value=this.webMeetingContent
+                        placeholder=(t 'integromat.placeholders.content')
+                    }}
+                </div>
+            {{/if}}
+
+            {{#if showCreateWebexMeetingDialog}}
+                <div local-class='Integromat__input_items'>
+                    <label>{{t 'integromat.subject'}}</label>
+                    {{input
+                        name='webMeetingSubject'
+                        placeholder=(t 'integromat.placeholders.subject')
+                        class='form-control'
+                        type='text'
+                        value=this.webMeetingSubject
+                    }}
+                </div>
+                <div local-class='Integromat__input_items'>
+                    <label>{{t 'integromat.attendees'}}</label>
+                    <div>
+                        <span id='attendees_inputs'>
+                            {{#if this.web_meeting_attendees}}
+                                {{#each this.web_meeting_attendees as |row|}}
+                                    <label local-class='Integromat__label_normal'>
+                                        <input class='webexMeetingsAttendeesCheck' type='checkBox' style='width: 15px; height: 15px;' id={{row.fields.webex_meetings_mail}} name={{row.fields.webex_meetings_display_name}}>
+                                        {{row.fields.webex_meetings_mail}}
+                                    </label>
+                                {{/each}}
+                            {{else}}
+                                <p>{{t 'integromat.meetingDialog.noAttendees'}}</p>
+                            {{/if}}
+                        </span>
+                    </div>
+                </div>
+                <div local-class='Integromat__input_items'>
+                    <table>
+                        <tr>
+                            <td><label>{{t 'integromat.start_datetime'}}</label></td><td></td><td></td>
+                            <td><label>{{t 'integromat.end_datetime'}}</label></td><td></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                {{bootstrap-datepicker
+                                    name='teams_start_date'
+                                    placeholder=(t 'integromat.placeholders.date_form')
+                                    class='form-control'
+                                    type='text'
+                                    value=this.webMeetingStartDate
+                                    format='yyyy/mm/dd'
+                                    todayHighlight=true
+                                }}
+                            </td>
+                            <td>
+                                <select id='create_teams_start_time' class='form-control'>
+                                    {{#each this.times as |times|}}
+                                        {{#if (eq times this.defaultStartTime)}}
+                                            <option value={{times}} selected>{{times}}</option>
+                                        {{else}}
+                                            <option value={{times}}>{{times}}</option>
+                                        {{/if}}
+                                    {{/each}}
+                                </select>
+                            </td>
+                            <td><label local-class='Integromat__input_items'>{{t 'integromat.from_symbol'}}</label></td>
+                            <td>
+                                {{bootstrap-datepicker
+                                    name='teams_end_date'
+                                    placeholder=(t 'integromat.placeholders.date_form')
+                                    class='form-control'
+                                    type='text'
+                                    value=this.webMeetingEndDate
+                                    format='yyyy/mm/dd'
+                                    todayHighlight=true
+                                }}
+                            </td>
+                            <td>
+                                <select id='create_teams_end_time' class='form-control'>
+                                    {{#each this.times as |times|}}
+                                        {{#if (eq times this.defaultEndTime)}}
+                                            <option value={{times}} selected>{{times}}</option>
+                                        {{else}}
+                                            <option value={{times}}>{{times}}</option>
+                                        {{/if}}
+                                    {{/each}}
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
                 </div>
                 <div local-class='Integromat__input_items'>
                     <label>{{t 'integromat.content'}}</label>

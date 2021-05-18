@@ -39,6 +39,10 @@ interface attendeeAtCreate {
     emailAddress: { address: string; };
 }
 
+interface webexMeetingsAttendee {
+    email: string;
+}
+
 interface attendeeAtUpdate {
     address: string;
     name: string;
@@ -68,6 +72,7 @@ interface payload {
     subject: string;
     attendeesCollectionAtCreate: attendeeAtCreate[];
     attendeesCollectionAtUpdate: attendeeAtUpdate[];
+    webexMeetingsAttendeesCollection: webexMeetingsAttendee[];
     attendees: string[];
     location: string;
     content: string;
@@ -315,19 +320,19 @@ export default class GuidNodeIntegromat extends Controller {
         const webMeetingEndDatetime = webMeetingEndDate + ' ' + webMeetingEndTime;
         const webMeetingLocation = this.webMeetingLocation;
         const webMeetingContent = this.webMeetingContent;
-//        const webexMeetingsAttendeesChecked = document.querySelectorAll('input[class=webexMeetingsAttendeesCheck]:checked');
+        const webexMeetingsAttendeesChecked = document.querySelectorAll('input[class=webexMeetingsAttendeesCheck]:checked');
         const empty = '';
         const attendeeAtCreateEmpty : attendeeAtCreate[] = [];
         const attendeeAtUpdateEmpty : attendeeAtUpdate[] = [];
 
-//        let arrayAttendeesCollection = [];
-        let arrayAttendees = string[];
-        /*
+        let arrayAttendeesCollection = [];
+        let arrayAttendees = [];
+
         for(let i = 0; i < webexMeetingsAttendeesChecked.length; i++){
-            arrayAttendeesCollection.push({'email': webexMeetingsAttendeesChecked[i].id, 'displayName': String(webexMeetingsAttendeesChecked[i].name)});
+            arrayAttendeesCollection.push({'email': webexMeetingsAttendeesChecked[i].id});
             arrayAttendees.push(webexMeetingsAttendeesChecked[i].id);
         }
-        */
+
         const action = 'createWebexMeeting';
         const timestamp = new Date().getTime();
 
@@ -355,6 +360,7 @@ export default class GuidNodeIntegromat extends Controller {
             'subject': webMeetingSubject,
             'attendeesCollectionAtCreate': attendeeAtCreateEmpty,
             'attendeesCollectionAtUpdate': attendeeAtUpdateEmpty,
+            'webexMeetingsAttendeesCollection': arrayAttendeesCollection,
             'attendees': arrayAttendees,
             'location': webMeetingLocation,
             'content': webMeetingContent,

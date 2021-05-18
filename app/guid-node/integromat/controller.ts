@@ -322,8 +322,8 @@ export default class GuidNodeIntegromat extends Controller {
         let arrayAttendeesCollection = [];
         let arrayAttendees = [];
 
-        for(let i = 0; i < webexMeetingsAttendeesChecked.length; i++){ 
-            arrayAttendeesCollection.push({'email': webexMeetingsAttendeesChecked[i].id, 'displayName': webexMeetingsAttendeesChecked[i].name}});
+        for(let i = 0; i < webexMeetingsAttendeesChecked.length; i++){
+            arrayAttendeesCollection.push({'email': webexMeetingsAttendeesChecked[i].id, 'displayName': webexMeetingsAttendeesChecked[i].name});
             arrayAttendees.push(webexMeetingsAttendeesChecked[i].id);
         }
 
@@ -630,7 +630,7 @@ export default class GuidNodeIntegromat extends Controller {
             .catch(() => {
                 this.toast.error(this.i18n.t('integromat.error.failedToRequest'));
             })
-	}
+    }
 
     reqMessage(url: string, reqBody: reqBody, appName: string) {
 

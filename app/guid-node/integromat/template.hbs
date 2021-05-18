@@ -209,6 +209,7 @@
     data-test-create-meeting-modal
     @open={{this.showCreateWebMeetingDialog}}
     @onSubmit={{action this.createWebMeeting}}
+    @onShown={{action this.resetWebMeetingApp}}
     @onHidden={{action (mut this.showCreateWebMeetingDialog) false}}
     as |modal|
 >
@@ -224,7 +225,7 @@
                     name='webMeetingApp'
                     type='radio'
                     value=appName.fields.app_name
-                    click=(action this.changeCreateDialog value='target.value')
+                    click=(action this.setWebMeetingApp value='target.value')
                 }}
                 <label>
                     {{appName.fields.app_name}}

@@ -225,7 +225,7 @@
                     class='form-control'
                     type='radio'
                     value=appName.fields.app_name
-                    click=(action this.changeCreateDialog value='target.value')
+                    onClick={{action this.changeCreateDialog value='target.value'}}
                 }}
                 <label>
                     {{appName.fields.app_name}}

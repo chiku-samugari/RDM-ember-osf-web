@@ -83,7 +83,7 @@ const {
 } = config;
 
 const microsoftTeamsName = 'MicrosoftTeams';
-const webexMeetingsName = 'WebexMeetings';
+//const webexMeetingsName = 'WebexMeetings';
 
 const infoGrdmScenarioStarted = 'integromat.info.started';
 const infoGrdmScenarioCompleted = 'integromat.info.completed';

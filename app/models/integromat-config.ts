@@ -9,6 +9,7 @@ export default class IntegromatConfigModel extends OsfModel {
     @attr('string') microsoft_teams_attendees!: string;
     @attr('string') workflows!: string;
     @attr('string') node_settings_id!: string;
+    @attr('string') web_meeting_apps!: string;
     @attr('string') app_name_microsoft_teams!: string;
 }
 

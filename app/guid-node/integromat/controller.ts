@@ -191,7 +191,7 @@ export default class GuidNodeIntegromat extends Controller {
     }
 
     @action
-    resetWebMeetingApp(this: GuidNodeIntegromat, v: string) {
+    resetWebMeetingApp(this: GuidNodeIntegromat) {
 
         this.set('webMeetingAppName', '');
     }

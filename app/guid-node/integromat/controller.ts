@@ -315,13 +315,13 @@ export default class GuidNodeIntegromat extends Controller {
         const webMeetingEndDatetime = webMeetingEndDate + ' ' + webMeetingEndTime;
         const webMeetingLocation = this.webMeetingLocation;
         const webMeetingContent = this.webMeetingContent;
-        const webexMeetingsAttendeesChecked = document.querySelectorAll('input[class=webexMeetingsAttendeesCheck]:checked');
+//        const webexMeetingsAttendeesChecked = document.querySelectorAll('input[class=webexMeetingsAttendeesCheck]:checked');
         const empty = '';
         const attendeeAtCreateEmpty : attendeeAtCreate[] = [];
         const attendeeAtUpdateEmpty : attendeeAtUpdate[] = [];
 
-        let arrayAttendeesCollection = [];
-        let arrayAttendees = [];
+//        let arrayAttendeesCollection = [];
+        let arrayAttendees = string[];
         /*
         for(let i = 0; i < webexMeetingsAttendeesChecked.length; i++){
             arrayAttendeesCollection.push({'email': webexMeetingsAttendeesChecked[i].id, 'displayName': String(webexMeetingsAttendeesChecked[i].name)});

@@ -72,7 +72,7 @@
                               local-class='Integromat__buttons'
                               class='text-success pull-right'
                               type='text'
-                              onClick={{action (mut this.showCreateWebMeetingDialog) true}}
+                              onClick={{action (mut this.showCreateMicrosoftTeamsMeetingDialog) true}}
                           >
                             {{fa-icon 'plus'}}&nbsp;{{t 'integromat.meetingDialog.createLabel'}}
                         </button>
@@ -80,9 +80,9 @@
                     <BsTab local-class='Integromat__web_meeting_tab' as |tab|>
                         <tab.pane @title={{t 'integromat.upcoming'}}>
                             {{#if (eq this.upcoming_web_meetings.length 0)}}
-                                <p local-class='Integromat__statement'>{{t 'integromat.noUpcomingMeetings'}}</p>
+                                <p style='margin-left: 20px; margin-top: 20px;'>{{t 'integromat.noUpcomingMeetings'}}</p>
                             {{else}}
-                                <div class='row' id='upcoming-meeting-table-row'>
+                                <div class='row' id='upcoming-teamsMeeting-table-row'>
                                     <div class='col-xs-12'>
                                         <table class='table'>
                                             <thead>
@@ -107,26 +107,26 @@
                                             <tbody>
                                                 {{#each this.upcoming_web_meetings as |row|}}
                                                     <tr>
-                                                        <td local-class='Integromat__td'>
-                                                            <a onClick={{action (action this.makeDetailMeetingDialog row.fields.meetingid)}}>
+                                                        <td style='vertical-align: middle;'>
+                                                            <a href='javasript:void(0)' onClick={{action (action this.makeDetailMeetingDialog row.fields.meetingid)}}>
                                                                 {{row.fields.subject}}
                                                             </a>
                                                         </td>
-                                                        <td local-class='Integromat__td'>{{row.fields.organizer}}</td>
+                                                        <td style='vertical-align: middle;'>{{row.fields.organizer}}</td>
 
-                                                        <td local-class='Integromat__td'>{{moment-format row.fields.start_datetime 'YYYY-MM-DD HH:mm'}}</td>
-                                                        <td local-class='Integromat__td'>
+                                                        <td style='vertical-align: middle;'>{{moment-format row.fields.start_datetime 'YYYY-MM-DD HH:mm'}}</td>
+                                                        <td style='vertical-align: middle;'>
                                                             <CopyableText
                                                                 @text={{row.fields.join_url}}
                                                             />
                                                         </td>
-                                                        <td local-class='Integromat__td'>
+                                                        <td style='vertical-align: middle;'>
                                                             <button class='fa fa-play' onClick={{action (action this.startMeeting row.fields.join_url)}}></button>
                                                         </td>
-                                                        <td class='text-info' local-class='Integromat__td'>
+                                                        <td class='text-info' style='vertical-align: middle;'>
                                                             <button class='fa fa-edit' onClick={{action (action this.makeUpdateMeetingDialog row.fields.meetingid)}}></button>
                                                         </td>
-                                                        <td class='text-danger' local-class='Integromat__td'>
+                                                        <td class='text-danger' style='vertical-align: middle;'>
                                                             <button class='fa fa-trash' onClick={{action (action this.makeDeleteDialog row.fields.meetingid)}}></button>
                                                         </td>
                                                     </tr>
@@ -139,9 +139,9 @@
                         </tab.pane>
                         <tab.pane @title={{t 'integromat.previous'}}>
                             {{#if (eq this.previous_web_meetings.length 0)}}
-                                <p local-class='Integromat__statement'>{{t 'integromat.noPreviousMeetings'}}</p>
+                                <p style='margin-left: 20px; margin-top: 20px;'>{{t 'integromat.noPreviousMeetings'}}</p>
                             {{else}}
-                                <div class='row' id='previous-meeting-table-row'>
+                                <div class='row' id='previous-teamsMeeting-table-row'>
                                     <div class='col-xs-12'>
                                         <table class='table'>
                                             <thead>
@@ -166,26 +166,26 @@
                                             <tbody>
                                                 {{#each this.previous_web_meetings as |row|}}
                                                     <tr>
-                                                        <td local-class='Integromat__td'>
-                                                            <a onClick={{action (action this.makeDetailMeetingDialog row.fields.meetingid)}}>
+                                                        <td style='vertical-align: middle;'>
+                                                            <a href='javasript:void(0)' onClick={{action (action this.makeDetailMeetingDialog row.fields.meetingid)}}>
                                                                 {{row.fields.subject}}
                                                             </a>
                                                         </td>
-                                                        <td local-class='Integromat__td'>{{row.fields.organizer}}</td>
+                                                        <td style='vertical-align: middle;'>{{row.fields.organizer}}</td>
 
-                                                        <td local-class='Integromat__td'>{{moment-format row.fields.start_datetime 'YYYY-MM-DD HH:mm'}}</td>
-                                                        <td local-class='Integromat__td'>
+                                                        <td style='vertical-align: middle;'>{{moment-format row.fields.start_datetime 'YYYY-MM-DD HH:mm'}}</td>
+                                                        <td style='vertical-align: middle;'>
                                                             <CopyableText
                                                                 @text={{row.fields.join_url}}
                                                             />
                                                         </td>
-                                                        <td local-class='Integromat__td'>
+                                                        <td style='vertical-align: middle;'>
                                                             <button class='fa fa-play' onClick={{action (action this.startMeeting row.fields.join_url)}}></button>
                                                         </td>
-                                                        <td class='text-info' local-class='Integromat__td'>
+                                                        <td class='text-info' style='vertical-align: middle;'>
                                                             <button class='fa fa-edit' onClick={{action (action this.makeUpdateMeetingDialog row.fields.meetingid)}}></button>
                                                         </td>
-                                                        <td class='text-danger' local-class='Integromat__td'>
+                                                        <td class='text-danger' style='vertical-align: middle;'>
                                                             <button class='fa fa-trash' onClick={{action (action this.makeDeleteDialog row.fields.meetingid)}}></button>
                                                         </td>
                                                     </tr>
@@ -203,137 +203,121 @@
     {{/if}}
 </div>
 
-
-<!-- modal-dialog -->
 <BsModal
-    data-test-create-meeting-modal
-    @open={{this.showCreateWebMeetingDialog}}
-    @onSubmit={{action this.createWebMeeting}}
-    @onHidden={{action (mut this.showCreateWebMeetingDialog) false}}
+    create-microsoft-teams-meeting-modal
+    @open={{this.showCreateMicrosoftTeamsMeetingDialog}}
+    @onSubmit={{action this.createMicrosoftTeamsMeeting}}
+    @onHidden={{action (mut this.showCreateMicrosoftTeamsMeetingDialog) false}}
     as |modal|
 >
     <modal.header>
         <h4 style='font-weight:normal;'>
-            {{t 'integromat.meetingDialog.createHeader' appName=this.webMeetingAppName}}
+            {{t 'integromat.meetingDialog.createHeader'}}
         </h4>
     </modal.header>
     <modal.body>
         <div class='form-group'>
-            {{#each this.web_meeting_apps as |appName|}}
+            <div local-class='Integromat__input_items'>
+                <label>{{t 'integromat.subject'}}</label>
                 {{input
-                    name='webMeetingApp'
+                    name='webMeetingSubject'
+                    placeholder=(t 'integromat.placeholders.subject')
                     class='form-control'
-                    type='radio'
-                    value=appName.fields.app_name
-                    onClick={{action this.changeCreateDialog value='target.value'}}
+                    type='text'
+                    value=this.webMeetingSubject
                 }}
-                <label>
-                    {{appName.fields.app_name}}
-                </label>
-            {{/each}}
-            {{#if showCreateMicrosoftTeamsDialog}}
-                <div local-class='Integromat__input_items'>
-                    <label>{{t 'integromat.subject'}}</label>
-                    {{input
-                        name='webMeetingSubject'
-                        placeholder=(t 'integromat.placeholders.subject')
-                        class='form-control'
-                        type='text'
-                        value=this.webMeetingSubject
-                    }}
+            </div>
+            <div local-class='Integromat__input_items'>
+                <label>{{t 'integromat.attendees'}}</label>
+                <div>
+                    <span id='attendees_inputs'>
+                        {{#if this.microsoft_teams_attendees}}
+                            {{#each this.microsoft_teams_attendees as |row|}}
+                                <label local-class='Integromat__label_normal'>
+                                    <input class='microsoftTeamsAttendeesCheck' type='checkBox' style='width: 15px; height: 15px;' id={{row.fields.microsoft_teams_mail}}>
+                                    {{row.fields.microsoft_teams_mail}}
+                                </label>
+                            {{/each}}
+                        {{else}}
+                            <p>{{t 'integromat.meetingDialog.noAttendees'}}</p>
+                        {{/if}}
+                    </span>
                 </div>
-                <div local-class='Integromat__input_items'>
-                    <label>{{t 'integromat.attendees'}}</label>
-                    <div>
-                        <span id='attendees_inputs'>
-                            {{#if this.microsoft_teams_attendees}}
-                                {{#each this.microsoft_teams_attendees as |row|}}
-                                    <label local-class='Integromat__label_normal'>
-                                        <input class='microsoftTeamsAttendeesCheck' type='checkBox' style='width: 15px; height: 15px;' id={{row.fields.microsoft_teams_mail}}>
-                                        {{row.fields.microsoft_teams_mail}}
-                                    </label>
+            </div>
+            <div local-class='Integromat__input_items'>
+                <table>
+                    <tr>
+                        <td><label>{{t 'integromat.start_datetime'}}</label></td><td></td><td></td>
+                        <td><label>{{t 'integromat.end_datetime'}}</label></td><td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            {{bootstrap-datepicker
+                                name='teams_start_date'
+                                placeholder=(t 'integromat.placeholders.date_form')
+                                class='form-control'
+                                type='text'
+                                value=this.webMeetingStartDate
+                                format='yyyy/mm/dd'
+                                todayHighlight=true
+                            }}
+                        </td>
+                        <td>
+                            <select id='create_teams_start_time' class='form-control'>
+                                {{#each this.times as |times|}}
+                                    {{#if (eq times this.defaultStartTime)}}
+                                        <option value={{times}} selected>{{times}}</option>
+                                    {{else}}
+                                        <option value={{times}}>{{times}}</option>
+                                    {{/if}}
                                 {{/each}}
-                            {{else}}
-                                <p>{{t 'integromat.meetingDialog.noAttendees'}}</p>
-                            {{/if}}
-                        </span>
-                    </div>
-                </div>
-                <div local-class='Integromat__input_items'>
-                    <table>
-                        <tr>
-                            <td><label>{{t 'integromat.start_datetime'}}</label></td><td></td><td></td>
-                            <td><label>{{t 'integromat.end_datetime'}}</label></td><td></td>
-                        </tr>
-                        <tr>
-                            <td>
-                                {{bootstrap-datepicker
-                                    name='teams_start_date'
-                                    placeholder=(t 'integromat.placeholders.date_form')
-                                    class='form-control'
-                                    type='text'
-                                    value=this.webMeetingStartDate
-                                    format='yyyy/mm/dd'
-                                    todayHighlight=true
-                                }}
-                            </td>
-                            <td>
-                                <select id='create_teams_start_time' class='form-control'>
-                                    {{#each this.times as |times|}}
-                                        {{#if (eq times this.defaultStartTime)}}
-                                            <option value={{times}} selected>{{times}}</option>
-                                        {{else}}
-                                            <option value={{times}}>{{times}}</option>
-                                        {{/if}}
-                                    {{/each}}
-                                </select>
-                            </td>
-                            <td><label local-class='Integromat__input_items'>{{t 'integromat.from_symbol'}}</label></td>
-                            <td>
-                                {{bootstrap-datepicker
-                                    name='teams_end_date'
-                                    placeholder=(t 'integromat.placeholders.date_form')
-                                    class='form-control'
-                                    type='text'
-                                    value=this.webMeetingEndDate
-                                    format='yyyy/mm/dd'
-                                    todayHighlight=true
-                                }}
-                            </td>
-                            <td>
-                                <select id='create_teams_end_time' class='form-control'>
-                                    {{#each this.times as |times|}}
-                                        {{#if (eq times this.defaultEndTime)}}
-                                            <option value={{times}} selected>{{times}}</option>
-                                        {{else}}
-                                            <option value={{times}}>{{times}}</option>
-                                        {{/if}}
-                                    {{/each}}
-                                </select>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-                <div local-class='Integromat__input_items'>
-                    <label>{{t 'integromat.location'}}</label>
-                    {{input
-                        name='webMeetingLocation'
-                        placeholder=(t 'integromat.placeholders.location')
-                        class='form-control'
-                        type='text'
-                        value=this.webMeetingLocation
-                    }}
-                </div>
-                <div local-class='Integromat__input_items'>
-                    <label>{{t 'integromat.content'}}</label>
-                    {{textarea
-                        name='webMeetingContent'
-                        class='form-control'
-                        value=this.webMeetingContent
-                        placeholder=(t 'integromat.placeholders.content')
-                    }}
-                </div>
-            {{/if}}
+                            </select>
+                        </td>
+                        <td><label local-class='Integromat__input_items'>{{t 'integromat.from_symbol'}}</label></td>
+                        <td>
+                            {{bootstrap-datepicker
+                                name='teams_end_date'
+                                placeholder=(t 'integromat.placeholders.date_form')
+                                class='form-control'
+                                type='text'
+                                value=this.webMeetingEndDate
+                                format='yyyy/mm/dd'
+                                todayHighlight=true
+                            }}
+                        </td>
+                        <td>
+                            <select id='create_teams_end_time' class='form-control'>
+                                {{#each this.times as |times|}}
+                                    {{#if (eq times this.defaultEndTime)}}
+                                        <option value={{times}} selected>{{times}}</option>
+                                    {{else}}
+                                        <option value={{times}}>{{times}}</option>
+                                    {{/if}}
+                                {{/each}}
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div local-class='Integromat__input_items'>
+                <label>{{t 'integromat.location'}}</label>
+                {{input
+                    name='webMeetingLocation'
+                    placeholder=(t 'integromat.placeholders.location')
+                    class='form-control'
+                    type='text'
+                    value=this.webMeetingLocation
+                }}
+            </div>
+            <div local-class='Integromat__input_items'>
+                <label>{{t 'integromat.content'}}</label>
+                {{textarea
+                    name='webMeetingContent'
+                    class='form-control'
+                    value=this.webMeetingContent
+                    placeholder=(t 'integromat.placeholders.content')
+                }}
+            </div>
         </div>
     </modal.body>
     <modal.footer>
@@ -360,7 +344,7 @@
 >
     <modal.header>
         <h4 style='font-weight:normal;'>
-            {{t 'integromat.meetingDialog.updateHeader' appName=this.webMeetingAppName}}
+            {{t 'integromat.meetingDialog.updateHeader'}}
         </h4>
     </modal.header>
     <modal.body>
@@ -544,7 +528,7 @@
 >
     <modal.header>
         <h4 style='font-weight:normal;'>
-            {{t 'integromat.meetingDialog.detailHeader' appName=this.webMeetingAppName}}
+            {{t 'integromat.meetingDialog.detailLabel'}}&nbsp;({{this.webMeetingSubject}})
         </h4>
     </modal.header>
     <modal.body>
@@ -604,4 +588,3 @@
         </OsfButton>
     </modal.footer>
 </BsModal>
-<!-- modal-dialog -->

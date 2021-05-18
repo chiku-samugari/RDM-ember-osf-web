@@ -82,6 +82,9 @@ const {
     },
 } = config;
 
+const microsoftTeamsName = 'MicrosoftTeams';
+const webexMeetingsName = 'WebexMeetings';
+
 const infoGrdmScenarioStarted = 'integromat.info.started';
 const infoGrdmScenarioCompleted = 'integromat.info.completed';
 const errorWebappsCreateMeeting = 'integromat.error.webappsCreateMeeting';
@@ -185,6 +188,14 @@ export default class GuidNodeIntegromat extends Controller {
     displayWorkflows(this: GuidNodeIntegromat) {
         this.set('showWorkflows', true);
         this.set('showAllWebMeetings', false);
+    }
+
+    @action
+    changeCreateDialog(this: GuidNodeIntegromat, v: string) {
+
+        if(v === microsoftTeamsName){
+            this.set('showCreateWebMeetingDialog', true);
+        }
     }
 
     @action

@@ -115,7 +115,7 @@ export default class GuidNodeIntegromat extends Controller {
     configCache?: DS.PromiseObject<IntegromatConfigModel>;
 
     showCreateWebMeetingDialog = false;
-    showCreateMicrosoftTeamsDialog = false;
+    showCreateMicrosoftTeamsMeetingDialog = false;
     showUpdateMicrosoftTeamsMeetingDialog = false;
     showDeleteMicrosoftTeamsMeetingDialog = false;
     showDetailMicrosoftTeamsMeetingDialog = false;
@@ -194,7 +194,7 @@ export default class GuidNodeIntegromat extends Controller {
     changeCreateDialog(this: GuidNodeIntegromat, v: string) {
 
         if(v === microsoftTeamsName){
-            this.set('showCreateWebMeetingDialog', true);
+            this.set('showCreateMicrosoftTeamsMeetingDialog', true);
         }
     }
 

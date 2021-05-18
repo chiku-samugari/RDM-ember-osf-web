@@ -222,7 +222,6 @@
             {{#each this.web_meeting_apps as |appName|}}
                 {{input
                     name='webMeetingApp'
-                    class='form-control'
                     type='radio'
                     value=appName.fields.app_name
                     click=(action this.changeCreateDialog value='target.value')

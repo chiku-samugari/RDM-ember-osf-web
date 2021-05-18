@@ -208,7 +208,7 @@
 <BsModal
     data-test-create-meeting-modal
     @open={{this.showCreateWebMeetingDialog}}
-    @onSubmit={{action this.createWebMeeting}}
+    @onSubmit={{action this.createMicrosoftTeamsMeeting}}
     @onHidden={{action (mut this.showCreateWebMeetingDialog) false}}
     as |modal|
 >

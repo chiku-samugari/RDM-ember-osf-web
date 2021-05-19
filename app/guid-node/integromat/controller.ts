@@ -245,8 +245,8 @@ export default class GuidNodeIntegromat extends Controller {
         const timestamp = new Date().getTime();
 
         let action = '';
-        let microsoftTeamsAttendeesCollectionAtCreate: microsoftTeamsAttendeesAtCreate[] = [];
-        let microsoftTeamsAttendeesCollectionAtUpdate: microsoftTeamsAttendeesAtUpdate[] = [];
+        let microsoftTeamsAttendeesCollectionAtCreate: microsoftTeamsAttendeeAtCreate[] = [];
+        let microsoftTeamsAttendeesCollectionAtUpdate: microsoftTeamsAttendeeAtUpdate[] = [];
         let webexMeetingsAttendeesCollection: webexMeetingsAttendee[] = [];
         let arrayAttendees = [];
 

@@ -200,8 +200,6 @@ export default class GuidNodeIntegromat extends Controller {
     resetWebMeetingApp(this: GuidNodeIntegromat) {
 
         this.set('webMeetingAppName', '');
-        this.set('showCreateMicrosoftTeamsMeetingDialog', false);
-        this.set('showCreateWebexMeetingDialog', false);
     }
 
     @action
@@ -211,23 +209,101 @@ export default class GuidNodeIntegromat extends Controller {
             this.set('showCreateMicrosoftTeamsMeetingDialog', true);
             this.set('showCreateWebexMeetingDialog', false);
             this.set('webMeetingAppName', v);
-        }
-        if(v === webexMeetingsName){
+        }else if(v === webexMeetingsName){
             this.set('showCreateMicrosoftTeamsMeetingDialog', false);
             this.set('showCreateWebexMeetingDialog', true);
             this.set('webMeetingAppName', v);
+        }else if (!v){
+            this.set('showCreateMicrosoftTeamsMeetingDialog', false);
+            this.set('showCreateWebexMeetingDialog', false);
         }
     }
 
     @action
     createWebMeeting(this: GuidNodeIntegromat) {
+        if (!this.config) {
+            throw new EmberError('Illegal config');
+        }
+
+        const config = this.config.content as IntegromatConfigModel;
+        const webhookUrl = config.webhook_url;
+        const node_id = config.node_settings_id;
+        const appName = this.webMeetingAppName;
+        const guid = String(this.model.guid);
+        const webMeetingSubject = this.webMeetingSubject;
+        const webMeetingStartDate = moment(this.webMeetingStartDate).format('YYYY-MM-DD');
+        const webMeetingStartTime = (<HTMLInputElement>document.querySelectorAll('select[id=create_teams_start_time]')[0]).value;
+        const webMeetingStartDatetime = webMeetingStartDate + ' ' + webMeetingStartTime;
+        const webMeetingEndDate = moment(this.webMeetingEndDate).format('YYYY-MM-DD');
+        const webMeetingEndTime = (<HTMLInputElement>document.querySelectorAll('select[id=create_teams_end_time]')[0]).value;
+        const webMeetingEndDatetime = webMeetingEndDate + ' ' + webMeetingEndTime;
+        const webMeetingLocation = this.webMeetingLocation;
+        const webMeetingContent = this.webMeetingContent;
+        const microsoftTeamsAttendeesChecked = document.querySelectorAll('input[class=microsoftTeamsAttendeesCheck]:checked');
+        const webexMeetingsAttendeesChecked = document.querySelectorAll('input[class=webexMeetingsAttendeesCheck]:checked');
+        const empty = '';
+        const timestamp = new Date().getTime();
+
+        let action = '';
+        let microsoftTeamsAttendeesCollectionAtCreate = microsoftTeamsAttendeesAtCreate[] = [];
+        let microsoftTeamsAttendeesCollectionAtUpdate = microsoftTeamsAttendeesAtUpdate[] = [];
+        let webexMeetingsAttendeesCollection: webexMeetingsAttendee[] = [];
+        let arrayAttendees = [];
 
         if (this.webMeetingAppName === microsoftTeamsName) {
-            this.createMicrosoftTeamsMeeting();
+
+            action = 'createMicrosoftTeamsMeeting';
+
+            for(let i = 0; i < microsoftTeamsAttendeesChecked.length; i++){ 
+                microsoftTeamsAttendeesCollectionAtCreate.push({'emailAddress': {'address': microsoftTeamsAttendeesChecked[i].id}});
+                arrayAttendees.push(microsoftTeamsAttendeesChecked[i].id);
+            }
+        }else if (this.webMeetingAppName === webexMeetingsName) {
+
+            action = 'createWebexMeeting';
+
+            for(let i = 0; i < webexMeetingsAttendeesChecked.length; i++){
+                webexMeetingsAttendeesCollection.push({'email': webexMeetingsAttendeesChecked[i].id});
+                arrayAttendees.push(webexMeetingsAttendeesChecked[i].id);
+            }
         }
-        if (this.webMeetingAppName === webexMeetingsName) {
-            this.createWebexMeeting();
-        }
+
+        const payload = {
+            'nodeId': node_id,
+            'meetingAppName': appName,
+            'guid': guid,
+            'meetingId': empty,
+            'joinUrl': empty,
+            'action': action,
+            'infoGrdmScenarioStarted': infoGrdmScenarioStarted,
+            'infoGrdmScenarioCompleted': infoGrdmScenarioCompleted,
+            'errorWebappsCreateMeeting': errorWebappsCreateMeeting,
+            'errorGrdmCreateMeetingInfo': errorGrdmCreateMeetingInfo,
+            'errorSlackCreateMeeting': errorSlackCreateMeeting,
+            'errorWebappsUpdateMeeting': errorWebappsUpdateMeeting,
+            'errorGrdmUpdateMeetingInfo': errorGrdmUpdateMeetingInfo,
+            'errorSlackUpdateMeeting': errorSlackUpdateMeeting,
+            'errorWebappsDeleteMeeting': errorWebappsDeleteMeeting,
+            'errorGrdmDeleteMeetingInfo': errorGrdmDeleteMeetingInfo,
+            'errorSlackDeleteMeeting': errorSlackDeleteMeeting,
+            'errorScenarioProcessing': errorScenarioProcessing,
+            'startDate': webMeetingStartDatetime,
+            'endDate': webMeetingEndDatetime,
+            'subject': webMeetingSubject,
+            'microsoftTeamsAttendeesCollectionAtCreate': microsoftTeamsAttendeesCollectionAtCreate,
+            'microsoftTeamsAttendeesCollectionAtUpdate': microsoftTeamsAttendeesCollectionAtUpdate,
+            'webexMeetingsAttendeesCollection': webexMeetingsAttendeesCollection,
+            'attendees': arrayAttendees,
+            'location': webMeetingLocation,
+            'content': webMeetingContent,
+            'webhook_url': webhookUrl,
+            'timestamp': timestamp,
+        };
+
+        this.set('showCreateWebMeetingDialog', false);
+        this.setWebMeetingApp();
+
+        return this.reqLaunch(startIntegromatScenarioUrl, payload, appName);
     }
 
     @action

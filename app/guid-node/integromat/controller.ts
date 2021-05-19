@@ -67,8 +67,8 @@ interface payload {
     errorGrdmDeleteMeetingInfo: string;
     errorSlackDeleteMeeting: string;
     errorScenarioProcessing: string;
-    startDate: string;
-    endDate: string;
+    startDatetime: string;
+    endDatetime: string;
     subject: string;
     microsoftTeamsAttendeesCollectionAtCreate: microsoftTeamsAttendeeAtCreate[];
     microsoftTeamsAttendeesCollectionAtUpdate: microsoftTeamsAttendeeAtUpdate[];
@@ -287,8 +287,8 @@ export default class GuidNodeIntegromat extends Controller {
             'errorGrdmDeleteMeetingInfo': errorGrdmDeleteMeetingInfo,
             'errorSlackDeleteMeeting': errorSlackDeleteMeeting,
             'errorScenarioProcessing': errorScenarioProcessing,
-            'startDate': webMeetingStartDatetime,
-            'endDate': webMeetingEndDatetime,
+            'startDatetime': webMeetingStartDatetime,
+            'endDatetime': webMeetingEndDatetime,
             'subject': webMeetingSubject,
             'microsoftTeamsAttendeesCollectionAtCreate': microsoftTeamsAttendeesCollectionAtCreate,
             'microsoftTeamsAttendeesCollectionAtUpdate': microsoftTeamsAttendeesCollectionAtUpdate,
@@ -362,8 +362,8 @@ export default class GuidNodeIntegromat extends Controller {
             'errorGrdmDeleteMeetingInfo': errorGrdmDeleteMeetingInfo,
             'errorSlackDeleteMeeting': errorSlackDeleteMeeting,
             'errorScenarioProcessing': errorScenarioProcessing,
-            'startDate': webMeetingStartDatetime,
-            'endDate': webMeetingEndDatetime,
+            'startDatetime': webMeetingStartDatetime,
+            'endDatetime': webMeetingEndDatetime,
             'subject': webMeetingSubject,
             'microsoftTeamsAttendeesCollectionAtCreate': arrayAttendeesCollection,
             'microsoftTeamsAttendeesCollectionAtUpdate': microsoftTeamsAttendeeAtUpdateEmpty,
@@ -435,8 +435,8 @@ export default class GuidNodeIntegromat extends Controller {
             'errorGrdmDeleteMeetingInfo': errorGrdmDeleteMeetingInfo,
             'errorSlackDeleteMeeting': errorSlackDeleteMeeting,
             'errorScenarioProcessing': errorScenarioProcessing,
-            'startDate': webMeetingStartDatetime,
-            'endDate': webMeetingEndDatetime,
+            'startDatetime': webMeetingStartDatetime,
+            'endDatetime': webMeetingEndDatetime,
             'subject': webMeetingSubject,
             'microsoftTeamsAttendeesCollectionAtCreate': microsoftTeamsAttendeeAtCreateEmpty,
             'microsoftTeamsAttendeesCollectionAtUpdate': microsoftTeamsAttendeeAtUpdateEmpty,
@@ -563,8 +563,8 @@ export default class GuidNodeIntegromat extends Controller {
             'errorGrdmDeleteMeetingInfo': errorGrdmDeleteMeetingInfo,
             'errorSlackDeleteMeeting': errorSlackDeleteMeeting,
             'errorScenarioProcessing': errorScenarioProcessing,
-            'startDate': webMeetingStartDatetime,
-            'endDate': webMeetingEndDatetime,
+            'startDatetime': webMeetingStartDatetime,
+            'endDatetime': webMeetingEndDatetime,
             'subject': webMeetingSubject,
             'microsoftTeamsAttendeesCollectionAtCreate': microsoftTeamsAttendeeAtCreateEmpty,
             'microsoftTeamsAttendeesCollectionAtUpdate': arrayAttendeesCollection,
@@ -627,8 +627,8 @@ export default class GuidNodeIntegromat extends Controller {
             'errorGrdmDeleteMeetingInfo': errorGrdmDeleteMeetingInfo,
             'errorSlackDeleteMeeting': errorSlackDeleteMeeting,
             'errorScenarioProcessing': errorScenarioProcessing,
-            'startDate': empty,
-            'endDate': empty,
+            'startDatetime': empty,
+            'endDatetime': empty,
             'subject': empty,
             'microsoftTeamsAttendeesCollectionAtCreate': microsoftTeamsAttendeeAtCreateEmpty,
             'microsoftTeamsAttendeesCollectionAtUpdate': microsoftTeamsAttendeeAtUpdateEmpty,

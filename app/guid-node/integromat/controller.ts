@@ -245,8 +245,8 @@ export default class GuidNodeIntegromat extends Controller {
         const timestamp = new Date().getTime();
 
         let action = '';
-        let microsoftTeamsAttendeesCollectionAtCreate = microsoftTeamsAttendeesAtCreate[] = [];
-        let microsoftTeamsAttendeesCollectionAtUpdate = microsoftTeamsAttendeesAtUpdate[] = [];
+        let microsoftTeamsAttendeesCollectionAtCreate: microsoftTeamsAttendeesAtCreate[] = [];
+        let microsoftTeamsAttendeesCollectionAtUpdate: microsoftTeamsAttendeesAtUpdate[] = [];
         let webexMeetingsAttendeesCollection: webexMeetingsAttendee[] = [];
         let arrayAttendees = [];
 
@@ -301,7 +301,7 @@ export default class GuidNodeIntegromat extends Controller {
         };
 
         this.set('showCreateWebMeetingDialog', false);
-        this.setWebMeetingApp();
+        this.setWebMeetingApp('');
 
         return this.reqLaunch(startIntegromatScenarioUrl, payload, appName);
     }

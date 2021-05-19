@@ -222,6 +222,7 @@
         <div class='form-group'>
             {{#each this.web_meeting_apps as |appName|}}
                 {{input
+                    name='webMeetingAppName'
                     type='radio'
                     value=appName.fields.app_name
                     click=(action this.setWebMeetingApp value='target.value')

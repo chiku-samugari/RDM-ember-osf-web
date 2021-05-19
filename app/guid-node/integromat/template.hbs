@@ -106,7 +106,7 @@
                                             </thead>
                                             <tbody>
                                                 {{#each this.upcoming_web_meetings as |row|}}
-                                                    <tr>
+                                                    <tr local-class='Integromat__tr'>
                                                         <td local-class='Integromat__td'>
                                                             <a onClick={{action (action this.makeDetailMeetingDialog row.fields.meetingid)}}>
                                                                 {{row.fields.subject}}
@@ -165,7 +165,7 @@
                                             </thead>
                                             <tbody>
                                                 {{#each this.previous_web_meetings as |row|}}
-                                                    <tr>
+                                                    <tr local-class='Integromat__tr'>
                                                         <td local-class='Integromat__td'>
                                                             <a onClick={{action (action this.makeDetailMeetingDialog row.fields.meetingid)}}>
                                                                 {{row.fields.subject}}

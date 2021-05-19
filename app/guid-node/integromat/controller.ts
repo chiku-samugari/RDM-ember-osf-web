@@ -197,23 +197,18 @@ export default class GuidNodeIntegromat extends Controller {
     }
 
     @action
-    resetWebMeetingApp(this: GuidNodeIntegromat) {
-
-        this.set('webMeetingAppName', '');
-    }
-
-    @action
     setWebMeetingApp(this: GuidNodeIntegromat, v: string) {
 
         if(v === microsoftTeamsName){
+            this.set('webMeetingAppName', v);
             this.set('showCreateMicrosoftTeamsMeetingDialog', true);
             this.set('showCreateWebexMeetingDialog', false);
-            this.set('webMeetingAppName', v);
         }else if(v === webexMeetingsName){
+            this.set('webMeetingAppName', v);
             this.set('showCreateMicrosoftTeamsMeetingDialog', false);
             this.set('showCreateWebexMeetingDialog', true);
-            this.set('webMeetingAppName', v);
         }else if (!v){
+            this.set('webMeetingAppName', '');
             this.set('showCreateMicrosoftTeamsMeetingDialog', false);
             this.set('showCreateWebexMeetingDialog', false);
         }

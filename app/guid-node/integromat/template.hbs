@@ -207,10 +207,11 @@
 <!-- modal-dialog -->
 <BsModal
     data-test-create-meeting-modal
+    @backdropClose={{false}}
     @open={{this.showCreateWebMeetingDialog}}
     @onSubmit={{action this.createWebMeeting}}
-    @onShown={{action this.resetWebMeetingApp}}
     @onHidden={{action (mut this.showCreateWebMeetingDialog) false}}
+    @onHide={{action this.setWebMeetingApp}}
     as |modal|
 >
     <modal.header>

@@ -431,20 +431,20 @@
             {{/if}}
         </div>
     </modal.body>
-    {{#if (or showCreateMicrosoftTeamsMeetingDialog showCreateWebexMeetingDialog)}}
     <modal.footer>
             <BsButton
                 @onClick={{action modal.close}}
             >
                 {{t 'integromat.meetingDialog.cancelBtn'}}
             </BsButton>
-            <OsfButton
-                    @type='success'
-                    @onClick={{action modal.submit}}>
-                {{t 'integromat.meetingDialog.createBtn'}}
-            </OsfButton>
+            {{#if (or showCreateMicrosoftTeamsMeetingDialog showCreateWebexMeetingDialog)}}
+                <OsfButton
+                        @type='success'
+                        @onClick={{action modal.submit}}>
+                    {{t 'integromat.meetingDialog.createBtn'}}
+                </OsfButton>
+            {{/if}}
         </modal.footer>
-    {{/if}}
 </BsModal>
 
 <BsModal

@@ -87,9 +87,6 @@ const {
     },
 } = config;
 
-const microsoftTeamsName = 'MicrosoftTeams';
-const webexMeetingsName = 'WebexMeetings';
-
 const infoGrdmScenarioStarted = 'integromat.info.started';
 const infoGrdmScenarioCompleted = 'integromat.info.completed';
 const errorWebappsCreateMeeting = 'integromat.error.webappsCreateMeeting';
@@ -120,8 +117,11 @@ export default class GuidNodeIntegromat extends Controller {
     configCache?: DS.PromiseObject<IntegromatConfigModel>;
 
     showCreateWebMeetingDialog = false;
+    showUpdateWebMeetingDialog = false;
     showCreateMicrosoftTeamsMeetingDialog = false;
     showCreateWebexMeetingDialog = false;
+    showUpdateMicrosoftTeamsMeetingDialog = false;
+    showUpdateWebexMeetingDialog = false;
     showUpdateMicrosoftTeamsMeetingDialog = false;
     showDeleteMicrosoftTeamsMeetingDialog = false;
     showDetailMicrosoftTeamsMeetingDialog = false;
@@ -199,11 +199,11 @@ export default class GuidNodeIntegromat extends Controller {
     @action
     setWebMeetingApp(this: GuidNodeIntegromat, v: string) {
 
-        if(v === microsoftTeamsName){
+        if(v === config.app_name_microsoft_teams){
             this.set('webMeetingAppName', v);
             this.set('showCreateMicrosoftTeamsMeetingDialog', true);
             this.set('showCreateWebexMeetingDialog', false);
-        }else if(v === webexMeetingsName){
+        }else if(v === config.app_name_webex_meetings){
             this.set('webMeetingAppName', v);
             this.set('showCreateMicrosoftTeamsMeetingDialog', false);
             this.set('showCreateWebexMeetingDialog', true);
@@ -302,15 +302,19 @@ export default class GuidNodeIntegromat extends Controller {
     }
 
     @action
-    makeUpdateMeetingDialog(this: GuidNodeIntegromat, v: string) {
+    makeUpdateMeetingDialog(this: GuidNodeIntegromat, v: string, appId: string) {
+
+        this.set('showUpdateWebMeetingDialog', true);
 
         if (!this.config) {
             return '';
         }
+
         const config = this.config.content as IntegromatConfigModel;
         const microsoftTeamsMeetings = JSON.parse(config.all_web_meetings);
+        const webMeetingApps = JSON.parse(config.web_meeting_apps);
 
-        this.set('showUpdateMicrosoftTeamsMeetingDialog', true);
+        let appName = '';
 
         for(let i=0; i < microsoftTeamsMeetings.length; i++){
 
@@ -329,23 +333,53 @@ export default class GuidNodeIntegromat extends Controller {
             }
         }
 
-        const node_microsoft_teams_attendees = JSON.parse(config.node_web_meeting_attendees);
+        for(let i=0; i < webMeetingApps.length; i++){
 
-        this.teamsMeetingAttendees.length = 0;
-        this.notTeamsMeetingAttendees.length = 0;
+            if(microsoftTeamsMeetings[i].fields.id === appId){
+                appName = microsoftTeamsMeetings[i].fields.app_name
+                break;
+            }
+        }
 
-        for(let j = 0; j < node_microsoft_teams_attendees.length; j++){
-            this.notTeamsMeetingAttendees.push(node_microsoft_teams_attendees[j].fields.microsoft_teams_mail);
+        this.setWebMeetingApp(appName);
+        this.makeTheWebMeetingAttendee(appName);
 
-            for(let k = 0; k < this.webMeetingAttendees.length; k++){
-                if(node_microsoft_teams_attendees[j].pk === this.webMeetingAttendees[k]){
-                    this.teamsMeetingAttendees.push(node_microsoft_teams_attendees[j].fields.microsoft_teams_mail);
-                    this.notTeamsMeetingAttendees.pop();
-                    break;
+        return '';
+    }
+
+    makeTheWebMeetingAttendee(this: GuidNodeIntegromat, appName: string) {
+
+        const nodeWebMeetingAttendees = JSON.parse(config.node_web_meeting_attendees);
+
+        this.webMeetingAttendeeMails.length = 0;
+        this.notWebMeetingAttendeeMails.length = 0;
+
+        if(appName === config.app_name_microsoft_teams){
+
+            for(let j = 0; j < nodeWebMeetingAttendees.length; j++){
+                this.notWebMeetingAttendeeMails.push(nodeWebMeetingAttendees[j].fields.microsoft_teams_mail);
+
+                for(let k = 0; k < this.webMeetingAttendees.length; k++){
+                    if(nodeWebMeetingAttendees[j].pk === this.webMeetingAttendees[k]){
+                        this.webMeetingAttendeeMails.push(nodeWebMeetingAttendees[j].fields.microsoft_teams_mail);
+                        this.notWebMeetingAttendeeMails.pop();
+                        break;
+                    }
+                }
+            }
+        }else if(appName === config.app_name_webex_meetings){
+            for(let l = 0; l < nodeWebMeetingAttendees.length; l++){
+                this.notWebMeetingAttendeeMails.push(nodeWebMeetingAttendees[l].fields.webex_meetings_mail);
+
+                for(let m = 0; m < this.webMeetingAttendees.length; m++){
+                    if(nodeWebMeetingAttendees[l].pk === this.webMeetingAttendees[m]){
+                        this.webMeetingAttendeeMails.push(nodeWebMeetingAttendees[l].fields.webex_meetings_mail);
+                        this.notWebMeetingAttendeeMails.pop();
+                        break;
+                    }
                 }
             }
         }
-        return '';
     }
 
     @action
@@ -355,14 +389,13 @@ export default class GuidNodeIntegromat extends Controller {
     }
 
     @action
-    startUpdateMicrosoftTeamsMeetingScenario(this: GuidNodeIntegromat) {
+    updateWebMeeting(this: GuidNodeIntegromat) {
         if (!this.config) {
             throw new EmberError('Illegal config');
         }
         const config = this.config.content as IntegromatConfigModel;
         const webhookUrl = config.webhook_url;
         const node_id = config.node_settings_id;
-        const appName = config.app_name_microsoft_teams;
         const webMeetingSubject = this.webMeetingSubject;
         const webMeetingStartDate = moment(this.webMeetingStartDate).format('YYYY-MM-DD');
         const webMeetingStartTime = (<HTMLInputElement>document.querySelectorAll('select[id=update_teams_start_time]')[0]).value;

@@ -121,13 +121,13 @@
                                                             />
                                                         </td>
                                                         <td local-class='Integromat__td'>
-                                                            <button class='fa fa-play' onClick={{action (action this.startMeeting row.fields.join_url)}}></button>
+                                                            <button class='fa fa-play' onClick={{action this.startMeeting row.fields.join_url}}></button>
                                                         </td>
                                                         <td class='text-info' local-class='Integromat__td'>
-                                                            <button class='fa fa-edit' onClick={{action (action this.makeUpdateMeetingDialog row.fields.meetingid)}}></button>
+                                                            <button class='fa fa-edit' onClick={{action this.makeUpdateMeetingDialog row.fields.meetingid row.fields.app_id}}></button>
                                                         </td>
                                                         <td class='text-danger' local-class='Integromat__td'>
-                                                            <button class='fa fa-trash' onClick={{action (action this.makeDeleteDialog row.fields.meetingid)}}></button>
+                                                            <button class='fa fa-trash' onClick={{action this.makeDeleteDialog row.fields.meetingid}}></button>
                                                         </td>
                                                     </tr>
                                                 {{/each}}
@@ -443,10 +443,11 @@
 </BsModal>
 
 <BsModal
-    update-microsoft-teams-meeting-modal
-    @open={{this.showUpdateMicrosoftTeamsMeetingDialog}}
-    @onSubmit={{action this.startUpdateMicrosoftTeamsMeetingScenario}}
-    @onHidden={{action (mut this.showUpdateMicrosoftTeamsMeetingDialog) false}}
+    data-test-update-meeting-modal
+    @backdropClose={{false}}
+    @open={{this.showUpdateWebMeetingDialog}}
+    @onSubmit={{action this.updateWebMeeting}}
+    @onHidden={{action (mut this.showUpdateWebMeetingDialog) false}}
     @onShown={{action this.setDefaultDate}}
     as |modal|
 >

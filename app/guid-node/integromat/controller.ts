@@ -245,7 +245,7 @@ export default class GuidNodeIntegromat extends Controller {
         let webexMeetingsAttendeesCollection: webexMeetingsAttendee[] = [];
         let arrayAttendees = [];
 
-        if (this.webMeetingAppName === microsoftTeamsName) {
+        if (this.webMeetingAppName === config.app_name_microsoft_teams) {
 
             action = 'createMicrosoftTeamsMeeting';
 
@@ -253,7 +253,7 @@ export default class GuidNodeIntegromat extends Controller {
                 microsoftTeamsAttendeesCollectionAtCreate.push({'emailAddress': {'address': microsoftTeamsAttendeesChecked[i].id}});
                 arrayAttendees.push(microsoftTeamsAttendeesChecked[i].id);
             }
-        }else if (this.webMeetingAppName === webexMeetingsName) {
+        }else if (this.webMeetingAppName === config.app_name_webex_meetings) {
 
             action = 'createWebexMeeting';
 
@@ -385,7 +385,7 @@ export default class GuidNodeIntegromat extends Controller {
         let webexMeetingsAttendeesCollection: webexMeetingsAttendee[] = [];
         let arrayAttendees = [];
 
-        if (this.webMeetingAppName === microsoftTeamsName) {
+        if (this.webMeetingAppName === config.app_name_microsoft_teams) {
 
             action = 'updateMicrosoftTeamsMeeting';
 
@@ -393,7 +393,7 @@ export default class GuidNodeIntegromat extends Controller {
                 microsoftTeamsAttendeesCollectionAtUpdate.push({'address': microsoftTeamsAttendeesChecked[i].id, 'name': 'Unregistered'});
                 arrayAttendees.push(microsoftTeamsAttendeesChecked[i].id);
             }
-        }else if (this.webMeetingAppName === webexMeetingsName) {
+        }else if (this.webMeetingAppName === config.app_name_webex_meetings) {
 
             action = 'updateWebexMeeting';
 

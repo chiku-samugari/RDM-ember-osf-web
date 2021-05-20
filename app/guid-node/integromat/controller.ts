@@ -122,7 +122,6 @@ export default class GuidNodeIntegromat extends Controller {
     showCreateWebexMeetingDialog = false;
     showUpdateMicrosoftTeamsMeetingDialog = false;
     showUpdateWebexMeetingDialog = false;
-    showUpdateMicrosoftTeamsMeetingDialog = false;
     showDeleteMicrosoftTeamsMeetingDialog = false;
     showDetailMicrosoftTeamsMeetingDialog = false;
     showWorkflows = true;
@@ -151,6 +150,8 @@ export default class GuidNodeIntegromat extends Controller {
 
     teamsMeetingAttendees : string[] = [];
     notTeamsMeetingAttendees : string[] = [];
+    webMeetingAttendeeMails : string[] = [];
+    notWebMeetingAttendeeMails : string[] = [];
 
     @computed('config.isFulfilled')
     get loading(): boolean {
@@ -198,6 +199,12 @@ export default class GuidNodeIntegromat extends Controller {
 
     @action
     setWebMeetingApp(this: GuidNodeIntegromat, v: string) {
+
+        if (!this.config) {
+            throw new EmberError('Illegal config');
+        }
+
+        const config = this.config.content as IntegromatConfigModel;
 
         if(v === config.app_name_microsoft_teams){
             this.set('webMeetingAppName', v);
@@ -350,6 +357,11 @@ export default class GuidNodeIntegromat extends Controller {
     makeTheWebMeetingAttendee(this: GuidNodeIntegromat, appName: string) {
 
         const nodeWebMeetingAttendees = JSON.parse(config.node_web_meeting_attendees);
+
+        if (!this.config) {
+            throw new EmberError('Illegal config');
+        }
+        const config = this.config.content as IntegromatConfigModel;
 
         this.webMeetingAttendeeMails.length = 0;
         this.notWebMeetingAttendeeMails.length = 0;

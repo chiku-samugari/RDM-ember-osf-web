@@ -213,7 +213,7 @@ export default class GuidNodeIntegromat extends Controller {
 
             if(action === 'update'){
             this.set('showUpdateMicrosoftTeamsMeetingDialog', true);
-            this.set('showUpdateWebexMeetingDialog', false);
+            this.set('showUpdateWebexMeetingsDialog', false);
             }
         }else if(v === config.app_name_webex_meetings){
             this.set('webMeetingAppName', v);
@@ -222,7 +222,7 @@ export default class GuidNodeIntegromat extends Controller {
 
             if(action === 'update'){
             this.set('showUpdateMicrosoftTeamsMeetingDialog', false);
-            this.set('showUpdateWebexMeetingDialog', true);
+            this.set('showUpdateWebexMeetingsDialog', true);
             }
 
         }else if (!v && !action){
@@ -230,7 +230,7 @@ export default class GuidNodeIntegromat extends Controller {
             this.set('showCreateMicrosoftTeamsMeetingDialog', false);
             this.set('showCreateWebexMeetingDialog', false);
             this.set('showUpdateMicrosoftTeamsMeetingDialog', false);
-            this.set('showUpdateWebexMeetingDialog', false);
+            this.set('showUpdateWebexMeetingsDialog', false);
         }
     }
 

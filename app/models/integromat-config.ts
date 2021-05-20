@@ -13,6 +13,7 @@ export default class IntegromatConfigModel extends OsfModel {
     @attr('string') node_settings_id!: string;
     @attr('string') web_meeting_apps!: string;
     @attr('string') app_name_microsoft_teams!: string;
+    @attr('string') app_name_webex_meetings!: string;
 }
 
 declare module 'ember-data/types/registries/model' {

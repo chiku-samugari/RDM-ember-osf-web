@@ -375,7 +375,7 @@ export default class GuidNodeIntegromat extends Controller {
         const config = this.config.content as IntegromatConfigModel;
 
         const nodeMicrosoftTeamsAttendees = JSON.parse(config.node_microsoft_teams_attendees);
-        const nodeWebexMeetingsAttendees = JSON.parse(config.node_webex_teams_attendees);
+        const nodeWebexMeetingsAttendees = JSON.parse(config.node_webex_meetings_attendees);
 
         this.webMeetingAttendeeMails.length = 0;
         this.notWebMeetingAttendeeMails.length = 0;

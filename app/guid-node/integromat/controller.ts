@@ -198,7 +198,7 @@ export default class GuidNodeIntegromat extends Controller {
     }
 
     @action
-    setWebMeetingApp(this: GuidNodeIntegromat, v: string) {
+    setWebMeetingApp(this: GuidNodeIntegromat, v: string, action: string) {
 
         if (!this.config) {
             throw new EmberError('Illegal config');
@@ -210,14 +210,27 @@ export default class GuidNodeIntegromat extends Controller {
             this.set('webMeetingAppName', v);
             this.set('showCreateMicrosoftTeamsMeetingDialog', true);
             this.set('showCreateWebexMeetingDialog', false);
+
+            if(action === 'update'){
+            this.set('showUpdateMicrosoftTeamsMeetingDialog', true);
+            this.set('showUpdateWebexMeetingDialog', false);
+            }
         }else if(v === config.app_name_webex_meetings){
             this.set('webMeetingAppName', v);
             this.set('showCreateMicrosoftTeamsMeetingDialog', false);
             this.set('showCreateWebexMeetingDialog', true);
-        }else if (!v){
+
+            if(action === 'update'){
+            this.set('showUpdateMicrosoftTeamsMeetingDialog', false);
+            this.set('showUpdateWebexMeetingDialog', true);
+            }
+
+        }else if (!v && !action){
             this.set('webMeetingAppName', '');
             this.set('showCreateMicrosoftTeamsMeetingDialog', false);
             this.set('showCreateWebexMeetingDialog', false);
+            this.set('showUpdateMicrosoftTeamsMeetingDialog', false);
+            this.set('showUpdateWebexMeetingDialog', false);
         }
     }
 
@@ -303,7 +316,7 @@ export default class GuidNodeIntegromat extends Controller {
         };
 
         this.set('showCreateWebMeetingDialog', false);
-        this.setWebMeetingApp('');
+        this.setWebMeetingApp('','');
 
         return this.reqLaunch(startIntegromatScenarioUrl, payload, appName);
     }
@@ -342,13 +355,13 @@ export default class GuidNodeIntegromat extends Controller {
 
         for(let i=0; i < webMeetingApps.length; i++){
 
-            if(webMeetingApps[i].fields.id === appId){
+            if(webMeetingApps[i].pk === appId){
                 appName = webMeetingApps[i].fields.app_name
                 break;
             }
         }
 
-        this.setWebMeetingApp(appName);
+        this.setWebMeetingApp(appName, 'update');
         this.makeTheWebMeetingAttendee(appName);
 
         return '';
@@ -450,6 +463,7 @@ export default class GuidNodeIntegromat extends Controller {
         }
 
         this.set('webMeetingUpdateMeetingId', '');
+        this.set('showUpdateWebMeetingDialog', false);
 
         const payload = {
             'nodeId': node_id,

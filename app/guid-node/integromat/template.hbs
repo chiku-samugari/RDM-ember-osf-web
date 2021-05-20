@@ -242,8 +242,8 @@
                     <label>{{t 'integromat.attendees'}}</label>
                     <div>
                         <span id='attendees_inputs'>
-                            {{#if this.microsoft_teams_attendees}}
-                                {{#each this.microsoft_teams_attendees as |row|}}
+                            {{#if this.node_microsoft_teams_attendees}}
+                                {{#each this.node_microsoft_teams_attendees as |row|}}
                                     <label local-class='Integromat__label_normal'>
                                         <input class='microsoftTeamsAttendeesCheck' type='checkBox' style='width: 15px; height: 15px;' id={{row.fields.microsoft_teams_mail}}  name={{row.fields.microsoft_teams_user_name}}>
                                         {{row.fields.microsoft_teams_mail}}
@@ -471,7 +471,7 @@
                 <label>{{t 'integromat.attendees'}}</label>
                 <div>
                     <span id='attendees_inputs'>
-                        {{#if this.microsoft_teams_attendees}}
+                        {{#if this.node_microsoft_teams_attendees}}
                             {{#each this.teamsMeetingAttendees as |mail|}}
                                 <label local-class='Integromat__label_normal'>
                                     <input class='microsoftTeamsAttendeesCheck' type='checkBox' style='width: 15px; height: 15px;' id={{mail}} checked>

@@ -329,17 +329,17 @@ export default class GuidNodeIntegromat extends Controller {
             }
         }
 
-        const microsoft_teams_attendees = JSON.parse(config.web_meeting_attendees);
+        const node_microsoft_teams_attendees = JSON.parse(config.web_meeting_attendees);
 
         this.teamsMeetingAttendees.length = 0;
         this.notTeamsMeetingAttendees.length = 0;
 
-        for(let j = 0; j < microsoft_teams_attendees.length; j++){
-            this.notTeamsMeetingAttendees.push(microsoft_teams_attendees[j].fields.microsoft_teams_mail);
+        for(let j = 0; j < node_microsoft_teams_attendees.length; j++){
+            this.notTeamsMeetingAttendees.push(node_microsoft_teams_attendees[j].fields.microsoft_teams_mail);
 
             for(let k = 0; k < this.webMeetingAttendees.length; k++){
-                if(microsoft_teams_attendees[j].pk === this.webMeetingAttendees[k]){
-                    this.teamsMeetingAttendees.push(microsoft_teams_attendees[j].fields.microsoft_teams_mail);
+                if(node_microsoft_teams_attendees[j].pk === this.webMeetingAttendees[k]){
+                    this.teamsMeetingAttendees.push(node_microsoft_teams_attendees[j].fields.microsoft_teams_mail);
                     this.notTeamsMeetingAttendees.pop();
                     break;
                 }
@@ -534,17 +534,17 @@ export default class GuidNodeIntegromat extends Controller {
             }
         }
 
-        const microsoft_teams_attendees = JSON.parse(config.web_meeting_attendees);
+        const node_microsoft_teams_attendees = JSON.parse(config.web_meeting_attendees);
 
         this.teamsMeetingAttendees.length = 0;
         this.notTeamsMeetingAttendees.length = 0;
 
-        for(let j = 0; j < microsoft_teams_attendees.length; j++){
-            this.notTeamsMeetingAttendees.push(microsoft_teams_attendees[j].fields.microsoft_teams_mail);
+        for(let j = 0; j < node_microsoft_teams_attendees.length; j++){
+            this.notTeamsMeetingAttendees.push(node_microsoft_teams_attendees[j].fields.microsoft_teams_mail);
 
             for(let k = 0; k < this.webMeetingAttendees.length; k++){
-                if(microsoft_teams_attendees[j].pk === this.webMeetingAttendees[k]){
-                    this.teamsMeetingAttendees.push(microsoft_teams_attendees[j].fields.microsoft_teams_mail);
+                if(node_microsoft_teams_attendees[j].pk === this.webMeetingAttendees[k]){
+                    this.teamsMeetingAttendees.push(node_microsoft_teams_attendees[j].fields.microsoft_teams_mail);
                     this.notTeamsMeetingAttendees.pop();
                     break;
                 }
@@ -658,14 +658,14 @@ export default class GuidNodeIntegromat extends Controller {
         return web_meeting_attendees;
     }
 
-    @computed('config.microsoft_teams_attendees')
-    get microsoft_teams_attendees() {
+    @computed('config.node_microsoft_teams_attendees')
+    get node_microsoft_teams_attendees() {
         if (!this.config) {
             return '';
         }
         const config = this.config.content as IntegromatConfigModel;
-        const microsoft_teams_attendees = JSON.parse(config.microsoft_teams_attendees);
-        return microsoft_teams_attendees;
+        const node_microsoft_teams_attendees = JSON.parse(config.node_microsoft_teams_attendees);
+        return node_microsoft_teams_attendees;
     }
 
     @computed('config.webex_meetings_attendees')

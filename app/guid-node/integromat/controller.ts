@@ -668,14 +668,14 @@ export default class GuidNodeIntegromat extends Controller {
         return node_microsoft_teams_attendees;
     }
 
-    @computed('config.webex_meetings_attendees')
-    get webex_meetings_attendees() {
+    @computed('config.node_webex_meetings_attendees')
+    get node_webex_meetings_attendees() {
         if (!this.config) {
             return '';
         }
         const config = this.config.content as IntegromatConfigModel;
-        const webex_meetings_attendees = JSON.parse(config.webex_meetings_attendees);
-        return webex_meetings_attendees;
+        const node_webex_meetings_attendees = JSON.parse(config.node_webex_meetings_attendees);
+        return node_webex_meetings_attendees;
     }
 
     @computed('config.workflows')

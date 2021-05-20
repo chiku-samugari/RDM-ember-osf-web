@@ -465,6 +465,7 @@ export default class GuidNodeIntegromat extends Controller {
 
         this.set('webMeetingUpdateMeetingId', '');
         this.set('showUpdateWebMeetingDialog', false);
+        this.setWebMeetingApp('','');
 
         const payload = {
             'nodeId': node_id,

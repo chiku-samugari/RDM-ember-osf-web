@@ -121,7 +121,7 @@ export default class GuidNodeIntegromat extends Controller {
     showCreateMicrosoftTeamsMeetingDialog = false;
     showCreateWebexMeetingDialog = false;
     showUpdateMicrosoftTeamsMeetingDialog = false;
-    showUpdateWebexMeetingDialog = false;
+    showUpdateWebexMeetingsDialog = false;
     showDeleteMicrosoftTeamsMeetingDialog = false;
     showDetailMicrosoftTeamsMeetingDialog = false;
     showWorkflows = true;
@@ -424,10 +424,10 @@ export default class GuidNodeIntegromat extends Controller {
         const appName = this.webMeetingAppName;
         const webMeetingSubject = this.webMeetingSubject;
         const webMeetingStartDate = moment(this.webMeetingStartDate).format('YYYY-MM-DD');
-        const webMeetingStartTime = (<HTMLInputElement>document.querySelectorAll('select[id=update_teams_start_time]')[0]).value;
+        const webMeetingStartTime = (<HTMLInputElement>document.querySelectorAll('select[id=update_start_time]')[0]).value;
         const webMeetingStartDatetime = webMeetingStartDate + ' ' + webMeetingStartTime;
         const webMeetingEndDate = moment(this.webMeetingEndDate).format('YYYY-MM-DD');
-        const webMeetingEndTime = (<HTMLInputElement>document.querySelectorAll('select[id=update_teams_end_time]')[0]).value;
+        const webMeetingEndTime = (<HTMLInputElement>document.querySelectorAll('select[id=update_end_time]')[0]).value;
         const webMeetingEndDatetime = webMeetingEndDate + ' ' + webMeetingEndTime;
         const webMeetingLocation = this.webMeetingLocation;
         const webMeetingContent = this.webMeetingContent;

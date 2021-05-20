@@ -474,7 +474,7 @@
                     <div>
                         <span id='attendees_inputs'>
                             {{#if this.webMeetingAttendeeMails}}
-                                {{#each this.teamsMeetingAttendees as |mail|}}
+                                {{#each this.webMeetingAttendeeMails as |mail|}}
                                     <label local-class='Integromat__label_normal'>
                                         <input class='microsoftTeamsAttendeesCheck' type='checkBox' style='width: 15px; height: 15px;' id={{mail}} checked>
                                         {{mail}}
@@ -510,7 +510,7 @@
                                 }}
                             </td>
                             <td>
-                                <select id='update_teams_start_time' class='form-control'>
+                                <select id='update_start_time' class='form-control'>
                                     {{#each this.times as |times|}}
                                         {{#if (eq times this.webMeetingStartTime)}}
                                             <option value={{times}} selected>{{times}}</option>
@@ -532,7 +532,7 @@
                                 }}
                             </td>
                             <td>
-                                <select id='update_teams_end_time' class='form-control'>
+                                <select id='update_end_time' class='form-control'>
                                     {{#each this.times as |times|}}
                                         {{#if (eq times this.webMeetingEndTime)}}
                                             <option value={{times}} selected>{{times}}</option>
@@ -582,7 +582,7 @@
                     <div>
                         <span id='attendees_inputs'>
                             {{#if this.webMeetingAttendeeMails}}
-                                {{#each this.teamsMeetingAttendees as |mail|}}
+                                {{#each this.webMeetingAttendeeMails as |mail|}}
                                     <label local-class='Integromat__label_normal'>
                                         <input class='webexMeetingsAttendeesCheck' type='checkBox' style='width: 15px; height: 15px;' id={{mail}} checked>
                                         {{mail}}
@@ -618,7 +618,7 @@
                                 }}
                             </td>
                             <td>
-                                <select id='update_teams_start_time' class='form-control'>
+                                <select id='update_start_time' class='form-control'>
                                     {{#each this.times as |times|}}
                                         {{#if (eq times this.webMeetingStartTime)}}
                                             <option value={{times}} selected>{{times}}</option>
@@ -640,7 +640,7 @@
                                 }}
                             </td>
                             <td>
-                                <select id='update_teams_end_time' class='form-control'>
+                                <select id='update_end_time' class='form-control'>
                                     {{#each this.times as |times|}}
                                         {{#if (eq times this.webMeetingEndTime)}}
                                             <option value={{times}} selected>{{times}}</option>

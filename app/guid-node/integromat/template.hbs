@@ -222,13 +222,8 @@
     <modal.body>
         <div class='form-group'>
             {{#each this.web_meeting_apps as |appName|}}
-                {{input
-                    name='webMeetingAppName'
-                    type='radio'
-                    value=appName.fields.app_name
-                    click=(action this.setWebMeetingApp value='target.value')
-                }}
-                <label>
+                <input type='radio' value={{appName.fields.app_name}} name='webMeetingAppName' id='radio_{{appName.fields.app_name}}' onClick={{action this.setWebMeetingApp value='target.value'}}>
+                <label for='radio_{{appName.fields.app_name}}'>
                     {{appName.fields.app_name}}
                 </label>
             {{/each}}

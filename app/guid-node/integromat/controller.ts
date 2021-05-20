@@ -329,7 +329,7 @@ export default class GuidNodeIntegromat extends Controller {
             }
         }
 
-        const node_microsoft_teams_attendees = JSON.parse(config.web_meeting_attendees);
+        const node_microsoft_teams_attendees = JSON.parse(config.node_web_meeting_attendees);
 
         this.teamsMeetingAttendees.length = 0;
         this.notTeamsMeetingAttendees.length = 0;
@@ -534,7 +534,7 @@ export default class GuidNodeIntegromat extends Controller {
             }
         }
 
-        const node_microsoft_teams_attendees = JSON.parse(config.web_meeting_attendees);
+        const node_microsoft_teams_attendees = JSON.parse(config.node_web_meeting_attendees);
 
         this.teamsMeetingAttendees.length = 0;
         this.notTeamsMeetingAttendees.length = 0;
@@ -648,14 +648,14 @@ export default class GuidNodeIntegromat extends Controller {
         return previous_web_meetings;
     }
 
-    @computed('config.web_meeting_attendees')
-    get web_meeting_attendees() {
+    @computed('config.node_web_meeting_attendees')
+    get node_web_meeting_attendees() {
         if (!this.config) {
             return '';
         }
         const config = this.config.content as IntegromatConfigModel;
-        const web_meeting_attendees = JSON.parse(config.web_meeting_attendees);
-        return web_meeting_attendees;
+        const node_web_meeting_attendees = JSON.parse(config.node_web_meeting_attendees);
+        return node_web_meeting_attendees;
     }
 
     @computed('config.node_microsoft_teams_attendees')

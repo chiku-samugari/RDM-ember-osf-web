@@ -362,43 +362,44 @@ export default class GuidNodeIntegromat extends Controller {
         }
 
         this.setWebMeetingApp(appName, 'update');
-        this.makeTheWebMeetingAttendee(appName);
+        this.makeWebMeetingAttendee(appName);
 
         return '';
     }
 
-    makeTheWebMeetingAttendee(this: GuidNodeIntegromat, appName: string) {
+    makeWebMeetingAttendee(this: GuidNodeIntegromat, appName: string) {
 
         if (!this.config) {
             throw new EmberError('Illegal config');
         }
         const config = this.config.content as IntegromatConfigModel;
 
-        const nodeWebMeetingAttendees = JSON.parse(config.node_web_meeting_attendees);
+        const nodeMicrosoftTeamsAttendees = JSON.parse(config.node_microsoft_teams_attendees);
+        const nodeWebexMeetingsAttendees = JSON.parse(config.node_webex_teams_attendees);
 
         this.webMeetingAttendeeMails.length = 0;
         this.notWebMeetingAttendeeMails.length = 0;
 
         if(appName === config.app_name_microsoft_teams){
 
-            for(let j = 0; j < nodeWebMeetingAttendees.length; j++){
-                this.notWebMeetingAttendeeMails.push(nodeWebMeetingAttendees[j].fields.microsoft_teams_mail);
+            for(let j = 0; j < nodeMicrosoftTeamsAttendees.length; j++){
+                this.notWebMeetingAttendeeMails.push(nodeMicrosoftTeamsAttendees[j].fields.microsoft_teams_mail);
 
                 for(let k = 0; k < this.webMeetingAttendees.length; k++){
-                    if(nodeWebMeetingAttendees[j].pk === this.webMeetingAttendees[k]){
-                        this.webMeetingAttendeeMails.push(nodeWebMeetingAttendees[j].fields.microsoft_teams_mail);
+                    if(nodeMicrosoftTeamsAttendees[j].pk === this.webMeetingAttendees[k]){
+                        this.webMeetingAttendeeMails.push(nodeMicrosoftTeamsAttendees[j].fields.microsoft_teams_mail);
                         this.notWebMeetingAttendeeMails.pop();
                         break;
                     }
                 }
             }
         }else if(appName === config.app_name_webex_meetings){
-            for(let l = 0; l < nodeWebMeetingAttendees.length; l++){
-                this.notWebMeetingAttendeeMails.push(nodeWebMeetingAttendees[l].fields.webex_meetings_mail);
+            for(let l = 0; l < nodeWebexMeetingsAttendees.length; l++){
+                this.notWebMeetingAttendeeMails.push(nodeWebexMeetingsAttendees[l].fields.webex_meetings_mail);
 
                 for(let m = 0; m < this.webMeetingAttendees.length; m++){
-                    if(nodeWebMeetingAttendees[l].pk === this.webMeetingAttendees[m]){
-                        this.webMeetingAttendeeMails.push(nodeWebMeetingAttendees[l].fields.webex_meetings_mail);
+                    if(nodeWebexMeetingsAttendees[l].pk === this.webMeetingAttendees[m]){
+                        this.webMeetingAttendeeMails.push(nodeWebexMeetingsAttendees[l].fields.webex_meetings_mail);
                         this.notWebMeetingAttendeeMails.pop();
                         break;
                     }

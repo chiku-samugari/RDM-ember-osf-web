@@ -447,6 +447,7 @@
     @backdropClose={{false}}
     @open={{this.showUpdateWebMeetingDialog}}
     @onSubmit={{action this.updateWebMeeting}}
+    @onShown={{action this.setDefaultDate}}
     @onHidden={{action (mut this.showUpdateWebMeetingDialog) false}}
     @onHide={{action this.setWebMeetingApp}}
     as |modal|

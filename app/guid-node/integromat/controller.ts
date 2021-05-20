@@ -342,8 +342,8 @@ export default class GuidNodeIntegromat extends Controller {
 
         for(let i=0; i < webMeetingApps.length; i++){
 
-            if(microsoftTeamsMeetings[i].fields.id === appId){
-                appName = microsoftTeamsMeetings[i].fields.app_name
+            if(webMeetingApps[i].fields.id === appId){
+                appName = webMeetingApps[i].fields.app_name
                 break;
             }
         }

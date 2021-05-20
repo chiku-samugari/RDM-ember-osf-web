@@ -375,20 +375,35 @@ export default class GuidNodeIntegromat extends Controller {
         const webMeetingId = this.webMeetingUpdateMeetingId;
         const webMeetingJoinUrl = this.webMeetingJoinUrl;
         const microsoftTeamsAttendeesChecked = document.querySelectorAll('input[class=microsoftTeamsAttendeesCheck]:checked');
+        const webexMeetingsAttendeesChecked = document.querySelectorAll('input[class=webexMeetingsAttendeesCheck]:checked');
         const empty = '';
-        const microsoftTeamsAttendeeAtCreateEmpty : microsoftTeamsAttendeeAtCreate[] = [];
-		const webexMeetingsAttendeesEmpty: webexMeetingsAttendee[] = [];
+        const timestamp = new Date().getTime();
 
-        let arrayAttendeesCollection = [];
+        let action = '';
+        let microsoftTeamsAttendeesCollectionAtCreate: microsoftTeamsAttendeeAtCreate[] = [];
+        let microsoftTeamsAttendeesCollectionAtUpdate: microsoftTeamsAttendeeAtUpdate[] = [];
+        let webexMeetingsAttendeesCollection: webexMeetingsAttendee[] = [];
         let arrayAttendees = [];
 
-        for(let i = 0; i < microsoftTeamsAttendeesChecked.length; i++){
-            arrayAttendeesCollection.push({'address': microsoftTeamsAttendeesChecked[i].id, 'name': 'Unregistered'});
-            arrayAttendees.push(microsoftTeamsAttendeesChecked[i].id);
+        if (this.webMeetingAppName === microsoftTeamsName) {
+
+            action = 'updateMicrosoftTeamsMeeting';
+
+            for(let i = 0; i < microsoftTeamsAttendeesChecked.length; i++){ 
+                microsoftTeamsAttendeesCollectionAtUpdate.push({'emailAddress': {'address': microsoftTeamsAttendeesChecked[i].id}});
+                arrayAttendees.push(microsoftTeamsAttendeesChecked[i].id);
+            }
+        }else if (this.webMeetingAppName === webexMeetingsName) {
+
+            action = 'updateWebexMeeting';
+
+            for(let i = 0; i < webexMeetingsAttendeesChecked.length; i++){
+                webexMeetingsAttendeesCollection.push({'email': webexMeetingsAttendeesChecked[i].id});
+                arrayAttendees.push(webexMeetingsAttendeesChecked[i].id);
+            }
         }
 
         const action = 'updateMicrosoftTeamsMeeting';
-        const timestamp = new Date().getTime();
 
         this.set('webMeetingUpdateMeetingId', '');
 
@@ -414,9 +429,9 @@ export default class GuidNodeIntegromat extends Controller {
             'startDatetime': webMeetingStartDatetime,
             'endDatetime': webMeetingEndDatetime,
             'subject': webMeetingSubject,
-            'microsoftTeamsAttendeesCollectionAtCreate': microsoftTeamsAttendeeAtCreateEmpty,
-            'microsoftTeamsAttendeesCollectionAtUpdate': arrayAttendeesCollection,
-            'webexMeetingsAttendeesCollection': webexMeetingsAttendeesEmpty,
+            'microsoftTeamsAttendeesCollectionAtCreate': microsoftTeamsAttendeesCollectionAtCreate,
+            'microsoftTeamsAttendeesCollectionAtUpdate': microsoftTeamsAttendeesCollectionAtUpdate,
+            'webexMeetingsAttendeesCollection': webexMeetingsAttendeesCollection,
             'attendees': arrayAttendees,
             'location': webMeetingLocation,
             'content': webMeetingContent,

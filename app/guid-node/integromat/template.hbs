@@ -124,7 +124,7 @@
                                                             <button class='fa fa-play' onClick={{action this.startMeeting row.fields.join_url}}></button>
                                                         </td>
                                                         <td class='text-info' local-class='Integromat__td'>
-                                                            <button class='fa fa-edit' onClick={{action this.makeUpdateMeetingDialog row.fields.meetingid row.fields.app_id}}></button>
+                                                            <button class='fa fa-edit' onClick={{action this.makeUpdateMeetingDialog row.fields.meetingid row.fields.app}}></button>
                                                         </td>
                                                         <td class='text-danger' local-class='Integromat__td'>
                                                             <button class='fa fa-trash' onClick={{action this.makeDeleteDialog row.fields.meetingid}}></button>
@@ -180,13 +180,13 @@
                                                             />
                                                         </td>
                                                         <td local-class='Integromat__td'>
-                                                            <button class='fa fa-play' onClick={{action (action this.startMeeting row.fields.join_url)}}></button>
+                                                            <button class='fa fa-play' onClick={{action this.startMeeting row.fields.join_url}}></button>
                                                         </td>
                                                         <td class='text-info' local-class='Integromat__td'>
-                                                            <button class='fa fa-edit' onClick={{action (action this.makeUpdateMeetingDialog row.fields.meetingid)}}></button>
+                                                            <button class='fa fa-edit' onClick={{action this.makeUpdateMeetingDialog row.fields.meetingid row.fields.app}}></button>
                                                         </td>
                                                         <td class='text-danger' local-class='Integromat__td'>
-                                                            <button class='fa fa-trash' onClick={{action (action this.makeDeleteDialog row.fields.meetingid)}}></button>
+                                                            <button class='fa fa-trash' onClick={{action this.makeDeleteDialog row.fields.meetingid}}></button>
                                                         </td>
                                                     </tr>
                                                 {{/each}}

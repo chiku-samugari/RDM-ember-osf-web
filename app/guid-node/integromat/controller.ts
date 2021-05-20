@@ -403,8 +403,6 @@ export default class GuidNodeIntegromat extends Controller {
             }
         }
 
-        const action = 'updateMicrosoftTeamsMeeting';
-
         this.set('webMeetingUpdateMeetingId', '');
 
         const payload = {

@@ -390,7 +390,7 @@ export default class GuidNodeIntegromat extends Controller {
             action = 'updateMicrosoftTeamsMeeting';
 
             for(let i = 0; i < microsoftTeamsAttendeesChecked.length; i++){ 
-                microsoftTeamsAttendeesCollectionAtUpdate.push({'emailAddress': {'address': microsoftTeamsAttendeesChecked[i].id}});
+                microsoftTeamsAttendeesCollectionAtUpdate.push({'address': microsoftTeamsAttendeesChecked[i].id, 'name': 'Unregistered'});
                 arrayAttendees.push(microsoftTeamsAttendeesChecked[i].id);
             }
         }else if (this.webMeetingAppName === webexMeetingsName) {

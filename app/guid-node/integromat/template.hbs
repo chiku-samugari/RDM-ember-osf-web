@@ -346,8 +346,8 @@
                     <label>{{t 'integromat.attendees'}}</label>
                     <div>
                         <span id='attendees_inputs'>
-                            {{#if this.webex_meetings_attendees}}
-                                {{#each this.webex_meetings_attendees as |row|}}
+                            {{#if this.node_webex_meetings_attendees}}
+                                {{#each this.node_webex_meetings_attendees as |row|}}
                                     <label local-class='Integromat__label_normal'>
                                         <input class='webexMeetingsAttendeesCheck' type='checkBox' style='width: 15px; height: 15px;' id={{row.fields.webex_meetings_mail}} name={{row.fields.webex_meetings_display_name}}>
                                         {{row.fields.webex_meetings_mail}}

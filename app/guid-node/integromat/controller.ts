@@ -356,12 +356,12 @@ export default class GuidNodeIntegromat extends Controller {
 
     makeTheWebMeetingAttendee(this: GuidNodeIntegromat, appName: string) {
 
-        const nodeWebMeetingAttendees = JSON.parse(config.node_web_meeting_attendees);
-
         if (!this.config) {
             throw new EmberError('Illegal config');
         }
         const config = this.config.content as IntegromatConfigModel;
+
+        const nodeWebMeetingAttendees = JSON.parse(config.node_web_meeting_attendees);
 
         this.webMeetingAttendeeMails.length = 0;
         this.notWebMeetingAttendeeMails.length = 0;
@@ -408,6 +408,7 @@ export default class GuidNodeIntegromat extends Controller {
         const config = this.config.content as IntegromatConfigModel;
         const webhookUrl = config.webhook_url;
         const node_id = config.node_settings_id;
+        const appName = this.webMeetingAppName;
         const webMeetingSubject = this.webMeetingSubject;
         const webMeetingStartDate = moment(this.webMeetingStartDate).format('YYYY-MM-DD');
         const webMeetingStartTime = (<HTMLInputElement>document.querySelectorAll('select[id=update_teams_start_time]')[0]).value;
@@ -430,7 +431,7 @@ export default class GuidNodeIntegromat extends Controller {
         let webexMeetingsAttendeesCollection: webexMeetingsAttendee[] = [];
         let arrayAttendees = [];
 
-        if (this.webMeetingAppName === config.app_name_microsoft_teams) {
+        if (appName === config.app_name_microsoft_teams) {
 
             action = 'updateMicrosoftTeamsMeeting';
 
@@ -438,7 +439,7 @@ export default class GuidNodeIntegromat extends Controller {
                 microsoftTeamsAttendeesCollectionAtUpdate.push({'address': microsoftTeamsAttendeesChecked[i].id, 'name': 'Unregistered'});
                 arrayAttendees.push(microsoftTeamsAttendeesChecked[i].id);
             }
-        }else if (this.webMeetingAppName === config.app_name_webex_meetings) {
+        }else if (appName === config.app_name_webex_meetings) {
 
             action = 'updateWebexMeeting';
 

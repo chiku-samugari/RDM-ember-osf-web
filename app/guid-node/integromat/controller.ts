@@ -336,7 +336,7 @@ export default class GuidNodeIntegromat extends Controller {
         this.set('showUpdateWebMeetingDialog', true);
 
         if (!this.config) {
-            return '';
+            throw new EmberError('Illegal config');
         }
 
         const config = this.config.content as IntegromatConfigModel;
@@ -373,7 +373,6 @@ export default class GuidNodeIntegromat extends Controller {
         this.setWebMeetingApp(appName, 'update');
         this.makeWebMeetingAttendee(appName);
 
-        return '';
     }
 
     makeWebMeetingAttendee(this: GuidNodeIntegromat, appName: string) {
@@ -517,7 +516,7 @@ export default class GuidNodeIntegromat extends Controller {
     makeDeleteDialog(this: GuidNodeIntegromat, meetingId: string, appId: string, subject: string, startDatetime: string, endDatetime: string) {
 
         if (!this.config) {
-            return '';
+            throw new EmberError('Illegal config');
         }
 
         const config = this.config.content as IntegromatConfigModel;
@@ -535,7 +534,7 @@ export default class GuidNodeIntegromat extends Controller {
 
         this.setWebMeetingApp(appName, 'delete');
 
-        this.set('showDeleteMicrosoftTeamsMeetingDialog', true);
+        this.set('showDeleteWebMeetingDialog', true);
         this.set('webMeetingDeleteMeetingId', meetingId);
         this.set('webMeetingDeleteSubject', subject);
         this.set('webMeetingDeleteStartDate', moment(startDatetime).format('YYYY/MM/DD'));
@@ -632,7 +631,7 @@ export default class GuidNodeIntegromat extends Controller {
     makeDetailMeetingDialog(this: GuidNodeIntegromat, v: string) {
 
         if (!this.config) {
-            return '';
+            throw new EmberError('Illegal config');
         }
         const config = this.config.content as IntegromatConfigModel;
         const microsoftTeamsMeetings = JSON.parse(config.all_web_meetings);
@@ -671,7 +670,6 @@ export default class GuidNodeIntegromat extends Controller {
                 }
             }
         }
-        return '';
     }
 
     reqLaunch(url: string, payload: payload, appName: string){

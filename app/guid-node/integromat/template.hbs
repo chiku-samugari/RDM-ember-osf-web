@@ -682,7 +682,7 @@
 </BsModal>
 
 <BsModal
-    delete-microsoft-teams-meeting-modal
+    data-test-delete-meeting-modal
     @open={{this.showDeleteWebMeetingDialog}}
     @onSubmit={{action this.deleteWebMeeting}}
     @onHidden={{action (mut this.showDeleteWebMeetingDialog) false}}
@@ -700,7 +700,7 @@
             <div local-class='Integromat__input_items'>
                 <div>{{this.webMeetingDeleteSubject}}</div>
             </div>
-            <div>
+            <div local-class='Integromat__input_items'>
                 <table>
                     <tr>
                         <td>

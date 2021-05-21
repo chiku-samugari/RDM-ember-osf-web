@@ -555,7 +555,7 @@ export default class GuidNodeIntegromat extends Controller {
         const config = this.config.content as IntegromatConfigModel;
         const webhookUrl = config.webhook_url;
         const nodeId = config.node_settings_id;
-        const appName = config.app_name_microsoft_teams;
+        const appName = this.webMeetingAppName;
 
         const webMeetingSubject = this.webMeetingDeleteSubject;
         const webMeetingStartDatetime = this.webMeetingDeleteStartDate + ' ' + this.webMeetingDeleteStartTime;

@@ -309,7 +309,8 @@ export default class GuidNodeIntegromat extends Controller {
         }
         const payload = {
             'nodeId': node_id,
-            'meetingAppName': appNameDisp,
+            'appName': appName,
+            'appNameDisp': appNameDisp,
             'guid': guid,
             'meetingId': empty,
             'joinUrl': empty,
@@ -493,7 +494,8 @@ export default class GuidNodeIntegromat extends Controller {
 
         const payload = {
             'nodeId': node_id,
-            'meetingAppName': appNameDisp,
+            'appName': appName,
+            'appNameDisp': appNameDisp,
             'guid': empty,
             'meetingId': webMeetingId,
             'joinUrl': webMeetingJoinUrl,
@@ -599,7 +601,8 @@ export default class GuidNodeIntegromat extends Controller {
 
         const payload = {
             'nodeId': nodeId,
-            'meetingAppName': appNameDisp,
+            'appName': appName,
+            'appNameDisp': appNameDisp,
             'guid': empty,
             'meetingId': this.webMeetingDeleteMeetingId,
             'joinUrl': empty,

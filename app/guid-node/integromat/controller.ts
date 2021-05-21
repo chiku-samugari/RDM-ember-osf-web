@@ -149,6 +149,7 @@ export default class GuidNodeIntegromat extends Controller {
     webMeetingDeleteSubject = '';
     webMeetingDeleteStartDate = '';
     webMeetingDeleteStartTime = '';
+    webMeetingDeleteEndDate = '';
     webMeetingDeleteEndTime = '';
     webMeetingJoinUrl = '';
 
@@ -539,6 +540,7 @@ export default class GuidNodeIntegromat extends Controller {
         this.set('webMeetingDeleteSubject', subject);
         this.set('webMeetingDeleteStartDate', moment(startDatetime).format('YYYY/MM/DD'));
         this.set('webMeetingDeleteStartTime', moment(startDatetime).format('HH:mm'));
+        this.set('webMeetingDeleteEndDate', moment(endDatetime).format('YYYY/MM/DD'));
         this.set('webMeetingDeleteEndTime', moment(endDatetime).format('HH:mm'));
 
     }

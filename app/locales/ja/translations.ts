@@ -2022,7 +2022,8 @@ export default {
         location: '場所',
         content: '内容',
         joinUrl: '招待URL',
-        from_symbol: '～',
+        from_tilde: ' ～ ',
+        from_hyphen: ' - ',
         colon: '：',
         info: {
             launch: 'ワークフローを起動しています。',

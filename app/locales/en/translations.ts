@@ -1866,7 +1866,8 @@ export default {
         location: 'Location',
         content: 'Content',
         joinUrl: 'Join URL',
-        from_symbol: '～',
+        from_tilde: ' ～ ',
+        from_hyphen: ' - ',
         colon: ':',
         info: {
             launch: 'Launching workflow.',

@@ -284,7 +284,7 @@
                                     {{/each}}
                                 </select>
                             </td>
-                            <td><label local-class='Integromat__input_items'>{{t 'integromat.from_symbol'}}</label></td>
+                            <td><label local-class='Integromat__input_items'>{{t 'integromat.from_tilde'}}</label></td>
                             <td>
                                 {{bootstrap-datepicker
                                     name='teams_end_date'
@@ -388,7 +388,7 @@
                                     {{/each}}
                                 </select>
                             </td>
-                            <td><label local-class='Integromat__input_items'>{{t 'integromat.from_symbol'}}</label></td>
+                            <td><label local-class='Integromat__input_items'>{{t 'integromat.from_tilde'}}</label></td>
                             <td>
                                 {{bootstrap-datepicker
                                     name='teams_end_date'
@@ -521,7 +521,7 @@
                                     {{/each}}
                                 </select>
                             </td>
-                            <td><label local-class='Integromat__input_items'>{{t 'integromat.from_symbol'}}</label></td>
+                            <td><label local-class='Integromat__input_items'>{{t 'integromat.from_tilde'}}</label></td>
                             <td>
                                 {{bootstrap-datepicker
                                 id='update_end_date'
@@ -629,7 +629,7 @@
                                     {{/each}}
                                 </select>
                             </td>
-                            <td><label local-class='Integromat__input_items'>{{t 'integromat.from_symbol'}}</label></td>
+                            <td><label local-class='Integromat__input_items'>{{t 'integromat.from_tilde'}}</label></td>
                             <td>
                                 {{bootstrap-datepicker
                                 id='update_end_date'
@@ -690,29 +690,26 @@
 >
     <modal.header>
         <h4 style='font-weight:normal;'>
-            {{t 'integromat.meetingDialog.deleteHeader'}}
+            {{t 'integromat.meetingDialog.deleteHeader' appName=this.webMeetingAppName}}
         </h4>
     </modal.header>
     <modal.body>
         <div class='form-group'>
-            <div>{{t 'integromat.meetingDialog.deleteBody'}} : {{this.willDeleteMeetings}}</div>
-            <div>
-                {{input
-                    name='node_id'
-                    type='hidden'
-                    value=this.node_settings_id
-                }}
-                {{input
-                    name='microsoft_teams_app_name'
-                    type='hidden'
-                    value=this.app_name_microsoft_teams
-                }}
-                {{input
-                    name='webMeetingDeleteMeetingId'
-                    type='hidden'
-                    value=this.webMeetingDeleteMeetingId
-                }}
+            <div>{{t 'integromat.meetingDialog.deleteBody'}}</div>
+            <div local-class='Integromat__input_items'>
+                <div>{{this.webMeetingSubject}}</div>
             </div>
+                <table>
+                    <tr>
+                        <td>
+                            {{this.webMeetingStartDate}}&nbsp;{{this.webMeetingStartTime}}
+                        </td>
+                        <td><label local-class='Integromat__input_items'>{{t 'integromat.from_hyphen'}}</label></td>
+                        <td>
+                            {{this.webMeetingEndTime}}
+                        </td>
+                    </tr>
+                </table>
         </div>
     </modal.body>
     <modal.footer>
@@ -767,9 +764,9 @@
                         <td>
                             {{this.webMeetingStartDate}}&nbsp;{{this.webMeetingStartTime}}
                         </td>
-                        <td><label local-class='Integromat__input_items'>{{t 'integromat.from_symbol'}}</label></td>
+                        <td><label local-class='Integromat__input_items'>{{t 'integromat.from_hyphen'}}</label></td>
                         <td>
-                            {{this.webMeetingEndDate}}&nbsp;{{this.webMeetingEndTime}}
+                            {{this.webMeetingEndTime}}
                         </td>
                     </tr>
                 </table>

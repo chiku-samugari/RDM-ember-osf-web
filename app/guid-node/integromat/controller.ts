@@ -187,7 +187,7 @@ export default class GuidNodeIntegromat extends Controller {
 
     camel2space(v: string) {
 
-        separator = ' ';
+        const separator = ' ';
         return v
                 .replace(/[A-Z][a-z]/g, function (match) {
                     return separator + match;

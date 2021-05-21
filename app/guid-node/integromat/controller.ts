@@ -50,7 +50,8 @@ interface webexMeetingsAttendee {
 
 interface payload {
     nodeId: string;
-    meetingAppName: string;
+    appName: string;
+    appNameDisp: string;
     guid: string;
     meetingId: string;
     joinUrl: string;

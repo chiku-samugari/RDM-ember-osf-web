@@ -558,12 +558,8 @@ export default class GuidNodeIntegromat extends Controller {
         const appName = config.app_name_microsoft_teams;
 
         const webMeetingSubject = this.webMeetingDeleteSubject;
-        const webMeetingStartDate = moment(this.webMeetingDeleteStartDate).format('YYYY-MM-DD');
-        const webMeetingStartTime = moment(this.webMeetingDeleteStartTime).format('HH:mm');
-        const webMeetingStartDatetime = webMeetingStartDate + ' ' + webMeetingStartTime;
-        const webMeetingEndDate = moment(this.webMeetingDeleteEndDate).format('YYYY-MM-DD');
-        const webMeetingEndTime = moment(this.webMeetingDeleteEndTime).format('HH:mm');
-        const webMeetingEndDatetime = webMeetingEndDate + ' ' + webMeetingEndTime;
+        const webMeetingStartDatetime = this.webMeetingDeleteStartDate + ' ' + this.webMeetingDeleteStartTime;
+        const webMeetingEndDatetime = this.webMeetingDeleteEndDate + ' ' + this.webMeetingDeleteEndTime;
         const timestamp = new Date().getTime();
 
         const empty = '';

@@ -123,6 +123,7 @@ export default class GuidNodeIntegromat extends Controller {
     showUpdateMicrosoftTeamsMeetingDialog = false;
     showUpdateWebexMeetingsDialog = false;
     showDeleteWebMeetingDialog = false;
+    showDetailMicrosoftTeamsMeetingDialog = false;
     showWorkflows = true;
     showAllWebMeetings = false;
 
@@ -554,14 +555,13 @@ export default class GuidNodeIntegromat extends Controller {
         const webhookUrl = config.webhook_url;
         const nodeId = config.node_settings_id;
         const appName = config.app_name_microsoft_teams;
-        const action = '';
 
         const webMeetingSubject = this.webMeetingDeleteSubject;
         const webMeetingStartDate = moment(this.webMeetingDeleteStartDate).format('YYYY-MM-DD');
         const webMeetingStartTime = moment(this.webMeetingDeleteStartTime).format('HH:mm');
         const webMeetingStartDatetime = webMeetingStartDate + ' ' + webMeetingStartTime;
         const webMeetingEndDate = moment(this.webMeetingDeleteEndDate).format('YYYY-MM-DD');
-        const webMeetingStartTime = moment(this.webMeetingDeleteEndTime).format('HH:mm');
+        const webMeetingEndTime = moment(this.webMeetingDeleteEndTime).format('HH:mm');
         const webMeetingEndDatetime = webMeetingEndDate + ' ' + webMeetingEndTime;
         const timestamp = new Date().getTime();
 
@@ -570,6 +570,8 @@ export default class GuidNodeIntegromat extends Controller {
         const microsoftTeamsAttendeesCollectionAtCreate: microsoftTeamsAttendeeAtCreate[] = [];
         const microsoftTeamsAttendeesCollectionAtUpdate: microsoftTeamsAttendeeAtUpdate[] = [];
         const webexMeetingsAttendeesCollection: webexMeetingsAttendee[] = [];
+
+        let action = '';
 
         if (this.webMeetingAppName === config.app_name_microsoft_teams) {
 
@@ -621,7 +623,7 @@ export default class GuidNodeIntegromat extends Controller {
         this.set('webMeetingDeleteStartTime', '');
         this.set('webMeetingDeleteEndTime', '');
 
-        this.set('showDeleteMicrosoftTeamsMeetingDialog', false);
+        this.set('showDeleteWebMeetingDialog', false);
 
         return this.reqLaunch(startIntegromatScenarioUrl, payload, appName);
     }

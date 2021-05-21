@@ -127,7 +127,7 @@
                                                             <button class='fa fa-edit' onClick={{action this.makeUpdateMeetingDialog row.fields.meetingid row.fields.app}}></button>
                                                         </td>
                                                         <td class='text-danger' local-class='Integromat__td'>
-                                                            <button class='fa fa-trash' onClick={{action this.makeDeleteDialog row.fields.meetingid}}></button>
+                                                            <button class='fa fa-trash' onClick={{action this.makeDeleteDialog row.fields.meetingid row.fields.app row.fields.subject row.fields.start_datetime row.fields.end_datetime}}></button>
                                                         </td>
                                                     </tr>
                                                 {{/each}}
@@ -186,7 +186,7 @@
                                                             <button class='fa fa-edit' onClick={{action this.makeUpdateMeetingDialog row.fields.meetingid row.fields.app}}></button>
                                                         </td>
                                                         <td class='text-danger' local-class='Integromat__td'>
-                                                            <button class='fa fa-trash' onClick={{action this.makeDeleteDialog row.fields.meetingid}}></button>
+                                                            <button class='fa fa-trash' onClick={{action this.makeDeleteDialog row.fields.meetingid row.fields.app row.fields.subject row.fields.start_datetime row.fields.end_datetime}}></button>
                                                         </td>
                                                     </tr>
                                                 {{/each}}
@@ -222,7 +222,7 @@
     <modal.body>
         <div class='form-group'>
             {{#each this.web_meeting_apps as |appName|}}
-                <input type='radio' value={{appName.fields.app_name}} name='webMeetingAppName' id='radio_{{appName.fields.app_name}}' onClick={{action this.setWebMeetingApp value='target.value'}}>
+                <input type='radio' name='webMeetingAppName' id='radio_{{appName.fields.app_name}}' onClick={{action this.setWebMeetingApp appName.fields.app_name 'create'}}>
                 <label for='radio_{{appName.fields.app_name}}'>
                     {{appName.fields.app_name}}
                 </label>
@@ -683,9 +683,9 @@
 
 <BsModal
     delete-microsoft-teams-meeting-modal
-    @open={{this.showDeleteMicrosoftTeamsMeetingDialog}}
-    @onSubmit={{action this.startDeleteMicrosoftTeamsMeetingScenario}}
-    @onHidden={{action (mut this.showDeleteMicrosoftTeamsMeetingDialog) false}}
+    @open={{this.showDeleteWebMeetingDialog}}
+    @onSubmit={{action this.deleteWebMeeting}}
+    @onHidden={{action (mut this.showDeleteWebMeetingDialog) false}}
     as |modal|
 >
     <modal.header>
@@ -697,16 +697,16 @@
         <div class='form-group'>
             <div>{{t 'integromat.meetingDialog.deleteBody'}}</div>
             <div local-class='Integromat__input_items'>
-                <div>{{this.webMeetingSubject}}</div>
+                <div>{{this.webMeetingDeleteSubject}}</div>
             </div>
                 <table>
                     <tr>
                         <td>
-                            {{this.webMeetingStartDate}}&nbsp;{{this.webMeetingStartTime}}
+                            {{this.webMeetingDeleteStartDate}}&nbsp;{{this.webMeetingDeleteStartTime}}
                         </td>
                         <td><label local-class='Integromat__input_items'>{{t 'integromat.from_hyphen'}}</label></td>
                         <td>
-                            {{this.webMeetingEndTime}}
+                            {{this.webMeetingDeleteEndTime}}
                         </td>
                     </tr>
                 </table>

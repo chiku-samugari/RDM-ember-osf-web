@@ -122,8 +122,7 @@ export default class GuidNodeIntegromat extends Controller {
     showCreateWebexMeetingDialog = false;
     showUpdateMicrosoftTeamsMeetingDialog = false;
     showUpdateWebexMeetingsDialog = false;
-    showDeleteMicrosoftTeamsMeetingDialog = false;
-    showDetailMicrosoftTeamsMeetingDialog = false;
+    showDeleteWebMeetingDialog = false;
     showWorkflows = true;
     showAllWebMeetings = false;
 
@@ -146,6 +145,10 @@ export default class GuidNodeIntegromat extends Controller {
     webMeetingContent = '';
     webMeetingUpdateMeetingId = '';
     webMeetingDeleteMeetingId = '';
+    webMeetingDeleteSubject = '';
+    webMeetingDeleteStartDate = '';
+    webMeetingDeleteStartTime = '';
+    webMeetingDeleteEndTime = '';
     webMeetingJoinUrl = '';
 
     teamsMeetingAttendees : string[] = [];
@@ -207,23 +210,28 @@ export default class GuidNodeIntegromat extends Controller {
         const config = this.config.content as IntegromatConfigModel;
 
         if(v === config.app_name_microsoft_teams){
-            this.set('webMeetingAppName', v);
-            this.set('showCreateMicrosoftTeamsMeetingDialog', true);
-            this.set('showCreateWebexMeetingDialog', false);
 
-            if(action === 'update'){
-            this.set('showUpdateMicrosoftTeamsMeetingDialog', true);
-            this.set('showUpdateWebexMeetingsDialog', false);
+            if(action === 'create'){
+                this.set('showCreateMicrosoftTeamsMeetingDialog', true);
+                this.set('showCreateWebexMeetingDialog', false);
+            }else if(action === 'update'){
+                this.set('showUpdateMicrosoftTeamsMeetingDialog', true);
+                this.set('showUpdateWebexMeetingsDialog', false);
             }
+
+            this.set('webMeetingAppName', v);
+
         }else if(v === config.app_name_webex_meetings){
-            this.set('webMeetingAppName', v);
-            this.set('showCreateMicrosoftTeamsMeetingDialog', false);
-            this.set('showCreateWebexMeetingDialog', true);
 
-            if(action === 'update'){
-            this.set('showUpdateMicrosoftTeamsMeetingDialog', false);
-            this.set('showUpdateWebexMeetingsDialog', true);
+            if(action === 'create'){
+                this.set('showCreateMicrosoftTeamsMeetingDialog', false);
+                this.set('showCreateWebexMeetingDialog', true);
+            }else if(action === 'update'){
+                this.set('showUpdateMicrosoftTeamsMeetingDialog', false);
+                this.set('showUpdateWebexMeetingsDialog', true);
             }
+
+            this.set('webMeetingAppName', v);
 
         }else if (!v && !action){
             this.set('webMeetingAppName', '');
@@ -505,15 +513,38 @@ export default class GuidNodeIntegromat extends Controller {
     }
 
     @action
-    makeDeleteDialog(this: GuidNodeIntegromat, id: string) {
+    makeDeleteDialog(this: GuidNodeIntegromat, meetingId: string, appId: string, subject: string, startDatetime: string, endDatetime: string) {
+
+        if (!this.config) {
+            return '';
+        }
+
+        const config = this.config.content as IntegromatConfigModel;
+        const webMeetingApps = JSON.parse(config.web_meeting_apps);
+        let appName = '';
+
+
+        for(let i=0; i < webMeetingApps.length; i++){
+
+            if(webMeetingApps[i].pk === appId){
+                appName = webMeetingApps[i].fields.app_name
+                break;
+            }
+        }
+
+        this.setWebMeetingApp(appName, 'delete');
 
         this.set('showDeleteMicrosoftTeamsMeetingDialog', true);
-        this.set('webMeetingDeleteMeetingId', id);
+        this.set('webMeetingDeleteMeetingId', meetingId);
+        this.set('webMeetingDeleteSubject', subject);
+        this.set('webMeetingDeleteStartDate', moment(startDatetime).format('YYYY/MM/DD'));
+        this.set('webMeetingDeleteStartTime', moment(startDatetime).format('HH:mm'));
+        this.set('webMeetingDeleteEndTime', moment(endDatetime).format('HH:mm'));
 
     }
 
     @action
-    startDeleteMicrosoftTeamsMeetingScenario(this: GuidNodeIntegromat) {
+    deleteWebMeeting(this: GuidNodeIntegromat) {
 
         if (!this.config) {
             throw new EmberError('Illegal config');
@@ -523,13 +554,34 @@ export default class GuidNodeIntegromat extends Controller {
         const webhookUrl = config.webhook_url;
         const nodeId = config.node_settings_id;
         const appName = config.app_name_microsoft_teams;
-        const action = 'deleteMicrosoftTeamsMeeting';
+        const action = '';
+
+        const webMeetingSubject = this.webMeetingDeleteSubject;
+        const webMeetingStartDate = moment(this.webMeetingDeleteStartDate).format('YYYY-MM-DD');
+        const webMeetingStartTime = moment(this.webMeetingDeleteStartTime).format('HH:mm');
+        const webMeetingStartDatetime = webMeetingStartDate + ' ' + webMeetingStartTime;
+        const webMeetingEndDate = moment(this.webMeetingDeleteEndDate).format('YYYY-MM-DD');
+        const webMeetingStartTime = moment(this.webMeetingDeleteEndTime).format('HH:mm');
+        const webMeetingEndDatetime = webMeetingEndDate + ' ' + webMeetingEndTime;
         const timestamp = new Date().getTime();
+
         const empty = '';
         const emptyList : string[] = [];
-        const microsoftTeamsAttendeeAtCreateEmpty : microsoftTeamsAttendeeAtCreate[] = [];
-        const microsoftTeamsAttendeeAtUpdateEmpty : microsoftTeamsAttendeeAtUpdate[] = [];
-		const webexMeetingsAttendeesEmpty: webexMeetingsAttendee[] = [];
+        const microsoftTeamsAttendeesCollectionAtCreate: microsoftTeamsAttendeeAtCreate[] = [];
+        const microsoftTeamsAttendeesCollectionAtUpdate: microsoftTeamsAttendeeAtUpdate[] = [];
+        const webexMeetingsAttendeesCollection: webexMeetingsAttendee[] = [];
+
+        if (this.webMeetingAppName === config.app_name_microsoft_teams) {
+
+            action = 'deleteMicrosoftTeamsMeeting';
+
+        }else if (this.webMeetingAppName === config.app_name_webex_meetings) {
+
+            action = 'deleteWebexMeeting';
+
+        }
+
+        this.setWebMeetingApp('','');
 
         const payload = {
             'nodeId': nodeId,
@@ -550,12 +602,12 @@ export default class GuidNodeIntegromat extends Controller {
             'errorGrdmDeleteMeetingInfo': errorGrdmDeleteMeetingInfo,
             'errorSlackDeleteMeeting': errorSlackDeleteMeeting,
             'errorScenarioProcessing': errorScenarioProcessing,
-            'startDatetime': empty,
-            'endDatetime': empty,
-            'subject': empty,
-            'microsoftTeamsAttendeesCollectionAtCreate': microsoftTeamsAttendeeAtCreateEmpty,
-            'microsoftTeamsAttendeesCollectionAtUpdate': microsoftTeamsAttendeeAtUpdateEmpty,
-            'webexMeetingsAttendeesCollection': webexMeetingsAttendeesEmpty,
+            'startDatetime': webMeetingStartDatetime,
+            'endDatetime': webMeetingEndDatetime,
+            'subject': webMeetingSubject,
+            'microsoftTeamsAttendeesCollectionAtCreate': microsoftTeamsAttendeesCollectionAtCreate,
+            'microsoftTeamsAttendeesCollectionAtUpdate': microsoftTeamsAttendeesCollectionAtUpdate,
+            'webexMeetingsAttendeesCollection': webexMeetingsAttendeesCollection,
             'attendees': emptyList,
             'location': empty,
             'content': empty,
@@ -564,6 +616,11 @@ export default class GuidNodeIntegromat extends Controller {
         };
 
         this.set('webMeetingDeleteMeetingId', '');
+        this.set('webMeetingDeleteSubject', '');
+        this.set('webMeetingDeleteStartDate', '');
+        this.set('webMeetingDeleteStartTime', '');
+        this.set('webMeetingDeleteEndTime', '');
+
         this.set('showDeleteMicrosoftTeamsMeetingDialog', false);
 
         return this.reqLaunch(startIntegromatScenarioUrl, payload, appName);

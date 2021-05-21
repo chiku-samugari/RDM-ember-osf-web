@@ -185,6 +185,19 @@ export default class GuidNodeIntegromat extends Controller {
         this.toast.error(message);
     }
 
+    camel2space(v: string) {
+
+        separator = ' ';
+        return v
+                .replace(/[A-Z][a-z]/g, function (match) {
+                    return separator + match;
+                })
+                .replace(/[A-Z]+$/g, function (match) {
+                    return separator + match;
+                })
+                .trim();
+    }
+
     @action
     startMeeting(this: GuidNodeIntegromat, v: string) {
         window.open(v, '_blank');
@@ -210,6 +223,7 @@ export default class GuidNodeIntegromat extends Controller {
         }
 
         const config = this.config.content as IntegromatConfigModel;
+        let appNameDisp = '';
 
         if(v === config.app_name_microsoft_teams){
 
@@ -220,8 +234,8 @@ export default class GuidNodeIntegromat extends Controller {
                 this.set('showUpdateMicrosoftTeamsMeetingDialog', true);
                 this.set('showUpdateWebexMeetingsDialog', false);
             }
-
-            this.set('webMeetingAppName', v);
+            appNameDisp = this.camel2space(v);
+            this.set('webMeetingAppName', appNameDisp);
 
         }else if(v === config.app_name_webex_meetings){
 
@@ -232,8 +246,8 @@ export default class GuidNodeIntegromat extends Controller {
                 this.set('showUpdateMicrosoftTeamsMeetingDialog', false);
                 this.set('showUpdateWebexMeetingsDialog', true);
             }
-
-            this.set('webMeetingAppName', v);
+            appNameDisp = this.camel2space(v);
+            this.set('webMeetingAppName', appNameDisp);
 
         }else if (!v && !action){
             this.set('webMeetingAppName', '');
@@ -254,6 +268,7 @@ export default class GuidNodeIntegromat extends Controller {
         const webhookUrl = config.webhook_url;
         const node_id = config.node_settings_id;
         const appName = this.webMeetingAppName;
+        const appNameDisp = this.camel2space(appName);
         const guid = String(this.model.guid);
         const webMeetingSubject = this.webMeetingSubject;
         const webMeetingStartDate = moment(this.webMeetingStartDate).format('YYYY-MM-DD');
@@ -292,10 +307,9 @@ export default class GuidNodeIntegromat extends Controller {
                 arrayAttendees.push(webexMeetingsAttendeesChecked[i].id);
             }
         }
-
         const payload = {
             'nodeId': node_id,
-            'meetingAppName': appName,
+            'meetingAppName': appNameDisp,
             'guid': guid,
             'meetingId': empty,
             'joinUrl': empty,
@@ -328,7 +342,7 @@ export default class GuidNodeIntegromat extends Controller {
         this.set('showCreateWebMeetingDialog', false);
         this.setWebMeetingApp('','');
 
-        return this.reqLaunch(startIntegromatScenarioUrl, payload, appName);
+        return this.reqLaunch(startIntegromatScenarioUrl, payload, appNameDisp);
     }
 
     @action
@@ -366,7 +380,7 @@ export default class GuidNodeIntegromat extends Controller {
         for(let i=0; i < webMeetingApps.length; i++){
 
             if(webMeetingApps[i].pk === appId){
-                appName = webMeetingApps[i].fields.app_name
+                appName = webMeetingApps[i].fields.app_name;
                 break;
             }
         }
@@ -432,6 +446,7 @@ export default class GuidNodeIntegromat extends Controller {
         const webhookUrl = config.webhook_url;
         const node_id = config.node_settings_id;
         const appName = this.webMeetingAppName;
+        const appNameDisp = this.camel2space(appName);
         const webMeetingSubject = this.webMeetingSubject;
         const webMeetingStartDate = moment(this.webMeetingStartDate).format('YYYY-MM-DD');
         const webMeetingStartTime = (<HTMLInputElement>document.querySelectorAll('select[id=update_start_time]')[0]).value;
@@ -478,7 +493,7 @@ export default class GuidNodeIntegromat extends Controller {
 
         const payload = {
             'nodeId': node_id,
-            'meetingAppName': appName,
+            'meetingAppName': appNameDisp,
             'guid': empty,
             'meetingId': webMeetingId,
             'joinUrl': webMeetingJoinUrl,
@@ -556,7 +571,7 @@ export default class GuidNodeIntegromat extends Controller {
         const webhookUrl = config.webhook_url;
         const nodeId = config.node_settings_id;
         const appName = this.webMeetingAppName;
-
+        const appNameDisp = this.camel2space(appName);
         const webMeetingSubject = this.webMeetingDeleteSubject;
         const webMeetingStartDatetime = this.webMeetingDeleteStartDate + ' ' + this.webMeetingDeleteStartTime;
         const webMeetingEndDatetime = this.webMeetingDeleteEndDate + ' ' + this.webMeetingDeleteEndTime;
@@ -584,7 +599,7 @@ export default class GuidNodeIntegromat extends Controller {
 
         const payload = {
             'nodeId': nodeId,
-            'meetingAppName': appName,
+            'meetingAppName': appNameDisp,
             'guid': empty,
             'meetingId': this.webMeetingDeleteMeetingId,
             'joinUrl': empty,
@@ -622,7 +637,7 @@ export default class GuidNodeIntegromat extends Controller {
 
         this.set('showDeleteWebMeetingDialog', false);
 
-        return this.reqLaunch(startIntegromatScenarioUrl, payload, appName);
+        return this.reqLaunch(startIntegromatScenarioUrl, payload, appNameDisp);
     }
 
     @action

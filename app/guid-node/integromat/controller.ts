@@ -352,7 +352,7 @@ export default class GuidNodeIntegromat extends Controller {
     }
 
     @action
-    makeUpdateMeetingDialog(this: GuidNodeIntegromat, v: string, appId: string) {
+    makeUpdateMeetingDialog(this: GuidNodeIntegromat, meetingId: string, joinUrl: string, appId: string, subject: string, attendees:string[], startDatetime: string, endDatetime: string, location: string, content: string) {
 
         this.set('showUpdateWebMeetingDialog', true);
 
@@ -366,22 +366,16 @@ export default class GuidNodeIntegromat extends Controller {
 
         let appName = '';
 
-        for(let i=0; i < microsoftTeamsMeetings.length; i++){
-
-            if(microsoftTeamsMeetings[i].fields.meetingid === v){
-                this.set('webMeetingSubject', microsoftTeamsMeetings[i].fields.subject);
-                this.set('webMeetingAttendees', microsoftTeamsMeetings[i].fields.attendees);
-                this.set('webMeetingStartDate', moment(microsoftTeamsMeetings[i].fields.start_datetime).format('YYYY/MM/DD'));
-                this.set('webMeetingStartTime', moment(microsoftTeamsMeetings[i].fields.start_datetime).format('HH:mm'));
-                this.set('webMeetingEndDate', moment(microsoftTeamsMeetings[i].fields.end_datetime).format('YYYY/MM/DD'));
-                this.set('webMeetingEndTime', moment(microsoftTeamsMeetings[i].fields.end_datetime).format('HH:mm'));
-                this.set('webMeetingLocation', microsoftTeamsMeetings[i].fields.location);
-                this.set('webMeetingContent', microsoftTeamsMeetings[i].fields.content);
-                this.set('webMeetingUpdateMeetingId', microsoftTeamsMeetings[i].fields.meetingid);
-                this.set('webMeetingJoinUrl', microsoftTeamsMeetings[i].fields.join_url);
-                break;
-            }
-        }
+        this.set('webMeetingSubject', subject);
+        this.set('webMeetingAttendees', attendees);
+        this.set('webMeetingStartDate', moment(startDatetime).format('YYYY/MM/DD'));
+        this.set('webMeetingStartTime', moment(startDatetime).format('HH:mm'));
+        this.set('webMeetingEndDate', moment(endDatetime).format('YYYY/MM/DD'));
+        this.set('webMeetingEndTime', moment(endDatetime).format('HH:mm'));
+        this.set('webMeetingLocation', location);
+        this.set('webMeetingContent', content);
+        this.set('webMeetingUpdateMeetingId', meetingId);
+        this.set('webMeetingJoinUrl', joinUrl);
 
         for(let i=0; i < webMeetingApps.length; i++){
 

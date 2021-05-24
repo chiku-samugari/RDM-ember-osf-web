@@ -154,6 +154,7 @@ export default class GuidNodeIntegromat extends Controller {
     webMeetingDeleteEndDate = '';
     webMeetingDeleteEndTime = '';
     webMeetingJoinUrl = '';
+    webMeetingPassword = '';
 
     teamsMeetingAttendees : string[] = [];
     notTeamsMeetingAttendees : string[] = [];
@@ -352,7 +353,7 @@ export default class GuidNodeIntegromat extends Controller {
     }
 
     @action
-    makeUpdateMeetingDialog(this: GuidNodeIntegromat, meetingId: string, joinUrl: string, appId: string, subject: string, attendees:string[], startDatetime: string, endDatetime: string, location: string, content: string) {
+    makeUpdateMeetingDialog(this: GuidNodeIntegromat, meetingId: string, joinUrl: string, meetingPassword: string, appId: string, subject: string, attendees:string[], startDatetime: string, endDatetime: string, location: string, content: string) {
 
         this.set('showUpdateWebMeetingDialog', true);
 
@@ -375,6 +376,7 @@ export default class GuidNodeIntegromat extends Controller {
         this.set('webMeetingContent', content);
         this.set('webMeetingUpdateMeetingId', meetingId);
         this.set('webMeetingJoinUrl', joinUrl);
+        this.set('webMeetingPassword', meetingPassword);
 
         for(let i=0; i < webMeetingApps.length; i++){
 
@@ -457,6 +459,7 @@ export default class GuidNodeIntegromat extends Controller {
         const webMeetingContent = this.webMeetingContent;
         const webMeetingId = this.webMeetingUpdateMeetingId;
         const webMeetingJoinUrl = this.webMeetingJoinUrl;
+        const webMeetingPassword = this.webMeetingPassword;
         const microsoftTeamsAttendeesChecked = document.querySelectorAll('input[class=microsoftTeamsAttendeesCheck]:checked');
         const webexMeetingsAttendeesChecked = document.querySelectorAll('input[class=webexMeetingsAttendeesCheck]:checked');
         const empty = '';
@@ -519,6 +522,7 @@ export default class GuidNodeIntegromat extends Controller {
             'attendees': arrayAttendees,
             'location': webMeetingLocation,
             'content': webMeetingContent,
+            'password': webMeetingPassword,
             'webhook_url': webhookUrl,
             'timestamp': timestamp,
         };

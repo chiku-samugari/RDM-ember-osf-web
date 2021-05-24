@@ -478,22 +478,18 @@
                     <label>{{t 'integromat.attendees'}}</label>
                     <div>
                         <span id='attendees_inputs'>
-                            {{#if this.webMeetingAttendeeMails}}
-                                {{#each this.webMeetingAttendeeMails as |mail|}}
-                                    <label local-class='Integromat__label_normal'>
-                                        <input class='microsoftTeamsAttendeesCheck' type='checkBox' style='width: 15px; height: 15px;' id={{mail}} checked>
-                                        {{mail}}
-                                    </label>
-                                {{/each}}
-                                {{#each this.notWebMeetingAttendeeMails as |mail|}}
-                                    <label local-class='Integromat__label_normal'>
-                                        <input class='microsoftTeamsAttendeesCheck' type='checkBox' style='width: 15px; height: 15px;' id={{mail}}>
-                                        {{mail}}
-                                    </label>
-                                {{/each}}
-                            {{else}}
-                                <p>{{t 'integromat.meetingDialog.noAttendees'}}</p>
-                            {{/if}}
+                            {{#each this.webMeetingAttendeeMails as |mail|}}
+                                <label local-class='Integromat__label_normal'>
+                                    <input class='microsoftTeamsAttendeesCheck' type='checkBox' style='width: 15px; height: 15px;' id={{mail}} checked>
+                                    {{mail}}
+                                </label>
+                            {{/each}}
+                            {{#each this.notWebMeetingAttendeeMails as |mail|}}
+                                <label local-class='Integromat__label_normal'>
+                                    <input class='microsoftTeamsAttendeesCheck' type='checkBox' style='width: 15px; height: 15px;' id={{mail}}>
+                                    {{mail}}
+                                </label>
+                            {{/each}}
                         </span>
                     </div>
                 </div>
@@ -586,22 +582,18 @@
                     <label>{{t 'integromat.attendees'}}</label>
                     <div>
                         <span id='attendees_inputs'>
-                            {{#if this.webMeetingAttendeeMails}}
-                                {{#each this.webMeetingAttendeeMails as |mail|}}
-                                    <label local-class='Integromat__label_normal'>
-                                        <input class='webexMeetingsAttendeesCheck' type='checkBox' style='width: 15px; height: 15px;' id={{mail}} checked>
-                                        {{mail}}
-                                    </label>
-                                {{/each}}
-                                {{#each this.notWebMeetingAttendeeMails as |mail|}}
-                                    <label local-class='Integromat__label_normal'>
-                                        <input class='webexMeetingsAttendeesCheck' type='checkBox' style='width: 15px; height: 15px;' id={{mail}}>
-                                        {{mail}}
-                                    </label>
-                                {{/each}}
-                            {{else}}
-                                <p>{{t 'integromat.meetingDialog.noAttendees'}}</p>
-                            {{/if}}
+                            {{#each this.webMeetingAttendeeMails as |mail|}}
+                                <label local-class='Integromat__label_normal'>
+                                    <input class='webexMeetingsAttendeesCheck' type='checkBox' style='width: 15px; height: 15px;' id={{mail}} checked>
+                                    {{mail}}
+                                </label>
+                            {{/each}}
+                            {{#each this.notWebMeetingAttendeeMails as |mail|}}
+                                <label local-class='Integromat__label_normal'>
+                                    <input class='webexMeetingsAttendeesCheck' type='checkBox' style='width: 15px; height: 15px;' id={{mail}}>
+                                    {{mail}}
+                                </label>
+                            {{/each}}
                         </span>
                     </div>
                 </div>

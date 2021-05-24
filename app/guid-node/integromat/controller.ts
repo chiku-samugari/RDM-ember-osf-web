@@ -361,7 +361,6 @@ export default class GuidNodeIntegromat extends Controller {
         }
 
         const config = this.config.content as IntegromatConfigModel;
-        const microsoftTeamsMeetings = JSON.parse(config.all_web_meetings);
         const webMeetingApps = JSON.parse(config.web_meeting_apps);
 
         let appName = '';

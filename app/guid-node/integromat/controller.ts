@@ -508,7 +508,7 @@ export default class GuidNodeIntegromat extends Controller {
                 for(let j = 0; j < nodeWebexMeetingsAttendees.length; j++){
 
                     if(webexMeetingsAttendeesChecked[i].id === nodeWebexMeetingsAttendees[j].fields.webex_meetings_mail){
-                        arrayAttendeePks.push(nodeWebexMeetingsAttendees[j].fields.id);
+                        arrayAttendeePks.push(nodeWebexMeetingsAttendees[j].fields.pk);
                     }
                 }
             }
@@ -518,8 +518,8 @@ export default class GuidNodeIntegromat extends Controller {
 
             for(let i = 0; i < arrayCreateAttendeePks.length; i++){
                 for(let j = 0; j < nodeWebMeetingAttendeesRelation.length; j++){
-                    if(this.webMeetingPk === nodeWebMeetingAttendeesRelation[j].fields.allmeetinginformation_id){
-                        if(arrayCreateAttendeePks[i] === nodeWebMeetingAttendeesRelation[j].fields.attendees_id){
+                    if(this.webMeetingPk === nodeWebMeetingAttendeesRelation[j].fields.all_meeting_information){
+                        if(arrayCreateAttendeePks[i] === nodeWebMeetingAttendeesRelation[j].fields.attendees){
 
                             webexMeetingsCreateInviteeIds.push(nodeWebMeetingAttendeesRelation[j].fields.webex_meetings_invitee_id);
                         }

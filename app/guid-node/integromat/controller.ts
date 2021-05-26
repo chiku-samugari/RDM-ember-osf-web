@@ -508,7 +508,7 @@ export default class GuidNodeIntegromat extends Controller {
                 for(let j = 0; j < nodeWebexMeetingsAttendees.length; j++){
 
                     if(webexMeetingsAttendeesChecked[i].id === nodeWebexMeetingsAttendees[j].fields.webex_meetings_mail){
-                        arrayAttendeePks.push(nodeWebexMeetingsAttendees[j].fields.pk);
+                        arrayAttendeePks.push(nodeWebexMeetingsAttendees[j].pk);
                     }
                 }
             }

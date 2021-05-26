@@ -345,8 +345,8 @@ export default class GuidNodeIntegromat extends Controller {
             'microsoftTeamsAttendeesCollectionAtCreate': microsoftTeamsAttendeesCollectionAtCreate,
             'microsoftTeamsAttendeesCollectionAtUpdate': microsoftTeamsAttendeesCollectionAtUpdate,
             'webexMeetingsAttendeesCollection': webexMeetingsAttendeesCollection,
-            'webexMeetingsCreateInviteeIds: webexMeetingsCreateInviteeIds,
-            'webexMeetingsDeleteInviteeIds: webexMeetingsDeleteInviteeIds,
+            'webexMeetingsCreateInviteeIds': webexMeetingsCreateInviteeIds,
+            'webexMeetingsDeleteInviteeIds': webexMeetingsDeleteInviteeIds,
             'attendees': arrayAttendees,
             'location': webMeetingLocation,
             'content': webMeetingContent,
@@ -482,7 +482,7 @@ export default class GuidNodeIntegromat extends Controller {
         let microsoftTeamsAttendeesCollectionAtUpdate: microsoftTeamsAttendeeAtUpdate[] = [];
         let webexMeetingsAttendeesCollection: webexMeetingsAttendee[] = [];
         let arrayAttendees = [];
-        let arrayAttendeesPk = [];
+        let arrayAttendeePks = [];
 
         let webexMeetingsCreateInviteePks = [];
         let webexMeetingsDeleteInviteePks = [];
@@ -508,13 +508,13 @@ export default class GuidNodeIntegromat extends Controller {
                 for(let j = 0; j < nodeWebexMeetingsAttendees.length; j++){
 
                     if(webexMeetingsAttendeesChecked[i].id === nodeWebexMeetingsAttendees[j]){
-                        arrayAttendeesPk.push(nodeWebexMeetingsAttendees[j].fields.id);
+                        arrayAttendeePks.push(nodeWebexMeetingsAttendees[j].fields.id);
                     }
                 }
             }
 
-            webexMeetingsCreateInviteePks = arrayAttendeesPk.filter(i => (this.webMeetingAttendees).indexOf(i) == -1)
-            webexMeetingsDeleteInviteePks = (this.webMeetingAttendees).filter(i => arrayAttendeesPk.indexOf(i) == -1)
+            webexMeetingsCreateInviteePks = arrayAttendeePks.filter(i => (this.webMeetingAttendees).indexOf(i) == -1)
+            webexMeetingsDeleteInviteePks = (this.webMeetingAttendees).filter(i => arrayAttendeePks.indexOf(i) == -1)
 
             for(let i = 0; i < webexMeetingsCreateInviteePks.length; i++){
                 for(let j = 0; j < nodeWebMeetingAttendeesRelation.length; j++){
@@ -571,8 +571,8 @@ export default class GuidNodeIntegromat extends Controller {
             'microsoftTeamsAttendeesCollectionAtCreate': microsoftTeamsAttendeesCollectionAtCreate,
             'microsoftTeamsAttendeesCollectionAtUpdate': microsoftTeamsAttendeesCollectionAtUpdate,
             'webexMeetingsAttendeesCollection': webexMeetingsAttendeesCollection,
-            'webexMeetingsCreateInviteeIds: webexMeetingsCreateInviteeIds,
-            'webexMeetingsDeleteInviteeIds: webexMeetingsDeleteInviteeIds,
+            'webexMeetingsCreateInviteeIds': webexMeetingsCreateInviteeIds,
+            'webexMeetingsDeleteInviteeIds': webexMeetingsDeleteInviteeIds,
             'attendees': arrayAttendees,
             'location': webMeetingLocation,
             'content': webMeetingContent,
@@ -684,8 +684,8 @@ export default class GuidNodeIntegromat extends Controller {
             'microsoftTeamsAttendeesCollectionAtCreate': microsoftTeamsAttendeesCollectionAtCreate,
             'microsoftTeamsAttendeesCollectionAtUpdate': microsoftTeamsAttendeesCollectionAtUpdate,
             'webexMeetingsAttendeesCollection': webexMeetingsAttendeesCollection,
-            'webexMeetingsCreateInviteeIds: webexMeetingsCreateInviteeIds,
-            'webexMeetingsDeleteInviteeIds: webexMeetingsDeleteInviteeIds,
+            'webexMeetingsCreateInviteeIds': webexMeetingsCreateInviteeIds,
+            'webexMeetingsDeleteInviteeIds': webexMeetingsDeleteInviteeIds,
             'attendees': emptyList,
             'location': empty,
             'content': empty,

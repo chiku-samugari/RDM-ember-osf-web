@@ -682,6 +682,7 @@
     @open={{this.showDeleteWebMeetingDialog}}
     @onSubmit={{action this.deleteWebMeeting}}
     @onHidden={{action (mut this.showDeleteWebMeetingDialog) false}}
+    @onHide={{action this.setWebMeetingApp}}
     as |modal|
 >
     <modal.header>

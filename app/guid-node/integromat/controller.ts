@@ -74,6 +74,8 @@ interface payload {
     microsoftTeamsAttendeesCollectionAtCreate: microsoftTeamsAttendeeAtCreate[];
     microsoftTeamsAttendeesCollectionAtUpdate: microsoftTeamsAttendeeAtUpdate[];
     webexMeetingsAttendeesCollection: webexMeetingsAttendee[];
+    webexMeetingsCreateInviteeIds: string[],
+    webexMeetingsDeleteInviteeIds: string[],
     attendees: string[];
     location: string;
     content: string;
@@ -138,6 +140,7 @@ export default class GuidNodeIntegromat extends Controller {
 
     webMeetingAppName = '';
     webMeetingAppNameDisp = '';
+    webMeetingPk = '';
     webMeetingSubject = '';
     webMeetingAttendees : string[] = [];
     webMeetingStartDate = '';
@@ -296,6 +299,9 @@ export default class GuidNodeIntegromat extends Controller {
         let webexMeetingsAttendeesCollection: webexMeetingsAttendee[] = [];
         let arrayAttendees = [];
 
+        let webexMeetingsCreateInviteeIds = [];
+        let webexMeetingsDeleteInviteeIds = [];
+
         if (this.webMeetingAppName === config.app_name_microsoft_teams) {
 
             action = 'createMicrosoftTeamsMeeting';
@@ -339,6 +345,8 @@ export default class GuidNodeIntegromat extends Controller {
             'microsoftTeamsAttendeesCollectionAtCreate': microsoftTeamsAttendeesCollectionAtCreate,
             'microsoftTeamsAttendeesCollectionAtUpdate': microsoftTeamsAttendeesCollectionAtUpdate,
             'webexMeetingsAttendeesCollection': webexMeetingsAttendeesCollection,
+            'webexMeetingsCreateInviteeIds: webexMeetingsCreateInviteeIds,
+            'webexMeetingsDeleteInviteeIds: webexMeetingsDeleteInviteeIds,
             'attendees': arrayAttendees,
             'location': webMeetingLocation,
             'content': webMeetingContent,
@@ -353,7 +361,7 @@ export default class GuidNodeIntegromat extends Controller {
     }
 
     @action
-    makeUpdateMeetingDialog(this: GuidNodeIntegromat, meetingId: string, joinUrl: string, meetingPassword: string, appId: string, subject: string, attendees:string[], startDatetime: string, endDatetime: string, location: string, content: string) {
+    makeUpdateMeetingDialog(this: GuidNodeIntegromat, meetingPk: string, meetingId: string, joinUrl: string, meetingPassword: string, appId: string, subject: string, attendees:string[], startDatetime: string, endDatetime: string, location: string, content: string) {
 
         this.set('showUpdateWebMeetingDialog', true);
 
@@ -366,6 +374,7 @@ export default class GuidNodeIntegromat extends Controller {
 
         let appName = '';
 
+        this.set('webMeetingPk', meetingPk);
         this.set('webMeetingSubject', subject);
         this.set('webMeetingAttendees', attendees);
         this.set('webMeetingStartDate', moment(startDatetime).format('YYYY/MM/DD'));
@@ -465,11 +474,20 @@ export default class GuidNodeIntegromat extends Controller {
         const empty = '';
         const timestamp = new Date().getTime();
 
+        const nodeWebMeetingAttendeesRelation =JSON.parse(config.node_web_meetings_attendees_relation)
+        const nodeWebexMeetingsAttendees = JSON.parse(config.node_webex_meetings_attendees);
+
         let action = '';
         let microsoftTeamsAttendeesCollectionAtCreate: microsoftTeamsAttendeeAtCreate[] = [];
         let microsoftTeamsAttendeesCollectionAtUpdate: microsoftTeamsAttendeeAtUpdate[] = [];
         let webexMeetingsAttendeesCollection: webexMeetingsAttendee[] = [];
         let arrayAttendees = [];
+        let arrayAttendeesPk = [];
+
+        let webexMeetingsCreateInviteePks = [];
+        let webexMeetingsDeleteInviteePks = [];
+        let webexMeetingsCreateInviteeIds = [];
+        let webexMeetingsDeleteInviteeIds = [];
 
         if (appName === config.app_name_microsoft_teams) {
 
@@ -486,7 +504,41 @@ export default class GuidNodeIntegromat extends Controller {
             for(let i = 0; i < webexMeetingsAttendeesChecked.length; i++){
                 webexMeetingsAttendeesCollection.push({'email': webexMeetingsAttendeesChecked[i].id});
                 arrayAttendees.push(webexMeetingsAttendeesChecked[i].id);
+
+                for(let j = 0; j < nodeWebexMeetingsAttendees.length; j++){
+
+                    if(webexMeetingsAttendeesChecked[i].id === nodeWebexMeetingsAttendees[j]){
+                        arrayAttendeesPk.push(nodeWebexMeetingsAttendees[j].fields.id);
+                    }
+                }
             }
+
+            webexMeetingsCreateInviteePks = arrayAttendeesPk.filter(i => (this.webMeetingAttendees).indexOf(i) == -1)
+            webexMeetingsDeleteInviteePks = (this.webMeetingAttendees).filter(i => arrayAttendeesPk.indexOf(i) == -1)
+
+            for(let i = 0; i < webexMeetingsCreateInviteePks.length; i++){
+                for(let j = 0; j < nodeWebMeetingAttendeesRelation.length; j++){
+                    if(this.webMeetingPk === nodeWebMeetingAttendeesRelation[j].fields.allmeetinginformation_id){
+                        if(webexMeetingsCreateInviteePks[i] === nodeWebMeetingAttendeesRelation[j].fields.attendees_id){
+
+                            webexMeetingsCreateInviteeIds.push(nodeWebMeetingAttendeesRelation[j].fields.webex_meetings_invitee_id);
+                        }
+                    }
+                }
+            }
+
+            for(let i = 0; i < webexMeetingsDeleteInviteePks.length; i++){
+                for(let j = 0; j < nodeWebMeetingAttendeesRelation.length; j++){
+                    if(this.webMeetingPk === nodeWebMeetingAttendeesRelation[j].fields.allmeetinginformation_id){
+                        if(webexMeetingsDeleteInviteePks[i] === nodeWebMeetingAttendeesRelation[j].fields.attendees_id){
+
+                            webexMeetingsDeleteInviteeIds.push(nodeWebMeetingAttendeesRelation[j].fields.webex_meetings_invitee_id);
+                        }
+                    }
+                }
+            }
+
+
         }
 
         this.set('webMeetingUpdateMeetingId', '');
@@ -519,6 +571,8 @@ export default class GuidNodeIntegromat extends Controller {
             'microsoftTeamsAttendeesCollectionAtCreate': microsoftTeamsAttendeesCollectionAtCreate,
             'microsoftTeamsAttendeesCollectionAtUpdate': microsoftTeamsAttendeesCollectionAtUpdate,
             'webexMeetingsAttendeesCollection': webexMeetingsAttendeesCollection,
+            'webexMeetingsCreateInviteeIds: webexMeetingsCreateInviteeIds,
+            'webexMeetingsDeleteInviteeIds: webexMeetingsDeleteInviteeIds,
             'attendees': arrayAttendees,
             'location': webMeetingLocation,
             'content': webMeetingContent,
@@ -587,6 +641,9 @@ export default class GuidNodeIntegromat extends Controller {
         const microsoftTeamsAttendeesCollectionAtUpdate: microsoftTeamsAttendeeAtUpdate[] = [];
         const webexMeetingsAttendeesCollection: webexMeetingsAttendee[] = [];
 
+        let webexMeetingsCreateInviteeIds = [];
+        let webexMeetingsDeleteInviteeIds = [];
+
         let action = '';
 
         if (this.webMeetingAppName === config.app_name_microsoft_teams) {
@@ -627,6 +684,8 @@ export default class GuidNodeIntegromat extends Controller {
             'microsoftTeamsAttendeesCollectionAtCreate': microsoftTeamsAttendeesCollectionAtCreate,
             'microsoftTeamsAttendeesCollectionAtUpdate': microsoftTeamsAttendeesCollectionAtUpdate,
             'webexMeetingsAttendeesCollection': webexMeetingsAttendeesCollection,
+            'webexMeetingsCreateInviteeIds: webexMeetingsCreateInviteeIds,
+            'webexMeetingsDeleteInviteeIds: webexMeetingsDeleteInviteeIds,
             'attendees': emptyList,
             'location': empty,
             'content': empty,

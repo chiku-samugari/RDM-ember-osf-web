@@ -9,6 +9,7 @@ export default class IntegromatConfigModel extends OsfModel {
     @attr('string') node_web_meeting_attendees!: string;
     @attr('string') node_microsoft_teams_attendees!: string;
     @attr('string') node_webex_meetings_attendees!: string;
+    @attr('string') node_web_meetings_attendees_relation!: string;
     @attr('string') workflows!: string;
     @attr('string') node_settings_id!: string;
     @attr('string') web_meeting_apps!: string;

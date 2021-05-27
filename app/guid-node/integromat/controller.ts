@@ -49,7 +49,6 @@ interface webexMeetingsAttendee {
 }
 
 interface webexMeetingsCreateInvitee {
-    meetingId: string;
     email: string;
 }
 

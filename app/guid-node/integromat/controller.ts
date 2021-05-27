@@ -531,7 +531,7 @@ export default class GuidNodeIntegromat extends Controller {
 
             for(let i = 0; i < arrayDeleteAttendeePks.length; i++){
                 for(let j = 0; j < nodeWebMeetingAttendeesRelation.length; j++){
-                    if(this.webMeetingPk === nodeWebMeetingAttendeesRelation[j].fields.allmeetinginformation){
+                    if(this.webMeetingPk === nodeWebMeetingAttendeesRelation[j].fields.all_meeting_information){
                         if(arrayDeleteAttendeePks[i] === nodeWebMeetingAttendeesRelation[j].fields.attendees){
 
                             webexMeetingsDeleteInviteeIds.push(nodeWebMeetingAttendeesRelation[j].fields.webex_meetings_invitee_id);

@@ -2037,6 +2037,7 @@ export default {
             slackCreateMeeting: 'Slackでの会議作成通知に失敗しました。',
             webappsUpdateMeeting: '{{appName}}会議の更新に失敗しました。',
             grdmUpdateMeeting: '{{appName}}上で会議が更新されましたが、会議情報連携に失敗しました。',
+            webappsUpdateAttendees: '{{appName}}会議の、一部または全ての出席者の更新に失敗しました。',
             slackUpdateMeeting: 'Slackでの会議更新通知に失敗しました。',
             webappsDeleteMeeting: '{{appName}}会議の削除に失敗しました。',
             grdmDeleteMeeting: '{{appName}}上で会議が削除されましたが、会議情報連携に失敗しました。',

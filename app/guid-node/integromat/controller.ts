@@ -445,11 +445,11 @@ export default class GuidNodeIntegromat extends Controller {
             }
         }else if(appName === config.app_name_webex_meetings){
             for(let l = 0; l < nodeWebexMeetingsAttendees.length; l++){
-                this.notwebMeetingAttendeesNow.push({'email': nodeWebexMeetingsAttendees[l].fields.webex_meetings_mail, 'fullname': nodeWebexMeetingsAttendees[j].fields.fullname});
+                this.notwebMeetingAttendeesNow.push({'email': nodeWebexMeetingsAttendees[l].fields.webex_meetings_mail, 'fullname': nodeWebexMeetingsAttendees[l].fields.fullname});
 
                 for(let m = 0; m < this.webMeetingAttendees.length; m++){
                     if(nodeWebexMeetingsAttendees[l].pk === this.webMeetingAttendees[m]){
-                        this.webMeetingAttendeesNow.push({'email': nodeWebexMeetingsAttendees[l].fields.webex_meetings_mail 'fullname': nodeWebexMeetingsAttendees[j].fields.fullname});
+                        this.webMeetingAttendeesNow.push({'email': nodeWebexMeetingsAttendees[l].fields.webex_meetings_mail, 'fullname': nodeWebexMeetingsAttendees[l].fields.fullname});
                         this.notwebMeetingAttendeesNow.pop();
                         break;
                     }

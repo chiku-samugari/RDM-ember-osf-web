@@ -52,6 +52,16 @@ interface webexMeetingsCreateInvitee {
     email: string;
 }
 
+interface webMeetingAttendeesNow {
+    email: string;
+    fullname: string;
+}
+
+interface notwebMeetingAttendeesNow {
+    email: string;
+    fullname: string;
+}
+
 interface payload {
     nodeId: string;
     appName: string;
@@ -167,8 +177,8 @@ export default class GuidNodeIntegromat extends Controller {
 
     teamsMeetingAttendees : string[] = [];
     notTeamsMeetingAttendees : string[] = [];
-    webMeetingAttendeeMails : string[] = [];
-    notWebMeetingAttendeeMails : string[] = [];
+    webMeetingAttendeesNow : webMeetingAttendeesNow[] = [];
+    notwebMeetingAttendeesNow : notwebMeetingAttendeesNow[] = [];
 
     @computed('config.isFulfilled')
     get loading(): boolean {
@@ -417,30 +427,30 @@ export default class GuidNodeIntegromat extends Controller {
         const nodeMicrosoftTeamsAttendees = JSON.parse(config.node_microsoft_teams_attendees);
         const nodeWebexMeetingsAttendees = JSON.parse(config.node_webex_meetings_attendees);
 
-        this.webMeetingAttendeeMails.length = 0;
-        this.notWebMeetingAttendeeMails.length = 0;
+        this.webMeetingAttendeesNow.length = 0;
+        this.notwebMeetingAttendeesNow.length = 0;
 
         if(appName === config.app_name_microsoft_teams){
 
             for(let j = 0; j < nodeMicrosoftTeamsAttendees.length; j++){
-                this.notWebMeetingAttendeeMails.push(nodeMicrosoftTeamsAttendees[j].fields.microsoft_teams_mail);
+                this.notwebMeetingAttendeesNow.push({'email': nodeMicrosoftTeamsAttendees[j].fields.microsoft_teams_mail, 'fullname': nodeMicrosoftTeamsAttendees[j].fields.fullname);
 
                 for(let k = 0; k < this.webMeetingAttendees.length; k++){
                     if(nodeMicrosoftTeamsAttendees[j].pk === this.webMeetingAttendees[k]){
-                        this.webMeetingAttendeeMails.push(nodeMicrosoftTeamsAttendees[j].fields.microsoft_teams_mail);
-                        this.notWebMeetingAttendeeMails.pop();
+                        this.webMeetingAttendeesNow.push({'email': nodeMicrosoftTeamsAttendees[j].fields.microsoft_teams_mail, 'fullname': nodeMicrosoftTeamsAttendees[j].fields.fullname);
+                        this.notwebMeetingAttendeesNow.pop();
                         break;
                     }
                 }
             }
         }else if(appName === config.app_name_webex_meetings){
             for(let l = 0; l < nodeWebexMeetingsAttendees.length; l++){
-                this.notWebMeetingAttendeeMails.push(nodeWebexMeetingsAttendees[l].fields.webex_meetings_mail);
+                this.notwebMeetingAttendeesNow.push({'email': nodeWebexMeetingsAttendees[l].fields.webex_meetings_mail, 'fullname': nodeWebexMeetingsAttendees[j].fields.fullname);
 
                 for(let m = 0; m < this.webMeetingAttendees.length; m++){
                     if(nodeWebexMeetingsAttendees[l].pk === this.webMeetingAttendees[m]){
-                        this.webMeetingAttendeeMails.push(nodeWebexMeetingsAttendees[l].fields.webex_meetings_mail);
-                        this.notWebMeetingAttendeeMails.pop();
+                        this.webMeetingAttendeesNow.push({'email': nodeWebexMeetingsAttendees[l].fields.webex_meetings_mail 'fullname': nodeWebexMeetingsAttendees[j].fields.fullname);
+                        this.notwebMeetingAttendeesNow.pop();
                         break;
                     }
                 }

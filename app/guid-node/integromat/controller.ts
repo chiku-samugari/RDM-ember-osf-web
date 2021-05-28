@@ -802,6 +802,7 @@ export default class GuidNodeIntegromat extends Controller {
                 this.save();
             }else if(data.integromatMsg.match('.error.')){
                 this.toast.error(this.i18n.t(data.integromatMsg, {appName: appName}));
+                this.save()
             }else{
                 if(data.notify){
                     this.toast.info(this.i18n.t(data.integromatMsg));

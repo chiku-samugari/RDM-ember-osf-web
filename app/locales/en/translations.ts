@@ -1882,6 +1882,7 @@ export default {
             webappsUpdateMeeting: 'Failed to update the meeting of {{appName}}.',
             grdmUpdateMeeting: 'The meeting was updated on {{appName}}, but the meeting information linkage failed.',
             webappsUpdateAttendees: 'Failed to update some or all attendees of {{appName}}',
+            webappsUpdateAttendeesGrdmMeeting: 'Failed to update attendees on {{appName}} and link meeting information.',
             slackUpdateMeeting: 'Failed to notify meeting update in Slack.',
             webappsDeleteMeeting: 'Failed to delete the meeting of {{appName}}.',
             grdmDeleteMeeting: 'The meeting was deleted on {{appName}}, but the meeting information linkage failed.',

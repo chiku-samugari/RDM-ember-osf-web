@@ -77,6 +77,7 @@ interface payload {
     errorSlackCreateMeeting: string;
     errorWebappsUpdateMeeting: string;
     errorWebappsUpdateAttendees: string;
+    errorWebappsUpdateAttendeesGrdmMeeting: string;
     errorGrdmUpdateMeetingInfo: string;
     errorSlackUpdateMeeting: string;
     errorWebappsDeleteMeeting: string;
@@ -112,6 +113,7 @@ const errorGrdmCreateMeetingInfo = 'integromat.error.grdmCreateMeeting';
 const errorSlackCreateMeeting = 'integromat.error.slackCreateMeeting';
 const errorWebappsUpdateMeeting = 'integromat.error.webappsUpdateMeeting';
 const errorWebappsUpdateAttendees = 'integromat.error.webappsUpdateAttendees';
+const errorWebappsUpdateAttendeesGrdmMeeting = 'integromat.error.webappsUpdateAttendeesGrdmMeeting';
 const errorGrdmUpdateMeetingInfo = 'integromat.error.grdmUpdateMeeting';
 const errorSlackUpdateMeeting = 'integromat.error.slackUpdateMeeting';
 const errorWebappsDeleteMeeting = 'integromat.error.webappsDeleteMeeting';
@@ -350,6 +352,7 @@ export default class GuidNodeIntegromat extends Controller {
             'errorSlackCreateMeeting': errorSlackCreateMeeting,
             'errorWebappsUpdateMeeting': errorWebappsUpdateMeeting,
             'errorWebappsUpdateAttendees': errorWebappsUpdateAttendees,
+            'errorWebappsUpdateAttendeesGrdmMeeting' : errorWebappsUpdateAttendeesGrdmMeeting,
             'errorGrdmUpdateMeetingInfo': errorGrdmUpdateMeetingInfo,
             'errorSlackUpdateMeeting': errorSlackUpdateMeeting,
             'errorWebappsDeleteMeeting': errorWebappsDeleteMeeting,
@@ -572,6 +575,7 @@ export default class GuidNodeIntegromat extends Controller {
             'errorSlackCreateMeeting': errorSlackCreateMeeting,
             'errorWebappsUpdateMeeting': errorWebappsUpdateMeeting,
             'errorWebappsUpdateAttendees': errorWebappsUpdateAttendees,
+            'errorWebappsUpdateAttendeesGrdmMeeting' : errorWebappsUpdateAttendeesGrdmMeeting,
             'errorGrdmUpdateMeetingInfo': errorGrdmUpdateMeetingInfo,
             'errorSlackUpdateMeeting': errorSlackUpdateMeeting,
             'errorWebappsDeleteMeeting': errorWebappsDeleteMeeting,
@@ -686,6 +690,7 @@ export default class GuidNodeIntegromat extends Controller {
             'errorSlackCreateMeeting': errorSlackCreateMeeting,
             'errorWebappsUpdateMeeting': errorWebappsUpdateMeeting,
             'errorWebappsUpdateAttendees': errorWebappsUpdateAttendees,
+            'errorWebappsUpdateAttendeesGrdmMeeting' : errorWebappsUpdateAttendeesGrdmMeeting,
             'errorGrdmUpdateMeetingInfo': errorGrdmUpdateMeetingInfo,
             'errorSlackUpdateMeeting': errorSlackUpdateMeeting,
             'errorWebappsDeleteMeeting': errorWebappsDeleteMeeting,

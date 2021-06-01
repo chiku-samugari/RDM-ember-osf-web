@@ -108,7 +108,7 @@
                                                 {{#each this.upcoming_web_meetings as |row|}}
                                                     <tr local-class='Integromat__tr'>
                                                         <td local-class='Integromat__td'>
-                                                            <a onClick={{action this.makeDetailMeetingDialog row.pk row.fields.meetingid row.fields.join_url row.fields.meeting_password row.fields.app row.fields.subject row.fields.attendees row.fields.start_datetime row.fields.end_datetime row.fields.location row.fields.content}}>
+                                                            <a onClick={{action this.makeDetailMeetingDialog row.pk row.fields.meetingid row.fields.join_url row.fields.app row.fields.subject row.fields.organizer_fullname row.fields.attendees row.fields.start_datetime row.fields.end_datetime row.fields.location row.fields.content}}>
                                                                 {{row.fields.subject}}
                                                             </a>
                                                         </td>
@@ -170,7 +170,7 @@
                                                 {{#each this.previous_web_meetings as |row|}}
                                                     <tr local-class='Integromat__tr'>
                                                         <td local-class='Integromat__td'>
-                                                            <a onClick={{action this.makeDetailMeetingDialog row.pk row.fields.meetingid row.fields.join_url row.fields.meeting_password row.fields.app row.fields.subject row.fields.attendees row.fields.start_datetime row.fields.end_datetime row.fields.location row.fields.content}}>
+                                                            <a onClick={{action this.makeDetailMeetingDialog row.pk row.fields.meetingid row.fields.join_url row.fields.app row.fields.subject row.fields.attendees row.fields.start_datetime row.fields.end_datetime row.fields.location row.fields.content}}>
                                                                 {{row.fields.subject}}
                                                             </a>
                                                         </td>
@@ -745,7 +745,7 @@
                 <div>{{this.webMeetingSubject}}</div>
             </div>
             <div local-class='Integromat__input_items' style='padding-left: 20px;'>
-                <table>{{this.webMeetingSubject}}
+                <table>
                     <tbody>
                         <tr>
                             <td>
@@ -764,10 +764,14 @@
                 </table>
             </div>
             <div local-class='Integromat__input_items' style='padding-left: 20px;'>
-                <span>{{t 'integromat.organizer'}}<a>{{this.webMeetingOrganizer}}</a></span>
+                <span>{{t 'integromat.organizer'}}{{t 'integromat.colon'}}<a>{{this.webMeetingOrganizerFullname}}</a></span>
             </div>
             <div local-class='Integromat__input_items' style='padding-left: 20px;'>
-                <span>{{t 'integromat.attendees'}}
+                <span>{{t 'integromat.attendees'}}{{t 'integromat.colon'}}
+
+                    {{#each this.webMeetingAttendeesNow as |attendee|}}
+                        <a href=''>{{attendee.fullname}}</a>
+                    {{/each}}
                 </span>
             </div>
             <div local-class='Integromat__input_items' style='padding-left: 20px; padding-bottom: 10px;'>

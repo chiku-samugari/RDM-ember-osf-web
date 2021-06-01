@@ -160,7 +160,7 @@ export default class GuidNodeIntegromat extends Controller {
     webMeetingAppNameDisp = '';
     webMeetingPk = '';
     webMeetingSubject = '';
-    webMeetingOrganizer = '';
+    webMeetingOrganizerFullname = '';
     webMeetingAttendees : string[] = [];
     webMeetingStartDate = '';
     webMeetingStartTime = '';
@@ -283,6 +283,22 @@ export default class GuidNodeIntegromat extends Controller {
             this.set('showCreateWebexMeetingDialog', false);
             this.set('showUpdateMicrosoftTeamsMeetingDialog', false);
             this.set('showUpdateWebexMeetingsDialog', false);
+            this.set('showDeleteWebMeetingDialog', false);
+            this.set('showDetailWebMeetingDialog', false);
+
+            this.set('webMeetingPk', '');
+            this.set('webMeetingSubject', '');
+            this.set('webMeetingAttendees', 0);
+            this.set('webMeetingStartDate', '');
+            this.set('webMeetingStartTime', '');
+            this.set('webMeetingEndDate', '');
+            this.set('webMeetingEndTime', '');
+            this.set('webMeetingLocation', '');
+            this.set('webMeetingContent', '');
+            this.set('webMeetingUpdateMeetingId', '');
+            this.set('webMeetingJoinUrl', '');
+            this.set('webMeetingPassword', '');
+
         }
     }
 
@@ -725,79 +741,42 @@ export default class GuidNodeIntegromat extends Controller {
     }
 
     @action
-    makeDetailMeetingDialog(this: GuidNodeIntegromat, v: string) {
+    makeDetailMeetingDialog(this: GuidNodeIntegromat, meetingPk: string, meetingId: string, joinUrl: string, appId: string, subject: string, organizer_fullname: string, attendees:string[], startDatetime: string, endDatetime: string, location: string, content: string) {
+
+        this.set('showDetailWebMeetingDialog', true);
 
         if (!this.config) {
             throw new EmberError('Illegal config');
         }
+
         const config = this.config.content as IntegromatConfigModel;
-        const microsoftTeamsMeetings = JSON.parse(config.all_web_meetings);
+        const webMeetingApps = JSON.parse(config.web_meeting_apps);
 
-        this.set('showDetailWebMeetingDialog', true);
+        let appName = '';
 
-        for(let i=0; i < microsoftTeamsMeetings.length; i++){
+        this.set('webMeetingPk', meetingPk);
+        this.set('webMeetingSubject', subject);
+        this.set('webMeetingOrganizerFullname', organizer_fullname);
+        this.set('webMeetingAttendees', attendees);
+        this.set('webMeetingStartDate', moment(startDatetime).format('YYYY/MM/DD'));
+        this.set('webMeetingStartTime', moment(startDatetime).format('HH:mm'));
+        this.set('webMeetingEndDate', moment(endDatetime).format('YYYY/MM/DD'));
+        this.set('webMeetingEndTime', moment(endDatetime).format('HH:mm'));
+        this.set('webMeetingLocation', location);
+        this.set('webMeetingContent', content);
+        this.set('webMeetingUpdateMeetingId', meetingId);
+        this.set('webMeetingJoinUrl', joinUrl);
 
-            if(microsoftTeamsMeetings[i].fields.meetingid === v){
-                this.set('webMeetingSubject', microsoftTeamsMeetings[i].fields.subject);
-                this.set('webMeetingAttendees', microsoftTeamsMeetings[i].fields.attendees);
-                this.set('webMeetingStartDate', moment(microsoftTeamsMeetings[i].fields.start_datetime).format('YYYY/MM/DD'));
-                this.set('webMeetingStartTime', moment(microsoftTeamsMeetings[i].fields.start_datetime).format('HH:mm'));
-                this.set('webMeetingEndDate', moment(microsoftTeamsMeetings[i].fields.end_datetime).format('YYYY/MM/DD'));
-                this.set('webMeetingEndTime', moment(microsoftTeamsMeetings[i].fields.end_datetime).format('HH:mm'));
-                this.set('webMeetingLocation', microsoftTeamsMeetings[i].fields.location);
-                this.set('webMeetingContent', microsoftTeamsMeetings[i].fields.content);
-                this.set('webMeetingJoinUrl', microsoftTeamsMeetings[i].fields.join_url);
+
+        for(let i=0; i < webMeetingApps.length; i++){
+
+            if(webMeetingApps[i].pk === appId){
+                appName = webMeetingApps[i].fields.app_name;
                 break;
             }
         }
 
-        const node_microsoft_teams_attendees = JSON.parse(config.node_web_meeting_attendees);
-
-        this.teamsMeetingAttendees.length = 0;
-        this.notTeamsMeetingAttendees.length = 0;
-
-        for(let j = 0; j < node_microsoft_teams_attendees.length; j++){
-            this.notTeamsMeetingAttendees.push(node_microsoft_teams_attendees[j].fields.microsoft_teams_mail);
-
-            for(let k = 0; k < this.webMeetingAttendees.length; k++){
-                if(node_microsoft_teams_attendees[j].pk === this.webMeetingAttendees[k]){
-                    this.teamsMeetingAttendees.push(node_microsoft_teams_attendees[j].fields.microsoft_teams_mail);
-                    this.notTeamsMeetingAttendees.pop();
-                    break;
-                }
-            }
-        }
-    }
-
-    reqLaunch(url: string, payload: payload, appName: string){
-
-        this.toast.info(this.i18n.t('integromat.info.launch'))
-
-        return fetch(
-            url,
-            {
-                method: 'POST',
-                headers:{
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(payload)
-        })
-        .then(res => res.json())
-        .then(data => {
-                if(data.integromatMsg.match('.error.')){
-                    this.toast.error(this.i18n.t(data.integromatMsg))
-                }else{
-                    this.toast.info(this.i18n.t(data.integromatMsg))
-                    let reqBody = {
-                        'nodeId': data.nodeId,
-                        'timestamp': data.timestamp,
-                    }
-                    this.reqMessage(reqestMessagesUrl, reqBody, appName)
-                }
-            })
-            .catch(() => {
-                this.toast.error(this.i18n.t('integromat.error.failedToRequest'));
-            })
+        this.makeWebMeetingAttendee(appName);
     }
 
     reqMessage(url: string, reqBody: reqBody, appName: string) {

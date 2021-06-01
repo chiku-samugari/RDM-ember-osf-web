@@ -774,6 +774,11 @@
                     {{/each}}
                 </span>
             </div>
+            <div local-class='Integromat__input_items' style='padding-left: 20px;'>
+                <CopyableText
+                    @text={{this.webMeetingJoinUrl}}
+                />
+            </div>
             <div local-class='Integromat__input_items' style='padding-left: 20px; padding-bottom: 10px;'>
                 <div style='border-top-style: inset; padding-top: 10px;'>
                     {{this.webMeetingContent}}

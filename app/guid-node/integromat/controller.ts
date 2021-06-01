@@ -638,6 +638,13 @@ export default class GuidNodeIntegromat extends Controller {
         const webMeetingApps = JSON.parse(config.web_meeting_apps);
         let appName = '';
 
+        this.set('showDeleteWebMeetingDialog', true);
+        this.set('webMeetingDeleteMeetingId', meetingId);
+        this.set('webMeetingDeleteSubject', subject);
+        this.set('webMeetingDeleteStartDate', moment(startDatetime).format('YYYY/MM/DD'));
+        this.set('webMeetingDeleteStartTime', moment(startDatetime).format('HH:mm'));
+        this.set('webMeetingDeleteEndDate', moment(endDatetime).format('YYYY/MM/DD'));
+        this.set('webMeetingDeleteEndTime', moment(endDatetime).format('HH:mm'));
 
         for(let i=0; i < webMeetingApps.length; i++){
 
@@ -648,14 +655,6 @@ export default class GuidNodeIntegromat extends Controller {
         }
 
         this.setWebMeetingApp(appName, 'delete');
-
-        this.set('showDeleteWebMeetingDialog', true);
-        this.set('webMeetingDeleteMeetingId', meetingId);
-        this.set('webMeetingDeleteSubject', subject);
-        this.set('webMeetingDeleteStartDate', moment(startDatetime).format('YYYY/MM/DD'));
-        this.set('webMeetingDeleteStartTime', moment(startDatetime).format('HH:mm'));
-        this.set('webMeetingDeleteEndDate', moment(endDatetime).format('YYYY/MM/DD'));
-        this.set('webMeetingDeleteEndTime', moment(endDatetime).format('HH:mm'));
 
     }
 
@@ -761,8 +760,6 @@ export default class GuidNodeIntegromat extends Controller {
 
         let appName = '';
 
-        this.setWebMeetingApp(appName, 'detail');
-
         this.set('webMeetingPk', meetingPk);
         this.set('webMeetingSubject', subject);
         this.set('webMeetingOrganizerFullname', organizer_fullname);
@@ -776,7 +773,6 @@ export default class GuidNodeIntegromat extends Controller {
         this.set('webMeetingUpdateMeetingId', meetingId);
         this.set('webMeetingJoinUrl', joinUrl);
 
-
         for(let i=0; i < webMeetingApps.length; i++){
 
             if(webMeetingApps[i].pk === appId){
@@ -785,6 +781,7 @@ export default class GuidNodeIntegromat extends Controller {
             }
         }
 
+        this.setWebMeetingApp(appName, 'detail');
         this.makeWebMeetingAttendee(appName);
     }
 

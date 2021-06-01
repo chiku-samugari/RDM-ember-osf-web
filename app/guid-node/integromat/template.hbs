@@ -742,7 +742,7 @@
     <modal.body style='border-bottom: 1px solid #E5E5E5'>
         <div class='form-group'>
             <div local-class='Integromat__input_items' style='font-size: x-large;'>
-                <div>{{this.webMeetingSubject}}</div>
+                {{this.webMeetingSubject}}
             </div>
             <div local-class='Integromat__input_items' style='padding-left: 20px;'>
                 <table>
@@ -780,9 +780,7 @@
                 />
             </div>
             <div local-class='Integromat__input_items' style='padding-left: 20px; padding-bottom: 10px;'>
-                <div style='border-top-style: inset; padding-top: 10px;'>
-                    {{this.webMeetingContent}}
-                </div>
+                <div style='border-top-style: inset; padding-top: 10px;' white-space: pre-wrap;>{{this.webMeetingContent}}</div>
             </div>
 
         </div>

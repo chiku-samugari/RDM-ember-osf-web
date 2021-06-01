@@ -1970,7 +1970,7 @@ export default {
         uploader_comment: 'コメント',
     },
     integromat: {
-		page_title: '{{nodeTitle}} Integromat',
+        page_title: '{{nodeTitle}} Integromat',
         header: 'Integromat',
         loading: 'ロード中',
         failed_to_save: 'エラーが発生しました。',

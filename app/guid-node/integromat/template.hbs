@@ -108,7 +108,7 @@
                                                 {{#each this.upcoming_web_meetings as |row|}}
                                                     <tr local-class='Integromat__tr'>
                                                         <td local-class='Integromat__td'>
-                                                            <a onClick={{action (action this.makeDetailMeetingDialog row.fields.meetingid)}}>
+                                                            <a onClick={{action this.makeDetailMeetingDialog row.pk row.fields.meetingid row.fields.join_url row.fields.meeting_password row.fields.app row.fields.subject row.fields.attendees row.fields.start_datetime row.fields.end_datetime row.fields.location row.fields.content}}>
                                                                 {{row.fields.subject}}
                                                             </a>
                                                         </td>
@@ -170,7 +170,7 @@
                                                 {{#each this.previous_web_meetings as |row|}}
                                                     <tr local-class='Integromat__tr'>
                                                         <td local-class='Integromat__td'>
-                                                            <a onClick={{action (action this.makeDetailMeetingDialog row.fields.meetingid)}}>
+                                                            <a onClick={{action this.makeDetailMeetingDialog row.pk row.fields.meetingid row.fields.join_url row.fields.meeting_password row.fields.app row.fields.subject row.fields.attendees row.fields.start_datetime row.fields.end_datetime row.fields.location row.fields.content}}>
                                                                 {{row.fields.subject}}
                                                             </a>
                                                         </td>
@@ -728,9 +728,10 @@
 </BsModal>
 
 <BsModal
-    detail-microsoft-teams-meeting-modal
-    @open={{this.showDetailMicrosoftTeamsMeetingDialog}}
-    @onHidden={{action (mut this.showDetailMicrosoftTeamsMeetingDialog) false}}
+    data-test-detail-meeting-modal
+    @open={{this.showDetailWebMeetingDialog}}
+    @onHidden={{action (mut this.showDetailWebMeetingDialog) false}}
+    @onHide={{action this.setWebMeetingApp}}
     as |modal|
 >
     <modal.header>
@@ -738,47 +739,43 @@
             {{t 'integromat.meetingDialog.detailHeader' appName=this.webMeetingAppName}}
         </h4>
     </modal.header>
-    <modal.body>
+    <modal.body style='border-bottom: 1px solid #E5E5E5'>
         <div class='form-group'>
-            <div local-class='Integromat__input_items'>
-                <label>{{t 'integromat.subject'}}</label>
+            <div local-class='Integromat__input_items' style='font-size: x-large;'>
                 <div>{{this.webMeetingSubject}}</div>
             </div>
-            <div local-class='Integromat__input_items'>
-                <label>{{t 'integromat.attendees'}}</label>
-                <div>
-                    <span id='attendees_inputs'>
-                        {{#each this.teamsMeetingAttendees as |mail|}}
-                            {{mail}}&nbsp;&nbsp;
-                        {{/each}}
-                    </span>
-                </div>
-            </div>
-            <div local-class='Integromat__input_items'>
-                <table>
-                    <tr>
-                        <td><label>{{t 'integromat.start_datetime'}}</label></td><td></td>
-                        <td><label>{{t 'integromat.end_datetime'}}</label></td>
-                    </tr>
-                    <tr>
-                        <td>
-                            {{this.webMeetingStartDate}}&nbsp;{{this.webMeetingStartTime}}
-                        </td>
-                        <td><label local-class='Integromat__input_items'>{{t 'integromat.from_hyphen'}}</label></td>
-                        <td>
-                            {{this.webMeetingEndTime}}
-                        </td>
-                    </tr>
+            <div local-class='Integromat__input_items' style='padding-left: 20px;'>
+                <table>{{this.webMeetingSubject}}
+                    <tbody>
+                        <tr>
+                            <td>
+                                {{this.webMeetingStartDate}}&nbsp;{{this.webMeetingStartTime}}
+                            </td>
+                            <td><label local-class='Integromat__input_items'>{{t 'integromat.from_hyphen'}}</label></td>
+                            <td>
+                                {{this.webMeetingEndTime}}
+                            </td>
+                            <td>&nbsp;</td><td>&nbsp;</td>
+                            <td>
+                                {{this.webMeetingLocation}}
+                            </td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
-            <div local-class='Integromat__input_items'>
-                <label>{{t 'integromat.location'}}</label>
-                <div>{{this.webMeetingLocation}}</div>
+            <div local-class='Integromat__input_items' style='padding-left: 20px;'>
+                <span>{{t 'integromat.organizer'}}<a>{{this.webMeetingOrganizer}}</a></span>
             </div>
-            <div local-class='Integromat__input_items'>
-                <label>{{t 'integromat.content'}}</label>
-                <div>{{this.webMeetingContent}}</div>
+            <div local-class='Integromat__input_items' style='padding-left: 20px;'>
+                <span>{{t 'integromat.attendees'}}
+                </span>
             </div>
+            <div local-class='Integromat__input_items' style='padding-left: 20px; padding-bottom: 10px;'>
+                <div style='border-top-style: inset; padding-top: 10px;'>
+                    {{this.webMeetingContent}}
+                </div>
+            </div>
+
         </div>
     </modal.body>
     <modal.footer>

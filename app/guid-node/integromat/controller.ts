@@ -144,7 +144,7 @@ export default class GuidNodeIntegromat extends Controller {
     showUpdateMicrosoftTeamsMeetingDialog = false;
     showUpdateWebexMeetingsDialog = false;
     showDeleteWebMeetingDialog = false;
-    showDetailMicrosoftTeamsMeetingDialog = false;
+    showDetailWebMeetingDialog = false;
     showWorkflows = true;
     showAllWebMeetings = false;
 
@@ -160,6 +160,7 @@ export default class GuidNodeIntegromat extends Controller {
     webMeetingAppNameDisp = '';
     webMeetingPk = '';
     webMeetingSubject = '';
+    webMeetingOrganizer = '';
     webMeetingAttendees : string[] = [];
     webMeetingStartDate = '';
     webMeetingStartTime = '';
@@ -732,7 +733,7 @@ export default class GuidNodeIntegromat extends Controller {
         const config = this.config.content as IntegromatConfigModel;
         const microsoftTeamsMeetings = JSON.parse(config.all_web_meetings);
 
-        this.set('showDetailMicrosoftTeamsMeetingDialog', true);
+        this.set('showDetailWebMeetingDialog', true);
 
         for(let i=0; i < microsoftTeamsMeetings.length; i++){
 

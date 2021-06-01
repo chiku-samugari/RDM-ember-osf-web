@@ -478,7 +478,7 @@ export default class GuidNodeIntegromat extends Controller {
 
                 for(let m = 0; m < this.webMeetingAttendees.length; m++){
                     if(nodeWebexMeetingsAttendees[l].pk === this.webMeetingAttendees[m]){
-                        this.webMeetingAttendeesNow.push({'email': nodeWebexMeetingsAttendees[l].fields.webex_meetings_mail, 'fullname': nodeWebexMeetingsAttendees[l].fields.fullname, 'profile': profileUrl + nodeMicrosoftTeamsAttendees[l].fields.user_guid});
+                        this.webMeetingAttendeesNow.push({'email': nodeWebexMeetingsAttendees[l].fields.webex_meetings_mail, 'fullname': nodeWebexMeetingsAttendees[l].fields.fullname, 'profile': profileUrl + nodeWebexMeetingsAttendees[l].fields.user_guid});
                         this.notwebMeetingAttendeesNow.pop();
                         break;
                     }

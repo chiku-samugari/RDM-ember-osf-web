@@ -55,7 +55,7 @@ interface webexMeetingsCreateInvitee {
 interface webMeetingAttendeesNow {
     email: string;
     fullname: string;
-    guid: string;
+    profile: string;
 }
 
 interface notwebMeetingAttendeesNow {
@@ -466,7 +466,7 @@ export default class GuidNodeIntegromat extends Controller {
 
                 for(let k = 0; k < this.webMeetingAttendees.length; k++){
                     if(nodeMicrosoftTeamsAttendees[j].pk === this.webMeetingAttendees[k]){
-                        this.webMeetingAttendeesNow.push({'email': nodeMicrosoftTeamsAttendees[j].fields.microsoft_teams_mail, 'fullname': nodeMicrosoftTeamsAttendees[j].fields.fullname, 'guid': nodeMicrosoftTeamsAttendees[j].fields.user_guid});
+                        this.webMeetingAttendeesNow.push({'email': nodeMicrosoftTeamsAttendees[j].fields.microsoft_teams_mail, 'fullname': nodeMicrosoftTeamsAttendees[j].fields.fullname, 'profile': profileUrl + nodeMicrosoftTeamsAttendees[j].fields.user_guid});
                         this.notwebMeetingAttendeesNow.pop();
                         break;
                     }
@@ -478,7 +478,7 @@ export default class GuidNodeIntegromat extends Controller {
 
                 for(let m = 0; m < this.webMeetingAttendees.length; m++){
                     if(nodeWebexMeetingsAttendees[l].pk === this.webMeetingAttendees[m]){
-                        this.webMeetingAttendeesNow.push({'email': nodeWebexMeetingsAttendees[l].fields.webex_meetings_mail, 'fullname': nodeWebexMeetingsAttendees[l].fields.fullname, 'guid': nodeMicrosoftTeamsAttendees[l].fields.user_guid});
+                        this.webMeetingAttendeesNow.push({'email': nodeWebexMeetingsAttendees[l].fields.webex_meetings_mail, 'fullname': nodeWebexMeetingsAttendees[l].fields.fullname, 'profile': profileUrl + nodeMicrosoftTeamsAttendees[l].fields.user_guid});
                         this.notwebMeetingAttendeesNow.pop();
                         break;
                     }

@@ -124,6 +124,7 @@ const errorScenarioProcessing = 'integromat.error.scenarioProcessing';
 
 const startIntegromatScenarioUrl = host + namespace + '/integromat/' + 'start_scenario';
 const reqestMessagesUrl =  host + namespace + '/integromat/' + 'requestNextMessages';
+const profileUrl = host + '/profile/'
 
 export default class GuidNodeIntegromat extends Controller {
     @service toast!: Toast;
@@ -156,8 +157,6 @@ export default class GuidNodeIntegromat extends Controller {
     defaultEndTime = moment(this.currentTime.setMinutes((Math.round(this.currentTime.getMinutes() / 30) * 30) + 60)).format('HH:mm');
 
     times = ['0:00', '0:30', '1:00', '1:30', '2:00', '2:30', '3:00', '3:30', '4:00', '4:30', '5:00', '5:30', '6:00', '6:30', '7:00', '7:30', '8:00', '8:30', '9:00', '9:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30', '22:00', '22:30', '23:00', '23:30', '24:00'];
-
-    const profileUrl = host + '/profile/'
 
     webMeetingAppName = '';
     webMeetingAppNameDisp = '';
@@ -463,7 +462,7 @@ export default class GuidNodeIntegromat extends Controller {
         if(appName === config.app_name_microsoft_teams){
 
             for(let j = 0; j < nodeMicrosoftTeamsAttendees.length; j++){
-                this.notwebMeetingAttendeesNow.push({'email': nodeMicrosoftTeamsAttendees[j].fields.microsoft_teams_mail, 'fullname': nodeMicrosoftTeamsAttendees[j].fields.fullname, 'guid': nodeMicrosoftTeamsAttendees[j].fields.user_guid});
+                this.notwebMeetingAttendeesNow.push({'email': nodeMicrosoftTeamsAttendees[j].fields.microsoft_teams_mail, 'fullname': nodeMicrosoftTeamsAttendees[j].fields.fullname});
 
                 for(let k = 0; k < this.webMeetingAttendees.length; k++){
                     if(nodeMicrosoftTeamsAttendees[j].pk === this.webMeetingAttendees[k]){
@@ -479,7 +478,7 @@ export default class GuidNodeIntegromat extends Controller {
 
                 for(let m = 0; m < this.webMeetingAttendees.length; m++){
                     if(nodeWebexMeetingsAttendees[l].pk === this.webMeetingAttendees[m]){
-                        this.webMeetingAttendeesNow.push({'email': nodeWebexMeetingsAttendees[l].fields.webex_meetings_mail, 'fullname': nodeWebexMeetingsAttendees[l].fields.fullname});
+                        this.webMeetingAttendeesNow.push({'email': nodeWebexMeetingsAttendees[l].fields.webex_meetings_mail, 'fullname': nodeWebexMeetingsAttendees[l].fields.fullname, 'guid': nodeMicrosoftTeamsAttendees[l].fields.user_guid});
                         this.notwebMeetingAttendeesNow.pop();
                         break;
                     }

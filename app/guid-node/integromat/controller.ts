@@ -60,6 +60,7 @@ interface webMeetingAttendeesNow {
 interface notwebMeetingAttendeesNow {
     email: string;
     fullname: string;
+    guid: string;
 }
 
 interface payload {
@@ -473,11 +474,11 @@ export default class GuidNodeIntegromat extends Controller {
             }
         }else if(appName === config.app_name_webex_meetings){
             for(let l = 0; l < nodeWebexMeetingsAttendees.length; l++){
-                this.notwebMeetingAttendeesNow.push({'email': nodeWebexMeetingsAttendees[l].fields.webex_meetings_mail, 'fullname': nodeWebexMeetingsAttendees[l].fields.fullname, 'guid': nodeWebexMeetingsAttendees[j].fields.user_guid});
+                this.notwebMeetingAttendeesNow.push({'email': nodeWebexMeetingsAttendees[l].fields.webex_meetings_mail, 'fullname': nodeWebexMeetingsAttendees[l].fields.fullname, 'guid': nodeWebexMeetingsAttendees[l].fields.user_guid});
 
                 for(let m = 0; m < this.webMeetingAttendees.length; m++){
                     if(nodeWebexMeetingsAttendees[l].pk === this.webMeetingAttendees[m]){
-                        this.webMeetingAttendeesNow.push({'email': nodeWebexMeetingsAttendees[l].fields.webex_meetings_mail, 'fullname': nodeWebexMeetingsAttendees[l].fields.fullname, 'guid': nodeWebexMeetingsAttendees[j].fields.user_guid});
+                        this.webMeetingAttendeesNow.push({'email': nodeWebexMeetingsAttendees[l].fields.webex_meetings_mail, 'fullname': nodeWebexMeetingsAttendees[l].fields.fullname, 'guid': nodeWebexMeetingsAttendees[l].fields.user_guid});
                         this.notwebMeetingAttendeesNow.pop();
                         break;
                     }

@@ -779,6 +779,37 @@ export default class GuidNodeIntegromat extends Controller {
         this.makeWebMeetingAttendee(appName);
     }
 
+    reqLaunch(url: string, payload: payload, appName: string){
+
+        this.toast.info(this.i18n.t('integromat.info.launch'))
+
+        return fetch(
+            url,
+            {
+                method: 'POST',
+                headers:{
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(data => {
+                if(data.integromatMsg.match('.error.')){
+                    this.toast.error(this.i18n.t(data.integromatMsg))
+                }else{
+                    this.toast.info(this.i18n.t(data.integromatMsg))
+                    let reqBody = {
+                        'nodeId': data.nodeId,
+                        'timestamp': data.timestamp,
+                    }
+                    this.reqMessage(reqestMessagesUrl, reqBody, appName)
+                }
+            })
+            .catch(() => {
+                this.toast.error(this.i18n.t('integromat.error.failedToRequest'));
+            })
+    }
+
     reqMessage(url: string, reqBody: reqBody, appName: string) {
 
         return fetch(

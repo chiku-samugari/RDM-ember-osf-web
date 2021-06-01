@@ -123,6 +123,7 @@ const errorScenarioProcessing = 'integromat.error.scenarioProcessing';
 
 const startIntegromatScenarioUrl = host + namespace + '/integromat/' + 'start_scenario';
 const reqestMessagesUrl =  host + namespace + '/integromat/' + 'requestNextMessages';
+const profileUrl = host + '/profile/'
 
 export default class GuidNodeIntegromat extends Controller {
     @service toast!: Toast;
@@ -460,11 +461,11 @@ export default class GuidNodeIntegromat extends Controller {
         if(appName === config.app_name_microsoft_teams){
 
             for(let j = 0; j < nodeMicrosoftTeamsAttendees.length; j++){
-                this.notwebMeetingAttendeesNow.push({'email': nodeMicrosoftTeamsAttendees[j].fields.microsoft_teams_mail, 'fullname': nodeMicrosoftTeamsAttendees[j].fields.fullname});
+                this.notwebMeetingAttendeesNow.push({'email': nodeMicrosoftTeamsAttendees[j].fields.microsoft_teams_mail, 'fullname': nodeMicrosoftTeamsAttendees[j].fields.fullname, 'guid': nodeMicrosoftTeamsAttendees[j].fields.user_guid});
 
                 for(let k = 0; k < this.webMeetingAttendees.length; k++){
                     if(nodeMicrosoftTeamsAttendees[j].pk === this.webMeetingAttendees[k]){
-                        this.webMeetingAttendeesNow.push({'email': nodeMicrosoftTeamsAttendees[j].fields.microsoft_teams_mail, 'fullname': nodeMicrosoftTeamsAttendees[j].fields.fullname});
+                        this.webMeetingAttendeesNow.push({'email': nodeMicrosoftTeamsAttendees[j].fields.microsoft_teams_mail, 'fullname': nodeMicrosoftTeamsAttendees[j].fields.fullname, 'guid': nodeMicrosoftTeamsAttendees[j].fields.user_guid});
                         this.notwebMeetingAttendeesNow.pop();
                         break;
                     }
@@ -472,11 +473,11 @@ export default class GuidNodeIntegromat extends Controller {
             }
         }else if(appName === config.app_name_webex_meetings){
             for(let l = 0; l < nodeWebexMeetingsAttendees.length; l++){
-                this.notwebMeetingAttendeesNow.push({'email': nodeWebexMeetingsAttendees[l].fields.webex_meetings_mail, 'fullname': nodeWebexMeetingsAttendees[l].fields.fullname});
+                this.notwebMeetingAttendeesNow.push({'email': nodeWebexMeetingsAttendees[l].fields.webex_meetings_mail, 'fullname': nodeWebexMeetingsAttendees[l].fields.fullname, 'guid': nodeWebexMeetingsAttendees[j].fields.user_guid});
 
                 for(let m = 0; m < this.webMeetingAttendees.length; m++){
                     if(nodeWebexMeetingsAttendees[l].pk === this.webMeetingAttendees[m]){
-                        this.webMeetingAttendeesNow.push({'email': nodeWebexMeetingsAttendees[l].fields.webex_meetings_mail, 'fullname': nodeWebexMeetingsAttendees[l].fields.fullname});
+                        this.webMeetingAttendeesNow.push({'email': nodeWebexMeetingsAttendees[l].fields.webex_meetings_mail, 'fullname': nodeWebexMeetingsAttendees[l].fields.fullname, 'guid': nodeWebexMeetingsAttendees[j].fields.user_guid});
                         this.notwebMeetingAttendeesNow.pop();
                         break;
                     }

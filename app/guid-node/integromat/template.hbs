@@ -770,11 +770,11 @@
                 <span>{{t 'integromat.attendees'}}{{t 'integromat.colon'}}
 
                     {{#each this.webMeetingAttendeesNow as |attendee|}}
-                        <a href=''>{{attendee.fullname}}</a>
+                        <a href={{this.profileUrl}}{{attendee.guid}}>{{attendee.fullname}}</a>
                     {{/each}}
                 </span>
             </div>
-            <div local-class='Integromat__input_items' style='padding-left: 20px;'>
+            <div local-class='Integromat__input_items' style='padding-left: 20px; padding-right: 20px;'>
                 <CopyableText
                     @text={{this.webMeetingJoinUrl}}
                 />

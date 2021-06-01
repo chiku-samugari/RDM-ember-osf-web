@@ -638,6 +638,8 @@ export default class GuidNodeIntegromat extends Controller {
         const webMeetingApps = JSON.parse(config.web_meeting_apps);
         let appName = '';
 
+        this.setWebMeetingApp(appName, 'delete');
+
         this.set('showDeleteWebMeetingDialog', true);
         this.set('webMeetingDeleteMeetingId', meetingId);
         this.set('webMeetingDeleteSubject', subject);
@@ -653,9 +655,6 @@ export default class GuidNodeIntegromat extends Controller {
                 break;
             }
         }
-
-        this.setWebMeetingApp(appName, 'delete');
-
     }
 
     @action
@@ -735,13 +734,7 @@ export default class GuidNodeIntegromat extends Controller {
             'timestamp': timestamp,
         };
 
-        this.set('webMeetingDeleteMeetingId', '');
-        this.set('webMeetingDeleteSubject', '');
-        this.set('webMeetingDeleteStartDate', '');
-        this.set('webMeetingDeleteStartTime', '');
-        this.set('webMeetingDeleteEndTime', '');
-
-        this.set('showDeleteWebMeetingDialog', false);
+        this.setWebMeetingApp('', '');
 
         return this.reqLaunch(startIntegromatScenarioUrl, payload, appNameDisp);
     }

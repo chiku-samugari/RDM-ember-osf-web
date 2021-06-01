@@ -299,6 +299,13 @@ export default class GuidNodeIntegromat extends Controller {
             this.set('webMeetingJoinUrl', '');
             this.set('webMeetingPassword', '');
 
+            this.set('webMeetingDeleteMeetingId', '');
+            this.set('webMeetingDeleteSubject', '');
+            this.set('webMeetingDeleteStartDate', '');
+            this.set('webMeetingDeleteStartTime', '');
+            this.set('webMeetingDeleteEndDate', '');
+            this.set('webMeetingDeleteEndTime', '');
+
         }
     }
 
@@ -753,6 +760,8 @@ export default class GuidNodeIntegromat extends Controller {
         const webMeetingApps = JSON.parse(config.web_meeting_apps);
 
         let appName = '';
+
+        this.setWebMeetingApp(appName, 'detail');
 
         this.set('webMeetingPk', meetingPk);
         this.set('webMeetingSubject', subject);

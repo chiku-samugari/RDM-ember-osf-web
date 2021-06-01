@@ -638,6 +638,14 @@ export default class GuidNodeIntegromat extends Controller {
         const webMeetingApps = JSON.parse(config.web_meeting_apps);
         let appName = '';
 
+        for(let i=0; i < webMeetingApps.length; i++){
+
+            if(webMeetingApps[i].pk === appId){
+                appName = webMeetingApps[i].fields.app_name
+                break;
+            }
+        }
+
         this.setWebMeetingApp(appName, 'delete');
 
         this.set('showDeleteWebMeetingDialog', true);
@@ -648,13 +656,6 @@ export default class GuidNodeIntegromat extends Controller {
         this.set('webMeetingDeleteEndDate', moment(endDatetime).format('YYYY/MM/DD'));
         this.set('webMeetingDeleteEndTime', moment(endDatetime).format('HH:mm'));
 
-        for(let i=0; i < webMeetingApps.length; i++){
-
-            if(webMeetingApps[i].pk === appId){
-                appName = webMeetingApps[i].fields.app_name
-                break;
-            }
-        }
     }
 
     @action

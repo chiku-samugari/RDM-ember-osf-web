@@ -356,7 +356,7 @@ export default class GuidNodeIntegromat extends Controller {
             }
         }else if (this.webMeetingAppName === config.app_name_webex_meetings) {
 
-            action = 'createWebexMeeting';
+            action = 'createWebexMeetings';
 
             for(let i = 0; i < webexMeetingsAttendeesChecked.length; i++){
                 webexMeetingsAttendeesCollection.push({'email': webexMeetingsAttendeesChecked[i].id});
@@ -545,7 +545,7 @@ export default class GuidNodeIntegromat extends Controller {
             }
         }else if (appName === config.app_name_webex_meetings) {
 
-            action = 'updateWebexMeeting';
+            action = 'updateWebexMeetings';
 
             for(let i = 0; i < webexMeetingsAttendeesChecked.length; i++){
                 webexMeetingsAttendeesCollection.push({'email': webexMeetingsAttendeesChecked[i].id});
@@ -694,7 +694,7 @@ export default class GuidNodeIntegromat extends Controller {
 
         }else if (this.webMeetingAppName === config.app_name_webex_meetings) {
 
-            action = 'deleteWebexMeeting';
+            action = 'deleteWebexMeetings';
 
         }
 

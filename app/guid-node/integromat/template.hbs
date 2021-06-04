@@ -170,7 +170,7 @@
                                                 {{#each this.previous_web_meetings as |row|}}
                                                     <tr local-class='Integromat__tr'>
                                                         <td local-class='Integromat__td'>
-                                                            <a onClick={{action this.makeDetailMeetingDialog row.pk row.fields.meetingid row.fields.join_url row.fields.app row.fields.subject row.fields.attendees row.fields.start_datetime row.fields.end_datetime row.fields.location row.fields.content}}>
+                                                            <a onClick={{action this.makeDetailMeetingDialog row.pk row.fields.meetingid row.fields.join_url row.fields.app row.fields.subject row.fields.organizer_fullname row.fields.attendees row.fields.start_datetime row.fields.end_datetime row.fields.location row.fields.content}}>
                                                                 {{row.fields.subject}}
                                                             </a>
                                                         </td>

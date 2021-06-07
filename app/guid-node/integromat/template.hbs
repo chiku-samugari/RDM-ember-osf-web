@@ -103,7 +103,7 @@
                                             </thead>
                                             <tbody>
                                                 {{#each this.upcoming_web_meetings as |row index|}}
-                                                   {{#if eq(index 0)}}
+                                                   {{#if (eq index 0)}}
                                                         <tr>
                                                             <th local-class='Integromat__th'>{{moment-format row.fields.start_datetime 'll'}}</th>
                                                             <th></th>

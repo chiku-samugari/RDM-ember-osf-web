@@ -113,7 +113,7 @@
                                                             <th></th>
                                                         </tr>
                                                    {{else}}
-                                                       {{#if not-eq(moment-format row.fields.start_datetime 'YYYY-MM-DD' moment-format this.(index-1).fields.start_datetime 'YYYY-MM-DD')}}
+                                                       {{#if (not-eq moment-format row.fields.start_datetime 'YYYY-MM-DD' moment-format this.(index-1).fields.start_datetime 'YYYY-MM-DD')}}
                                                         <tr>
                                                             <th local-class='Integromat__th'>{{moment-format row.fields.start_datetime 'll'}}</th>
                                                             <th></th>

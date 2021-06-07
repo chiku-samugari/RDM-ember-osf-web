@@ -104,6 +104,16 @@
                                             <tbody>
                                                 {{#each this.upcoming_web_meetings as |row index|}}
                                                    {{#if (eq index 0)}}
+                                                        <tr style='background-color: #efefef;'>
+                                                            <th local-class='Integromat__th'>{{moment-format row.fields.start_datetime 'll'}}</th>
+                                                            <th></th>
+                                                            <th></th>
+                                                            <th></th>
+                                                            <th></th>
+                                                            <th></th>
+                                                        </tr>
+                                                   {{else}}
+                                                       {{#if not-eq(moment-format row.fields.start_datetime 'YYYY-MM-DD' moment-format this.(index-1).fields.start_datetime 'YYYY-MM-DD')}}
                                                         <tr>
                                                             <th local-class='Integromat__th'>{{moment-format row.fields.start_datetime 'll'}}</th>
                                                             <th></th>
@@ -112,6 +122,7 @@
                                                             <th></th>
                                                             <th></th>
                                                         </tr>
+                                                       {{/if}}
                                                     {{/if}}
                                                     <tr local-class='Integromat__tr'>
                                                         <td local-class='Integromat__td'>{{moment-format row.fields.start_datetime 'YYYY-MM-DD HH:mm'}}</td>

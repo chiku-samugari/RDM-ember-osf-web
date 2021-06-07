@@ -116,7 +116,7 @@
                                                        {{#if (not-eq moment-format row.fields.start_datetime 'YYYY-MM-DD' moment-format this.[index-1].fields.start_datetime 'YYYY-MM-DD')}}
                                                             {{log 'itself::' row.fields.start_datetime}}
                                                             {{log 'pre1::' this.[index-1].fields.start_datetime}}
-                                                            {{log 'pre2::' ../(index-1).fields.start_datetime}}
+                                                            {{log 'pre2::' ../[index-1].fields.start_datetime}}
                                                             <tr style='background-color: #efefef; padding: 3px; padding-left: 10px;'>
                                                                 <th local-class='Integromat__th'>{{moment-format row.fields.start_datetime 'll'}}</th>
                                                                 <th></th>

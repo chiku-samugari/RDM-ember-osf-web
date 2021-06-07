@@ -114,8 +114,8 @@
                                                         </tr>
                                                    {{else}}
                                                        {{#if (not-eq moment-format row.fields.start_datetime 'YYYY-MM-DD' moment-format this.[index-1].fields.start_datetime 'YYYY-MM-DD')}}
-                                                            {{log 'itself::' moment-format row.fields.start_datetime 'YYYY-MM-DD'}}
-                                                            {{log 'pre1::' moment-format this.[index-1].fields.start_datetime 'YYYY-MM-DD'}}
+                                                            {{log 'itself::' (moment-format row.fields.start_datetime 'YYYY-MM-DD')}}
+                                                            {{log 'pre1::' (moment-format (lookup ../[index-1].fields.start_datetime) 'YYYY-MM-DD')}}
                                                             <tr style='background-color: #efefef; padding: 3px; padding-left: 10px;'>
                                                                 <th local-class='Integromat__th'>{{moment-format row.fields.start_datetime 'll'}}</th>
                                                                 <th></th>

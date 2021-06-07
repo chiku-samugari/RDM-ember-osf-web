@@ -86,15 +86,15 @@
                                     <div class='col-xs-12'>
                                         <table class='table'>
                                             <thead>
-                                                <tr style='background-color: #f5f5f5;'>
+                                                <tr style='background-color: #efefef;'>
+                                                    <th width='14%'>
+                                                        <span class='header_text m-r-sm'></span>
+                                                    </th>
                                                     <th width='45%'>
                                                         <span class='header_text m-r-sm'>{{t 'integromat.subject'}}</span>
                                                     </th>
                                                     <th width='25%'>
                                                         <span class='header_text m-r-sm'>{{t 'integromat.organizer'}}</span>
-                                                    </th>
-                                                    <th width='20%'>
-                                                        <span class='header_text m-r-sm'>{{t 'integromat.start_datetime'}}</span>
                                                     </th>
                                                     <th></th>
                                                     <th></th>
@@ -104,13 +104,13 @@
                                             <tbody>
                                                 {{#each this.upcoming_web_meetings as |row|}}
                                                     <tr local-class='Integromat__tr'>
+                                                        <td local-class='Integromat__td'>{{moment-format row.fields.start_datetime 'YYYY-MM-DD HH:mm'}}</td>
                                                         <td local-class='Integromat__td_overflow'>
                                                             <a onClick={{action this.makeDetailMeetingDialog row.pk row.fields.meetingid row.fields.join_url row.fields.app row.fields.subject row.fields.organizer_fullname row.fields.attendees row.fields.start_datetime row.fields.end_datetime row.fields.location row.fields.content}}>
                                                                 {{row.fields.subject}}
                                                             </a>
                                                         </td>
                                                         <td local-class='Integromat__td_overflow'>{{row.fields.organizer_fullname}}</td>
-                                                        <td local-class='Integromat__td'>{{moment-format row.fields.start_datetime 'YYYY-MM-DD HH:mm'}}</td>
                                                         <td local-class='Integromat__td'>
                                                             <button class='fa fa-play' data-toggle='tooltip' title={{t 'integromat.meetingDialog.createLabel'}}
                                                                   onClick={{action this.startMeeting row.fields.join_url}}></button>
@@ -139,15 +139,15 @@
                                     <div class='col-xs-12'>
                                         <table class='table'>
                                             <thead>
-                                                <tr style='background-color: #f5f5f5;'>
+                                                <tr style='background-color: #efefef;'>
+                                                    <th width='20%'>
+                                                        <span class='header_text m-r-sm'></span>
+                                                    </th>
                                                     <th width='45%'>
                                                         <span class='header_text m-r-sm'>{{t 'integromat.subject'}}</span>
                                                     </th>
                                                     <th width='25%'>
                                                         <span class='header_text m-r-sm'>{{t 'integromat.organizer'}}</span>
-                                                    </th>
-                                                    <th width='20%'>
-                                                        <span class='header_text m-r-sm'>{{t 'integromat.start_datetime'}}</span>
                                                     </th>
                                                     <th></th>
                                                     <th></th>
@@ -157,13 +157,13 @@
                                             <tbody>
                                                 {{#each this.previous_web_meetings as |row|}}
                                                     <tr local-class='Integromat__tr'>
+                                                        <td local-class='Integromat__td'>{{moment-format row.fields.start_datetime 'YYYY-MM-DD HH:mm'}}</td>
                                                         <td local-class='Integromat__td_overflow'>
                                                             <a onClick={{action this.makeDetailMeetingDialog row.pk row.fields.meetingid row.fields.join_url row.fields.app row.fields.subject row.fields.organizer_fullname row.fields.attendees row.fields.start_datetime row.fields.end_datetime row.fields.location row.fields.content}}>
                                                                 {{row.fields.subject}}
                                                             </a>
                                                         </td>
                                                         <td local-class='Integromat__td_overflow'>{{row.fields.organizer_fullname}}</td>
-                                                        <td local-class='Integromat__td'>{{moment-format row.fields.start_datetime 'YYYY-MM-DD HH:mm'}}</td>
                                                         <td local-class='Integromat__td'>
                                                             <button class='fa fa-play' data-toggle='tooltip' title={{t 'integromat.meetingDialog.createLabel'}}
                                                                   onClick={{action this.startMeeting row.fields.join_url}}></button>

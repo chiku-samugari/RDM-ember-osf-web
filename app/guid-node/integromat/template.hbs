@@ -104,8 +104,8 @@
                                             <tbody>
                                                 {{#each this.upcoming_web_meetings as |row index|}}
                                                    {{#if (eq index 0)}}
-                                                        <tr style='background-color: #efefef; padding: 3px; padding-left: 10px;'>
-                                                            <th local-class='Integromat__th'>{{moment-format row.fields.start_datetime 'll'}}</th>
+                                                        <tr style='background-color: #efefef;'>
+                                                            <th local-class='Integromat__th' style='padding: 3px; padding-left: 10px;'>{{moment-format row.fields.start_datetime 'll'}}</th>
                                                             <th></th>
                                                             <th></th>
                                                             <th></th>
@@ -115,9 +115,9 @@
                                                    {{else}}
                                                        {{#if (not-eq moment-format row.fields.start_datetime 'YYYY-MM-DD' moment-format this.[index-1].fields.start_datetime 'YYYY-MM-DD')}}
                                                             {{log 'itself::' (moment-format row.fields.start_datetime 'YYYY-MM-DD')}}
-                                                            {{log 'pre1::' (moment-format (lookup ../[index-1].fields.start_datetime) 'YYYY-MM-DD')}}
+                                                            {{log 'pre1::' this}}
                                                             <tr style='background-color: #efefef; padding: 3px; padding-left: 10px;'>
-                                                                <th local-class='Integromat__th'>{{moment-format row.fields.start_datetime 'll'}}</th>
+                                                                <th local-class='Integromat__th' style='padding: 3px; padding-left: 10px;'>{{moment-format row.fields.start_datetime 'll'}}</th>
                                                                 <th></th>
                                                                 <th></th>
                                                                 <th></th>

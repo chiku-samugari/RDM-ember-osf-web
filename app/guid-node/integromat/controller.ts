@@ -863,9 +863,9 @@ export default class GuidNodeIntegromat extends Controller {
         const config = this.config.content as IntegromatConfigModel;
         let upcoming_web_meetings = JSON.parse(config.upcoming_web_meetings);
 
-        let previousDatetime = '';
+        let previousDatetime;
+        let currentDatetime;
         let previousDate = '';
-        let currentDatetime = '';
         let currentDate = '';
 
         for(let i = 0; i < upcoming_web_meetings.length; i++){
@@ -897,9 +897,9 @@ export default class GuidNodeIntegromat extends Controller {
         const config = this.config.content as IntegromatConfigModel;
         let previous_web_meetings = JSON.parse(config.previous_web_meetings);
 
-        let nextDatetime = '';
+        let currentDatetime;
+        let nextDatetime;
         let nextDate = '';
-        let currentDatetime = '';
         let currentDate = '';
 
         for(let i = 0; i < previous_web_meetings.length; i++){
@@ -907,8 +907,8 @@ export default class GuidNodeIntegromat extends Controller {
                 previous_web_meetings[i]['date_bar'] = false;
             }else if(i != 0){
 
-                nextDatetime =new Date(previous_web_meetings[i-1].fields.start_datetime);
-                currentDatetime =new Date(previous_web_meetings[i].fields.start_datetime);
+                nextDatetime = new Date(previous_web_meetings[i-1].fields.start_datetime);
+                currentDatetime = new Date(previous_web_meetings[i].fields.start_datetime);
 
                 nextDate = nextDatetime.getFullYear() + '/' + (nextDatetime.getMonth() + 1) + '/' + nextDatetime.getDate();
                 currentDate = currentDatetime.getFullYear() + '/' + (currentDatetime.getMonth() + 1) + '/' + currentDatetime.getDate();

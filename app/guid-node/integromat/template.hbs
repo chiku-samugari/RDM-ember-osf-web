@@ -117,7 +117,9 @@
                                                             {{log 'index::' index}}
                                                             {{log 'itself::' (moment-format row.fields.start_datetime 'YYYY-MM-DD')}}
                                                             {{log 'pre1::' this.upcoming_web_meetings}}
-                                                            {{log 'pre1::' (moment-format this.upcoming_web_meetings.[index-1].fields.start_datetime 'YYYY-MM-DD')}}
+                                                            {{log 'pre1-2::' this.upcoming_web_meetings[3]}}
+                                                            {{log 'pre1-2::' this.upcoming_web_meetings.[index-1]}}
+                                                            {{log 'pre1-2::' (moment-format this.upcoming_web_meetings.[index-1].fields.start_datetime 'YYYY-MM-DD')}}
                                                             {{log 'pre2::' this.root}}
                                                             {{log 'pre3::' root}}
                                                             <tr style='background-color: #efefef; padding: 3px; padding-left: 10px;'>

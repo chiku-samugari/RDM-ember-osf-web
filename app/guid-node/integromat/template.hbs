@@ -113,12 +113,10 @@
                                                             <th></th>
                                                         </tr>
                                                    {{else}}
-                                                       {{#unless (is-same row.fields.start_datetime moment-format this.upcoming_web_meetings.[(sub index 1)].fields.start_datetime precision='dates')}}
-                                                            {{log 'index-1::' (sub index 1)}}
+                                                       {{#unless (is-same row.fields.start_datetime moment-format this.upcoming_web_meetings.[0].fields.start_datetime precision='dates')}}
                                                             {{log 'itself::' (moment-format row.fields.start_datetime 'YYYY-MM-DD')}}
                                                             {{log 'pre1::' this.upcoming_web_meetings}}
                                                             {{log 'pre1-2::' this.upcoming_web_meetings.[3]}}
-                                                            {{log 'pre1-3::' this.upcoming_web_meetings.[(sub index 1)]}}
                                                             <tr style='background-color: #efefef; padding: 3px; padding-left: 10px;'>
                                                                 <th local-class='Integromat__th' style='padding: 3px; padding-left: 10px;'>{{moment-format row.fields.start_datetime 'll'}}</th>
                                                                 <th></th>

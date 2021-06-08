@@ -113,7 +113,7 @@
                                                             <th></th>
                                                         </tr>
                                                    {{else}}
-                                                       {{#unless is-same row.fields.start_datetime moment-format this.upcoming_web_meetings.[(math dec index)].fields.start_datetime precision='dates'}}
+                                                       {{#unless (is-same row.fields.start_datetime moment-format this.upcoming_web_meetings.[(math dec index)].fields.start_datetime precision='dates')}}
                                                             {{log 'index::' index}}
                                                             {{log 'itself::' (moment-format row.fields.start_datetime 'YYYY-MM-DD')}}
                                                             {{log 'pre1::' this.upcoming_web_meetings}}

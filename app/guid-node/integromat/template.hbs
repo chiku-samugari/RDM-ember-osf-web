@@ -753,23 +753,17 @@
                 {{this.webMeetingSubject}}
             </div>
             <div local-class='Integromat__input_items' style='padding-left: 20px;'>
-                <table>
-                    <tbody>
-                        <tr>
-                            <td>
-                                {{this.webMeetingStartDate}}&nbsp;{{this.webMeetingStartTime}}
-                            </td>
-                            <td><label local-class='Integromat__input_items'>{{t 'integromat.from_hyphen'}}</label></td>
-                            <td>
-                                {{this.webMeetingEndTime}}
-                            </td>
-                            <td>&nbsp;</td><td>&nbsp;</td>
-                            <td>
-                                {{this.webMeetingLocation}}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div local-class='Integromat__div_inline_block'>
+                    {{this.webMeetingStartDate}}&nbsp;{{this.webMeetingStartTime}}
+                </div>
+                <div local-class='Integromat__div_inline_block'><label local-class='Integromat__input_items'>{{t 'integromat.from_hyphen'}}</label></div>
+                <div local-class='Integromat__div_inline_block'>
+                    {{this.webMeetingEndTime}}
+                </div>
+                <div local-class='Integromat__div_inline_block'>&nbsp;&nbsp;</div>
+                <div local-class='Integromat__div_inline_block'>
+                    {{this.webMeetingLocation}}
+                </div>
             </div>
             <div local-class='Integromat__input_items' style='padding-left: 20px;'>
                 <span>{{t 'integromat.organizer'}}{{t 'integromat.colon'}}<a>{{this.webMeetingOrganizerFullname}}</a></span>

@@ -113,10 +113,7 @@
                                                             <th></th>
                                                         </tr>
                                                    {{else}}
-                                                       {{#unless (is-same row.fields.start_datetime moment-format this.upcoming_web_meetings.[0].fields.start_datetime precision='dates')}}
-                                                            {{log 'itself::' (moment-format row.fields.start_datetime 'YYYY-MM-DD')}}
-                                                            {{log 'pre1::' this.upcoming_web_meetings}}
-                                                            {{log 'pre1-2::' this.upcoming_web_meetings.[3]}}
+                                                       {{#if row.date_bar}}
                                                             <tr style='background-color: #efefef; padding: 3px; padding-left: 10px;'>
                                                                 <th local-class='Integromat__th' style='padding: 3px; padding-left: 10px;'>{{moment-format row.fields.start_datetime 'll'}}</th>
                                                                 <th></th>
@@ -125,10 +122,10 @@
                                                                 <th></th>
                                                                 <th></th>
                                                             </tr>
-                                                       {{/unless}}
+                                                       {{/if}}
                                                     {{/if}}
                                                     <tr local-class='Integromat__tr'>
-                                                        <td local-class='Integromat__td'>{{moment-format row.fields.start_datetime 'YYYY-MM-DD HH:mm'}}</td>
+                                                        <td local-class='Integromat__td'>{{moment-format row.fields.start_datetime 'YYYY-MM-DD HH:mm'}}{{t 'integromat.from_hyphen'}}{{moment-format row.fields.end_datetime 'HH:mm'}}</td>
                                                         <td local-class='Integromat__td_overflow'>
                                                             <a onClick={{action this.makeDetailMeetingDialog row.pk row.fields.meetingid row.fields.join_url row.fields.app row.fields.subject row.fields.organizer_fullname row.fields.attendees row.fields.start_datetime row.fields.end_datetime row.fields.location row.fields.content}}>
                                                                 {{row.fields.subject}}
@@ -180,8 +177,29 @@
                                             </thead>
                                             <tbody>
                                                 {{#each this.previous_web_meetings as |row|}}
+                                                   {{#if (eq index 0)}}
+                                                        <tr style='background-color: #efefef;'>
+                                                            <th local-class='Integromat__th' style='padding: 3px; padding-left: 10px;'>{{moment-format row.fields.start_datetime 'll'}}</th>
+                                                            <th></th>
+                                                            <th></th>
+                                                            <th></th>
+                                                            <th></th>
+                                                            <th></th>
+                                                        </tr>
+                                                   {{else}}
+                                                       {{#if row.date_bar}}
+                                                            <tr style='background-color: #efefef; padding: 3px; padding-left: 10px;'>
+                                                                <th local-class='Integromat__th' style='padding: 3px; padding-left: 10px;'>{{moment-format row.fields.start_datetime 'll'}}</th>
+                                                                <th></th>
+                                                                <th></th>
+                                                                <th></th>
+                                                                <th></th>
+                                                                <th></th>
+                                                            </tr>
+                                                       {{/if}}
+                                                    {{/if}}
                                                     <tr local-class='Integromat__tr'>
-                                                        <td local-class='Integromat__td'>{{moment-format row.fields.start_datetime 'YYYY-MM-DD HH:mm'}}</td>
+                                                        <td local-class='Integromat__td'>{{moment-format row.fields.start_datetime 'YYYY-MM-DD HH:mm'}}{{t 'integromat.from_hyphen'}}{{moment-format row.fields.end_datetime 'HH:mm'}}</td>
                                                         <td local-class='Integromat__td_overflow'>
                                                             <a onClick={{action this.makeDetailMeetingDialog row.pk row.fields.meetingid row.fields.join_url row.fields.app row.fields.subject row.fields.organizer_fullname row.fields.attendees row.fields.start_datetime row.fields.end_datetime row.fields.location row.fields.content}}>
                                                                 {{row.fields.subject}}

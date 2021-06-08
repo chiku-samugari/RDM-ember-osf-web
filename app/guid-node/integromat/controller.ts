@@ -861,7 +861,31 @@ export default class GuidNodeIntegromat extends Controller {
             return '';
         }
         const config = this.config.content as IntegromatConfigModel;
-        const upcoming_web_meetings = JSON.parse(config.upcoming_web_meetings);
+        let upcoming_web_meetings = JSON.parse(config.upcoming_web_meetings);
+
+        let previousDatetime = '';
+        let previousDate = '';
+        let currentDatetime = '';
+        let currentDate = '';
+
+        for(let i = 0; i < upcoming_web_meetings.length; i++){
+            if(i = 0){
+                upcoming_web_meetings[i]['date_bar'] = false;
+            }else if(i != 0){
+
+                previousDatetime =new Date(upcoming_web_meetings[i-1].fields.start_datetime);
+                currentDatetime =new Date(upcoming_web_meetings[i].fields.start_datetime);
+
+                previousDate = previousDatetime.getFullYear() + '/' + (previousDatetime.getMonth() + 1) + '/' + previousDatetime.getDate();
+                currentDate = currentDatetime.getFullYear() + '/' + (currentDatetime.getMonth() + 1) + '/' + currentDatetime.getDate();
+
+                if(currentDate != previousDate){
+                    upcoming_web_meetings[i]['date_bar'] = true;
+                }else{
+                    upcoming_web_meetings[i]['date_bar'] = false;
+                }
+            }
+        }
         return upcoming_web_meetings;
     }
 
@@ -871,7 +895,32 @@ export default class GuidNodeIntegromat extends Controller {
             return '';
         }
         const config = this.config.content as IntegromatConfigModel;
-        const previous_web_meetings = JSON.parse(config.previous_web_meetings);
+        let previous_web_meetings = JSON.parse(config.previous_web_meetings);
+
+        let nextDatetime = '';
+        let nextDate = '';
+        let currentDatetime = '';
+        let currentDate = '';
+
+        for(let i = 0; i < previous_web_meetings.length; i++){
+            if(i = 0){
+                previous_web_meetings[i]['date_bar'] = false;
+            }else if(i != 0){
+
+                nextDatetime =new Date(previous_web_meetings[i-1].fields.start_datetime);
+                currentDatetime =new Date(previous_web_meetings[i].fields.start_datetime);
+
+                nextDate = nextDatetime.getFullYear() + '/' + (nextDatetime.getMonth() + 1) + '/' + nextDatetime.getDate();
+                currentDate = currentDatetime.getFullYear() + '/' + (currentDatetime.getMonth() + 1) + '/' + currentDatetime.getDate();
+
+                if(currentDate != nextDate){
+                    previous_web_meetings[i]['date_bar'] = true;
+                }else{
+                    previous_web_meetings[i]['date_bar'] = false;
+                }
+            }
+        }
+
         return previous_web_meetings;
     }
 

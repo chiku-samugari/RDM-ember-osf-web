@@ -118,9 +118,8 @@
                                                             {{log 'itself::' (moment-format row.fields.start_datetime 'YYYY-MM-DD')}}
                                                             {{log 'pre1::' this.upcoming_web_meetings}}
                                                             {{log 'pre1-2::' this.upcoming_web_meetings.[3]}}
-                                                            {{log 'pre1-3::' (math dec index)}}
-                                                            {{log 'pre1-4::' (dec index)}}
-                                                            {{log 'pre1-5::' this.upcoming_web_meetings.[this.decrementProperty(index)]}}
+                                                            {{log 'pre1-3::' (dec index)}}
+                                                            {{log 'pre1-4::' this.upcoming_web_meetings.[this.decrementProperty(index)]}}
                                                             <tr style='background-color: #efefef; padding: 3px; padding-left: 10px;'>
                                                                 <th local-class='Integromat__th' style='padding: 3px; padding-left: 10px;'>{{moment-format row.fields.start_datetime 'll'}}</th>
                                                                 <th></th>

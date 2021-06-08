@@ -113,15 +113,12 @@
                                                             <th></th>
                                                         </tr>
                                                    {{else}}
-                                                       {{#if (not-eq moment-format row.fields.start_datetime 'YYYY-MM-DD' moment-format this.[index-1].fields.start_datetime 'YYYY-MM-DD')}}
+                                                       {{#unless is-same row.fields.start_datetime moment-format this.upcoming_web_meetings.[(math dec index)].fields.start_datetime precision='dates'}}
                                                             {{log 'index::' index}}
                                                             {{log 'itself::' (moment-format row.fields.start_datetime 'YYYY-MM-DD')}}
                                                             {{log 'pre1::' this.upcoming_web_meetings}}
                                                             {{log 'pre1-2::' this.upcoming_web_meetings.[3]}}
-                                                            {{log 'pre1-2::' this.upcoming_web_meetings.[index-1]}}
-                                                            {{log 'pre1-2::' (moment-format this.upcoming_web_meetings.[index-1].fields.start_datetime 'YYYY-MM-DD')}}
-                                                            {{log 'pre2::' this.root}}
-                                                            {{log 'pre3::' root}}
+                                                            {{log 'pre1-3::' this.upcoming_web_meetings.[(math dec index)]}}
                                                             <tr style='background-color: #efefef; padding: 3px; padding-left: 10px;'>
                                                                 <th local-class='Integromat__th' style='padding: 3px; padding-left: 10px;'>{{moment-format row.fields.start_datetime 'll'}}</th>
                                                                 <th></th>
@@ -130,7 +127,7 @@
                                                                 <th></th>
                                                                 <th></th>
                                                             </tr>
-                                                       {{/if}}
+                                                       {{/unless}}
                                                     {{/if}}
                                                     <tr local-class='Integromat__tr'>
                                                         <td local-class='Integromat__td'>{{moment-format row.fields.start_datetime 'YYYY-MM-DD HH:mm'}}</td>

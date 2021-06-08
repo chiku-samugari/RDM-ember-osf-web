@@ -125,7 +125,7 @@
                                                        {{/if}}
                                                     {{/if}}
                                                     <tr local-class='Integromat__tr'>
-                                                        <td local-class='Integromat__td'>{{moment-format row.fields.start_datetime 'YYYY-MM-DD HH:mm'}}{{t 'integromat.from_hyphen'}}{{moment-format row.fields.end_datetime 'HH:mm'}}</td>
+                                                        <td local-class='Integromat__td'>{{moment-format row.fields.start_datetime 'HH:mm'}}{{t 'integromat.from_hyphen'}}{{moment-format row.fields.end_datetime 'HH:mm'}}</td>
                                                         <td local-class='Integromat__td_overflow'>
                                                             <a onClick={{action this.makeDetailMeetingDialog row.pk row.fields.meetingid row.fields.join_url row.fields.app row.fields.subject row.fields.organizer_fullname row.fields.attendees row.fields.start_datetime row.fields.end_datetime row.fields.location row.fields.content}}>
                                                                 {{row.fields.subject}}
@@ -199,7 +199,7 @@
                                                        {{/if}}
                                                     {{/if}}
                                                     <tr local-class='Integromat__tr'>
-                                                        <td local-class='Integromat__td'>{{moment-format row.fields.start_datetime 'YYYY-MM-DD HH:mm'}}{{t 'integromat.from_hyphen'}}{{moment-format row.fields.end_datetime 'HH:mm'}}</td>
+                                                        <td local-class='Integromat__td'>{{moment-format row.fields.start_datetime 'HH:mm'}}{{t 'integromat.from_hyphen'}}{{moment-format row.fields.end_datetime 'HH:mm'}}</td>
                                                         <td local-class='Integromat__td_overflow'>
                                                             <a onClick={{action this.makeDetailMeetingDialog row.pk row.fields.meetingid row.fields.join_url row.fields.app row.fields.subject row.fields.organizer_fullname row.fields.attendees row.fields.start_datetime row.fields.end_datetime row.fields.location row.fields.content}}>
                                                                 {{row.fields.subject}}

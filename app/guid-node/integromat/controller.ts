@@ -869,9 +869,9 @@ export default class GuidNodeIntegromat extends Controller {
         let currentDate = '';
 
         for(let i = 0; i < upcoming_web_meetings.length; i++){
-            if(i = 0){
+            if(i === 0){
                 upcoming_web_meetings[i]['date_bar'] = false;
-            }else if(i != 0){
+            }else if(i !== 0){
 
                 previousDatetime =new Date(upcoming_web_meetings[i-1].fields.start_datetime);
                 currentDatetime =new Date(upcoming_web_meetings[i].fields.start_datetime);
@@ -903,9 +903,9 @@ export default class GuidNodeIntegromat extends Controller {
         let currentDate = '';
 
         for(let i = 0; i < previous_web_meetings.length; i++){
-            if(i = 0){
+            if(i === 0){
                 previous_web_meetings[i]['date_bar'] = false;
-            }else if(i != 0){
+            }else if(i !== 0){
 
                 nextDatetime = new Date(previous_web_meetings[i-1].fields.start_datetime);
                 currentDatetime = new Date(previous_web_meetings[i].fields.start_datetime);

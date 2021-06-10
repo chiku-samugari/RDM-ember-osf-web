@@ -48,7 +48,7 @@
                             {{#each this.workflows as |row|}}
                                 <tr>
                                     <td>
-                                        <a {{action (mut this.showAllWebMeetings) true}} {{action (mut this.showWorkflows) false}}>
+                                        <a {{action (mut this.showWebMeetingWorkflow) true}} {{action (mut this.showWorkflows) false}}>
                                             {{t row.fields.workflow_description}}
                                         </a>
                                     </td>
@@ -62,7 +62,7 @@
                 </div>
             {{/if}}
         </div>
-        {{#if this.showAllWebMeetings}}
+        {{#if this.showWebMeetingWorkflow}}
             <div  data-test-web-meeting-screen class='col-md-9' local-class='Integromat__webApp_screen'>
                 <div id='allWebMeetings' class='main-screen'>
                     <div local-class='Integromat__web_meeting_navbar'>

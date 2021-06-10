@@ -148,7 +148,7 @@ export default class GuidNodeIntegromat extends Controller {
     showDeleteWebMeetingDialog = false;
     showDetailWebMeetingDialog = false;
     showWorkflows = true;
-    showAllWebMeetings = false;
+    showWebMeetingWorkflow = false;
 
     microsoftTeamsMeetings : microsoftTeamsMeetings[] = [];
 
@@ -239,7 +239,7 @@ export default class GuidNodeIntegromat extends Controller {
     @action
     displayWorkflows(this: GuidNodeIntegromat) {
         this.set('showWorkflows', true);
-        this.set('showAllWebMeetings', false);
+        this.set('showWebMeetingWorkflow', false);
     }
 
     @action

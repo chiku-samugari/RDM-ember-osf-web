@@ -827,7 +827,7 @@
 <BsModal
     data-test-register-alternative-webhookurl-modal
     @open={{this.showRegisterWebhookUrl}}
-    @onSubmit={{action this.registerAlternativeWebhookUrl}}
+    @onSubmit={{action this.registerAlternativeWebhook}}
     @onHidden={{action (mut this.showRegisterAlternativeWebhookUrl) false}}
     @onHide={{action this.resetValue}}
     as |modal|

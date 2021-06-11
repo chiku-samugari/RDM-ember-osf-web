@@ -125,7 +125,7 @@ const errorScenarioProcessing = 'integromat.error.scenarioProcessing';
 const startIntegromatScenarioUrl = host + namespace + '/integromat/' + 'start_scenario';
 const reqestMessagesUrl =  host + namespace + '/integromat/' + 'requestNextMessages';
 const nodeUrl =  host + namespace + '/project/';
-const regsterAlternativeWebhookUrl = '/integromat/' + 'register_alternative_webhook_url';
+const registerAlternativeWebhookUrl = '/integromat/' + 'register_alternative_webhook_url';
 const profileUrl = host + '/profile/'
 
 export default class GuidNodeIntegromat extends Controller {
@@ -333,7 +333,7 @@ export default class GuidNodeIntegromat extends Controller {
     }
 
     @action
-    registerAlternativeWebhookUrl(this: GuidNodeIntegromat) {
+    registerAlternativeWebhook(this: GuidNodeIntegromat) {
 
         const url = nodeUrl + String(this.model.guid) + registerAlternativeWebhookUrl;
         const payload = {

@@ -36,24 +36,28 @@
                     <table data-test-workflows-table class='table table-bordered'>
                         <thead>
                             <tr style='background-color: #f5f5f5;'>
-                                <th width='50%'>
+                                <th width='50%' local-class='Integromat__workflows_th_td'>
                                     <span>{{t 'integromat.workflowLabel'}}</span>
                                 </th>
-                                <th width='50%'>
+                                <th width='40%' local-class='Integromat__workflows_th_td'>
                                     <span>{{t 'integromat.integratedAppsLabel'}}</span>
                                 </th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
                             {{#each this.workflows as |row|}}
                                 <tr>
-                                    <td>
+                                    <td local-class='Integromat__workflows_th_td'>
                                         <a {{action (mut this.showWebMeetingWorkflow) true}} {{action (mut this.showWorkflows) false}}>
                                             {{t row.fields.workflow_description}}
                                         </a>
                                     </td>
-                                    <td>
+                                    <td local-class='Integromat__workflows_th_td'>
                                         {{t row.fields.workflow_apps}}
+                                    </td>
+                                    <td>
+                                        <button onClick={{action makeRegisterAlternativeWebhookUrl row.fields.workflow_description}} style='font-size: x-small; white-space: nowrap;'>{{t integromat.workflows.alternative_webhook_url.registerLabel}}</button>
                                     </td>
                                 </tr>
                             {{/each}}
@@ -816,6 +820,48 @@
             @onClick={{action (action this.startMeeting this.webMeetingJoinUrl)}}
         >
             {{t 'integromat.meetingDialog.startBtn'}}
+        </OsfButton>
+    </modal.footer>
+</BsModal>
+
+<BsModal
+    data-test-register-alternative-webhookurl-modal
+    @open={{this.showRegisterWebhookUrl}}
+    @onSubmit={{action this.registerAlternativeWebhookUrl}}
+    @onHidden={{action (mut this.showRegisterAlternativeWebhookUrl) false}}
+    @onHide={{action this.resetValue}}
+    as |modal|
+>
+    <modal.header>
+        <h4 style='font-weight:normal;'>
+            {{t integromat.workflows.alternative_webhook_url.registerLabel}}
+        </h4>
+    </modal.header>
+    <modal.body>
+        <div class='form-group'>
+            <div local-class='Integromat__input_items'>
+                <label>{{t integromat.workflows.alternative_webhook_url.label}}</label>
+                {{input
+                    name='registerAlternativeWebhookUrl'
+                    placeholder=(t 'integromat.workflows.alternative_webhook_url.sample_url')
+                    class='form-control'
+                    type='text'
+                    value=this.alternativeWebhookUrl
+                }}
+            </div>
+        </div>
+    </modal.body>
+    <modal.footer>
+        <BsButton
+            @onClick={{action modal.close}}
+        >
+            {{t 'integromat.meetingDialog.cancelBtn'}}
+        </BsButton>
+        <OsfButton
+            @type='danger'
+            @onClick={{action modal.submit}}
+        >
+            {{t 'integromat.registerBtn'}}
         </OsfButton>
     </modal.footer>
 </BsModal>

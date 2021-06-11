@@ -124,6 +124,7 @@ const errorScenarioProcessing = 'integromat.error.scenarioProcessing';
 
 const startIntegromatScenarioUrl = host + namespace + '/integromat/' + 'start_scenario';
 const reqestMessagesUrl =  host + namespace + '/integromat/' + 'requestNextMessages';
+const registerAlternativeWebhookUrl =  host + namespace + '/integromat/' + 'register_alternative_webhook_url';
 const profileUrl = host + '/profile/'
 
 export default class GuidNodeIntegromat extends Controller {
@@ -149,6 +150,7 @@ export default class GuidNodeIntegromat extends Controller {
     showDetailWebMeetingDialog = false;
     showWorkflows = true;
     showWebMeetingWorkflow = false;
+    showRegisterWebhookUrl = false;
 
     microsoftTeamsMeetings : microsoftTeamsMeetings[] = [];
 
@@ -179,6 +181,8 @@ export default class GuidNodeIntegromat extends Controller {
     webMeetingDeleteEndTime = '';
     webMeetingJoinUrl = '';
     webMeetingPassword = '';
+
+    workflowDescription = '';
 
     teamsMeetingAttendees : string[] = [];
     notTeamsMeetingAttendees : string[] = [];
@@ -309,6 +313,47 @@ export default class GuidNodeIntegromat extends Controller {
             this.set('webMeetingDeleteEndTime', '');
 
         }
+    }
+
+    @action
+    resetValue(this: GuidNodeIntegromat, v: string, action: string) {
+
+        this.set('workflowDescription', '');
+        this.set('showRegisterWebhookUrl', '');
+        this.set('showRegisterWebhookUrl', false);
+    }
+
+    @action
+    makeRegisterAlternativeWebhookUrl(this: GuidNodeIntegromat, workflow_description: string) {
+
+        this.set('workflowDescription', 'workflow_description');
+        this.set('showRegisterWebhookUrl', true);
+    }
+
+    @action
+    registerAlternativeWebhookUrl(this: GuidNodeIntegromat) {
+
+        const url = registerAlternativeWebhookUrl;
+        const payload = {
+            'workflowDescription': this.workflowDescription,
+            'alternativeWebhookUrl': this.alternativeWebhookUrl,
+        };
+
+        return fetch(
+            url,
+            {
+                method: 'POST',
+                headers:{
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+        })
+        .then(data => {
+                this.toast.info(this.i18n.t('integromat.success.regsterAlternativeWebhookUrl'));
+            })
+            .catch(() => {
+                this.toast.error(this.i18n.t('integromat.error.failedToRequest'));
+            })
     }
 
     @action

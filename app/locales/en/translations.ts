@@ -1822,8 +1822,6 @@ export default {
         previous: 'Previous',
         noUpcomingMeetings: 'No upcoming meetings are registered.',
         noPreviousMeetings: 'No previous meetings are registered.',
-        select_one: 'Select one meeting information.',
-        select_one_or_more: 'Select one or more meeting information.',
         categoryLabel: 'categories',
         categoryDesp: 'Categories are classification of workflows.',
         workflowListLabel: 'All Workflow',
@@ -1833,6 +1831,7 @@ export default {
             createLabel: 'Create Meeting',
             updateLabel: 'Update Meeting',
             deleteLabel: 'Delete Meeting',
+            startLabel: 'Start Meeting',
             createHeader: 'Create {{appName}} Meeting',
             updateHeader: 'Update {{appName}} Meeting',
             deleteHeader: 'Delete {{appName}} Meeting',
@@ -1857,6 +1856,11 @@ export default {
                 description: 'Meeting action(regster, update,delete etc...) for web meeting apps, then notify slack messages.',
                 apps: 'GakuNinRDM, Web Meeting Apps, Slack',
             },
+            alternative_webhook_url: {
+                registerLabel: 'webhook登録',
+                label: 'webhook URL',
+                sample_url: 'https://hook.integromat.com/...'
+            },
         },
         subject: 'Subject',
         organizer: 'Organizer',
@@ -1869,6 +1873,7 @@ export default {
         from_tilde: ' ～ ',
         from_hyphen: ' - ',
         colon: ':',
+        registerBtn: '登録',
         info: {
             launch: 'Launching workflow.',
             started: 'The workflow has started.',

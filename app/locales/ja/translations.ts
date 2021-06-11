@@ -1978,8 +1978,6 @@ export default {
         previous: '過去の会議',
         noUpcomingMeetings: '今後の会議が登録されていません。',
         noPreviousMeetings: '過去の会議が登録されていません。',
-        select_one: '会議情報を1つ選択してください',
-        select_one_or_more: '会議情報を１つ以上選択してください',
         categoryLabel: 'カテゴリ',
         categoryDesp: 'ワークフローをカテゴリに分類できます',
         workflowListLabel: '全てのワークフロー',
@@ -1989,6 +1987,7 @@ export default {
             createLabel: '会議作成',
             updateLabel: '会議更新',
             deleteLabel: '会議削除',
+            startLabel: '会議開始',
             createHeader: '{{appName}}会議作成',
             updateHeader: '{{appName}}会議更新',
             deleteHeader: '{{appName}}会議削除',
@@ -2013,6 +2012,11 @@ export default {
                 description: 'ウェブ会議登録などをしてSlackにメッセージを通知する',
                 apps: 'GakuNinRDM, Web Meeting Apps, Slack',
             },
+            alternative_webhook_url: {
+                registerLabel: 'webhook登録',
+                label: 'webhook URL',
+                sample_url: 'https://hook.integromat.com/...'
+            },
         },
         subject: 'タイトル',
         organizer: '開催者',
@@ -2025,6 +2029,10 @@ export default {
         from_tilde: ' ～ ',
         from_hyphen: ' - ',
         colon: '：',
+        registerBtn: '登録',
+        success: {
+            regsterAlternativeWebhookUrl: 'webhook登録に成功しました。',
+        },
         info: {
             launch: 'ワークフローを起動しています。',
             started: 'ワークフローを開始しました。',

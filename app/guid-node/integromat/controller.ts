@@ -6,6 +6,8 @@ import { reads } from '@ember-decorators/object/computed';
 import { service } from '@ember-decorators/service';
 import config from 'ember-get-config';
 
+import CurrentUser from 'ember-osf-web/services/current-user';
+
 import DS from 'ember-data';
 import moment from 'moment';
 import IntegromatConfigModel from 'ember-osf-web/models/integromat-config';
@@ -340,7 +342,7 @@ export default class GuidNodeIntegromat extends Controller {
             'alternativeWebhookUrl': this.alternativeWebhookUrl,
         };
 
-        const data = yield this.currentUser.authenticatedAJAX(registerAlternativeWebhookUrl);
+        const data = yield this.currentUser.authenticatedAJAX({ registerAlternativeWebhookUrl });
 
         return fetch(
             registerAlternativeWebhookUrl,

@@ -124,8 +124,7 @@ const errorScenarioProcessing = 'integromat.error.scenarioProcessing';
 
 const startIntegromatScenarioUrl = host + namespace + '/integromat/' + 'start_scenario';
 const reqestMessagesUrl =  host + namespace + '/integromat/' + 'requestNextMessages';
-const nodeUrl =  host + namespace + '/project/';
-const registerAlternativeWebhookUrl = '/integromat/' + 'register_alternative_webhook_url';
+const registerAlternativeWebhookUrl =  host + namespace + '/integromat/' + 'register_alternative_webhook_url';
 const profileUrl = host + '/profile/'
 
 export default class GuidNodeIntegromat extends Controller {
@@ -133,6 +132,7 @@ export default class GuidNodeIntegromat extends Controller {
     @service statusMessages!: StatusMessages;
     @service analytics!: Analytics;
     @service i18n!: I18N;
+    @service currentUser!: CurrentUser;
 
     @reads('model.taskInstance.value')
     node?: Node;
@@ -335,14 +335,15 @@ export default class GuidNodeIntegromat extends Controller {
     @action
     registerAlternativeWebhook(this: GuidNodeIntegromat) {
 
-        const url = nodeUrl + String(this.model.guid) + registerAlternativeWebhookUrl;
         const payload = {
             'workflowDescription': this.workflowDescription,
             'alternativeWebhookUrl': this.alternativeWebhookUrl,
         };
 
+        const data = yield this.currentUser.authenticatedAJAX(registerAlternativeWebhookUrl);
+
         return fetch(
-            url,
+            registerAlternativeWebhookUrl,
             {
                 method: 'POST',
                 headers:{

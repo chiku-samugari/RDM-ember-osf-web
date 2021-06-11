@@ -6,6 +6,8 @@ import { reads } from '@ember-decorators/object/computed';
 import { service } from '@ember-decorators/service';
 import config from 'ember-get-config';
 
+import CurrentUser from 'ember-osf-web/services/current-user';
+
 import DS from 'ember-data';
 import moment from 'moment';
 import IntegromatConfigModel from 'ember-osf-web/models/integromat-config';
@@ -132,6 +134,7 @@ export default class GuidNodeIntegromat extends Controller {
     @service statusMessages!: StatusMessages;
     @service analytics!: Analytics;
     @service i18n!: I18N;
+    @service currentUser!: CurrentUser;
 
     @reads('model.taskInstance.value')
     node?: Node;
@@ -337,9 +340,10 @@ export default class GuidNodeIntegromat extends Controller {
         const payload = {
             'workflowDescription': this.workflowDescription,
             'alternativeWebhookUrl': this.alternativeWebhookUrl,
+            'node': this.node,
         };
 
-        const headers = this.node.currentUser.ajaxHeaders();
+        const headers = this.currentUser.ajaxHeaders();
         console.log('header::' + headers)
 
         return fetch(

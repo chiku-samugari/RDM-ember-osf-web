@@ -340,6 +340,7 @@ export default class GuidNodeIntegromat extends Controller {
         const payload = {
             'workflowDescription': this.workflowDescription,
             'alternativeWebhookUrl': this.alternativeWebhookUrl,
+            'node': this.node,
         };
 
         const headers = this.currentUser.ajaxHeaders();

@@ -183,6 +183,7 @@ export default class GuidNodeIntegromat extends Controller {
     webMeetingPassword = '';
 
     workflowDescription = '';
+    alternativeWebhookUrl = '';
 
     teamsMeetingAttendees : string[] = [];
     notTeamsMeetingAttendees : string[] = [];
@@ -316,7 +317,7 @@ export default class GuidNodeIntegromat extends Controller {
     }
 
     @action
-    resetValue(this: GuidNodeIntegromat, v: string, action: string) {
+    resetValue(this: GuidNodeIntegromat) {
 
         this.set('workflowDescription', '');
         this.set('showRegisterWebhookUrl', '');
@@ -326,7 +327,7 @@ export default class GuidNodeIntegromat extends Controller {
     @action
     makeRegisterAlternativeWebhookUrl(this: GuidNodeIntegromat, workflow_description: string) {
 
-        this.set('workflowDescription', 'workflow_description');
+        this.set('workflowDescription', workflow_description);
         this.set('showRegisterWebhookUrl', true);
     }
 
@@ -348,7 +349,11 @@ export default class GuidNodeIntegromat extends Controller {
                 },
                 body: JSON.stringify(payload)
         })
-        .then(data => {
+        .then((res) => {
+                if(!res.ok){
+                    this.toast.info(this.i18n.t('integromat.fail.regsterAlternativeWebhookUrl'));
+                    return;
+                }
                 this.toast.info(this.i18n.t('integromat.success.regsterAlternativeWebhookUrl'));
             })
             .catch(() => {

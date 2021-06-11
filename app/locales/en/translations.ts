@@ -1874,6 +1874,12 @@ export default {
         from_hyphen: ' - ',
         colon: ':',
         registerBtn: '登録',
+        success: {
+            registerAlternativeWebhookUrl: 'Success to register webhook URL to the workflow.',
+        },
+        fail: {
+            registerAlternativeWebhookUrl: 'Failed to register webhook URL to the workflow.',
+        },
         info: {
             launch: 'Launching workflow.',
             started: 'The workflow has started.',

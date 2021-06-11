@@ -2031,7 +2031,10 @@ export default {
         colon: '：',
         registerBtn: '登録',
         success: {
-            regsterAlternativeWebhookUrl: 'webhook登録に成功しました。',
+            registerAlternativeWebhookUrl: 'webhook登録に成功しました。',
+        },
+        fail: {
+            registerAlternativeWebhookUrl: 'webhook登録に失敗しました。',
         },
         info: {
             launch: 'ワークフローを起動しています。',

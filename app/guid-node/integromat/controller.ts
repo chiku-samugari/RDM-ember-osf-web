@@ -342,7 +342,8 @@ export default class GuidNodeIntegromat extends Controller {
             'alternativeWebhookUrl': this.alternativeWebhookUrl,
         };
 
-        const data = yield this.currentUser.authenticatedAJAX({ registerAlternativeWebhookUrl });
+        const header = this.currentUser.ajaxHeaders();
+        console.log('header::' + header)
 
         return fetch(
             registerAlternativeWebhookUrl,

@@ -351,10 +351,10 @@ export default class GuidNodeIntegromat extends Controller {
         })
         .then((res) => {
                 if(!res.ok){
-                    this.toast.info(this.i18n.t('integromat.fail.regsterAlternativeWebhookUrl'));
+                    this.toast.error(this.i18n.t('integromat.fail.registerAlternativeWebhookUrl'));
                     return;
                 }
-                this.toast.info(this.i18n.t('integromat.success.regsterAlternativeWebhookUrl'));
+                this.toast.info(this.i18n.t('integromat.success.registerAlternativeWebhookUrl'));
             })
             .catch(() => {
                 this.toast.error(this.i18n.t('integromat.error.failedToRequest'));

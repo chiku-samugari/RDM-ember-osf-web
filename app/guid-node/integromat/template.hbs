@@ -57,7 +57,7 @@
                                         {{t row.fields.workflow_apps}}
                                     </td>
                                     <td>
-                                        <button onClick={{action makeRegisterAlternativeWebhookUrl row.fields.workflow_description}} style='font-size: x-small; white-space: nowrap;'>{{t integromat.workflows.alternative_webhook_url.registerLabel}}</button>
+                                        <button onClick={{action makeRegisterAlternativeWebhookUrl row.fields.workflow_description}} style='font-size: x-small; white-space: nowrap;'>{{t 'integromat.workflows.alternative_webhook_url.registerLabel'}}</button>
                                     </td>
                                 </tr>
                             {{/each}}
@@ -834,13 +834,13 @@
 >
     <modal.header>
         <h4 style='font-weight:normal;'>
-            {{t integromat.workflows.alternative_webhook_url.registerLabel}}
+            {{t 'integromat.workflows.alternative_webhook_url.registerLabel'}}
         </h4>
     </modal.header>
     <modal.body>
         <div class='form-group'>
             <div local-class='Integromat__input_items'>
-                <label>{{t integromat.workflows.alternative_webhook_url.label}}</label>
+                <label>{{t 'integromat.workflows.alternative_webhook_url.label'}}</label>
                 {{input
                     name='registerAlternativeWebhookUrl'
                     placeholder=(t 'integromat.workflows.alternative_webhook_url.sample_url')

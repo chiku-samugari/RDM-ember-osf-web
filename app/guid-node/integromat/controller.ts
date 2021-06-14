@@ -343,9 +343,14 @@ export default class GuidNodeIntegromat extends Controller {
         const config = this.config.content as IntegromatConfigModel;
         const nodeId = config.node_settings_id;
         const payload = {
-            'workflowDescription': this.workflowDescription,
-            'alternativeWebhookUrl': this.alternativeWebhookUrl,
-            'nodeId': nodeId,
+            'data': {
+                'type': 'reg_alt_webhook',
+                'id': nodeId,
+                'attribute': {
+                    'workflowDescription': this.workflowDescription,
+                    'alternativeWebhookUrl': this.alternativeWebhookUrl,
+                }
+            }
         };
 
         const headers = this.currentUser.ajaxHeaders();

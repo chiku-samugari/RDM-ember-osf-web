@@ -49,7 +49,7 @@
                             {{#each this.workflows as |row|}}
                                 <tr>
                                     <td local-class='Integromat__workflows_th_td'>
-                                        <a {{action (mut this.showWebMeetingWorkflow) true}} {{action (mut this.showWorkflows) false}}>
+                                        <a {{action this.setWorkflow row.fields.workflow_description}}>
                                             {{t row.fields.workflow_description}}
                                         </a>
                                     </td>

@@ -251,6 +251,19 @@ export default class GuidNodeIntegromat extends Controller {
     }
 
     @action
+    setWorkflow(this: GuidNodeIntegromat, workflow_desp: string) {
+
+        workflow = workflow_desp.split('.')[2];
+
+        if(workflow === 'web_meeting'){
+
+            this.set('this.showWorkflows', false);
+            this.set('showWebMeetingWorkflow', true);
+
+        }
+    }
+
+    @action
     setWebMeetingApp(this: GuidNodeIntegromat, v: string, action: string) {
 
         if (!this.config) {
@@ -287,8 +300,7 @@ export default class GuidNodeIntegromat extends Controller {
             this.set('webMeetingAppNameDisp', appNameDisp);
 
         }else if (!v && !action){
-            this.set('webMeetingAppName', '');
-            this.set('webMeetingAppNameDisp', '');
+
             this.set('showCreateMicrosoftTeamsMeetingDialog', false);
             this.set('showCreateWebexMeetingDialog', false);
             this.set('showUpdateMicrosoftTeamsMeetingDialog', false);
@@ -296,8 +308,11 @@ export default class GuidNodeIntegromat extends Controller {
             this.set('showDeleteWebMeetingDialog', false);
             this.set('showDetailWebMeetingDialog', false);
 
+            this.set('webMeetingAppName', '');
+            this.set('webMeetingAppNameDisp', '');
             this.set('webMeetingPk', '');
             this.set('webMeetingSubject', '');
+            this.set('webMeetingOrganizerFullname', '');
             this.set('webMeetingAttendees', 0);
             this.set('webMeetingStartDate', '');
             this.set('webMeetingStartTime', '');
@@ -308,14 +323,12 @@ export default class GuidNodeIntegromat extends Controller {
             this.set('webMeetingUpdateMeetingId', '');
             this.set('webMeetingJoinUrl', '');
             this.set('webMeetingPassword', '');
-
             this.set('webMeetingDeleteMeetingId', '');
             this.set('webMeetingDeleteSubject', '');
             this.set('webMeetingDeleteStartDate', '');
             this.set('webMeetingDeleteStartTime', '');
             this.set('webMeetingDeleteEndDate', '');
             this.set('webMeetingDeleteEndTime', '');
-
         }
     }
 

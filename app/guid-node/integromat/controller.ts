@@ -340,7 +340,7 @@ export default class GuidNodeIntegromat extends Controller {
         if (!this.config) {
             throw new EmberError('Illegal config');
         }
-
+        const config = this.config.content as IntegromatConfigModel;
         const nodeId = config.node_settings_id;
         const payload = {
             'workflowDescription': this.workflowDescription,

@@ -253,7 +253,7 @@ export default class GuidNodeIntegromat extends Controller {
     @action
     setWorkflow(this: GuidNodeIntegromat, workflow_desp: string) {
 
-        workflow = workflow_desp.split('.')[2];
+        const workflow = workflow_desp.split('.')[2];
 
         if(workflow === 'web_meeting'){
 

@@ -257,7 +257,7 @@ export default class GuidNodeIntegromat extends Controller {
 
         if(workflow === 'web_meeting'){
 
-            this.set('this.showWorkflows', false);
+            this.set('showWorkflows', false);
             this.set('showWebMeetingWorkflow', true);
 
         }

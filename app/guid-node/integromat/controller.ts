@@ -262,8 +262,8 @@ export default class GuidNodeIntegromat extends Controller {
         }
 
         const config = this.config.content as IntegromatConfigModel;
-        const workflows = config.workflows;
-        const nodeWorkflows = config.node_workflows;
+        const workflows = JSON.parse(config.workflows);
+        const nodeWorkflows = JSON.parse(config.node_workflows);
 
         let workflowId = '';
         let url = '' ;

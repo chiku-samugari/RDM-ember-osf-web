@@ -153,7 +153,7 @@ export default class GuidNodeIntegromat extends Controller {
     showDetailWebMeetingDialog = false;
     showWorkflows = true;
     showWebMeetingWorkflow = false;
-    showRegisterWebhookUrl = false;
+    showRegisterAlternativeWebhookUrl = false;
 
     microsoftTeamsMeetings : microsoftTeamsMeetings[] = [];
 
@@ -336,15 +336,15 @@ export default class GuidNodeIntegromat extends Controller {
     resetValue(this: GuidNodeIntegromat) {
 
         this.set('workflowDescription', '');
-        this.set('showRegisterWebhookUrl', '');
-        this.set('showRegisterWebhookUrl', false);
+        this.set('showRegisterAlternativeWebhookUrl', '');
+        this.set('showRegisterAlternativeWebhookUrl', false);
     }
 
     @action
     makeRegisterAlternativeWebhookUrl(this: GuidNodeIntegromat, workflow_description: string) {
 
         this.set('workflowDescription', workflow_description);
-        this.set('showRegisterWebhookUrl', true);
+        this.set('showRegisterAlternativeWebhookUrl', true);
     }
 
     @action

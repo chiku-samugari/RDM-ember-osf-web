@@ -36,10 +36,10 @@
                     <table data-test-workflows-table class='table table-bordered'>
                         <thead>
                             <tr style='background-color: #f5f5f5;'>
-                                <th width='50%' local-class='Integromat__workflows_th_td'>
+                                <th width='50%' style='border-right: 1px solid transparent;'>
                                     <span>{{t 'integromat.workflowLabel'}}</span>
                                 </th>
-                                <th width='40%' local-class='Integromat__workflows_th_td'>
+                                <th width='40%' style='border-right: 1px solid transparent;'>
                                     <span>{{t 'integromat.integratedAppsLabel'}}</span>
                                 </th>
                                 <th></th>
@@ -48,12 +48,12 @@
                         <tbody>
                             {{#each this.workflows as |row|}}
                                 <tr>
-                                    <td local-class='Integromat__workflows_th_td'>
+                                    <td style='border-right: 1px solid transparent;'>
                                         <a {{action this.setWorkflow row.fields.workflow_description}}>
                                             {{t row.fields.workflow_description}}
                                         </a>
                                     </td>
-                                    <td local-class='Integromat__workflows_th_td'>
+                                    <td style='border-right: 1px solid transparent;'>
                                         {{t row.fields.workflow_apps}}
                                     </td>
                                     <td>

@@ -184,6 +184,7 @@ export default class GuidNodeIntegromat extends Controller {
     webMeetingDeleteEndTime = '';
     webMeetingJoinUrl = '';
     webMeetingPassword = '';
+    webhookUrl = '';
 
     workflowDescription = '';
     alternativeWebhookUrl = '';
@@ -248,18 +249,44 @@ export default class GuidNodeIntegromat extends Controller {
     displayWorkflows(this: GuidNodeIntegromat) {
         this.set('showWorkflows', true);
         this.set('showWebMeetingWorkflow', false);
+        this.set('webhookUrl', '');
     }
 
     @action
     setWorkflow(this: GuidNodeIntegromat, workflow_desp: string) {
 
-        const workflow = workflow_desp.split('.')[2];
+        const workflowType = workflow_desp.split('.')[2];
 
-        if(workflow === 'web_meeting'){
+        if (!this.config) {
+            throw new EmberError('Illegal config');
+        }
+
+        const config = this.config.content as IntegromatConfigModel;
+        const workflows = config.workflows;
+        const nodeWorkflows = config.node_workflows;
+
+        let workflowId = '';
+        let url = '' ;
+
+        for(let i = 0; i < workflows.length; i++){
+            if(workflows[i].fields.workflow_description === workflow_desp){
+                workflowId = workflows[i].pk
+                for(let j = 0; j < nodeWorkflows.length; j++){
+                    if(nodeWorkflows[j].fields.workflow === workflowId){
+                        if(!nodeWorkflows[j].fields.scenarios){
+                            url = nodeWorkflows[j].fields.alternative_webhook_url
+                        }
+                    }
+                }
+            }
+        }
+
+        this.set('webhookUrl', url);
+
+        if(workflowType === 'web_meeting'){
 
             this.set('showWorkflows', false);
             this.set('showWebMeetingWorkflow', true);
-
         }
     }
 
@@ -395,7 +422,7 @@ export default class GuidNodeIntegromat extends Controller {
         }
 
         const config = this.config.content as IntegromatConfigModel;
-        const webhookUrl = config.webhook_url;
+        const webhookUrl = this.webhookUrl;
         const node_id = config.node_settings_id;
         const appName = this.webMeetingAppName;
         const appNameDisp = this.webMeetingAppNameDisp;
@@ -576,7 +603,7 @@ export default class GuidNodeIntegromat extends Controller {
             throw new EmberError('Illegal config');
         }
         const config = this.config.content as IntegromatConfigModel;
-        const webhookUrl = config.webhook_url;
+        const webhookUrl = this.webhookUrl;;
         const node_id = config.node_settings_id;
         const appName = this.webMeetingAppName;
         const appNameDisp = this.webMeetingAppNameDisp;
@@ -745,7 +772,7 @@ export default class GuidNodeIntegromat extends Controller {
         }
 
         const config = this.config.content as IntegromatConfigModel;
-        const webhookUrl = config.webhook_url;
+        const webhookUrl = this.webhookUrl;
         const nodeId = config.node_settings_id;
         const appName = this.webMeetingAppName;
         const appNameDisp = this.webMeetingAppNameDisp;

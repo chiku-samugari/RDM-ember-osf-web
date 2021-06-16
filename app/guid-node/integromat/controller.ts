@@ -396,6 +396,8 @@ export default class GuidNodeIntegromat extends Controller {
         const headers = this.currentUser.ajaxHeaders();
         console.log('header::' + headers)
 
+        url = host + namespace + '/project/' + String(this.model.guid) + '/integromat/' + 'register_alternative_webhook_url';
+
         return fetch(
             registerAlternativeWebhookUrl,
             {

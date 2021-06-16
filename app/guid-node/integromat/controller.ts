@@ -378,10 +378,6 @@ export default class GuidNodeIntegromat extends Controller {
     @action
     registerAlternativeWebhook(this: GuidNodeIntegromat) {
 
-        if (!this.config) {
-            throw new EmberError('Illegal config');
-        }
-        const config = this.config.content as IntegromatConfigModel;
         const headers = this.currentUser.ajaxHeaders();
         const url = registerAlternativeWebhookUrl.replace('{}', String(this.model.guid));
         const payload = {

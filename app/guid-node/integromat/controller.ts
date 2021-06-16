@@ -33,7 +33,6 @@ interface microsoftTeamsMeetings {
 }
 
 interface reqBody {
-    nodeId: string;
     timestamp: string;
 }
 
@@ -384,7 +383,6 @@ export default class GuidNodeIntegromat extends Controller {
         }
         const config = this.config.content as IntegromatConfigModel;
         const headers = this.currentUser.ajaxHeaders();
-        const nodeId = config.node_settings_id;
         const url = registerAlternativeWebhookUrl.replace('{}', String(this.model.guid));
         const payload = {
             'workflowDescription': this.workflowDescription,

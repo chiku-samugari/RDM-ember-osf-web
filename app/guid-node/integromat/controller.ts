@@ -366,7 +366,6 @@ export default class GuidNodeIntegromat extends Controller {
     resetValue(this: GuidNodeIntegromat) {
 
         this.set('workflowDescription', '');
-        this.set('showRegisterAlternativeWebhookUrl', '');
         this.set('showRegisterAlternativeWebhookUrl', false);
     }
 
@@ -397,6 +396,8 @@ export default class GuidNodeIntegromat extends Controller {
                 }
             }
         };
+
+        this.set('showRegisterAlternativeWebhookUrl', false);
 
         return fetch(
             url,
@@ -507,7 +508,6 @@ export default class GuidNodeIntegromat extends Controller {
         };
 
         this.set('showCreateWebMeetingDialog', false);
-        this.setWebMeetingApp('','');
 
         return this.reqLaunch(startIntegromatScenarioUrl, payload, appNameDisp);
     }
@@ -688,10 +688,6 @@ export default class GuidNodeIntegromat extends Controller {
             }
         }
 
-        this.set('webMeetingUpdateMeetingId', '');
-        this.set('showUpdateWebMeetingDialog', false);
-        this.setWebMeetingApp('','');
-
         const payload = {
             'nodeId': node_id,
             'appName': appName,
@@ -730,7 +726,7 @@ export default class GuidNodeIntegromat extends Controller {
             'timestamp': timestamp,
         };
 
-        this.set('showUpdateMicrosoftTeamsMeetingDialog', false);
+        this.set('showUpdateWebMeetingDialog', false);
 
         return this.reqLaunch(startIntegromatScenarioUrl, payload, appName);
     }
@@ -841,7 +837,7 @@ export default class GuidNodeIntegromat extends Controller {
             'timestamp': timestamp,
         };
 
-        this.setWebMeetingApp('', '');
+        this.set('showDeleteWebMeetingDialog', false);
 
         return this.reqLaunch(startIntegromatScenarioUrl, payload, appNameDisp);
     }

@@ -124,9 +124,12 @@ const errorGrdmDeleteMeetingInfo = 'integromat.error.grdmDeleteMeeting';
 const errorSlackDeleteMeeting = 'integromat.error.slackDeleteMeeting';
 const errorScenarioProcessing = 'integromat.error.scenarioProcessing';
 
-const startIntegromatScenarioUrl = host + namespace + '/integromat/' + 'start_scenario';
-const reqestMessagesUrl =  host + namespace + '/integromat/' + 'requestNextMessages';
-const registerAlternativeWebhookUrl = host + namespace + '/project/' + '{}' + '/integromat/' + 'register_alternative_webhook_url';
+
+const nodeUrl = host + namespace + '/project/' + '{}';
+const integromatDir = '/integromat'
+const startIntegromatScenarioUrl = nodeUrl + integromatDir + '/start_scenario';
+const reqestMessagesUrl =  nodeUrl + integromatDir + '/requestNextMessages';
+const registerAlternativeWebhookUrl = nodeUrl + integromatDir + '/register_alternative_webhook_url';
 const profileUrl = host + '/profile/'
 
 export default class GuidNodeIntegromat extends Controller {
@@ -394,7 +397,7 @@ export default class GuidNodeIntegromat extends Controller {
             }
         };
 
-		registerAlternativeWebhookUrl = registerAlternativeWebhookUrl.replace('{}', String(this.model.guid));
+        registerAlternativeWebhookUrl = registerAlternativeWebhookUrl.replace('{}', String(this.model.guid));
         return fetch(
             registerAlternativeWebhookUrl,
             {
@@ -885,14 +888,14 @@ export default class GuidNodeIntegromat extends Controller {
     reqLaunch(url: string, payload: payload, appName: string){
 
         this.toast.info(this.i18n.t('integromat.info.launch'))
+        const headers = this.currentUser.ajaxHeaders();
+        url = url.replace('{}', String(this.model.guid));
 
         return fetch(
             url,
             {
                 method: 'POST',
-                headers:{
-                    'Content-Type': 'application/json'
-                },
+                headers,
                 body: JSON.stringify(payload)
         })
         .then(res => res.json())
@@ -915,13 +918,14 @@ export default class GuidNodeIntegromat extends Controller {
 
     reqMessage(url: string, reqBody: reqBody, appName: string) {
 
+        const headers = this.currentUser.ajaxHeaders();
+        url = url.replace('{}', String(this.model.guid));
+
         return fetch(
             url,
             {
                 method: 'POST',
-                headers:{
-                    'Content-Type': 'application/json'
-                },
+                headers,
                 body: JSON.stringify(reqBody)
         })
         .then(res => res.json())

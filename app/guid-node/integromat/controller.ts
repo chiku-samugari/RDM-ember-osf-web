@@ -399,7 +399,7 @@ export default class GuidNodeIntegromat extends Controller {
         const url = host + namespace + '/project/' + String(this.model.guid) + '/integromat/' + 'register_alternative_webhook_url';
 
         return fetch(
-            registerAlternativeWebhookUrl,
+            url,
             {
                 method: 'POST',
                 headers,

@@ -330,6 +330,9 @@ export default class GuidNodeIntegromat extends Controller {
 
         }else if (!v && !action){
 
+            this.set('showCreateWebMeetingDialog', false);
+            this.set('showUpdateWebMeetingDialog', false);
+            this.set('showDeleteWebMeetingDialog', false);
             this.set('showCreateMicrosoftTeamsMeetingDialog', false);
             this.set('showCreateWebexMeetingDialog', false);
             this.set('showUpdateMicrosoftTeamsMeetingDialog', false);

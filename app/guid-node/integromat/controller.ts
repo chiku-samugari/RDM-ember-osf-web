@@ -507,7 +507,7 @@ export default class GuidNodeIntegromat extends Controller {
             'timestamp': timestamp,
         };
 
-        this.set('showCreateWebMeetingDialog', false);
+        this.setWebMeetingApp('', '');
 
         return this.reqLaunch(startIntegromatScenarioUrl, payload, appNameDisp);
     }
@@ -726,7 +726,7 @@ export default class GuidNodeIntegromat extends Controller {
             'timestamp': timestamp,
         };
 
-        this.set('showUpdateWebMeetingDialog', false);
+        this.setWebMeetingApp('', '');
 
         return this.reqLaunch(startIntegromatScenarioUrl, payload, appName);
     }
@@ -837,7 +837,7 @@ export default class GuidNodeIntegromat extends Controller {
             'timestamp': timestamp,
         };
 
-        this.set('showDeleteWebMeetingDialog', false);
+        this.setWebMeetingApp('', '');
 
         return this.reqLaunch(startIntegromatScenarioUrl, payload, appNameDisp);
     }

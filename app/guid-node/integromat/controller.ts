@@ -387,14 +387,8 @@ export default class GuidNodeIntegromat extends Controller {
         const nodeId = config.node_settings_id;
         const url = registerAlternativeWebhookUrl.replace('{}', String(this.model.guid));
         const payload = {
-            'data': {
-                'type': 'reg_alt_webhook',
-                'id': nodeId,
-                'attribute': {
-                    'workflowDescription': this.workflowDescription,
-                    'alternativeWebhookUrl': this.alternativeWebhookUrl,
-                }
-            }
+            'workflowDescription': this.workflowDescription,
+            'alternativeWebhookUrl': this.alternativeWebhookUrl,
         };
 
         this.set('showRegisterAlternativeWebhookUrl', false);

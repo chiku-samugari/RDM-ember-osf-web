@@ -126,7 +126,7 @@ const errorScenarioProcessing = 'integromat.error.scenarioProcessing';
 
 const startIntegromatScenarioUrl = host + namespace + '/integromat/' + 'start_scenario';
 const reqestMessagesUrl =  host + namespace + '/integromat/' + 'requestNextMessages';
-const registerAlternativeWebhookUrl =  host + namespace + '/integromat/' + 'register_alternative_webhook_url';
+const registerAlternativeWebhookUrl = host + namespace + '/project/' + '{}' + '/integromat/' + 'register_alternative_webhook_url';
 const profileUrl = host + '/profile/'
 
 export default class GuidNodeIntegromat extends Controller {
@@ -381,6 +381,7 @@ export default class GuidNodeIntegromat extends Controller {
             throw new EmberError('Illegal config');
         }
         const config = this.config.content as IntegromatConfigModel;
+        const headers = this.currentUser.ajaxHeaders();
         const nodeId = config.node_settings_id;
         const payload = {
             'data': {
@@ -393,13 +394,9 @@ export default class GuidNodeIntegromat extends Controller {
             }
         };
 
-        const headers = this.currentUser.ajaxHeaders();
-        console.log('header::' + headers)
-
-        const url = host + namespace + '/project/' + String(this.model.guid) + '/integromat/' + 'register_alternative_webhook_url';
-        console.log(registerAlternativeWebhookUrl)
+		registerAlternativeWebhookUrl = registerAlternativeWebhookUrl.replace('{}', String(this.model.guid));
         return fetch(
-            url,
+            registerAlternativeWebhookUrl,
             {
                 method: 'POST',
                 headers,

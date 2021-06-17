@@ -33,6 +33,7 @@ interface microsoftTeamsMeetings {
 }
 
 interface reqBody {
+    nodeId: string;
     timestamp: string;
 }
 
@@ -892,6 +893,7 @@ export default class GuidNodeIntegromat extends Controller {
                 }else{
                     this.toast.info(this.i18n.t(data.integromatMsg))
                     let reqBody = {
+                        'nodeId': data.nodeId,
                         'timestamp': data.timestamp,
                     }
                     this.reqMessage(reqestMessagesUrl, reqBody, appName)
@@ -927,6 +929,7 @@ export default class GuidNodeIntegromat extends Controller {
                     this.toast.info(this.i18n.t(data.integromatMsg));
                 }
                 let reqBody = {
+                    'nodeId': data.nodeId,
                     'timestamp': data.timestamp
                 }
                 this.reqMessage(url, reqBody, appName)

@@ -33,6 +33,7 @@ interface microsoftTeamsMeetings {
 }
 
 interface reqBody {
+    count: number;
     nodeId: string;
     timestamp: string;
 }
@@ -131,6 +132,8 @@ const startIntegromatScenarioUrl = host + namespace + integromatDir + '/start_sc
 const reqestMessagesUrl =  host + namespace + integromatDir + '/requestNextMessages';
 const registerAlternativeWebhookUrl = nodeUrl + integromatDir + '/register_alternative_webhook_url';
 const profileUrl = host + '/profile/'
+
+const TIME_LIMIT_EXECUTION_SCENARIO = 60;
 
 export default class GuidNodeIntegromat extends Controller {
     @service toast!: Toast;
@@ -887,20 +890,16 @@ export default class GuidNodeIntegromat extends Controller {
         })
         .then(res => res.json())
         .then(data => {
-                if(data.integromatMsg.match('.error.')){
-                    this.toast.error(this.i18n.t(data.integromatMsg))
-                }else{
-                    this.toast.info(this.i18n.t(data.integromatMsg))
-                    let reqBody = {
-                        'nodeId': data.nodeId,
-                        'timestamp': data.timestamp,
-                    }
-                    this.reqMessage(reqestMessagesUrl, reqBody, appName)
-                }
-            })
-            .catch(() => {
-                this.toast.error(this.i18n.t('integromat.error.failedToRequest'));
-            })
+            let reqBody = {
+                'count': 1,
+                'nodeId': data.nodeId,
+                'timestamp': data.timestamp,
+            }
+            this.reqMessage(reqestMessagesUrl, reqBody, appName)
+        })
+        .catch(() => {
+            this.toast.error(this.i18n.t('integromat.error.failedToRequest'));
+        })
     }
 
     reqMessage(url: string, reqBody: reqBody, appName: string) {
@@ -916,7 +915,10 @@ export default class GuidNodeIntegromat extends Controller {
         })
         .then(res => res.json())
         .then(data => {
-            if(data.integromatMsg === 'integromat.info.completed'){
+            if(data.integromatMsg === 'integromat.info.started'){
+                this.toast.info(this.i18n.t(data.integromatMsg));
+            }
+            else if(data.integromatMsg === 'integromat.info.completed'){
                 this.toast.info(this.i18n.t(data.integromatMsg));
                 this.save();
             }else if(data.integromatMsg.match('.error.')){
@@ -927,10 +929,13 @@ export default class GuidNodeIntegromat extends Controller {
                     this.toast.info(this.i18n.t(data.integromatMsg));
                 }
                 let reqBody = {
+                    'count': data.count + 1,
                     'nodeId': data.nodeId,
                     'timestamp': data.timestamp
                 }
-                this.reqMessage(url, reqBody, appName)
+                if(reqBody.count < TIME_LIMIT_EXECUTION_SCENARIO + 1){
+                    this.reqMessage(url, reqBody, appName)
+                }
             }
         })
         .catch(() => {

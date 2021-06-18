@@ -372,6 +372,7 @@ export default class GuidNodeIntegromat extends Controller {
     resetValue(this: GuidNodeIntegromat) {
 
         this.set('workflowDescription', '');
+        this.set('alternativeWebhookUrl', '');
         this.set('showRegisterAlternativeWebhookUrl', false);
     }
 

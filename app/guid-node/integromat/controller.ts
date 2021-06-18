@@ -393,7 +393,7 @@ export default class GuidNodeIntegromat extends Controller {
             'alternativeWebhookUrl': this.alternativeWebhookUrl,
         };
 
-        this.set('showRegisterAlternativeWebhookUrl', false);
+        this.resetValue();
 
         return fetch(
             url,

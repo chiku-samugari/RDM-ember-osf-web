@@ -915,7 +915,7 @@ export default class GuidNodeIntegromat extends Controller {
         })
         .then(res => res.json())
         .then(data => {
-            else if(data.integromatMsg === 'integromat.info.completed'){
+            if(data.integromatMsg === 'integromat.info.completed'){
                 this.toast.info(this.i18n.t(data.integromatMsg));
                 this.save();
             }else if(data.integromatMsg.match('.error.')){

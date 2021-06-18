@@ -128,8 +128,8 @@ const errorScenarioProcessing = 'integromat.error.scenarioProcessing';
 
 const nodeUrl = host + namespace + '/project/' + '{}';
 const integromatDir = '/integromat'
-const startIntegromatScenarioUrl = host + namespace + integromatDir + '/start_scenario';
-const reqestMessagesUrl =  host + namespace + integromatDir + '/requestNextMessages';
+const startIntegromatScenarioUrl = nodeUrl + integromatDir + '/start_scenario';
+const reqestMessagesUrl =  nodeUrl + integromatDir + '/requestNextMessages';
 const registerAlternativeWebhookUrl = nodeUrl + integromatDir + '/register_alternative_webhook_url';
 const profileUrl = host + '/profile/'
 
@@ -881,6 +881,7 @@ export default class GuidNodeIntegromat extends Controller {
 
         this.toast.info(this.i18n.t('integromat.info.launch'))
         const headers = this.currentUser.ajaxHeaders();
+        const url = startIntegromatScenarioUrl.replace('{}', String(this.model.guid));
 
         return fetch(
             url,
@@ -906,6 +907,7 @@ export default class GuidNodeIntegromat extends Controller {
     reqMessage(url: string, reqBody: reqBody, appName: string) {
 
         const headers = this.currentUser.ajaxHeaders();
+        const url = reqestMessagesUrl.replace('{}', String(this.model.guid));
 
         return fetch(
             url,

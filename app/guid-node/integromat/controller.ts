@@ -406,6 +406,7 @@ export default class GuidNodeIntegromat extends Controller {
                     this.toast.error(this.i18n.t('integromat.fail.registerAlternativeWebhookUrl'));
                     return;
                 }
+                this.save();
                 this.toast.info(this.i18n.t('integromat.success.registerAlternativeWebhookUrl'));
             })
             .catch(() => {

@@ -881,7 +881,7 @@ export default class GuidNodeIntegromat extends Controller {
 
         this.toast.info(this.i18n.t('integromat.info.launch'))
         const headers = this.currentUser.ajaxHeaders();
-        const url = startIntegromatScenarioUrl.replace('{}', String(this.model.guid));
+        url = startIntegromatScenarioUrl.replace('{}', String(this.model.guid));
 
         return fetch(
             url,
@@ -907,7 +907,7 @@ export default class GuidNodeIntegromat extends Controller {
     reqMessage(url: string, reqBody: reqBody, appName: string) {
 
         const headers = this.currentUser.ajaxHeaders();
-        const url = reqestMessagesUrl.replace('{}', String(this.model.guid));
+        url = reqestMessagesUrl.replace('{}', String(this.model.guid));
 
         return fetch(
             url,

@@ -1832,6 +1832,7 @@ export default {
             updateLabel: 'Update Meeting',
             deleteLabel: 'Delete Meeting',
             startLabel: 'Start Meeting',
+            copyUrlLabel: 'Copy URL',
             createHeader: 'Create {{appName}} Meeting',
             updateHeader: 'Update {{appName}} Meeting',
             deleteHeader: 'Delete {{appName}} Meeting',

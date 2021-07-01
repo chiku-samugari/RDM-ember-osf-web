@@ -251,6 +251,26 @@ export default class GuidNodeIntegromat extends Controller {
         this.set('showUpdateMicrosoftTeamsMeetingDialog', false);
     }
 
+
+    showTooltip: boolean = false;
+
+    @action
+    async _success() {
+        this.analytics.trackFromElement(this.element, {
+            name: 'Copy text',
+            category: 'button',
+            action: 'click',
+            });
+        this.set('showTooltip', true);
+        await timeout(3000);
+        this.set('showTooltip', false);
+    }
+
+    @action
+    _error() {
+        this.set('showTooltip', false);
+    }
+
     @action
     displayWorkflows(this: GuidNodeIntegromat) {
         this.set('showWorkflows', true);

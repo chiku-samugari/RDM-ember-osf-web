@@ -103,6 +103,7 @@
                                                     <th></th>
                                                     <th></th>
                                                     <th></th>
+                                                    <th></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -115,11 +116,13 @@
                                                             <th></th>
                                                             <th></th>
                                                             <th></th>
+                                                            <th></th>
                                                         </tr>
                                                    {{else}}
                                                        {{#if row.date_bar}}
                                                             <tr style='background-color: #efefef; padding: 3px; padding-left: 10px;'>
                                                                 <th local-class='Integromat__th' style='padding: 3px; padding-left: 10px;'>{{moment-format row.fields.start_datetime 'll'}}</th>
+                                                                <th></th>
                                                                 <th></th>
                                                                 <th></th>
                                                                 <th></th>
@@ -137,8 +140,30 @@
                                                         </td>
                                                         <td local-class='Integromat__td_overflow'>{{row.fields.organizer_fullname}}</td>
                                                         <td local-class='Integromat__td'>
-                                                            <button class='fa fa-play' data-toggle='tooltip' title={{t 'integromat.meetingDialog.createLabel'}}
+                                                            <button class='fa fa-play' data-toggle='tooltip' title={{t 'integromat.meetingDialog.startLabel'}}
                                                                   onClick={{action this.startMeeting row.fields.join_url}}></button>
+                                                        </td>
+                                                        <td local-class='Integromat__td'>
+                                                            <span>
+                                                                <CopyButton
+                                                                    @clipboardText={{row.fields.join_url}}
+                                                                    @success={{action this._success}}
+                                                                    @error={{action this._error}}
+                                                                    @disabled={{this.disabled}}
+                                                                    aria-label={{t 'osf-components.copyable-text.copyToClipboard'}}
+                                                                >
+                                                                    {{fa-icon 'copy'}}
+                                                                    <BsTooltip>
+                                                                      {{t 'integromat.meetingDialog.copyUrl'}}
+                                                                    </BsTooltip>
+                                                                    <BsTooltip
+                                                                        @triggerEvents=''
+                                                                        @visible={{this.showTooltip}}
+                                                                    >
+                                                                        {{t 'osf-components.copyable-text.copied'}}
+                                                                    </BsTooltip>
+                                                                </CopyButton>
+                                                            </span>
                                                         </td>
                                                         <td class='text-info' local-class='Integromat__td'>
                                                             <button class='fa fa-edit' data-toggle='tooltip' title={{t 'integromat.meetingDialog.updateLabel'}} 
@@ -177,6 +202,7 @@
                                                     <th></th>
                                                     <th></th>
                                                     <th></th>
+                                                    <th></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -189,11 +215,13 @@
                                                             <th></th>
                                                             <th></th>
                                                             <th></th>
+                                                            <th></th>
                                                         </tr>
                                                    {{else}}
                                                        {{#if row.date_bar}}
                                                             <tr style='background-color: #efefef; padding: 3px; padding-left: 10px;'>
                                                                 <th local-class='Integromat__th' style='padding: 3px; padding-left: 10px;'>{{moment-format row.fields.start_datetime 'll'}}</th>
+                                                                <th></th>
                                                                 <th></th>
                                                                 <th></th>
                                                                 <th></th>
@@ -211,8 +239,32 @@
                                                         </td>
                                                         <td local-class='Integromat__td_overflow'>{{row.fields.organizer_fullname}}</td>
                                                         <td local-class='Integromat__td'>
-                                                            <button class='fa fa-play' data-toggle='tooltip' title={{t 'integromat.meetingDialog.createLabel'}}
+                                                            <button class='fa fa-play' data-toggle='tooltip' title={{t 'integromat.meetingDialog.startLabel'}}
                                                                   onClick={{action this.startMeeting row.fields.join_url}}></button>
+                                                        </td>
+                                                        <td local-class='Integromat__td'>
+                                                            <button class='fa fa-copy' data-toggle='tooltip' title={{t 'integromat.meetingDialog.copyUrlLabel'}}
+                                                                  onClick={{action this.copyUrl row.fields.join_url}}></button>
+                                                            <span>
+                                                                <CopyButton
+                                                                    @clipboardText={{row.fields.join_url}}
+                                                                    @success={{action this._success}}
+                                                                    @error={{action this._error}}
+                                                                    @disabled={{this.disabled}}
+                                                                    aria-label={{t 'osf-components.copyable-text.copyToClipboard'}}
+                                                                >
+                                                                    {{fa-icon 'copy'}}
+                                                                    <BsTooltip>
+                                                                      {{t 'integromat.meetingDialog.copyUrl'}}
+                                                                    </BsTooltip>
+                                                                    <BsTooltip
+                                                                        @triggerEvents=''
+                                                                        @visible={{this.showTooltip}}
+                                                                    >
+                                                                        {{t 'osf-components.copyable-text.copied'}}
+                                                                    </BsTooltip>
+                                                                </CopyButton>
+                                                            </span>
                                                         </td>
                                                         <td class='text-info' local-class='Integromat__td'>
                                                             <button class='fa fa-edit' data-toggle='tooltip' title={{t 'integromat.meetingDialog.updateLabel'}} 

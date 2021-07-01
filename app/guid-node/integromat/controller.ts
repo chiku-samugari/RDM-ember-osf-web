@@ -4,7 +4,6 @@ import EmberError from '@ember/error';
 import { action, computed } from '@ember-decorators/object';
 import { reads } from '@ember-decorators/object/computed';
 import { service } from '@ember-decorators/service';
-import { timeout } from 'ember-concurrency';
 import config from 'ember-get-config';
 
 import CurrentUser from 'ember-osf-web/services/current-user';
@@ -256,7 +255,12 @@ export default class GuidNodeIntegromat extends Controller {
     showTooltip: boolean = false;
 
     @action
-    _success() {
+    async _success() {
+        this.analytics.trackFromElement(this.element, {
+            name: 'Copy text',
+            category: 'button',
+            action: 'click',
+            });
         this.set('showTooltip', true);
         await timeout(3000);
         this.set('showTooltip', false);

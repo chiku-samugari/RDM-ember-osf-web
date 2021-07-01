@@ -1988,7 +1988,6 @@ export default {
             updateLabel: '会議更新',
             deleteLabel: '会議削除',
             startLabel: '会議開始',
-            copyUrlLabel: 'URLコピー',
             createHeader: '{{appName}}会議作成',
             updateHeader: '{{appName}}会議更新',
             deleteHeader: '{{appName}}会議削除',

@@ -256,7 +256,7 @@ export default class GuidNodeIntegromat extends Controller {
     showTooltip: boolean = false;
 
     @action
-    _success() {
+    async _success() {
         this.set('showTooltip', true);
         await timeout(3000);
         this.set('showTooltip', false);

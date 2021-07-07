@@ -423,7 +423,7 @@ export default class GuidNodeIntegromat extends Controller {
     }
 
     @action
-    validationCheck(this: GuidNodeIntegromat, subject: string, attendeesNum: number,  startDate: string, startTime: string, endDate: string, endTime: string, startDatetime: string, endDatetime: string) {
+    validationCheck(this: GuidNodeIntegromat, subject: string, attendeesNum: number, startDate: string, startTime: string, endDate: string, endTime: string, startDatetime: string, endDatetime: string) {
 
         const now = new Date();
         const start = new Date(startDatetime);
@@ -498,7 +498,7 @@ export default class GuidNodeIntegromat extends Controller {
         if (this.webMeetingAppName === config.app_name_microsoft_teams) {
 
             //validation check for attendees
-            if(!this.validationCheck(webMeetingSubject, microsoftTeamsAttendeesChecked.length: number, this.webMeetingStartDate, this.webMeetingStartTime, this.webMeetingEndDate, this.webMeetingEndTime, webMeetingStartDatetime, webMeetingEndDatetime)){
+            if(!this.validationCheck(webMeetingSubject, microsoftTeamsAttendeesChecked.length, this.webMeetingStartDate, this.webMeetingStartTime, this.webMeetingEndDate, this.webMeetingEndTime, webMeetingStartDatetime, webMeetingEndDatetime)){
                 return;
             }
 
@@ -511,7 +511,7 @@ export default class GuidNodeIntegromat extends Controller {
         }else if (this.webMeetingAppName === config.app_name_webex_meetings) {
 
             //validation check for attendees
-            if(!this.validationCheck(webMeetingSubject, webexMeetingsAttendeesChecked.length: number, this.webMeetingStartDate, this.webMeetingStartTime, this.webMeetingEndDate, this.webMeetingEndTime, webMeetingStartDatetime, webMeetingEndDatetime)){
+            if(!this.validationCheck(webMeetingSubject, webexMeetingsAttendeesChecked.length, this.webMeetingStartDate, this.webMeetingStartTime, this.webMeetingEndDate, this.webMeetingEndTime, webMeetingStartDatetime, webMeetingEndDatetime)){
                 return;
             }
 

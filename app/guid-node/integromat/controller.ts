@@ -1023,16 +1023,6 @@ export default class GuidNodeIntegromat extends Controller {
         return previous_web_meetings;
     }
 
-    @computed('config.node_web_meeting_attendees')
-    get node_web_meeting_attendees() {
-        if (!this.config) {
-            return '';
-        }
-        const config = this.config.content as IntegromatConfigModel;
-        const node_web_meeting_attendees = JSON.parse(config.node_web_meeting_attendees);
-        return node_web_meeting_attendees;
-    }
-
     @computed('config.node_microsoft_teams_attendees')
     get node_microsoft_teams_attendees() {
         if (!this.config) {

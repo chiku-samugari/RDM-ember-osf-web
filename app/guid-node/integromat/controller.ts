@@ -440,7 +440,6 @@ export default class GuidNodeIntegromat extends Controller {
 
         if(!attendeesNum){
             this.set('msgInvalidAttendees', this.i18n.t('integromat.meetingDialog.invalid.empty', {item: this.i18n.t('integromat.attendees')}));
-            return;
         }else{
             this.set('msgInvalidAttendees', '');
         }
@@ -498,7 +497,7 @@ export default class GuidNodeIntegromat extends Controller {
         if (this.webMeetingAppName === config.app_name_microsoft_teams) {
 
             //validation check for attendees
-            if(!this.validationCheck(webMeetingSubject, microsoftTeamsAttendeesChecked.length, this.webMeetingStartDate, this.webMeetingStartTime, this.webMeetingEndDate, this.webMeetingEndTime, webMeetingStartDatetime, webMeetingEndDatetime)){
+            if(!this.validationCheck(webMeetingSubject, microsoftTeamsAttendeesChecked.length, this.webMeetingStartDate, webMeetingStartTime, this.webMeetingEndDate, webMeetingEndTime, webMeetingStartDatetime, webMeetingEndDatetime)){
                 return;
             }
 
@@ -704,7 +703,7 @@ export default class GuidNodeIntegromat extends Controller {
         if (appName === config.app_name_microsoft_teams) {
 
             //validation check for attendees
-            if(!this.validationCheck(webMeetingSubject, microsoftTeamsAttendeesChecked.length, this.webMeetingStartDate, this.webMeetingStartTime, this.webMeetingEndDate, this.webMeetingEndTime, webMeetingStartDatetime, webMeetingEndDatetime)){
+            if(!this.validationCheck(webMeetingSubject, microsoftTeamsAttendeesChecked.length, this.webMeetingStartDate, webMeetingStartTime, this.webMeetingEndDate, webMeetingEndTime, webMeetingStartDatetime, webMeetingEndDatetime)){
                 return;
             }
 

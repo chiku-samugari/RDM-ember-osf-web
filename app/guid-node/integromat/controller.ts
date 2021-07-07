@@ -440,6 +440,7 @@ export default class GuidNodeIntegromat extends Controller {
 
         if(!attendeesNum){
             this.set('msgInvalidAttendees', this.i18n.t('integromat.meetingDialog.invalid.empty', {item: this.i18n.t('integromat.attendees')}));
+            validFlag = false;
         }else{
             this.set('msgInvalidAttendees', '');
         }

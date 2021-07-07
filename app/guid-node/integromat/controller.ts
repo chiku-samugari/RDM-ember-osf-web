@@ -423,23 +423,26 @@ export default class GuidNodeIntegromat extends Controller {
     validationCheck(this: GuidNodeIntegromat, subject: string, startDate: string, startTime: string, endDate: string, endTime: string, startDatetime, string, endDatetime: string) {
 
         const now = new Date();
+        const start = new Date(startDatetime);
+        const end = new Date(endDatetime);
+
         let validFlag = true;
 
         if(!subject){
-            this.set('msgInvalidSubject', this.i18n.t(integromat.meetingDialog.invalid.empty, {item: 'integromat.subject'}));
+            this.set('msgInvalidSubject', this.i18n.t('integromat.meetingDialog.invalid.empty', {item: this.i18n.t('integromat.subject')}));
             validFlag = false;
         }else{
             this.set('msgInvalidSubject', '');
         }
 
         if(!startDate || !startTime || !endDate || !endTime){
-            this.set('msgInvalidDatetime', this.i18n.t(integromat.meetingDialog.invalid.empty, {item: 'integromat.start_datetime'}));
+            this.set('msgInvalidDatetime', this.i18n.t('integromat.meetingDialog.invalid.empty', {item: this.i18n.t('integromat.datetime')}));
             validFlag = false;
-        }else if(startDatetime < now){
-            this.set('msgInvalidDatetime', this.i18n.t(integromat.meetingDialog.invalid.datetime.past));
+        }else if(start < now){
+            this.set('msgInvalidDatetime', this.i18n.t('integromat.meetingDialog.invalid.datetime.past'));
             validFlag = false;
-        }else if(endDatetime < startDatetime){
-            this.set('msgInvalidDatetime', this.i18n.t(integromat.meetingDialog.invalid.datetime.endBeforeStart));
+        }else if(end < start){
+            this.set('msgInvalidDatetime', this.i18n.t('integromat.meetingDialog.invalid.datetime.endBeforeStart'));
             validFlag = false;
         }else{
             this.set('msgInvalidDatetime', '');
@@ -482,7 +485,7 @@ export default class GuidNodeIntegromat extends Controller {
         let webexMeetingsCreateInvitees: webexMeetingsCreateInvitee[] = [];
         let webexMeetingsDeleteInviteeIds: string[] = [];
 
-        if(!validationCheck(webMeetingSubject, webMeetingStartDate, webMeetingStartTime, webMeetingEndDate, webMeetingEndTime, webMeetingStartDatetime, webMeetingEndDatetime)){
+        if(!this.validationCheck(webMeetingSubject, webMeetingStartDate, webMeetingStartTime, webMeetingEndDate, webMeetingEndTime, webMeetingStartDatetime, webMeetingEndDatetime)){
             return;
         }
 
@@ -490,7 +493,7 @@ export default class GuidNodeIntegromat extends Controller {
 
             //validation check for attendees
             if(!microsoftTeamsAttendeesChecked.length){
-                this.set('msgInvalidAttendees', this.i18n.t(integromat.meetingDialog.invalid.empty, {item: 'integromat.attendees'}));
+                this.set('msgInvalidAttendees', this.i18n.t('integromat.meetingDialog.invalid.empty', {item: 'integromat.attendees'}));
                 return;
             }else{
                 this.set('msgInvalidAttendees', '');
@@ -506,7 +509,7 @@ export default class GuidNodeIntegromat extends Controller {
 
             //validation check for attendees
             if(!webexMeetingsAttendeesChecked.length){
-                this.set('msgInvalidAttendees', this.i18n.t(integromat.meetingDialog.invalid.empty, {item: 'integromat.attendees'}));
+                this.set('msgInvalidAttendees', this.i18n.t('integromat.meetingDialog.invalid.empty', {item: 'integromat.attendees'}));
                 return;
             }else{
                 this.set('msgInvalidAttendees', '');
@@ -683,7 +686,7 @@ export default class GuidNodeIntegromat extends Controller {
         const empty = '';
         const timestamp = new Date().getTime();
 
-        if(!validationCheck(webMeetingSubject, webMeetingStartDate, webMeetingStartTime, webMeetingEndDate, webMeetingEndTime, webMeetingStartDatetime, webMeetingEndDatetime)){
+        if(!this.validationCheck(webMeetingSubject, webMeetingStartDate, webMeetingStartTime, webMeetingEndDate, webMeetingEndTime, webMeetingStartDatetime, webMeetingEndDatetime)){
             return;
         }
 
@@ -706,7 +709,7 @@ export default class GuidNodeIntegromat extends Controller {
 
             //validation check for attendees
             if(!microsoftTeamsAttendeesChecked.length){
-                this.set('msgInvalidAttendees', this.i18n.t(integromat.meetingDialog.invalid.empty, {item: 'integromat.attendees'}));
+                this.set('msgInvalidAttendees', this.i18n.t('integromat.meetingDialog.invalid.empty', {item: 'integromat.attendees'}));
                 return;
             }else{
                 this.set('msgInvalidAttendees', '');
@@ -722,7 +725,7 @@ export default class GuidNodeIntegromat extends Controller {
 
             //validation check for attendees
             if(!webexMeetingsAttendeesChecked.length){
-                this.set('msgInvalidAttendees', this.i18n.t(integromat.meetingDialog.invalid.empty, {item: 'integromat.attendees'}));
+                this.set('msgInvalidAttendees', this.i18n.t('integromat.meetingDialog.invalid.empty', {item: 'integromat.attendees'}));
                 return;
             }else{
                 this.set('msgInvalidAttendees', '');

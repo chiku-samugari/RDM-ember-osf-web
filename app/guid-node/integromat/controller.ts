@@ -686,10 +686,6 @@ export default class GuidNodeIntegromat extends Controller {
         const empty = '';
         const timestamp = new Date().getTime();
 
-        if(!this.validationCheck(webMeetingSubject, this.webMeetingStartDate, this.webMeetingStartTime, this.webMeetingEndDate, this.webMeetingEndTime, webMeetingStartDatetime, webMeetingEndDatetime)){
-            return;
-        }
-
         const nodeWebMeetingAttendeesRelation =JSON.parse(config.node_web_meetings_attendees_relation)
         const nodeWebexMeetingsAttendees = JSON.parse(config.node_webex_meetings_attendees);
 
@@ -708,7 +704,7 @@ export default class GuidNodeIntegromat extends Controller {
         if (appName === config.app_name_microsoft_teams) {
 
             //validation check for attendees
-            if(!this.validationCheck(webMeetingSubject, microsoftTeamsAttendeesChecked.length: number, this.webMeetingStartDate, this.webMeetingStartTime, this.webMeetingEndDate, this.webMeetingEndTime, webMeetingStartDatetime, webMeetingEndDatetime)){
+            if(!this.validationCheck(webMeetingSubject, microsoftTeamsAttendeesChecked.length, this.webMeetingStartDate, this.webMeetingStartTime, this.webMeetingEndDate, this.webMeetingEndTime, webMeetingStartDatetime, webMeetingEndDatetime)){
                 return;
             }
 
@@ -721,7 +717,7 @@ export default class GuidNodeIntegromat extends Controller {
         }else if (appName === config.app_name_webex_meetings) {
 
             //validation check for attendees
-            if(!this.validationCheck(webMeetingSubject, webexMeetingsAttendeesChecked.length: number, this.webMeetingStartDate, this.webMeetingStartTime, this.webMeetingEndDate, this.webMeetingEndTime, webMeetingStartDatetime, webMeetingEndDatetime)){
+            if(!this.validationCheck(webMeetingSubject, webexMeetingsAttendeesChecked.length, this.webMeetingStartDate, this.webMeetingStartTime, this.webMeetingEndDate, this.webMeetingEndTime, webMeetingStartDatetime, webMeetingEndDatetime)){
                 return;
             }
 

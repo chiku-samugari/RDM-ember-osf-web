@@ -1877,6 +1877,7 @@ export default {
         location: 'Location',
         content: 'Content',
         joinUrl: 'Join URL',
+        datetime: 'datetime',
         from_tilde: ' ～ ',
         from_hyphen: ' - ',
         colon: ':',

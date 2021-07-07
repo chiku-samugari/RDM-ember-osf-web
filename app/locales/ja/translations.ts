@@ -2033,6 +2033,7 @@ export default {
         location: '場所',
         content: '内容',
         joinUrl: '招待URL',
+        datetime: '日時',
         from_tilde: ' ～ ',
         from_hyphen: ' - ',
         colon: '：',

@@ -545,19 +545,29 @@ export default class GuidNodeIntegromat extends Controller {
         }
 
         this.setWebMeetingApp(appName, 'update');
-        this.makeWebMeetingAttendee(appName);
+        this.makeWebMeetingAttendee(appName, 'update');
 
     }
 
-    makeWebMeetingAttendee(this: GuidNodeIntegromat, appName: string) {
+    makeWebMeetingAttendee(this: GuidNodeIntegromat, appName: string, type: string) {
 
         if (!this.config) {
             throw new EmberError('Illegal config');
         }
         const config = this.config.content as IntegromatConfigModel;
+        let jsonMicrosoftTeams = '';
+        let jsonWebexMeetings = '';
 
-        const nodeMicrosoftTeamsAttendees = JSON.parse(config.node_microsoft_teams_attendees);
-        const nodeWebexMeetingsAttendees = JSON.parse(config.node_webex_meetings_attendees);
+        if(type === 'update'){
+            jsonMicrosoftTeams = JSON.parse(config.node_microsoft_teams_attendees);
+            jsonWebexMeetings = JSON.parse(config.node_webex_meetings_attendees);
+        }else if(type === 'detail'){
+            jsonMicrosoftTeams = JSON.parse(config.node_microsoft_teams_attendees_all);
+            jsonWebexMeetings = JSON.parse(config.node_webex_meetings_attendees_all);
+        }
+
+        const nodeMicrosoftTeamsAttendees = jsonMicrosoftTeams;
+        const nodeWebexMeetingsAttendees = jsonWebexMeetings;
 
         this.webMeetingAttendeesNow.length = 0;
         this.notwebMeetingAttendeesNow.length = 0;
@@ -875,7 +885,7 @@ export default class GuidNodeIntegromat extends Controller {
         }
 
         this.setWebMeetingApp(appName, 'detail');
-        this.makeWebMeetingAttendee(appName);
+        this.makeWebMeetingAttendee(appName, 'detail');
     }
 
     reqLaunch(url: string, payload: payload, appName: string){

@@ -420,7 +420,7 @@ export default class GuidNodeIntegromat extends Controller {
     }
 
     @action
-    validationCheck(this: GuidNodeIntegromat, subject: string, startDate: string, startTime: string, endDate: string, endTime: string, startDatetime, string, endDatetime: string) {
+    validationCheck(this: GuidNodeIntegromat, subject: string, startDate: string, startTime: string, endDate: string, endTime: string, startDatetime: string, endDatetime: string) {
 
         const now = new Date();
         const start = new Date(startDatetime);

@@ -2000,6 +2000,13 @@ export default {
             cancelBtn: 'キャンセル',
             startBtn: '開始',
             closeBtn: '閉じる',
+            invalid: {
+                empty: '{{item}}を入力してください。',
+                datetime: {
+                    past: '開始日時が現在日時より前です。',
+                    endBeforeStart: '終了日時が開始日時より前です。',
+                },
+            },
         },
         placeholders: {
             subject: 'タイトルを入力してください',

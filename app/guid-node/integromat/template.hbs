@@ -272,6 +272,7 @@
                         value=this.webMeetingSubject
                     }}
                 </div>
+                <div><p class='text-danger'></p>{{this.msgInvalidSubject}}</div>
                 <div local-class='Integromat__input_items'>
                     <label>{{t 'integromat.attendees'}}</label>
                     <div>
@@ -289,6 +290,7 @@
                         </span>
                     </div>
                 </div>
+                <div><p class='text-danger'></p>{{this.msgInvalidAttendees}}</div>
                 <div local-class='Integromat__input_items'>
                     <table>
                         <tr>
@@ -344,6 +346,7 @@
                         </tr>
                     </table>
                 </div>
+                <div><p class='text-danger'></p>{{this.msgInvalidDatetime}}</div>
                 <div local-class='Integromat__input_items'>
                     <label>{{t 'integromat.location'}}</label>
                     {{input

@@ -1844,6 +1844,13 @@ export default {
             cancelBtn: 'Cancel',
             startBtn: 'Start',
             closeBtn: 'Close',
+            invalid: {
+                empty: 'Please Enter {{item}}',
+                datetime: {
+                    past: 'Start Datetime is before current time.',
+                    endBeforeStart: 'End Datetime is before Start Datetime.',
+                },
+            },
         },
         placeholders: {
             subject: 'Enter the subject of this meeting',

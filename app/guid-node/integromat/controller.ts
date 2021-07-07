@@ -192,6 +192,10 @@ export default class GuidNodeIntegromat extends Controller {
     webMeetingPassword = '';
     webhookUrl = '';
 
+    msgInvalidSubject = '';
+    msgInvalidAttendees = '';
+    msgInvalidDatetime = '';
+
     workflowDescription = '';
     alternativeWebhookUrl = '';
 
@@ -416,6 +420,34 @@ export default class GuidNodeIntegromat extends Controller {
     }
 
     @action
+    validationCheck(this: GuidNodeIntegromat, subject: string, startDate: string, startTime: string, endDate: string, endTime: string, startDatetime; string, endDatetime: string) {
+
+        now = new Date();
+        validFlag = true;
+
+        if(!subject){
+            this.set('msgInvalidSubject', this.i18n.t(integromat.meetingDialog.invalid.empty, {item: 'integromat.subject'}));
+            validFlag = false;
+        }else{
+            this.set('msgInvalidSubject', '');
+        }
+
+        if(!startDate || !startTime || !endDate || !endTime){
+            this.set('msgInvalidDatetime', this.i18n.t(integromat.meetingDialog.invalid.empty, {item: 'integromat.start_datetime'}));
+            validFlag = false;
+        }else if(startDatetime < now){
+            this.set('msgInvalidDatetime', this.i18n.t(integromat.meetingDialog.invalid.datetime.past));
+            validFlag = false;
+        }else if(endDatetime < startDatetime){
+            this.set('msgInvalidDatetime', this.i18n.t(integromat.meetingDialog.invalid.datetime.endBeforeStart));
+            validFlag = false;
+        }else{
+            this.set('msgInvalidDatetime', '');
+        }
+        return validFlag
+    }
+
+    @action
     createWebMeeting(this: GuidNodeIntegromat) {
         if (!this.config) {
             throw new EmberError('Illegal config');
@@ -450,7 +482,19 @@ export default class GuidNodeIntegromat extends Controller {
         let webexMeetingsCreateInvitees: webexMeetingsCreateInvitee[] = [];
         let webexMeetingsDeleteInviteeIds: string[] = [];
 
+        if(!validationCheck(webMeetingSubject, webMeetingStartDate, webMeetingStartTime, webMeetingEndDate, webMeetingEndTime, webMeetingStartDatetime, webMeetingEndDatetime)){
+            return;
+        }
+
         if (this.webMeetingAppName === config.app_name_microsoft_teams) {
+
+            //validation check for attendees
+            if(!microsoftTeamsAttendeesChecked.length){
+                this.set('msgInvalidAttendees', this.i18n.t(integromat.meetingDialog.invalid.empty, {item: 'integromat.attendees'}));
+                return;
+            }else{
+                this.set('msgInvalidAttendees', '');
+            }
 
             action = 'createMicrosoftTeamsMeeting';
 
@@ -459,6 +503,14 @@ export default class GuidNodeIntegromat extends Controller {
                 arrayAttendees.push(microsoftTeamsAttendeesChecked[i].id);
             }
         }else if (this.webMeetingAppName === config.app_name_webex_meetings) {
+
+            //validation check for attendees
+            if(!webexMeetingsAttendeesChecked.length){
+                this.set('msgInvalidAttendees', this.i18n.t(integromat.meetingDialog.invalid.empty, {item: 'integromat.attendees'}));
+                return;
+            }else{
+                this.set('msgInvalidAttendees', '');
+            }
 
             action = 'createWebexMeetings';
 
@@ -631,6 +683,10 @@ export default class GuidNodeIntegromat extends Controller {
         const empty = '';
         const timestamp = new Date().getTime();
 
+        if(!validationCheck(webMeetingSubject, webMeetingStartDate, webMeetingStartTime, webMeetingEndDate, webMeetingEndTime, webMeetingStartDatetime, webMeetingEndDatetime)){
+            return;
+        }
+
         const nodeWebMeetingAttendeesRelation =JSON.parse(config.node_web_meetings_attendees_relation)
         const nodeWebexMeetingsAttendees = JSON.parse(config.node_webex_meetings_attendees);
 
@@ -648,6 +704,14 @@ export default class GuidNodeIntegromat extends Controller {
 
         if (appName === config.app_name_microsoft_teams) {
 
+            //validation check for attendees
+            if(!microsoftTeamsAttendeesChecked.length){
+                this.set('msgInvalidAttendees', this.i18n.t(integromat.meetingDialog.invalid.empty, {item: 'integromat.attendees'}));
+                return;
+            }else{
+                this.set('msgInvalidAttendees', '');
+            }
+
             action = 'updateMicrosoftTeamsMeeting';
 
             for(let i = 0; i < microsoftTeamsAttendeesChecked.length; i++){ 
@@ -655,6 +719,14 @@ export default class GuidNodeIntegromat extends Controller {
                 arrayAttendees.push(microsoftTeamsAttendeesChecked[i].id);
             }
         }else if (appName === config.app_name_webex_meetings) {
+
+            //validation check for attendees
+            if(!webexMeetingsAttendeesChecked.length){
+                this.set('msgInvalidAttendees', this.i18n.t(integromat.meetingDialog.invalid.empty, {item: 'integromat.attendees'}));
+                return;
+            }else{
+                this.set('msgInvalidAttendees', '');
+            }
 
             action = 'updateWebexMeetings';
 

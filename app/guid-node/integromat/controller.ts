@@ -555,19 +555,9 @@ export default class GuidNodeIntegromat extends Controller {
             throw new EmberError('Illegal config');
         }
         const config = this.config.content as IntegromatConfigModel;
-        let jsonMicrosoftTeams = '';
-        let jsonWebexMeetings = '';
 
-        if(type === 'update'){
-            jsonMicrosoftTeams = JSON.parse(config.node_microsoft_teams_attendees);
-            jsonWebexMeetings = JSON.parse(config.node_webex_meetings_attendees);
-        }else if(type === 'detail'){
-            jsonMicrosoftTeams = JSON.parse(config.node_microsoft_teams_attendees_all);
-            jsonWebexMeetings = JSON.parse(config.node_webex_meetings_attendees_all);
-        }
-
-        const nodeMicrosoftTeamsAttendees = jsonMicrosoftTeams;
-        const nodeWebexMeetingsAttendees = jsonWebexMeetings;
+        const nodeMicrosoftTeamsAttendees = JSON.parse(config.node_microsoft_teams_attendees_all);
+        const nodeWebexMeetingsAttendees = JSON.parse(config.node_microsoft_teams_attendees_all);
 
         this.webMeetingAttendeesNow.length = 0;
         this.notwebMeetingAttendeesNow.length = 0;
@@ -575,6 +565,10 @@ export default class GuidNodeIntegromat extends Controller {
         if(appName === config.app_name_microsoft_teams){
 
             for(let j = 0; j < nodeMicrosoftTeamsAttendees.length; j++){
+
+                if(type === 'update' && !(nodeMicrosoftTeamsAttendees[j].fields.microsoft_teams_mail)){
+                    continue;
+                }
                 this.notwebMeetingAttendeesNow.push({'email': nodeMicrosoftTeamsAttendees[j].fields.microsoft_teams_mail, 'fullname': nodeMicrosoftTeamsAttendees[j].fields.fullname});
 
                 for(let k = 0; k < this.webMeetingAttendees.length; k++){
@@ -587,6 +581,10 @@ export default class GuidNodeIntegromat extends Controller {
             }
         }else if(appName === config.app_name_webex_meetings){
             for(let l = 0; l < nodeWebexMeetingsAttendees.length; l++){
+
+                if(type === 'update' && !(nodeWebexMeetingsAttendees[l].fields.webex_meetings_mail)){
+                    continue;
+                }
                 this.notwebMeetingAttendeesNow.push({'email': nodeWebexMeetingsAttendees[l].fields.webex_meetings_mail, 'fullname': nodeWebexMeetingsAttendees[l].fields.fullname});
 
                 for(let m = 0; m < this.webMeetingAttendees.length; m++){

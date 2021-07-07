@@ -420,10 +420,10 @@ export default class GuidNodeIntegromat extends Controller {
     }
 
     @action
-    validationCheck(this: GuidNodeIntegromat, subject: string, startDate: string, startTime: string, endDate: string, endTime: string, startDatetime; string, endDatetime: string) {
+    validationCheck(this: GuidNodeIntegromat, subject: string, startDate: string, startTime: string, endDate: string, endTime: string, startDatetime, string, endDatetime: string) {
 
-        now = new Date();
-        validFlag = true;
+        const now = new Date();
+        let validFlag = true;
 
         if(!subject){
             this.set('msgInvalidSubject', this.i18n.t(integromat.meetingDialog.invalid.empty, {item: 'integromat.subject'}));

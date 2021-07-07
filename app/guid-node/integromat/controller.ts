@@ -512,7 +512,7 @@ export default class GuidNodeIntegromat extends Controller {
 
             //validation check for attendees
             if(!webexMeetingsAttendeesChecked.length){
-                this.set('msgInvalidAttendees', this.i18n.t('integromat.meetingDialog.invalid.empty', this.i18n.t('integromat.attendees')}));
+                this.set('msgInvalidAttendees', this.i18n.t('integromat.meetingDialog.invalid.empty', {item: this.i18n.t('integromat.attendees')}));
                 return;
             }else{
                 this.set('msgInvalidAttendees', '');
@@ -728,7 +728,7 @@ export default class GuidNodeIntegromat extends Controller {
 
             //validation check for attendees
             if(!webexMeetingsAttendeesChecked.length){
-                this.set('msgInvalidAttendees', this.i18n.t('integromat.meetingDialog.invalid.empty', this.i18n.t('integromat.attendees')}));
+                this.set('msgInvalidAttendees', this.i18n.t('integromat.meetingDialog.invalid.empty', {item: this.i18n.t('integromat.attendees')}));
                 return;
             }else{
                 this.set('msgInvalidAttendees', '');

@@ -74,20 +74,24 @@ interface payload {
     meetingId: string;
     joinUrl: string;
     action: string;
-    infoGrdmScenarioStarted: string;
-    infoGrdmScenarioCompleted: string;
-    errorWebappsCreateMeeting: string;
-    errorGrdmRegisterMeeting: string;
-    errorSlackCreateMeeting: string;
-    errorWebappsUpdateMeeting: string;
-    errorWebappsUpdateAttendees: string;
-    errorWebappsUpdateAttendeesGrdmMeeting: string;
-    errorGrdmUpdateMeetingReg: string;
-    errorSlackUpdateMeeting: string;
-    errorWebappsDeleteMeeting: string;
-    errorGrdmDeleteMeetingReg: string;
-    errorSlackDeleteMeeting: string;
-    errorScenarioProcessing: string;
+    info: {
+        grdmScenarioStarted: string;
+        grdmScenarioCompleted: string;
+    };
+    error: {
+        webappsCreateMeeting: string;
+        grdmRegisterMeeting: string;
+        slackCreateMeeting: string;
+        webappsUpdateMeeting: string; 
+        webappsUpdateAttendees: string;
+        webappsUpdateAttendeesGrdmMeetingReg: string; 
+        grdmUpdateMeetingReg: string;
+        slackUpdateMeeting: string; 
+        webappsDeleteMeeting: string; 
+        grdmDeleteMeetingReg: string;
+        slackDeleteMeeting: string; 
+        scenarioProcessing: string;
+    };
     startDatetime: string;
     endDatetime: string;
     subject: string;
@@ -117,7 +121,7 @@ const errorGrdmRegisterMeeting = 'integromat.error.grdmCreateMeeting';
 const errorSlackCreateMeeting = 'integromat.error.slackCreateMeeting';
 const errorWebappsUpdateMeeting = 'integromat.error.webappsUpdateMeeting';
 const errorWebappsUpdateAttendees = 'integromat.error.webappsUpdateAttendees';
-const errorWebappsUpdateAttendeesGrdmMeeting = 'integromat.error.webappsUpdateAttendeesGrdmMeeting';
+const errorWebappsUpdateAttendeesGrdmMeetingReg = 'integromat.error.webappsUpdateAttendeesGrdmMeeting';
 const errorGrdmUpdateMeetingReg = 'integromat.error.grdmUpdateMeeting';
 const errorSlackUpdateMeeting = 'integromat.error.slackUpdateMeeting';
 const errorWebappsDeleteMeeting = 'integromat.error.webappsDeleteMeeting';
@@ -534,20 +538,24 @@ export default class GuidNodeIntegromat extends Controller {
             'meetingId': empty,
             'joinUrl': empty,
             'action': action,
-            'infoGrdmScenarioStarted': infoGrdmScenarioStarted,
-            'infoGrdmScenarioCompleted': infoGrdmScenarioCompleted,
-            'errorWebappsCreateMeeting': errorWebappsCreateMeeting,
-            'errorGrdmRegisterMeeting': errorGrdmRegisterMeeting,
-            'errorSlackCreateMeeting': errorSlackCreateMeeting,
-            'errorWebappsUpdateMeeting': errorWebappsUpdateMeeting,
-            'errorWebappsUpdateAttendees': errorWebappsUpdateAttendees,
-            'errorWebappsUpdateAttendeesGrdmMeeting' : errorWebappsUpdateAttendeesGrdmMeeting,
-            'errorGrdmUpdateMeetingReg': errorGrdmUpdateMeetingReg,
-            'errorSlackUpdateMeeting': errorSlackUpdateMeeting,
-            'errorWebappsDeleteMeeting': errorWebappsDeleteMeeting,
-            'errorGrdmDeleteMeetingReg': errorGrdmDeleteMeetingReg,
-            'errorSlackDeleteMeeting': errorSlackDeleteMeeting,
-            'errorScenarioProcessing': errorScenarioProcessing,
+            'info': {
+                "grdmScenarioStarted": infoGrdmScenarioStarted,
+                'grdmScenarioCompleted': infoGrdmScenarioCompleted,
+            },
+            'error': {
+                'webappsCreateMeeting': errorWebappsCreateMeeting,
+                'grdmRegisterMeeting': errorGrdmRegisterMeeting,
+                'slackCreateMeeting': errorSlackCreateMeeting,
+                'webappsUpdateMeeting': errorWebappsUpdateMeeting,
+                'webappsUpdateAttendees': errorWebappsUpdateAttendees,
+                'webappsUpdateAttendeesGrdmMeetingReg' : errorWebappsUpdateAttendeesGrdmMeetingReg,
+                'grdmUpdateMeetingReg': errorGrdmUpdateMeetingReg,
+                'slackUpdateMeeting': errorSlackUpdateMeeting,
+                'webappsDeleteMeeting': errorWebappsDeleteMeeting,
+                'grdmDeleteMeetingReg': errorGrdmDeleteMeetingReg,
+                'slackDeleteMeeting': errorSlackDeleteMeeting,
+                'scenarioProcessing': errorScenarioProcessing,
+            },
             'startDatetime': webMeetingStartDatetime,
             'endDatetime': webMeetingEndDatetime,
             'subject': webMeetingSubject,
@@ -774,20 +782,24 @@ export default class GuidNodeIntegromat extends Controller {
             'meetingId': webMeetingId,
             'joinUrl': webMeetingJoinUrl,
             'action': action,
-            'infoGrdmScenarioStarted': infoGrdmScenarioStarted,
-            'infoGrdmScenarioCompleted': infoGrdmScenarioCompleted,
-            'errorWebappsCreateMeeting': errorWebappsCreateMeeting,
-            'errorGrdmRegisterMeeting': errorGrdmRegisterMeeting,
-            'errorSlackCreateMeeting': errorSlackCreateMeeting,
-            'errorWebappsUpdateMeeting': errorWebappsUpdateMeeting,
-            'errorWebappsUpdateAttendees': errorWebappsUpdateAttendees,
-            'errorWebappsUpdateAttendeesGrdmMeeting' : errorWebappsUpdateAttendeesGrdmMeeting,
-            'errorGrdmUpdateMeetingReg': errorGrdmUpdateMeetingReg,
-            'errorSlackUpdateMeeting': errorSlackUpdateMeeting,
-            'errorWebappsDeleteMeeting': errorWebappsDeleteMeeting,
-            'errorGrdmDeleteMeetingReg': errorGrdmDeleteMeetingReg,
-            'errorSlackDeleteMeeting': errorSlackDeleteMeeting,
-            'errorScenarioProcessing': errorScenarioProcessing,
+            'info': {
+                "grdmScenarioStarted": infoGrdmScenarioStarted,
+                'grdmScenarioCompleted': infoGrdmScenarioCompleted,
+            },
+            'error': {
+                'webappsCreateMeeting': errorWebappsCreateMeeting,
+                'grdmRegisterMeeting': errorGrdmRegisterMeeting,
+                'slackCreateMeeting': errorSlackCreateMeeting,
+                'webappsUpdateMeeting': errorWebappsUpdateMeeting,
+                'webappsUpdateAttendees': errorWebappsUpdateAttendees,
+                'webappsUpdateAttendeesGrdmMeetingReg' : errorWebappsUpdateAttendeesGrdmMeetingReg,
+                'grdmUpdateMeetingReg': errorGrdmUpdateMeetingReg,
+                'slackUpdateMeeting': errorSlackUpdateMeeting,
+                'webappsDeleteMeeting': errorWebappsDeleteMeeting,
+                'grdmDeleteMeetingReg': errorGrdmDeleteMeetingReg,
+                'slackDeleteMeeting': errorSlackDeleteMeeting,
+                'scenarioProcessing': errorScenarioProcessing,
+            },
             'startDatetime': webMeetingStartDatetime,
             'endDatetime': webMeetingEndDatetime,
             'subject': webMeetingSubject,
@@ -886,20 +898,24 @@ export default class GuidNodeIntegromat extends Controller {
             'meetingId': this.webMeetingDeleteMeetingId,
             'joinUrl': empty,
             'action': action,
-            'infoGrdmScenarioStarted': infoGrdmScenarioStarted,
-            'infoGrdmScenarioCompleted': infoGrdmScenarioCompleted,
-            'errorWebappsCreateMeeting': errorWebappsCreateMeeting,
-            'errorGrdmRegisterMeeting': errorGrdmRegisterMeeting,
-            'errorSlackCreateMeeting': errorSlackCreateMeeting,
-            'errorWebappsUpdateMeeting': errorWebappsUpdateMeeting,
-            'errorWebappsUpdateAttendees': errorWebappsUpdateAttendees,
-            'errorWebappsUpdateAttendeesGrdmMeeting' : errorWebappsUpdateAttendeesGrdmMeeting,
-            'errorGrdmUpdateMeetingReg': errorGrdmUpdateMeetingReg,
-            'errorSlackUpdateMeeting': errorSlackUpdateMeeting,
-            'errorWebappsDeleteMeeting': errorWebappsDeleteMeeting,
-            'errorGrdmDeleteMeetingReg': errorGrdmDeleteMeetingReg,
-            'errorSlackDeleteMeeting': errorSlackDeleteMeeting,
-            'errorScenarioProcessing': errorScenarioProcessing,
+            'info': {
+                "grdmScenarioStarted": infoGrdmScenarioStarted,
+                'grdmScenarioCompleted': infoGrdmScenarioCompleted,
+            },
+            'error': {
+                'webappsCreateMeeting': errorWebappsCreateMeeting,
+                'grdmRegisterMeeting': errorGrdmRegisterMeeting,
+                'slackCreateMeeting': errorSlackCreateMeeting,
+                'webappsUpdateMeeting': errorWebappsUpdateMeeting,
+                'webappsUpdateAttendees': errorWebappsUpdateAttendees,
+                'webappsUpdateAttendeesGrdmMeetingReg' : errorWebappsUpdateAttendeesGrdmMeetingReg,
+                'grdmUpdateMeetingReg': errorGrdmUpdateMeetingReg,
+                'slackUpdateMeeting': errorSlackUpdateMeeting,
+                'webappsDeleteMeeting': errorWebappsDeleteMeeting,
+                'grdmDeleteMeetingReg': errorGrdmDeleteMeetingReg,
+                'slackDeleteMeeting': errorSlackDeleteMeeting,
+                'scenarioProcessing': errorScenarioProcessing,
+            },
             'startDatetime': webMeetingStartDatetime,
             'endDatetime': webMeetingEndDatetime,
             'subject': webMeetingSubject,

@@ -497,10 +497,10 @@ export default class GuidNodeIntegromat extends Controller {
         const webMeetingSubject = this.webMeetingSubject;
         const webMeetingStartDate = moment(this.webMeetingStartDate).format('YYYY-MM-DD');
         const webMeetingStartTime = (<HTMLInputElement>document.querySelectorAll('select[id=create_teams_start_time]')[0]).value;
-        const webMeetingStartDatetime = webMeetingStartDate + ' ' + webMeetingStartTime;
+        const strWebMeetingStartDatetime = webMeetingStartDate + ' ' + webMeetingStartTime;
         const webMeetingEndDate = moment(this.webMeetingEndDate).format('YYYY-MM-DD');
         const webMeetingEndTime = (<HTMLInputElement>document.querySelectorAll('select[id=create_teams_end_time]')[0]).value;
-        const webMeetingEndDatetime = webMeetingEndDate + ' ' + webMeetingEndTime;
+        const strWebMeetingEndDatetime = webMeetingEndDate + ' ' + webMeetingEndTime;
         const webMeetingLocation = this.webMeetingLocation;
         const webMeetingContent = this.webMeetingContent;
         const microsoftTeamsAttendeesChecked = document.querySelectorAll('input[class=microsoftTeamsAttendeesCheck]:checked');
@@ -527,7 +527,7 @@ export default class GuidNodeIntegromat extends Controller {
             attendeeNum = webexMeetingsAttendeesChecked.length;
         }
         //validation check for input
-        if(!this.webMeetingvalidationCheck(webMeetingSubject, attendeeNum, this.webMeetingStartDate, webMeetingStartTime, this.webMeetingEndDate, webMeetingEndTime, webMeetingStartDatetime, webMeetingEndDatetime)){
+        if(!this.webMeetingvalidationCheck(webMeetingSubject, attendeeNum, this.webMeetingStartDate, webMeetingStartTime, this.webMeetingEndDate, webMeetingEndTime, strWebMeetingStartDatetime, strWebMeetingEndDatetime)){
             return;
         }
 
@@ -550,8 +550,8 @@ export default class GuidNodeIntegromat extends Controller {
             }
         }
 
-        webMeetingStartDatetime = toISOStringWithTimezone(new Date(webMeetingStartDatetime));
-        webMeetingEndDatetime = toISOStringWithTimezone(new Date(webMeetingEndDatetime));
+        const webMeetingStartDatetime = this.toISOStringWithTimezone(new Date(strWebMeetingStartDatetime));
+        const webMeetingEndDatetime = this.toISOStringWithTimezone(new Date(strWebMeetingEndDatetime));
 
         const payload = {
             'nodeId': node_id,
@@ -707,10 +707,10 @@ export default class GuidNodeIntegromat extends Controller {
         const webMeetingSubject = this.webMeetingSubject;
         const webMeetingStartDate = moment(this.webMeetingStartDate).format('YYYY-MM-DD');
         const webMeetingStartTime = (<HTMLInputElement>document.querySelectorAll('select[id=update_start_time]')[0]).value;
-        const webMeetingStartDatetime = webMeetingStartDate + ' ' + webMeetingStartTime;
+        const strWebMeetingStartDatetime = webMeetingStartDate + ' ' + webMeetingStartTime;
         const webMeetingEndDate = moment(this.webMeetingEndDate).format('YYYY-MM-DD');
         const webMeetingEndTime = (<HTMLInputElement>document.querySelectorAll('select[id=update_end_time]')[0]).value;
-        const webMeetingEndDatetime = webMeetingEndDate + ' ' + webMeetingEndTime;
+        const strWebMeetingEndDatetime = webMeetingEndDate + ' ' + webMeetingEndTime;
         const webMeetingLocation = this.webMeetingLocation;
         const webMeetingContent = this.webMeetingContent;
         const webMeetingId = this.webMeetingUpdateMeetingId;
@@ -746,7 +746,7 @@ export default class GuidNodeIntegromat extends Controller {
             attendeeNum = webexMeetingsAttendeesChecked.length;
         }
         //validation check for input
-        if(!this.webMeetingvalidationCheck(webMeetingSubject, attendeeNum, this.webMeetingStartDate, webMeetingStartTime, this.webMeetingEndDate, webMeetingEndTime, webMeetingStartDatetime, webMeetingEndDatetime)){
+        if(!this.webMeetingvalidationCheck(webMeetingSubject, attendeeNum, this.webMeetingStartDate, webMeetingStartTime, this.webMeetingEndDate, webMeetingEndTime, strWebMeetingStartDatetime, strWebMeetingEndDatetime)){
             return;
         }
         //make attendees format
@@ -797,8 +797,8 @@ export default class GuidNodeIntegromat extends Controller {
             }
         }
 
-        webMeetingStartDatetime = toISOStringWithTimezone(new Date(webMeetingStartDatetime));
-        webMeetingEndDatetime = toISOStringWithTimezone(new Date(webMeetingEndDatetime));
+        const webMeetingStartDatetime = this.toISOStringWithTimezone(new Date(strWebMeetingStartDatetime));
+        const webMeetingEndDatetime = this.toISOStringWithTimezone(new Date(strWebMeetingEndDatetime));
 
         const payload = {
             'nodeId': node_id,

@@ -423,7 +423,7 @@ export default class GuidNodeIntegromat extends Controller {
     }
 
     @action
-    validationCheck(this: GuidNodeIntegromat, subject: string, attendeesNum: number, startDate: string, startTime: string, endDate: string, endTime: string, startDatetime: string, endDatetime: string) {
+    webMeetingvalidationCheck(this: GuidNodeIntegromat, subject: string, attendeesNum: number, startDate: string, startTime: string, endDate: string, endTime: string, startDatetime: string, endDatetime: string) {
 
         const now = new Date();
         const start = new Date(startDatetime);
@@ -495,12 +495,21 @@ export default class GuidNodeIntegromat extends Controller {
         let webexMeetingsCreateInvitees: webexMeetingsCreateInvitee[] = [];
         let webexMeetingsDeleteInviteeIds: string[] = [];
 
+        let attendeeNum = 0;
+
         if (this.webMeetingAppName === config.app_name_microsoft_teams) {
 
-            //validation check for attendees
-            if(!this.validationCheck(webMeetingSubject, microsoftTeamsAttendeesChecked.length, this.webMeetingStartDate, webMeetingStartTime, this.webMeetingEndDate, webMeetingEndTime, webMeetingStartDatetime, webMeetingEndDatetime)){
-                return;
-            }
+            attendeeNum = microsoftTeamsAttendeesChecked.length;
+        }else if (this.webMeetingAppName === config.app_name_webex_meetings) {
+
+            attendeeNum = webexMeetingsAttendeesChecked.length;
+        }
+        //validation check for attendees
+        if(!this.webMeetingvalidationCheck(webMeetingSubject, attendeeNum, this.webMeetingStartDate, webMeetingStartTime, this.webMeetingEndDate, webMeetingEndTime, webMeetingStartDatetime, webMeetingEndDatetime)){
+            return;
+        }
+
+        if (this.webMeetingAppName === config.app_name_microsoft_teams) {
 
             action = 'createMicrosoftTeamsMeeting';
 
@@ -509,11 +518,6 @@ export default class GuidNodeIntegromat extends Controller {
                 arrayAttendees.push(microsoftTeamsAttendeesChecked[i].id);
             }
         }else if (this.webMeetingAppName === config.app_name_webex_meetings) {
-
-            //validation check for attendees
-            if(!this.validationCheck(webMeetingSubject, webexMeetingsAttendeesChecked.length, this.webMeetingStartDate, this.webMeetingStartTime, this.webMeetingEndDate, this.webMeetingEndTime, webMeetingStartDatetime, webMeetingEndDatetime)){
-                return;
-            }
 
             action = 'createWebexMeetings';
 
@@ -701,12 +705,21 @@ export default class GuidNodeIntegromat extends Controller {
         let webexMeetingsCreateInvitees: webexMeetingsCreateInvitee[] = [];
         let webexMeetingsDeleteInviteeIds: string[] = [];
 
-        if (appName === config.app_name_microsoft_teams) {
+        let attendeeNum = 0;
 
-            //validation check for attendees
-            if(!this.validationCheck(webMeetingSubject, microsoftTeamsAttendeesChecked.length, this.webMeetingStartDate, webMeetingStartTime, this.webMeetingEndDate, webMeetingEndTime, webMeetingStartDatetime, webMeetingEndDatetime)){
-                return;
-            }
+        if (this.webMeetingAppName === config.app_name_microsoft_teams) {
+
+            attendeeNum = microsoftTeamsAttendeesChecked.length;
+        }else if (this.webMeetingAppName === config.app_name_webex_meetings) {
+
+            attendeeNum = webexMeetingsAttendeesChecked.length;
+        }
+        //validation check
+        if(!this.webMeetingvalidationCheck(webMeetingSubject, attendeeNum, this.webMeetingStartDate, webMeetingStartTime, this.webMeetingEndDate, webMeetingEndTime, webMeetingStartDatetime, webMeetingEndDatetime)){
+            return;
+        }
+
+        if (appName === config.app_name_microsoft_teams) {
 
             action = 'updateMicrosoftTeamsMeeting';
 
@@ -715,11 +728,6 @@ export default class GuidNodeIntegromat extends Controller {
                 arrayAttendees.push(microsoftTeamsAttendeesChecked[i].id);
             }
         }else if (appName === config.app_name_webex_meetings) {
-
-            //validation check for attendees
-            if(!this.validationCheck(webMeetingSubject, webexMeetingsAttendeesChecked.length, this.webMeetingStartDate, this.webMeetingStartTime, this.webMeetingEndDate, this.webMeetingEndTime, webMeetingStartDatetime, webMeetingEndDatetime)){
-                return;
-            }
 
             action = 'updateWebexMeetings';
 

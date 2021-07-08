@@ -463,6 +463,24 @@ export default class GuidNodeIntegromat extends Controller {
         }
         return validFlag
     }
+    @action
+    toISOStringWithTimezone(this: GuidNodeIntegromat, date: Date){
+        const pad = function (str: string){
+            return ('0' + str).slice(-2);
+        }
+        const year = (date.getFullYear()).toString();
+        const month = pad((date.getMonth() + 1).toString());
+        const day = pad(date.getDate().toString());
+        const hour = pad(date.getHours().toString());
+        const min = pad(date.getMinutes().toString());
+        const sec = pad(date.getSeconds().toString());
+        const tz = -date.getTimezoneOffset();
+        const sign = tz >= 0 ? '+' : '-';
+        const tzHour = pad((tz / 60).toString());
+        const tzMin = pad((tz % 60).toString());
+​
+        return `${year}-${month}-${day}T${hour}:${min}:${sec}${sign}${tzHour}:${tzMin}`;
+    }
 
     @action
     createWebMeeting(this: GuidNodeIntegromat) {
@@ -508,11 +526,12 @@ export default class GuidNodeIntegromat extends Controller {
 
             attendeeNum = webexMeetingsAttendeesChecked.length;
         }
-        //validation check for attendees
+        //validation check for input
         if(!this.webMeetingvalidationCheck(webMeetingSubject, attendeeNum, this.webMeetingStartDate, webMeetingStartTime, this.webMeetingEndDate, webMeetingEndTime, webMeetingStartDatetime, webMeetingEndDatetime)){
             return;
         }
 
+        //make attendees format
         if (this.webMeetingAppName === config.app_name_microsoft_teams) {
 
             action = 'createMicrosoftTeamsMeeting';
@@ -530,6 +549,10 @@ export default class GuidNodeIntegromat extends Controller {
                 arrayAttendees.push(webexMeetingsAttendeesChecked[i].id);
             }
         }
+
+        webMeetingStartDatetime = toISOStringWithTimezone(new Date(webMeetingStartDatetime));
+        webMeetingEndDatetime = toISOStringWithTimezone(new Date(webMeetingEndDatetime));
+
         const payload = {
             'nodeId': node_id,
             'appName': appName,
@@ -722,11 +745,11 @@ export default class GuidNodeIntegromat extends Controller {
 
             attendeeNum = webexMeetingsAttendeesChecked.length;
         }
-        //validation check
+        //validation check for input
         if(!this.webMeetingvalidationCheck(webMeetingSubject, attendeeNum, this.webMeetingStartDate, webMeetingStartTime, this.webMeetingEndDate, webMeetingEndTime, webMeetingStartDatetime, webMeetingEndDatetime)){
             return;
         }
-
+        //make attendees format
         if (appName === config.app_name_microsoft_teams) {
 
             action = 'updateMicrosoftTeamsMeeting';
@@ -773,6 +796,9 @@ export default class GuidNodeIntegromat extends Controller {
                 }
             }
         }
+
+        webMeetingStartDatetime = toISOStringWithTimezone(new Date(webMeetingStartDatetime));
+        webMeetingEndDatetime = toISOStringWithTimezone(new Date(webMeetingEndDatetime));
 
         const payload = {
             'nodeId': node_id,

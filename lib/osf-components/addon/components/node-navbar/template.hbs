@@ -54,7 +54,7 @@
                             {{node-navbar/link node=@node useLinkTo=false destination='addons'}}
                         {{/if}}
                         {{#if this.integromatEnabled }}
-                            {{node-navbar/link node=@node useLinkTo=false destination='integromat'}}
+                            {{node-navbar/link node=@node useLinkTo=false destination='grdmapps'}}
                         {{/if}}
                         {{#if (if @node.isRegistration @node.userHasWritePermission @node.userHasReadPermission)}}
                             {{node-navbar/link node=@node useLinkTo=false destination='settings'}}

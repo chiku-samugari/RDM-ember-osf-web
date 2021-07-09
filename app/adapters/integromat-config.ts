@@ -22,7 +22,7 @@ export default class IntegromatConfigAdapter extends OsfAdapter {
     ): string {
         const nodeUrl = super.buildURL('node', null, null, 'findRecord', {});
         const url = nodeUrl.replace(/\/nodes\/$/, '/project/');
-        return `${url}${id}/integromat/config`;
+        return `${url}${id}/grdmapps/config`;
     }
 }
 

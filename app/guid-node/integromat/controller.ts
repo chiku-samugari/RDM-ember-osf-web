@@ -891,8 +891,8 @@ export default class GuidNodeIntegromat extends Controller {
         const appName = this.webMeetingAppName;
         const appNameDisp = this.webMeetingAppNameDisp;
         const webMeetingSubject = this.webMeetingDeleteSubject;
-        const webMeetingStartDatetime = this.webMeetingDeleteStartDate + ' ' + this.webMeetingDeleteStartTime;
-        const webMeetingEndDatetime = this.webMeetingDeleteEndDate + ' ' + this.webMeetingDeleteEndTime;
+        const strWebMeetingStartDatetime = this.webMeetingDeleteStartDate + ' ' + this.webMeetingDeleteStartTime;
+        const strWebMeetingEndDatetime = this.webMeetingDeleteEndDate + ' ' + this.webMeetingDeleteEndTime;
         const timestamp = new Date().getTime();
 
         const empty = '';

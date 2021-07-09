@@ -916,6 +916,9 @@ export default class GuidNodeIntegromat extends Controller {
 
         }
 
+        const webMeetingStartDatetime = this.toISOStringWithTimezone(new Date(strWebMeetingStartDatetime));
+        const webMeetingEndDatetime = this.toISOStringWithTimezone(new Date(strWebMeetingEndDatetime));
+
         const payload = {
             'nodeId': nodeId,
             'appName': appName,

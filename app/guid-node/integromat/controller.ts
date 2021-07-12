@@ -480,7 +480,7 @@ export default class GuidNodeIntegromat extends Controller {
         const tzHour = pad((tz / 60).toString());
         const tzMin = pad((tz % 60).toString());
 ​
-		return `${year}-${month}-${day}T${hour}:${min}:${sec}.${mileSec}${sign}${tzHour}:${tzMin}`;
+		return `${year}-${month}-${day}T${hour}:${min}:${sec}.${miliSec}${sign}${tzHour}:${tzMin}`;
     }
 
     @action

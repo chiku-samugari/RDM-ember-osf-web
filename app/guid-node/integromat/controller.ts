@@ -474,12 +474,13 @@ export default class GuidNodeIntegromat extends Controller {
         const hour = pad(date.getHours().toString());
         const min = pad(date.getMinutes().toString());
         const sec = pad(date.getSeconds().toString());
+        const miliSec = pad(date.getMilliseconds().toString());
         const tz = -date.getTimezoneOffset();
         const sign = tz >= 0 ? '+' : '-';
         const tzHour = pad((tz / 60).toString());
         const tzMin = pad((tz % 60).toString());
 ​
-        return `${year}-${month}-${day}T${hour}:${min}:${sec}${sign}${tzHour}:${tzMin}`;
+		return `${year}-${month}-${day}T${hour}:${min}:${sec}.${mileSec}${sign}${tzHour}:${tzMin}`;
     }
 
     @action

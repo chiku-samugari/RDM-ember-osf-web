@@ -463,25 +463,6 @@ export default class GuidNodeIntegromat extends Controller {
         }
         return validFlag
     }
-    @action
-    toISOStringWithTimezone(this: GuidNodeIntegromat, date: Date){
-        const pad = function (str: string){
-            return ('0' + str).slice(-2);
-        }
-        const year = (date.getFullYear()).toString();
-        const month = pad((date.getMonth() + 1).toString());
-        const day = pad(date.getDate().toString());
-        const hour = pad(date.getHours().toString());
-        const min = pad(date.getMinutes().toString());
-        const sec = pad(date.getSeconds().toString());
-        const miliSec = pad(date.getMilliseconds().toString());
-        const tz = -date.getTimezoneOffset();
-        const sign = tz >= 0 ? '+' : '-';
-        const tzHour = pad((tz / 60).toString());
-        const tzMin = pad((tz % 60).toString());
-​
-		return `${year}-${month}-${day}T${hour}:${min}:${sec}.${miliSec}${sign}${tzHour}:${tzMin}`;
-    }
 
     @action
     createWebMeeting(this: GuidNodeIntegromat) {
@@ -551,8 +532,8 @@ export default class GuidNodeIntegromat extends Controller {
             }
         }
 
-        const webMeetingStartDatetime = this.toISOStringWithTimezone(new Date(strWebMeetingStartDatetime));
-        const webMeetingEndDatetime = this.toISOStringWithTimezone(new Date(strWebMeetingEndDatetime));
+        const webMeetingStartDatetime = (new Date(strWebMeetingStartDatetime)).toISOString();
+        const webMeetingEndDatetime = (new Date(strWebMeetingEndDatetime)).toISOString();
 
         const payload = {
             'nodeId': node_id,
@@ -798,8 +779,8 @@ export default class GuidNodeIntegromat extends Controller {
             }
         }
 
-        const webMeetingStartDatetime = this.toISOStringWithTimezone(new Date(strWebMeetingStartDatetime));
-        const webMeetingEndDatetime = this.toISOStringWithTimezone(new Date(strWebMeetingEndDatetime));
+        const webMeetingStartDatetime = (new Date(strWebMeetingStartDatetime)).toISOString();
+        const webMeetingEndDatetime = (new Date(strWebMeetingEndDatetime)).toISOString();
 
         const payload = {
             'nodeId': node_id,
@@ -917,8 +898,8 @@ export default class GuidNodeIntegromat extends Controller {
 
         }
 
-        const webMeetingStartDatetime = this.toISOStringWithTimezone(new Date(strWebMeetingStartDatetime));
-        const webMeetingEndDatetime = this.toISOStringWithTimezone(new Date(strWebMeetingEndDatetime));
+        const webMeetingStartDatetime = (new Date(strWebMeetingStartDatetime)).toISOString();
+        const webMeetingEndDatetime = (new Date(strWebMeetingEndDatetime)).toISOString();
 
         const payload = {
             'nodeId': nodeId,

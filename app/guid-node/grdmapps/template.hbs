@@ -279,9 +279,8 @@
                         <span id='attendees_inputs'>
                             {{#if this.node_microsoft_teams_attendees}}
                                 {{#each this.node_microsoft_teams_attendees as |row|}}
-                                    <label local-class='Integromat__label_normal'>
-                                        <input class='microsoftTeamsAttendeesCheck' type='checkBox' style='width: 15px; height: 15px;' id={{row.fields.microsoft_teams_mail}}  name={{row.fields.microsoft_teams_user_name}} 
-                                               data-toggle='tooltip' title={{row.fields.microsoft_teams_mail}}>
+                                    <label local-class='Integromat__label_normal' data-toggle='tooltip' title={{row.fields.microsoft_teams_mail}}>
+                                        <input class='microsoftTeamsAttendeesCheck' type='checkBox' style='width: 15px; height: 15px;' id={{row.fields.microsoft_teams_mail}}  name={{row.fields.microsoft_teams_user_name}}>
                                         {{row.fields.fullname}}
                                     </label>
                                 {{/each}}
@@ -387,7 +386,7 @@
                         <span id='attendees_inputs'>
                             {{#if this.node_webex_meetings_attendees}}
                                 {{#each this.node_webex_meetings_attendees as |row|}}
-                                    <label local-class='Integromat__label_normal'>
+                                    <label local-class='Integromat__label_normal' data-toggle='tooltip' title={{row.fields.webex_meetings_mail}}>
                                         <input class='webexMeetingsAttendeesCheck' type='checkBox' style='width: 15px; height: 15px;' id={{row.fields.webex_meetings_mail}} name={{row.fields.webex_meetings_display_name}}>
                                         {{row.fields.fullname}}
                                     </label>
@@ -517,16 +516,14 @@
                     <div>
                         <span id='attendees_inputs'>
                             {{#each this.webMeetingAttendeesNow as |attendee|}}
-                                <label local-class='Integromat__label_normal'>
-                                    <input class='microsoftTeamsAttendeesCheck' type='checkBox' style='width: 15px; height: 15px;' id={{attendee.email}} 
-                                           data-toggle='tooltip' title={{attendee.email}} checked>
+                                <label local-class='Integromat__label_normal' data-toggle='tooltip' title={{attendee.email}}>
+                                    <input class='microsoftTeamsAttendeesCheck' type='checkBox' style='width: 15px; height: 15px;' id={{attendee.email}} checked>
                                     {{attendee.fullname}}
                                 </label>
                             {{/each}}
                             {{#each this.notwebMeetingAttendeesNow as |attendee|}}
-                                <label local-class='Integromat__label_normal'>
-                                    <input class='microsoftTeamsAttendeesCheck' type='checkBox' style='width: 15px; height: 15px;' id={{attendee.email}}
-                                           data-toggle='tooltip' title={{attendee.email}}>
+                                <label local-class='Integromat__label_normal' data-toggle='tooltip' title={{attendee.email}}>
+                                    <input class='microsoftTeamsAttendeesCheck' type='checkBox' style='width: 15px; height: 15px;' id={{attendee.email}}>
                                     {{attendee.fullname}}
                                 </label>
                             {{/each}}
@@ -626,16 +623,14 @@
                     <div>
                         <span id='attendees_inputs'>
                             {{#each this.webMeetingAttendeesNow as |attendee|}}
-                                <label local-class='Integromat__label_normal'>
-                                    <input class='webexMeetingsAttendeesCheck' type='checkBox' style='width: 15px; height: 15px;' id={{attendee.email}}
-                                           data-toggle='tooltip' title={{attendee.email}} checked>
+                                <label local-class='Integromat__label_normal' data-toggle='tooltip' title={{attendee.email}}>
+                                    <input class='webexMeetingsAttendeesCheck' type='checkBox' style='width: 15px; height: 15px;' id={{attendee.email}} checked>
                                     {{attendee.fullname}}
                                 </label>
                             {{/each}}
                             {{#each this.notwebMeetingAttendeesNow as |attendee|}}
-                                <label local-class='Integromat__label_normal'>
-                                    <input class='webexMeetingsAttendeesCheck' type='checkBox' style='width: 15px; height: 15px;' id={{attendee.email}}
-                                           data-toggle='tooltip' title={{attendee.email}}>
+                                <label local-class='Integromat__label_normal' data-toggle='tooltip' title={{attendee.email}}>
+                                    <input class='webexMeetingsAttendeesCheck' type='checkBox' style='width: 15px; height: 15px;' id={{attendee.email}}>
                                     {{attendee.fullname}}
                                 </label>
                             {{/each}}
@@ -811,7 +806,7 @@
                 <span>{{t 'integromat.attendees'}}{{t 'integromat.colon'}}
 
                     {{#each this.webMeetingAttendeesNow as |attendee|}}
-                        <a href={{attendee.profile}} target='_blank'>{{attendee.fullname}}</a>
+                        <a href={{attendee.profile}} target='_blank' data-toggle='tooltip' title={{attendee.email}}>{{attendee.fullname}}</a>
                     {{/each}}
                 </span>
             </div>

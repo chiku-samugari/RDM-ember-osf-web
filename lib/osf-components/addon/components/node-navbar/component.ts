@@ -54,7 +54,7 @@ export default class NodeNavbar extends Component {
     }
 
     @computed('node.addons.[]')
-    get integromatEnabled(): Promise<boolean> | null {
+    get grdmappsEnabled(): Promise<boolean> | null {
         if (!this.node) {
             return null;
         }
@@ -64,8 +64,8 @@ export default class NodeNavbar extends Component {
             if (!addons) {
                 return false;
             }
-            const integromat = addons.filter(addon => addon.id === 'integromat');
-            return integromat.length > 0;
+            const grdmapps = addons.filter(addon => addon.id === 'grdmapps');
+            return grdmapps.length > 0;
         })();
     }
 

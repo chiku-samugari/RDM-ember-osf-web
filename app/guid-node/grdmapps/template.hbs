@@ -800,7 +800,10 @@
     <modal.body style='border-bottom: 1px solid #E5E5E5'>
         <div class='form-group'>
             <div local-class='Integromat__input_items' style='font-size: x-large;'>
-                {{this.webMeetingSubject}}
+                {{this.webMeetingSubject}} 
+                <CopyableIcon
+                    @text={{this.webMeetingJoinUrl}}
+                />
             </div>
             <div style='padding-left: 20px;'>
                 <div local-class='Integromat__div_inline_block'>

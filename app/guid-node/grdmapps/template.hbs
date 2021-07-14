@@ -103,6 +103,7 @@
                                                     <th></th>
                                                     <th></th>
                                                     <th></th>
+                                                    <th></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -115,11 +116,13 @@
                                                             <th></th>
                                                             <th></th>
                                                             <th></th>
+                                                            <th></th>
                                                         </tr>
                                                    {{else}}
                                                        {{#if row.date_bar}}
                                                             <tr style='background-color: #efefef; padding: 3px; padding-left: 10px;'>
                                                                 <th local-class='Integromat__th' style='padding: 3px; padding-left: 10px;'>{{moment-format row.fields.start_datetime 'll'}}</th>
+                                                                <th></th>
                                                                 <th></th>
                                                                 <th></th>
                                                                 <th></th>
@@ -139,6 +142,11 @@
                                                         <td local-class='Integromat__td'>
                                                             <button class='fa fa-play' data-toggle='tooltip' title={{t 'integromat.meetingDialog.startLabel'}}
                                                                   onClick={{action this.startMeeting row.fields.join_url}}></button>
+                                                        </td>
+                                                        <td>
+                                                            <CopyableButton
+                                                                @text={{row.fields.join_url}}
+                                                            />
                                                         </td>
                                                         <td class='text-info' local-class='Integromat__td'>
                                                             <button class='fa fa-edit' data-toggle='tooltip' title={{t 'integromat.meetingDialog.updateLabel'}} 
@@ -177,6 +185,7 @@
                                                     <th></th>
                                                     <th></th>
                                                     <th></th>
+                                                    <th></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -189,11 +198,13 @@
                                                             <th></th>
                                                             <th></th>
                                                             <th></th>
+                                                            <th></th>
                                                         </tr>
                                                    {{else}}
                                                        {{#if row.date_bar}}
                                                             <tr style='background-color: #efefef; padding: 3px; padding-left: 10px;'>
                                                                 <th local-class='Integromat__th' style='padding: 3px; padding-left: 10px;'>{{moment-format row.fields.start_datetime 'll'}}</th>
+                                                                <th></th>
                                                                 <th></th>
                                                                 <th></th>
                                                                 <th></th>
@@ -213,6 +224,11 @@
                                                         <td local-class='Integromat__td'>
                                                             <button class='fa fa-play' data-toggle='tooltip' title={{t 'integromat.meetingDialog.startLabel'}}
                                                                   onClick={{action this.startMeeting row.fields.join_url}}></button>
+                                                        </td>
+                                                        <td>
+                                                            <CopyableButton
+                                                                @text={{row.fields.join_url}}
+                                                            />
                                                         </td>
                                                         <td class='text-info' local-class='Integromat__td'>
                                                             <button class='fa fa-edit' data-toggle='tooltip' title={{t 'integromat.meetingDialog.updateLabel'}} 

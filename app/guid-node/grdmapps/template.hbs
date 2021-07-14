@@ -812,7 +812,7 @@
                 <div local-class='Integromat__div_inline_block'>
                     {{this.webMeetingStartDate}}&nbsp;{{this.webMeetingStartTime}}
                 </div>
-                <div local-class='Integromat__div_inline_block'><label local-class='Integromat__input_items'>{{t 'integromat.from_hyphen'}}</label></div>
+                <div local-class='Integromat__div_inline_block'><label>{{t 'integromat.from_hyphen'}}</label></div>
                 <div local-class='Integromat__div_inline_block'>
                     {{this.webMeetingEndTime}}
                 </div>
@@ -831,11 +831,6 @@
                         <a href={{attendee.profile}} target='_blank' data-toggle='tooltip' title={{attendee.email}}>{{attendee.fullname}}</a>
                     {{/each}}
                 </span>
-            </div>
-            <div local-class='Integromat__input_items' style='padding-left: 20px; padding-right: 20px;'>
-                <CopyableText
-                    @text={{this.webMeetingJoinUrl}}
-                />
             </div>
             <div local-class='Integromat__input_items' style='padding-left: 20px; padding-bottom: 10px;'>
                 <div style='border-top-style: inset; padding-top: 10px; white-space: pre-wrap;'>{{this.webMeetingContent}}</div>

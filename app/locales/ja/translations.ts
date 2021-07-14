@@ -1983,7 +1983,7 @@ export default {
         workflowListLabel: '全てのワークフロー',
         workflowLabel: 'ワークフロー',
         integratedAppsLabel: 'ワークフローを構成するアプリ',
-        copyUrlLabel; 'URLコピー',
+        copyUrlLabel: 'URLコピー',
         meetingDialog: {
             createLabel: '会議作成',
             updateLabel: '会議更新',

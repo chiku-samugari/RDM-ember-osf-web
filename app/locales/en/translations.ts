@@ -1827,7 +1827,7 @@ export default {
         workflowListLabel: 'All Workflow',
         workflowLabel: 'Workflow',
         integratedAppsLabel: 'Integrated Apps',
-        copyUrlLabel; 'Copy URL',
+        copyUrlLabel: 'Copy URL',
         meetingDialog: {
             createLabel: 'Create Meeting',
             updateLabel: 'Update Meeting',

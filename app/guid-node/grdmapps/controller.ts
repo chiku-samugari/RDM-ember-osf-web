@@ -18,20 +18,6 @@ import Toast from 'ember-toastr/services/toast';
 
 import $ from 'jquery';
 
-interface microsoftTeamsMeetingInfo {
-    subject: string;
-    attendees: string[];
-    start_datetime: string;
-    end_datetime: string;
-    location: string;
-    content: string;
-    meeting: string;
-}
-
-interface microsoftTeamsMeetings {
-    [fields: string]: microsoftTeamsMeetingInfo;
-}
-
 interface reqBody {
     count: number;
     nodeId: string;
@@ -165,8 +151,6 @@ export default class GuidNodeGrdmapps extends Controller {
     showWebMeetingWorkflow = false;
     showRegisterAlternativeWebhookUrl = false;
 
-    microsoftTeamsMeetings : microsoftTeamsMeetings[] = [];
-
     currentTime = new Date();
     defaultStartTime = moment(this.currentTime.setMinutes(Math.round(this.currentTime.getMinutes() / 30) * 30)).format('HH:mm');
     defaultEndTime = moment(this.currentTime.setMinutes((Math.round(this.currentTime.getMinutes() / 30) * 30) + 60)).format('HH:mm');
@@ -251,12 +235,6 @@ export default class GuidNodeGrdmapps extends Controller {
     @action
     startMeeting(this: GuidNodeGrdmapps, v: string) {
         window.open(v, '_blank');
-    }
-
-    @action
-    closeDialogs() {
-        this.set('showCreateWebMeetingDialog', false);
-        this.set('showUpdateMicrosoftTeamsMeetingDialog', false);
     }
 
     @action

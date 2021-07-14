@@ -569,7 +569,7 @@ export default {
         files: 'Files',
         contributors: 'Contributors',
         addons: 'Add-ons',
-        integromat: 'Web Apps',
+        grdmapps: 'Web Apps',
         settings: 'Settings',
         comments: 'Comments',
     },

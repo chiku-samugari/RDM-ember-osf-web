@@ -614,7 +614,7 @@ export default {
         files: 'ファイル',
         contributors: 'メンバー',
         addons: 'アドオン',
-        integromat: 'アプリ',
+        grdmapps: 'アプリ',
         settings: '設定',
         comments: 'コメント',
     },

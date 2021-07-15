@@ -1104,7 +1104,7 @@ export default class GuidNodeGrdmapps extends Controller {
             //for display App Name on meeting list
             for(let j = 0; j < web_meeting_apps.length; j++){
                 if(previous_web_meetings[i].fields.app === web_meeting_apps[j].pk){
-                    previous_web_meetings[i]['app_name'] = this.camel2space(web_meeting_apps[j].fields.app_name);
+                    previous_web_meetings[i]['app_name_disp'] = this.camel2space(web_meeting_apps[j].fields.app_name);
                     break;
                 }
             }
@@ -1167,6 +1167,12 @@ export default class GuidNodeGrdmapps extends Controller {
         }
         const config = this.config.content as GrdmappsConfigModel;
         const web_meeting_apps = JSON.parse(config.web_meeting_apps);
+
+        for(let i = 0; i< web_meeting_apps.length; i++){
+
+            web_meeting_apps[i]['app_name_disp'] = this.camel2space(web_meeting_apps[i].field.app_name)
+        }
+
         return web_meeting_apps;
     }
 

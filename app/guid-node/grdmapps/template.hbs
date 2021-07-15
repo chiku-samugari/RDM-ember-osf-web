@@ -800,14 +800,14 @@
     <modal.body style='border-bottom: 1px solid #E5E5E5'>
         <div class='form-group'>
             <div local-class='Integromat__input_items Integromat__div_inline_block' style='font-size: x-large;'>
-                {{this.webMeetingSubject}} 
+                {{this.webMeetingSubject}}
+                <CopyableIcon
+                    @text={{this.webMeetingJoinUrl}}
+                    local-class='Integromat__div_inline_block'
+                    style='font-size: medium'
+                    title={{this.webMeetingJoinUrl}}
+                />
             </div>
-            <CopyableIcon
-                @text={{this.webMeetingJoinUrl}}
-                local-class='Integromat__div_inline_block'
-                style='font-size: larger'
-                title={{this.webMeetingJoinUrl}}
-            />
             <div style='padding-left: 20px; padding-top: 5px;'>
                 <div local-class='Integromat__div_inline_block'>
                     {{this.webMeetingStartDate}}&nbsp;{{this.webMeetingStartTime}}

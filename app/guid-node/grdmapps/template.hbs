@@ -140,7 +140,7 @@
                                                         </td>
                                                         <td local-class='Integromat__td_overflow'>{{row.fields.organizer_fullname}}</td>
                                                         <td local-class='Integromat__td'>
-                                                            <button class='fa fa-play' data-toggle='tooltip' title={{row.app_name}}{{t 'integromat.meetingDialog.startLabel'}}
+                                                            <button class='fa fa-play' data-toggle='tooltip' title={{t 'integromat.meetingDialog.startHeader' appName=row.app_name}}
                                                                   onClick={{action this.startMeeting row.fields.join_url}}></button>
                                                         </td>
                                                         <td>
@@ -149,11 +149,11 @@
                                                             />
                                                         </td>
                                                         <td class='text-info' local-class='Integromat__td'>
-                                                            <button class='fa fa-edit' data-toggle='tooltip' title={{row.app_name}}{{t 'integromat.meetingDialog.updateLabel'}} 
+                                                            <button class='fa fa-edit' data-toggle='tooltip' title={{t 'integromat.meetingDialog.updateHeader' appName=row.app_name}}
                                                                   onClick={{action this.makeUpdateMeetingDialog row.pk row.fields.meetingid row.fields.join_url row.fields.meeting_password row.fields.app row.fields.subject row.fields.attendees row.fields.start_datetime row.fields.end_datetime row.fields.location row.fields.content}}></button>
                                                         </td>
                                                         <td class='text-danger' local-class='Integromat__td'>
-                                                            <button class='fa fa-trash' data-toggle='tooltip' title={{row.app_name}}{{t 'integromat.meetingDialog.deleteLabel'}}
+                                                            <button class='fa fa-trash' data-toggle='tooltip' title={{t 'integromat.meetingDialog.deleteHeader' appName=row.app_name}}
                                                                   onClick={{action this.makeDeleteDialog row.fields.meetingid row.fields.app row.fields.subject row.fields.start_datetime row.fields.end_datetime}}></button>
                                                         </td>
                                                     </tr>
@@ -222,7 +222,7 @@
                                                         </td>
                                                         <td local-class='Integromat__td_overflow'>{{row.fields.organizer_fullname}}</td>
                                                         <td local-class='Integromat__td'>
-                                                            <button class='fa fa-play' data-toggle='tooltip' title={{row.app_name}}{{t 'integromat.meetingDialog.startLabel'}}
+                                                            <button class='fa fa-play' data-toggle='tooltip' title={{t 'integromat.meetingDialog.startHeader' appName=row.app_name}}
                                                                   onClick={{action this.startMeeting row.fields.join_url}}></button>
                                                         </td>
                                                         <td>
@@ -231,11 +231,11 @@
                                                             />
                                                         </td>
                                                         <td class='text-info' local-class='Integromat__td'>
-                                                            <button class='fa fa-edit' data-toggle='tooltip' title={{row.app_name}}{{t 'integromat.meetingDialog.updateLabel'}} 
+                                                            <button class='fa fa-edit' data-toggle='tooltip' title={{t 'integromat.meetingDialog.updateHeader' appName=row.app_name}}
                                                                   onClick={{action this.makeUpdateMeetingDialog row.pk row.fields.meetingid row.fields.join_url row.fields.meeting_password row.fields.app row.fields.subject row.fields.attendees row.fields.start_datetime row.fields.end_datetime row.fields.location row.fields.content}}></button>
                                                         </td>
                                                         <td class='text-danger' local-class='Integromat__td'>
-                                                            <button class='fa fa-trash' data-toggle='tooltip' title={{row.app_name}}{{t 'integromat.meetingDialog.deleteLabel'}}
+                                                            <button class='fa fa-trash' data-toggle='tooltip' title={{t 'integromat.meetingDialog.deleteHeader' appName=row.app_name}}
                                                                   onClick={{action this.makeDeleteDialog row.fields.meetingid row.fields.app row.fields.subject row.fields.start_datetime row.fields.end_datetime}}></button>
                                                         </td>
                                                     </tr>

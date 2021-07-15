@@ -1993,6 +1993,7 @@ export default {
             updateHeader: '{{appName}}会議更新',
             deleteHeader: '{{appName}}会議削除',
             detailHeader: '{{appName}}会議詳細',
+            startHeader: '{{appName}}会議開始',
             deleteBody: 'この会議を削除しますか？',
             noAttendees: '出席者が登録されていません。',
             createBtn: '作成',

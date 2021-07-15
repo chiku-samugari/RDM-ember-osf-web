@@ -977,7 +977,13 @@ export default class GuidNodeGrdmapps extends Controller {
                 headers,
                 body: JSON.stringify(payload)
         })
-        .then(res => res.json())
+        .then(res => {
+            if(!res.ok){
+                this.toast.error(this.i18n.t('integromat.error.failedToRequest'));
+                return;
+            }
+            res.json()
+        })
         .then(data => {
             let reqBody = {
                 'count': 1,

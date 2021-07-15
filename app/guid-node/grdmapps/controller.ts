@@ -1059,7 +1059,7 @@ export default class GuidNodeGrdmapps extends Controller {
             //for display App Name on meeting list
             for(let j = 0; j < web_meeting_apps.length; j++){
                 if(upcoming_web_meetings[i].fields.app === web_meeting_apps[j].pk){
-                    upcoming_web_meetings[i]['app_name'] = this.camel2space(web_meeting_apps[j].fields.app_name);
+                    upcoming_web_meetings[i]['app_name_disp'] = this.camel2space(web_meeting_apps[j].fields.app_name);
                     break;
                 }
             }

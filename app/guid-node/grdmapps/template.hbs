@@ -822,11 +822,12 @@
                 </div>
             </div>
             <div local-class='Integromat__input_items' style='padding-left: 20px;'>
-                <span>{{t 'integromat.organizer'}}{{t 'integromat.colon'}}<a>{{this.webMeetingOrganizerFullname}}</a></span>
+                <span>{{t 'integromat.organizer'}}{{t 'integromat.colon'}}
+                      {{this.webMeetingOrganizerFullname}}
+                </span>
             </div>
             <div local-class='Integromat__input_items' style='padding-left: 20px;'>
                 <span>{{t 'integromat.attendees'}}{{t 'integromat.colon'}}
-
                     {{#each this.webMeetingAttendeesNow as |attendee|}}
                         <a href={{attendee.profile}} target='_blank' data-toggle='tooltip' title={{attendee.email}}>{{attendee.fullname}}</a>
                     {{/each}}

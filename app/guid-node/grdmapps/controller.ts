@@ -1047,6 +1047,7 @@ export default class GuidNodeGrdmapps extends Controller {
         }
         const config = this.config.content as GrdmappsConfigModel;
         let upcoming_web_meetings = JSON.parse(config.upcoming_web_meetings);
+        let web_meeting_apps = JSON.parse(config.web_meeting_apps);
 
         let previousDatetime;
         let currentDatetime;
@@ -1054,6 +1055,16 @@ export default class GuidNodeGrdmapps extends Controller {
         let currentDate = '';
 
         for(let i = 0; i < upcoming_web_meetings.length; i++){
+
+            //for display App Name on meeting list
+            for(let j = 0; j < web_meeting_apps.length; j++){
+                if(upcoming_web_meetings[i].fields.app === web_meeting_apps[j].pk){
+                    upcoming_web_meetings[i]['app_name'] = this.camel2space(web_meeting_apps[j].fields.app_name);
+                    break;
+                }
+            }
+
+            //for display Date Bar
             if(i === 0){
                 upcoming_web_meetings[i]['date_bar'] = false;
             }else if(i !== 0){
@@ -1081,6 +1092,7 @@ export default class GuidNodeGrdmapps extends Controller {
         }
         const config = this.config.content as GrdmappsConfigModel;
         let previous_web_meetings = JSON.parse(config.previous_web_meetings);
+        let web_meeting_apps = JSON.parse(config.web_meeting_apps);
 
         let currentDatetime;
         let nextDatetime;
@@ -1088,6 +1100,15 @@ export default class GuidNodeGrdmapps extends Controller {
         let currentDate = '';
 
         for(let i = 0; i < previous_web_meetings.length; i++){
+
+            //for display App Name on meeting list
+            for(let j = 0; j < web_meeting_apps.length; j++){
+                if(previous_web_meetings[i].fields.app === web_meeting_apps[j].pk){
+                    previous_web_meetings[i]['app_name'] = this.camel2space(web_meeting_apps[j].fields.app_name);
+                    break;
+                }
+            }
+
             if(i === 0){
                 previous_web_meetings[i]['date_bar'] = false;
             }else if(i !== 0){

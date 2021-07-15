@@ -1170,7 +1170,7 @@ export default class GuidNodeGrdmapps extends Controller {
 
         for(let i = 0; i< web_meeting_apps.length; i++){
 
-            web_meeting_apps[i]['app_name_disp'] = this.camel2space(web_meeting_apps[i].field.app_name)
+            web_meeting_apps[i]['app_name_disp'] = this.camel2space(web_meeting_apps[i].fields.app_name)
         }
 
         return web_meeting_apps;

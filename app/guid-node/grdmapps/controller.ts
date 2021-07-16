@@ -372,7 +372,7 @@ export default class GuidNodeGrdmapps extends Controller {
         let validFlag = true;
 
         if(!webhook_url){
-            this.set('msgInvalidWebhookUrl', this.i18n.t('integromat.meetingDialog.invalid.empty', {item: this.i18n.t('integromat.webhookUrl')}));
+            this.set('msgInvalidWebhookUrl', this.i18n.t('integromat.meetingDialog.invalid.empty', {item: this.i18n.t('integromat.workflows.alternative_webhook_url.label')}));
             validFlag = false;
         }else{
             this.set('msgInvalidWebhookUrl', '');

@@ -1883,7 +1883,7 @@ export default {
         from_tilde: ' ～ ',
         from_hyphen: ' - ',
         colon: ':',
-        registerBtn: '登録',
+        registerBtn: 'Register',
         success: {
             registerAlternativeWebhookUrl: 'Success to register webhook URL to the workflow.',
         },

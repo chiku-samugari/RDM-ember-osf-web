@@ -394,7 +394,10 @@ export default class GuidNodeGrdmapps extends Controller {
         const headers = this.currentUser.ajaxHeaders();
         const url = registerAlternativeWebhookUrl.replace('{}', String(this.model.guid));
 
-        this.webhookValidationCheck(url);
+        //validation check for webhook url input
+        if(!this.webhookValidationCheck(url);){
+            return;
+        }
 
         const payload = {
             'workflowDescription': this.workflowDescription,

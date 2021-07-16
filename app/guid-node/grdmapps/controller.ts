@@ -1009,7 +1009,13 @@ export default class GuidNodeGrdmapps extends Controller {
                 headers,
                 body: JSON.stringify(reqBody)
         })
-        .then(res => res.json())
+        .then(res => {
+            if(!res.ok){
+                this.toast.error(this.i18n.t('integromat.error.failedToGetMessage'));
+                return;
+            }
+            return res.json()
+        })
         .then(data => {
             if(data.integromatMsg === 'integromat.info.completed'){
                 this.toast.info(this.i18n.t(data.integromatMsg));

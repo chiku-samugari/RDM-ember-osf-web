@@ -395,7 +395,7 @@ export default class GuidNodeGrdmapps extends Controller {
         const url = registerAlternativeWebhookUrl.replace('{}', String(this.model.guid));
 
         //validation check for webhook url input
-        if(!this.webhookValidationCheck(url);){
+        if(!this.webhookValidationCheck(url)){
             return;
         }
 

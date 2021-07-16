@@ -183,6 +183,7 @@ export default class GuidNodeGrdmapps extends Controller {
     msgInvalidSubject = '';
     msgInvalidAttendees = '';
     msgInvalidDatetime = '';
+    msgInvalidWebhookUrl = '';
 
     workflowDescription = '';
     alternativeWebhookUrl = '';
@@ -366,6 +367,21 @@ export default class GuidNodeGrdmapps extends Controller {
     }
 
     @action
+    webhookValidationCheck(this: GuidNodeGrdmapps, webhook_url: string) {
+
+        let validFlag = true;
+
+        if(!webhook_url){
+            this.set('msgInvalidWebhookUrl', this.i18n.t('integromat.meetingDialog.invalid.empty', {item: this.i18n.t('integromat.webhookUrl')}));
+            validFlag = false;
+        }else{
+            this.set('msgInvalidWebhookUrl', '');
+        }
+
+        return validFlag
+    }
+
+    @action
     makeRegisterAlternativeWebhookUrl(this: GuidNodeGrdmapps, workflow_description: string) {
 
         this.set('workflowDescription', workflow_description);
@@ -377,6 +393,9 @@ export default class GuidNodeGrdmapps extends Controller {
 
         const headers = this.currentUser.ajaxHeaders();
         const url = registerAlternativeWebhookUrl.replace('{}', String(this.model.guid));
+
+        this.webhookValidationCheck(url);
+
         const payload = {
             'workflowDescription': this.workflowDescription,
             'alternativeWebhookUrl': this.alternativeWebhookUrl,

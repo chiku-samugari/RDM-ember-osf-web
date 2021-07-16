@@ -3,7 +3,8 @@ export default {
   name: 'i18n',
   initialize: function(app) {
     let i18n = app.lookup('service:i18n');
-    
+    let moment = applicationInstance.lookup('service:moment');
+
     i18n.addTranslations('ja-jp');
     i18n.set('locale', calculateLocale(i18n.get('locales')));
   }

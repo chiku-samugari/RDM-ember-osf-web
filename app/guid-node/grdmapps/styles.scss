@@ -43,9 +43,12 @@
     margin-top: 30px;
 }
 
+.Integromat__tr {
+    border-bottom: 1px solid #ddd;
+}
+
 .Integromat__tr:hover {
     background-color: #fffff0;
-    border-bottom: 1px solid #dddddd;
 }
 
 .Integromat__th {

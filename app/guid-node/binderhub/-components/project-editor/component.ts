@@ -21,6 +21,7 @@ enum DockerfileProperty {
     Apt,
     Conda,
     Pip,
+    RMran,
     RCran,
     RGitHub,
     PostInstall,
@@ -69,6 +70,11 @@ function getRGitHubScript(packageId: string[]) {
     return `Rscript -e 'remotes::install_github("${name}"${args})'`;
 }
 
+function getRMranScript(packageId: string[]) {
+    const name = packageId[0];
+    return `install.packages("${name}")`;
+}
+
 function removeQuotes(item: string) {
     const m = item.match(/^\s*"(.*)"\s*/);
     if (!m) {
@@ -79,8 +85,8 @@ function removeQuotes(item: string) {
 
 interface ConfigurationFile {
     name: string;
-    property: 'dockerfile' | 'environment' | 'requirements' | 'apt';
-    modelProperty: 'dockerfileModel' | 'environmentModel' | 'requirementsModel' | 'aptModel';
+    property: 'dockerfile' | 'environment' | 'requirements' | 'apt' | 'installR';
+    modelProperty: 'dockerfileModel' | 'environmentModel' | 'requirementsModel' | 'aptModel' | 'installRModel';
 }
 
 interface ImageURL {
@@ -106,6 +112,8 @@ export default class ProjectEditor extends Component {
 
     aptModel: FileModel | null = this.aptModel;
 
+    installRModel: FileModel | null = this.installRModel;
+
     postInstallScriptModel: FileModel | null = this.postInstallScriptModel;
 
     configStorageProvider: FileProviderModel = this.configStorageProvider;
@@ -125,6 +133,10 @@ export default class ProjectEditor extends Component {
     requirements: string | undefined = undefined;
 
     apt: string | undefined = undefined;
+
+    installR: string | undefined = undefined;
+
+    mranVersionSettingError = false;
 
     @requiredAction renewToken!: () => void;
 
@@ -164,6 +176,7 @@ export default class ProjectEditor extends Component {
     @computed(
         'dockerfileManuallyChanged', 'environmentManuallyChanged',
         'requirementsManuallyChanged', 'aptManuallyChanged',
+        'installRManuallyChanged',
     )
     get manuallyChanged() {
         if (this.dockerfileManuallyChanged) {
@@ -176,6 +189,9 @@ export default class ProjectEditor extends Component {
             return true;
         }
         if (this.aptManuallyChanged) {
+            return true;
+        }
+        if (this.installRManuallyChanged) {
             return true;
         }
         return false;
@@ -201,6 +217,12 @@ export default class ProjectEditor extends Component {
 
     @computed('apt')
     get aptManuallyChanged() {
+        const content = this.get('apt');
+        return this.verifyHashHeader(content);
+    }
+
+    @computed('apt')
+    get installRManuallyChanged() {
         const content = this.get('apt');
         return this.verifyHashHeader(content);
     }
@@ -328,6 +350,10 @@ export default class ProjectEditor extends Component {
         if (this.parseImageURL(url).url !== REPO2DOCKER_IMAGE_ID) {
             return '';
         }
+        const image = this.findImageByUrl(url);
+        if (!image.packages || !image.packages.includes('pip')) {
+            return '';
+        }
         const basePipPackages = this.pipPackages || [];
         const pipPackages = key === DockerfileProperty.Pip
             ? value.split(/\s/).filter(item => item.length > 0)
@@ -341,7 +367,7 @@ export default class ProjectEditor extends Component {
     }
 
     getUpdatedApt(key: DockerfileProperty, value: string) {
-        // Update requirements.txt with MD5 hash
+        // Update apt.txt with MD5 hash
         const url = key === DockerfileProperty.From ? value : this.selectedImageUrl;
         if (this.parseImageURL(url).url !== REPO2DOCKER_IMAGE_ID) {
             return '';
@@ -358,12 +384,36 @@ export default class ProjectEditor extends Component {
         return `# rdm-binderhub:hash:${checksum}\n${content}`;
     }
 
+    getUpdatedInstallR(key: DockerfileProperty, value: string) {
+        // Update install.R with MD5 hash
+        const url = key === DockerfileProperty.From ? value : this.selectedImageUrl;
+        if (this.parseImageURL(url).url !== REPO2DOCKER_IMAGE_ID) {
+            return '';
+        }
+        const image = this.findImageByUrl(url);
+        if (!image.packages || !image.packages.includes('rmran')) {
+            return '';
+        }
+        const rMranPackages = key === DockerfileProperty.RMran
+            ? value.split(/\s/).filter(item => item.length > 0)
+                .map(item => parseCondaPackageId(item))
+            : (this.rMranPackages || []);
+        if (rMranPackages.length === 0) {
+            return '';
+        }
+        const content = rMranPackages.map(item => getRMranScript(item))
+            .map(item => `${item}\n`).join('');
+        const checksum = md5(content.trim());
+        return `# rdm-binderhub:hash:${checksum}\n${content}`;
+    }
+
     updateFiles(key: DockerfileProperty, value: string) {
         const props: { [key: string]: string; } = {};
         props.dockerfile = this.getUpdatedDockerfile(key, value);
         props.environment = this.getUpdatedEnvironment(key, value);
         props.requirements = this.getUpdatedRequirements(key, value);
         props.apt = this.getUpdatedApt(key, value);
+        props.installR = this.getUpdatedInstallR(key, value);
 
         later(async () => {
             await this.saveCurrentConfig(props);
@@ -417,6 +467,10 @@ export default class ProjectEditor extends Component {
         if (url === null) {
             return null;
         }
+        return this.findImageByUrl(url);
+    }
+
+    findImageByUrl(url: string | null) {
         const deployment = this.get('deployment');
         if (!deployment) {
             throw new EmberError('Illegal config');
@@ -462,6 +516,15 @@ export default class ProjectEditor extends Component {
             return false;
         }
         return image.packages.includes('rgithub');
+    }
+
+    @computed('selectedImage')
+    get rMranSupported() {
+        const image = this.get('selectedImage');
+        if (image === null || !image.packages) {
+            return false;
+        }
+        return image.packages.includes('rmran');
     }
 
     @computed('dockerfileStatements', 'aptLines')
@@ -639,6 +702,20 @@ export default class ProjectEditor extends Component {
         return packages;
     }
 
+    @computed('installRLines')
+    get rMranPackages() {
+        const lines = this.get('installRLines');
+        if (lines === null) {
+            return [];
+        }
+        const pattern = /^install\.packages\(([^)]+)\)\s*$/;
+        const packages = lines
+            .map(line => line.trim().match(pattern))
+            .filter(match => match)
+            .map(match => (match ? [removeQuotes(match[1]), ''] : ['', '']));
+        return packages;
+    }
+
     @computed('dockerfileStatements')
     get hasPostInstall() {
         const dockerfileStatements = this.get('dockerfileStatements');
@@ -767,6 +844,21 @@ export default class ProjectEditor extends Component {
             .filter(item => item.length > 0 && !item.startsWith('#'));
     }
 
+    @computed('installR')
+    get installRLines() {
+        if (this.installRManuallyChanged) {
+            return null;
+        }
+        const content = this.get('installR');
+        if (content === undefined || content.length === 0) {
+            return null;
+        }
+        return content
+            .split('\n')
+            .map(item => item.trim())
+            .filter(item => item.length > 0 && !item.startsWith('#'));
+    }
+
     @computed('node')
     get nodeFilesLink() {
         if (!this.node) {
@@ -813,6 +905,7 @@ export default class ProjectEditor extends Component {
             { name: 'environment.yml', property: 'environment', modelProperty: 'environmentModel' },
             { name: 'requirements.txt', property: 'requirements', modelProperty: 'requirementsModel' },
             { name: 'apt.txt', property: 'apt', modelProperty: 'aptModel' },
+            { name: 'install.R', property: 'installR', modelProperty: 'installRModel' },
         ];
     }
 
@@ -1000,6 +1093,19 @@ export default class ProjectEditor extends Component {
     rGitHubUpdated(this: ProjectEditor, packages: Array<[string, string]>) {
         this.updateFiles(
             DockerfileProperty.RGitHub,
+            packages.map(pkg => getCondaPackageId(pkg)).join(' '),
+        );
+    }
+
+    @action
+    rMranUpdated(this: ProjectEditor, packages: Array<[string, string]>) {
+        if (packages.filter(pkg => pkg[1]).length > 0) {
+            this.set('mranVersionSettingError', true);
+            return;
+        }
+        this.set('mranVersionSettingError', false);
+        this.updateFiles(
+            DockerfileProperty.RMran,
             packages.map(pkg => getCondaPackageId(pkg)).join(' '),
         );
     }

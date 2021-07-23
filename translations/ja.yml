@@ -1777,6 +1777,7 @@ binderhub:
         open_node_files: 'ファイル一覧を開く'
         refresh_post_install: '更新'
         refreshing_post_install: '更新中...'
+        mran_version_setting_error: 'MRANにバージョン番号を指定することはできません。'
         placeholders:
             package_name: '名前'
             package_version: 'バージョン'

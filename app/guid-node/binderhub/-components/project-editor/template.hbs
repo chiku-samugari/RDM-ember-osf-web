@@ -109,6 +109,20 @@
                             @onUpdate={{action this.rGitHubUpdated}}
                         />
                     {{/if}}
+                    {{#if this.rMranSupported}}
+                        <GuidNode::Binderhub::-Components::PackageEditor
+                            data-test-package-editor='rmran'
+                            @node={{this.node}}
+                            @label='R (MRAN)'
+                            @packages={{this.rMranPackages}}
+                            @onUpdate={{action this.rMranUpdated}}
+                        />
+                        {{#if this.mranVersionSettingError}}
+                            <div local-class='environment_setting_error'>
+                                {{t 'binderhub.deployment.mran_version_setting_error'}}
+                            </div>
+                        {{/if}}
+                    {{/if}}
                 </div>
                 <h3>{{t 'binderhub.deployment.postinstallscript'}}</h3>
                 <div local-class='postscript_view'>

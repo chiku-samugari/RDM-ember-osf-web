@@ -4,6 +4,7 @@ import config from 'ember-get-config';
 
 import { layout } from 'ember-osf-web/decorators/component';
 import Node from 'ember-osf-web/models/node';
+import NodeAddonModel from 'ember-osf-web/models/node-addon';
 
 import styles from './styles';
 import template from './template';
@@ -37,40 +38,52 @@ export default class NodeNavbar extends Component {
         return null;
     }
 
-    @computed('node.addons.[]')
-    get iqbrimsEnabled(): Promise<boolean> | null {
+    @computed('node.addons')
+    get iqbrimsEnabled(): boolean | null {
         if (!this.node) {
             return null;
         }
-        const { node } = this;
-        return (async () => {
-            const addons = await node.addons;
-            if (!addons) {
-                return false;
-            }
-            const iqbrims = addons.filter(addon => addon.id === 'iqbrims' && addon.configured);
-            return iqbrims.length > 0;
-        })();
+        let result = null;
+        this.getAddons()
+            .then(addons => {
+                result = addons
+                    .filter(addon => addon.id === 'iqbrims' && addon.configured)
+                    .length > 0;
+                this.set('iqbrimsEnabled', result);
+            });
+        return result;
     }
 
-    @computed('node.addons.[]')
-    get binderhubEnabled(): Promise<boolean> | null {
+    @computed('node.addons')
+    get binderhubEnabled(): boolean | null {
         if (!this.node) {
             return null;
         }
-        const { node } = this;
-        return (async () => {
-            const addons = await node.addons;
-            if (!addons) {
-                return false;
-            }
-            const binderhub = addons.filter(addon => addon.id === 'binderhub' && addon.configured);
-            return binderhub.length > 0;
-        })();
+        let result = null;
+        this.getAddons()
+            .then(addons => {
+                result = addons
+                    .filter(addon => addon.id === 'binderhub' && addon.configured)
+                    .length > 0;
+                this.set('binderhubEnabled', result);
+            });
+        return result;
     }
 
     @action
     toggleNav() {
         this.toggleProperty('collapsedNav');
+    }
+
+    async getAddons(): Promise<NodeAddonModel[]> {
+        const { node } = this;
+        if (!node) {
+            return [];
+        }
+        const addons = await node.addons;
+        if (!addons) {
+            return [];
+        }
+        return addons.map(addon => addon);
     }
 }

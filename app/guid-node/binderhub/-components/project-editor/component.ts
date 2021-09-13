@@ -1,3 +1,4 @@
+import ArrayProxy from '@ember/array/proxy';
 import Component from '@ember/component';
 import EmberError from '@ember/error';
 import { action, computed } from '@ember/object';
@@ -13,11 +14,14 @@ import CurrentUser from 'ember-osf-web/services/current-user';
 import getHref from 'ember-osf-web/utils/get-href';
 import md5 from 'js-md5';
 
+const REPO2DOCKER_IMAGE_ID = '#repo2docker';
+
 enum DockerfileProperty {
     From,
     Apt,
     Conda,
     Pip,
+    RMran,
     RCran,
     RGitHub,
     PostInstall,
@@ -66,12 +70,29 @@ function getRGitHubScript(packageId: string[]) {
     return `Rscript -e 'remotes::install_github("${name}"${args})'`;
 }
 
+function getRMranScript(packageId: string[]) {
+    const name = packageId[0];
+    return `install.packages("${name}")`;
+}
+
 function removeQuotes(item: string) {
     const m = item.match(/^\s*"(.*)"\s*/);
     if (!m) {
         throw new Error(`Unexpected text: ${item}`);
     }
     return m[1];
+}
+
+interface ConfigurationFile {
+    name: string;
+    property: 'dockerfile' | 'environment' | 'requirements' | 'apt' | 'installR';
+    modelProperty: 'dockerfileModel' | 'environmentModel' | 'requirementsModel' | 'aptModel' | 'installRModel';
+}
+
+interface ImageURL {
+    fullurl: string | null;
+    url: string | null;
+    params: string[][] | null;
 }
 
 export default class ProjectEditor extends Component {
@@ -84,6 +105,14 @@ export default class ProjectEditor extends Component {
     configFolder: FileModel = this.configFolder;
 
     dockerfileModel: FileModel | null = this.dockerfileModel;
+
+    environmentModel: FileModel | null = this.environmentModel;
+
+    requirementsModel: FileModel | null = this.requirementsModel;
+
+    aptModel: FileModel | null = this.aptModel;
+
+    installRModel: FileModel | null = this.installRModel;
 
     postInstallScriptModel: FileModel | null = this.postInstallScriptModel;
 
@@ -98,6 +127,16 @@ export default class ProjectEditor extends Component {
     refreshingPostInstallScript = false;
 
     dockerfile: string | undefined = undefined;
+
+    environment: string | undefined = undefined;
+
+    requirements: string | undefined = undefined;
+
+    apt: string | undefined = undefined;
+
+    installR: string | undefined = undefined;
+
+    mranVersionSettingError = false;
 
     @requiredAction renewToken!: () => void;
 
@@ -134,13 +173,65 @@ export default class ProjectEditor extends Component {
         return this.binderHubConfig.get('deployment');
     }
 
-    @computed('dockerfile')
+    @computed(
+        'dockerfileManuallyChanged', 'environmentManuallyChanged',
+        'requirementsManuallyChanged', 'aptManuallyChanged',
+        'installRManuallyChanged',
+    )
     get manuallyChanged() {
+        if (this.dockerfileManuallyChanged) {
+            return true;
+        }
+        if (this.environmentManuallyChanged) {
+            return true;
+        }
+        if (this.requirementsManuallyChanged) {
+            return true;
+        }
+        if (this.aptManuallyChanged) {
+            return true;
+        }
+        if (this.installRManuallyChanged) {
+            return true;
+        }
+        return false;
+    }
+
+    @computed('dockerfile')
+    get dockerfileManuallyChanged() {
         const dockerfile = this.get('dockerfile');
-        if (dockerfile === undefined) {
+        return this.verifyHashHeader(dockerfile);
+    }
+
+    @computed('environment')
+    get environmentManuallyChanged() {
+        const content = this.get('environment');
+        return this.verifyHashHeader(content);
+    }
+
+    @computed('requirements')
+    get requirementsManuallyChanged() {
+        const content = this.get('requirements');
+        return this.verifyHashHeader(content);
+    }
+
+    @computed('apt')
+    get aptManuallyChanged() {
+        const content = this.get('apt');
+        return this.verifyHashHeader(content);
+    }
+
+    @computed('apt')
+    get installRManuallyChanged() {
+        const content = this.get('apt');
+        return this.verifyHashHeader(content);
+    }
+
+    verifyHashHeader(content: string | undefined) {
+        if (content === undefined) {
             return false;
         }
-        const lines = dockerfile.split('\n');
+        const lines = content.split('\n');
         if (lines.length === 0 || (lines.length === 1 && lines[0].trim() === '')) {
             return false;
         }
@@ -148,13 +239,16 @@ export default class ProjectEditor extends Component {
         if (!line) {
             return true;
         }
-        const content = dockerfile.substring(line[0].length + 1);
-        return md5(content.trim()) !== line[1];
+        const body = content.substring(line[0].length + 1);
+        return md5(body.trim()) !== line[1];
     }
 
-    updateDockerfile(key: DockerfileProperty, value: string) {
+    getUpdatedDockerfile(key: DockerfileProperty, value: string) {
         // Update Dockerfile with MD5 hash
         const url = key === DockerfileProperty.From ? value : this.selectedImageUrl;
+        if (this.parseImageURL(url).url === REPO2DOCKER_IMAGE_ID) {
+            return '';
+        }
         let content = `FROM ${url}\n\n`;
         const baseAptPackages = this.aptPackages || [];
         const aptPackages = key === DockerfileProperty.Apt
@@ -221,23 +315,123 @@ export default class ProjectEditor extends Component {
         if (superuser) {
             content += 'USER $NB_USER\n';
         }
-        content += 'COPY * .\n';
+        content += 'COPY * ./\n';
         const checksum = md5(content.trim());
-        const dockerfile = `# rdm-binderhub:hash:${checksum}\n${content}`;
-        this.set('dockerfile', dockerfile);
+        return `# rdm-binderhub:hash:${checksum}\n${content}`;
+    }
+
+    getUpdatedEnvironment(key: DockerfileProperty, value: string) {
+        // Update environment.yml with MD5 hash
+        const imageURL = this.parseImageURL(
+            key === DockerfileProperty.From ? value : this.selectedImageUrl,
+        );
+        if (imageURL.url !== REPO2DOCKER_IMAGE_ID) {
+            return '';
+        }
+        const baseCondaPackages = this.condaPackages || [];
+        let condaPackages = key === DockerfileProperty.Conda
+            ? value.split(/\s/).filter(item => item.length > 0)
+            : baseCondaPackages.map(pkg => getCondaPackageId(pkg));
+        if (imageURL.params) {
+            condaPackages = condaPackages.concat(imageURL.params.map(pkg => getCondaPackageId(pkg)));
+        }
+        let content = `name: "${imageURL.fullurl}"\n`;
+        if (condaPackages.length > 0) {
+            content += 'dependencies:\n';
+            content += condaPackages.map(item => `- ${item}\n`).join('');
+        }
+        const checksum = md5(content.trim());
+        return `# rdm-binderhub:hash:${checksum}\n${content}`;
+    }
+
+    getUpdatedRequirements(key: DockerfileProperty, value: string) {
+        // Update requirements.txt with MD5 hash
+        const url = key === DockerfileProperty.From ? value : this.selectedImageUrl;
+        if (this.parseImageURL(url).url !== REPO2DOCKER_IMAGE_ID) {
+            return '';
+        }
+        const image = this.findImageByUrl(url);
+        if (!image.packages || !image.packages.includes('pip')) {
+            return '';
+        }
+        const basePipPackages = this.pipPackages || [];
+        const pipPackages = key === DockerfileProperty.Pip
+            ? value.split(/\s/).filter(item => item.length > 0)
+            : basePipPackages.map(pkg => getPipPackageId(pkg));
+        if (pipPackages.length === 0 || !this.pipSupported) {
+            return '';
+        }
+        const content = pipPackages.map(item => `${item}\n`).join('');
+        const checksum = md5(content.trim());
+        return `# rdm-binderhub:hash:${checksum}\n${content}`;
+    }
+
+    getUpdatedApt(key: DockerfileProperty, value: string) {
+        // Update apt.txt with MD5 hash
+        const url = key === DockerfileProperty.From ? value : this.selectedImageUrl;
+        if (this.parseImageURL(url).url !== REPO2DOCKER_IMAGE_ID) {
+            return '';
+        }
+        const baseAptPackages = this.aptPackages || [];
+        const aptPackages = key === DockerfileProperty.Apt
+            ? value.split(/\s/).filter(item => item.length > 0)
+            : baseAptPackages.map(pkg => getAptPackageId(pkg));
+        if (aptPackages.length === 0) {
+            return '';
+        }
+        const content = aptPackages.map(item => `${item}\n`).join('');
+        const checksum = md5(content.trim());
+        return `# rdm-binderhub:hash:${checksum}\n${content}`;
+    }
+
+    getUpdatedInstallR(key: DockerfileProperty, value: string) {
+        // Update install.R with MD5 hash
+        const url = key === DockerfileProperty.From ? value : this.selectedImageUrl;
+        if (this.parseImageURL(url).url !== REPO2DOCKER_IMAGE_ID) {
+            return '';
+        }
+        const image = this.findImageByUrl(url);
+        if (!image.packages || !image.packages.includes('rmran')) {
+            return '';
+        }
+        const rMranPackages = key === DockerfileProperty.RMran
+            ? value.split(/\s/).filter(item => item.length > 0)
+                .map(item => parseCondaPackageId(item))
+            : (this.rMranPackages || []);
+        if (rMranPackages.length === 0) {
+            return '';
+        }
+        const content = rMranPackages.map(item => getRMranScript(item))
+            .map(item => `${item}\n`).join('');
+        const checksum = md5(content.trim());
+        return `# rdm-binderhub:hash:${checksum}\n${content}`;
+    }
+
+    updateFiles(key: DockerfileProperty, value: string) {
+        const props: { [key: string]: string; } = {};
+        props.dockerfile = this.getUpdatedDockerfile(key, value);
+        props.environment = this.getUpdatedEnvironment(key, value);
+        props.requirements = this.getUpdatedRequirements(key, value);
+        props.apt = this.getUpdatedApt(key, value);
+        props.installR = this.getUpdatedInstallR(key, value);
+
         later(async () => {
-            await this.saveCurrentConfig();
+            await this.saveCurrentConfig(props);
         }, 0);
     }
 
-    @computed('dockerfile')
+    @computed('dockerfile', 'environment')
     get selectedImageUrl() {
         if (this.manuallyChanged) {
             return null;
         }
         const dockerfile = this.get('dockerfile');
-        if (dockerfile === undefined) {
+        const environment = this.get('environment');
+        if (dockerfile === undefined || environment === undefined) {
             return null;
+        }
+        if (environment.length > 0) {
+            return this.environmentImageURL;
         }
         const fromStatements = dockerfile.split('\n')
             .filter(line => line.match(/^FROM\s+\S+\s*/));
@@ -273,6 +467,10 @@ export default class ProjectEditor extends Component {
         if (url === null) {
             return null;
         }
+        return this.findImageByUrl(url);
+    }
+
+    findImageByUrl(url: string | null) {
         const deployment = this.get('deployment');
         if (!deployment) {
             throw new EmberError('Illegal config');
@@ -320,8 +518,24 @@ export default class ProjectEditor extends Component {
         return image.packages.includes('rgithub');
     }
 
-    @computed('dockerfileStatements')
+    @computed('selectedImage')
+    get rMranSupported() {
+        const image = this.get('selectedImage');
+        if (image === null || !image.packages) {
+            return false;
+        }
+        return image.packages.includes('rmran');
+    }
+
+    @computed('dockerfileStatements', 'aptLines')
     get aptPackages() {
+        const aptLines = this.get('aptLines');
+        if (aptLines !== null) {
+            return aptLines
+                .map(item => item.trim())
+                .filter(item => item.length > 0)
+                .map(item => parseAptPackageId(item));
+        }
         const dockerfileStatements = this.get('dockerfileStatements');
         if (dockerfileStatements === null) {
             return null;
@@ -342,8 +556,21 @@ export default class ProjectEditor extends Component {
             .map(item => parseAptPackageId(item));
     }
 
-    @computed('dockerfileStatements')
+    @computed('dockerfileStatements', 'environmentDependencies')
     get condaPackages() {
+        const envDeps = this.get('environmentDependencies');
+        if (envDeps !== null) {
+            const imageURL = this.parseImageURL(this.get('selectedImageUrl'));
+            const packages = envDeps
+                .map(item => item.trim())
+                .filter(item => item.length > 0)
+                .map(item => parseCondaPackageId(item));
+            if (!imageURL.params) {
+                return packages;
+            }
+            const packageNames = imageURL.params.map(param => param[0]);
+            return packages.filter(pkg => !packageNames.includes(pkg[0]));
+        }
         const dockerfileStatements = this.get('dockerfileStatements');
         if (dockerfileStatements === null) {
             return null;
@@ -362,8 +589,15 @@ export default class ProjectEditor extends Component {
             .map(item => parseCondaPackageId(item));
     }
 
-    @computed('dockerfileStatements')
+    @computed('dockerfileStatements', 'requirementsLines')
     get pipPackages() {
+        const reqLines = this.get('requirementsLines');
+        if (reqLines !== null) {
+            return reqLines
+                .map(item => item.trim())
+                .filter(item => item.length > 0)
+                .map(item => parsePipPackageId(item));
+        }
         const dockerfileStatements = this.get('dockerfileStatements');
         if (dockerfileStatements === null) {
             return null;
@@ -468,6 +702,20 @@ export default class ProjectEditor extends Component {
         return packages;
     }
 
+    @computed('installRLines')
+    get rMranPackages() {
+        const lines = this.get('installRLines');
+        if (lines === null) {
+            return [];
+        }
+        const pattern = /^install\.packages\(([^)]+)\)\s*$/;
+        const packages = lines
+            .map(line => line.trim().match(pattern))
+            .filter(match => match)
+            .map(match => (match ? [removeQuotes(match[1]), ''] : ['', '']));
+        return packages;
+    }
+
     @computed('dockerfileStatements')
     get hasPostInstall() {
         const dockerfileStatements = this.get('dockerfileStatements');
@@ -484,7 +732,7 @@ export default class ProjectEditor extends Component {
 
     @computed('dockerfile')
     get dockerfileStatements() {
-        if (this.manuallyChanged) {
+        if (this.dockerfileManuallyChanged) {
             return null;
         }
         const dockerfile = this.get('dockerfile');
@@ -510,6 +758,107 @@ export default class ProjectEditor extends Component {
         return statements;
     }
 
+    @computed('environment')
+    get environmentDependencies() {
+        if (this.environmentManuallyChanged) {
+            return null;
+        }
+        const content = this.get('environment');
+        if (content === undefined || content.length === 0) {
+            return null;
+        }
+        const lines = content.split('\n');
+        const deps: string[] = [];
+        let section = '';
+        for (const line of lines) {
+            if (line.trim().startsWith('#')) {
+                continue;
+            }
+            const sectionm = line.match(/\s*(\S+):\s*$/);
+            if (sectionm) {
+                // eslint-disable-next-line prefer-destructuring
+                section = sectionm[1];
+                continue;
+            }
+            if (section !== 'dependencies') {
+                continue;
+            }
+            const itemm = line.match(/\s*-\s*(\S+)\s*$/);
+            if (!itemm) {
+                continue;
+            }
+            deps.push(itemm[1]);
+        }
+        return deps;
+    }
+
+    @computed('environment')
+    get environmentImageURL() {
+        if (this.environmentManuallyChanged) {
+            return null;
+        }
+        const content = this.get('environment');
+        if (content === undefined || content.length === 0) {
+            return null;
+        }
+        const lines = content.split('\n');
+        let name = null;
+        for (const line of lines) {
+            const m = line.match(/\s*name\s*:\s*"(\S+)"\s*$/);
+            if (!m) {
+                continue;
+            }
+            // eslint-disable-next-line prefer-destructuring
+            name = m[1];
+        }
+        return name;
+    }
+
+    @computed('requirements')
+    get requirementsLines() {
+        if (this.requirementsManuallyChanged) {
+            return null;
+        }
+        const content = this.get('requirements');
+        if (content === undefined || content.length === 0) {
+            return null;
+        }
+        return content
+            .split('\n')
+            .map(item => item.trim())
+            .filter(item => item.length > 0 && !item.startsWith('#'));
+    }
+
+    @computed('apt')
+    get aptLines() {
+        if (this.aptManuallyChanged) {
+            return null;
+        }
+        const content = this.get('apt');
+        if (content === undefined || content.length === 0) {
+            return null;
+        }
+        return content
+            .split('\n')
+            .map(item => item.trim())
+            .filter(item => item.length > 0 && !item.startsWith('#'));
+    }
+
+    @computed('installR')
+    get installRLines() {
+        if (this.installRManuallyChanged) {
+            return null;
+        }
+        const content = this.get('installR');
+        if (content === undefined || content.length === 0) {
+            return null;
+        }
+        return content
+            .split('\n')
+            .map(item => item.trim())
+            .filter(item => item.length > 0 && !item.startsWith('#'));
+    }
+
     @computed('node')
     get nodeFilesLink() {
         if (!this.node) {
@@ -533,15 +882,53 @@ export default class ProjectEditor extends Component {
         return false;
     }
 
-    async getDockerfile() {
-        if (!this.configFolder) {
+    parseImageURL(url: string | null): ImageURL {
+        if (url === null) {
+            return { fullurl: url, url, params: null };
+        }
+        const m = url.match(/^(#?[^#]+)(#.*)?$/);
+        if (!m) {
+            return { fullurl: url, url, params: null };
+        }
+        let params = null;
+        if (m[2]) {
+            params = m[2].substring(1).split(',')
+                .map(item => item.trim().split('='))
+                .map(item => (item.length === 1 ? [item[0], ''] : item));
+        }
+        return { fullurl: url, url: m[1], params };
+    }
+
+    get configurationFiles(): ConfigurationFile[] {
+        return [
+            { name: 'Dockerfile', property: 'dockerfile', modelProperty: 'dockerfileModel' },
+            { name: 'environment.yml', property: 'environment', modelProperty: 'environmentModel' },
+            { name: 'requirements.txt', property: 'requirements', modelProperty: 'requirementsModel' },
+            { name: 'apt.txt', property: 'apt', modelProperty: 'aptModel' },
+            { name: 'install.R', property: 'installR', modelProperty: 'installRModel' },
+        ];
+    }
+
+    async getRootFiles(reload: boolean = false) {
+        let { configFolder } = this;
+        if (!configFolder) {
             return null;
+        }
+        if (reload) {
+            configFolder = await configFolder.reload();
         }
         const files = await this.configFolder.get('files');
         if (!files) {
             return null;
         }
-        const envFiles = files.filter(file => file.name === 'Dockerfile');
+        return files;
+    }
+
+    async getFile(name: string, files: ArrayProxy<FileModel> | null) {
+        if (files === null) {
+            return null;
+        }
+        const envFiles = files.filter(file => file.name === name);
         if (envFiles.length === 0) {
             return null;
         }
@@ -572,45 +959,81 @@ export default class ProjectEditor extends Component {
         if (scriptFiles.length > 0 && this.hasPostInstall === true) {
             return;
         }
-        this.updateDockerfile(
+        this.updateFiles(
             DockerfileProperty.PostInstall,
             scriptFiles.length > 0 ? 'true' : 'false',
         );
     }
 
-    async loadCurrentConfig() {
-        const envFile = await this.getDockerfile();
+    async loadCurrentFile(file: ConfigurationFile, files: ArrayProxy<FileModel> | null) {
+        const envFile = await this.getFile(file.name, files);
         if (!envFile) {
-            this.set('dockerfileModel', null);
-            this.set('dockerfile', '');
+            this.set(file.modelProperty, null);
+            this.set(file.property, '');
             return;
         }
         const content = await envFile.getContents();
-        this.set('dockerfileModel', envFile);
-        this.set('dockerfile', content.toString());
+        this.set(file.modelProperty, envFile);
+        this.set(file.property, content.toString());
     }
 
-    async saveCurrentConfig() {
-        const content: string | undefined = this.get('dockerfile');
+    async loadCurrentConfig(reload: boolean = false) {
+        const files = await this.getRootFiles(reload);
+        const confFiles = this.configurationFiles;
+        const tasks = confFiles.map(file => this.loadCurrentFile(file, files));
+        await Promise.all(tasks);
+    }
+
+    async saveCurrentFile(
+        file: ConfigurationFile, files: ArrayProxy<FileModel> | null,
+        props: { [key: string]: string; },
+    ) {
+        const content: string | undefined = props[file.property];
         if (content === undefined) {
             throw new EmberError('Illegal config');
         }
-        if (!this.configFolder) {
-            throw new EmberError('Illegal config');
+        const envFile = await this.getFile(file.name, files);
+        if (content.length === 0) {
+            this.set(file.modelProperty, null);
+            this.set(file.property, '');
+            if (!envFile) {
+                return false;
+            }
+            await this.currentUser.authenticatedAJAX({
+                url: `${getHref(envFile.links.delete)}`,
+                type: 'DELETE',
+                xhrFields: { withCredentials: true },
+            });
+            return true;
         }
-        const envFile = await this.getDockerfile();
         if (!envFile) {
-            const name = 'Dockerfile';
+            this.set(file.property, content);
             const links = this.configStorageProvider.get('links');
             await this.currentUser.authenticatedAJAX({
-                url: `${getHref(links.upload)}?name=${name}`,
+                url: `${getHref(links.upload)}?name=${file.name}`,
                 type: 'PUT',
                 xhrFields: { withCredentials: true },
                 data: content,
             });
+            return true;
+        }
+        this.set(file.property, content);
+        await envFile.updateContents(content);
+        return false;
+    }
+
+    async saveCurrentConfig(properties: { [key: string]: string; }) {
+        if (!this.configFolder) {
+            throw new EmberError('Illegal config');
+        }
+        const files = await this.getRootFiles(true);
+        const confFiles = this.configurationFiles;
+        const tasks = confFiles.map(file => this.saveCurrentFile(file, files, properties));
+        const created = await Promise.all(tasks);
+        if (!created.some(item => item)) {
             return;
         }
-        await envFile.updateContents(content);
+        await this.loadCurrentConfig(true);
     }
 
     async performResetDockerfile() {
@@ -631,12 +1054,12 @@ export default class ProjectEditor extends Component {
     @action
     selectImage(this: ProjectEditor, url: string) {
         this.set('imageSelectable', false);
-        this.updateDockerfile(DockerfileProperty.From, url);
+        this.updateFiles(DockerfileProperty.From, url);
     }
 
     @action
     aptUpdated(this: ProjectEditor, packages: Array<[string, string]>) {
-        this.updateDockerfile(
+        this.updateFiles(
             DockerfileProperty.Apt,
             packages.map(pkg => getAptPackageId(pkg)).join(' '),
         );
@@ -644,7 +1067,7 @@ export default class ProjectEditor extends Component {
 
     @action
     condaUpdated(this: ProjectEditor, packages: Array<[string, string]>) {
-        this.updateDockerfile(
+        this.updateFiles(
             DockerfileProperty.Conda,
             packages.map(pkg => getCondaPackageId(pkg)).join(' '),
         );
@@ -652,7 +1075,7 @@ export default class ProjectEditor extends Component {
 
     @action
     pipUpdated(this: ProjectEditor, packages: Array<[string, string]>) {
-        this.updateDockerfile(
+        this.updateFiles(
             DockerfileProperty.Pip,
             packages.map(pkg => getPipPackageId(pkg)).join(' '),
         );
@@ -660,7 +1083,7 @@ export default class ProjectEditor extends Component {
 
     @action
     rCranUpdated(this: ProjectEditor, packages: Array<[string, string]>) {
-        this.updateDockerfile(
+        this.updateFiles(
             DockerfileProperty.RCran,
             packages.map(pkg => getCondaPackageId(pkg)).join(' '),
         );
@@ -668,8 +1091,21 @@ export default class ProjectEditor extends Component {
 
     @action
     rGitHubUpdated(this: ProjectEditor, packages: Array<[string, string]>) {
-        this.updateDockerfile(
+        this.updateFiles(
             DockerfileProperty.RGitHub,
+            packages.map(pkg => getCondaPackageId(pkg)).join(' '),
+        );
+    }
+
+    @action
+    rMranUpdated(this: ProjectEditor, packages: Array<[string, string]>) {
+        if (packages.filter(pkg => pkg[1]).length > 0) {
+            this.set('mranVersionSettingError', true);
+            return;
+        }
+        this.set('mranVersionSettingError', false);
+        this.updateFiles(
+            DockerfileProperty.RMran,
             packages.map(pkg => getCondaPackageId(pkg)).join(' '),
         );
     }

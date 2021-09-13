@@ -1778,6 +1778,7 @@ binderhub:
         open_node_files: 'Open Files'
         refresh_post_install: 'Refresh'
         refreshing_post_install: 'Refreshing...'
+        mran_version_setting_error: 'The version number cannot be specified for MRAN.'
         placeholders:
             package_name: 'Name'
             package_version: 'Version'

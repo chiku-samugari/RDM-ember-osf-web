@@ -4,6 +4,7 @@ import { computed } from '@ember/object';
 import { alias } from '@ember/object/computed';
 import ContributorModel from 'ember-osf-web/models/contributor';
 import NodeModel, { NodeCategory } from 'ember-osf-web/models/node';
+import UserModel from 'ember-osf-web/models/user';
 import OsfModel, { Permission } from './osf-model';
 
 const { attr, belongsTo, hasMany } = DS;
@@ -20,6 +21,8 @@ export default class SparseNodeModel extends OsfModel {
     @attr('array') currentUserPermissions!: Permission[];
     @attr('boolean') currentUserIsContributor!: boolean;
     @attr('boolean') public!: boolean;
+    @attr('number') quotaRate!: number;
+    @attr('number') quotaThreshold!: number;
 
     @hasMany('node', { inverse: 'parent' })
     children!: DS.PromiseManyArray<NodeModel>;
@@ -29,6 +32,9 @@ export default class SparseNodeModel extends OsfModel {
 
     @hasMany('contributor', { inverse: null })
     bibliographicContributors!: DS.PromiseManyArray<ContributorModel>;
+
+    @belongsTo('user', { inverse: null })
+    creator!: DS.PromiseObject<UserModel> & UserModel;
 
     @belongsTo('node', { inverse: 'children' })
     parent!: DS.PromiseObject<NodeModel> & NodeModel;

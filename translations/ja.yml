@@ -548,6 +548,7 @@ node_navbar:
     files: ファイル
     contributors: メンバー
     addons: アドオン
+    grdmapps: アプリ
     settings: 設定
     comments: コメント
 status:

@@ -3,11 +3,11 @@ import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
 import ConfirmationMixin from 'ember-onbeforeunload/mixins/confirmation';
 
-import GuidNodeGrdmapps from 'ember-osf-web/guid-node/grdmapps/controller';
 import Node from 'ember-osf-web/models/node';
 import { GuidRouteModel } from 'ember-osf-web/resolve-guid/guid-route';
 import Analytics from 'ember-osf-web/services/analytics';
 
+import GuidNodeGrdmapps from './controller';
 
 export default class GuidNodeGrdmappsRoute extends Route.extend(ConfirmationMixin, {}) {
     @service analytics!: Analytics;

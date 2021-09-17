@@ -8,5 +8,66 @@
         <div class='row' local-class='Integromat__header'>
             <ul local-class='Integromat__menu'><li><span class='btn btn-link'>{{t 'integromat.workflowListLabel'}}</span>{{fa-icon 'angle-right'}}</li></ul>
         </div>
+        <div class='row' local-class='Integromat__header'>
+            <ul local-class='Integromat__menu'><li><span class='btn btn-link'>{{t 'integromat.workflowListLabel'}}</span>{{fa-icon 'angle-right'}}</li></ul>
+        </div>
+        <div>
+            <div local-class='Integromat__sidebar' >
+                <div>
+                    <h5>
+                        {{t 'integromat.categoryLabel'}}
+                        <span>
+                            {{fa-icon 'info-circle'}}
+                            <BsTooltip>
+                                {{t 'integromat.categoryDesp'}}
+                            </BsTooltip>
+                        </span>
+                    </h5>
+                    <ul local-class='Integromat__menu'>
+                        <li>
+                            <span>
+                                <a {{action this.displayWorkflows}}>
+                                    {{t 'integromat.workflowListLabel'}}
+                                </a>
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            {{#if this.showWorkflows}}
+                <div id='workflows' class='main-screen' local-class='Integromat__workflows'>
+                    <table data-test-workflows-table class='table table-bordered'>
+                        <thead>
+                            <tr style='background-color: #f5f5f5;'>
+                                <th width='50%' style='border-right: 1px solid transparent;'>
+                                    <span>{{t 'integromat.workflowLabel'}}</span>
+                                </th>
+                                <th width='40%' style='border-right: 1px solid transparent;'>
+                                    <span>{{t 'integromat.integratedAppsLabel'}}</span>
+                                </th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each this.workflows as |row|}}
+                                <tr>
+                                    <td style='border-right: 1px solid transparent;'>
+                                        <a {{action this.setWorkflow row.fields.workflow_description}}>
+                                            {{t row.fields.workflow_description}}
+                                        </a>
+                                    </td>
+                                    <td style='border-right: 1px solid transparent;'>
+                                        {{t row.fields.workflow_apps}}
+                                    </td>
+                                    <td>
+                                        <button onClick={{action makeRegisterAlternativeWebhookUrl row.fields.workflow_description}} style='font-size: x-small; white-space: nowrap;'>{{t 'integromat.workflows.alternative_webhook_url.registerLabel'}}</button>
+                                    </td>
+                                </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            {{/if}}
+        </div>
     {{/if}}
 </div>

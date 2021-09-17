@@ -292,18 +292,20 @@
                 <div local-class='Integromat__input_items'>
                     <label>{{t 'integromat.attendees'}}</label>
                     <div>
-                        <span id='attendees_inputs'>
-                            {{#if this.node_microsoft_teams_attendees}}
-                                {{#each this.node_microsoft_teams_attendees as |row|}}
-                                    <label local-class='Integromat__label_normal' data-toggle='tooltip' title={{row.fields.microsoft_teams_mail}}>
-                                        <input class='microsoftTeamsAttendeesCheck' type='checkBox' style='width: 15px; height: 15px;' id={{row.fields.microsoft_teams_mail}}  name={{row.fields.microsoft_teams_user_name}}>
-                                        {{row.fields.fullname}}
-                                    </label>
-                                {{/each}}
-                            {{else}}
-                                <p>{{t 'integromat.meetingDialog.noAttendees'}}</p>
-                            {{/if}}
-                        </span>
+                        <div style='display: table-cell; width: 100%'>
+                            <PowerSelectMultiple
+                                @searchField='name'
+                                @selected={{this.selectedAttendees}}
+                                @options={{this.institution_users_microsoft_teams}}
+                                @renderInPlace={{true}}
+                                @onchange={{fn (mut this.selectedAttendees)}}
+                                @onInput={{this.checkLength}} as |name|>
+                                {{name.name}}
+                            </PowerSelectMultiple>
+                        </div>
+                        <div style='display: table-cell;'>
+                            <button onClick={{action (mut this.showRegisterWebMeetingAppsEmailDialog) true}} style='font-size: x-small; white-space: nowrap;'>{{t 'integromat.meetingDialog.registerBtn'}}</button>
+                        </div>
                     </div>
                 </div>
                 <div style='padding-left: 5px;' class='text-danger'>{{this.msgInvalidAttendees}}</div>
@@ -399,18 +401,20 @@
                 <div local-class='Integromat__input_items'>
                     <label>{{t 'integromat.attendees'}}</label>
                     <div>
-                        <span id='attendees_inputs'>
-                            {{#if this.node_webex_meetings_attendees}}
-                                {{#each this.node_webex_meetings_attendees as |row|}}
-                                    <label local-class='Integromat__label_normal' data-toggle='tooltip' title={{row.fields.webex_meetings_mail}}>
-                                        <input class='webexMeetingsAttendeesCheck' type='checkBox' style='width: 15px; height: 15px;' id={{row.fields.webex_meetings_mail}} name={{row.fields.webex_meetings_display_name}}>
-                                        {{row.fields.fullname}}
-                                    </label>
-                                {{/each}}
-                            {{else}}
-                                <p>{{t 'integromat.meetingDialog.noAttendees'}}</p>
-                            {{/if}}
-                        </span>
+                        <div style='display: table-cell; width: 100%'>
+                            <PowerSelectMultiple
+                                @searchField='name'
+                                @selected={{this.selectedAttendees}}
+                                @options={{this.institution_users_webex_meetings}}
+                                @renderInPlace={{true}}
+                                @onchange={{fn (mut this.selectedAttendees)}}
+                                @onInput={{this.checkLength}} as |name|>
+                                {{name.name}}
+                            </PowerSelectMultiple>
+                        </div>
+                        <div style='display: table-cell;'>
+                            <button onClick={{action (mut this.showRegisterWebMeetingAppsEmailDialog) true}} style='font-size: x-small; white-space: nowrap;'>{{t 'integromat.meetingDialog.registerBtn'}}</button>
+                        </div>
                     </div>
                 </div>
                 <div style='padding-left: 5px;' class='text-danger'>{{this.msgInvalidAttendees}}</div>
@@ -530,20 +534,20 @@
                 <div local-class='Integromat__input_items'>
                     <label>{{t 'integromat.attendees'}}</label>
                     <div>
-                        <span id='attendees_inputs'>
-                            {{#each this.webMeetingAttendeesNow as |attendee|}}
-                                <label local-class='Integromat__label_normal' data-toggle='tooltip' title={{attendee.email}}>
-                                    <input class='microsoftTeamsAttendeesCheck' type='checkBox' style='width: 15px; height: 15px;' id={{attendee.email}} checked>
-                                    {{attendee.fullname}}
-                                </label>
-                            {{/each}}
-                            {{#each this.notwebMeetingAttendeesNow as |attendee|}}
-                                <label local-class='Integromat__label_normal' data-toggle='tooltip' title={{attendee.email}}>
-                                    <input class='microsoftTeamsAttendeesCheck' type='checkBox' style='width: 15px; height: 15px;' id={{attendee.email}}>
-                                    {{attendee.fullname}}
-                                </label>
-                            {{/each}}
-                        </span>
+                        <div style='display: table-cell; width: 100%'>
+                            <PowerSelectMultiple
+                                @searchField='name'
+                                @selected={{this.selectedAttendees}}
+                                @options={{this.institution_users_microsoft_teams}}
+                                @renderInPlace={{true}}
+                                @onchange={{fn (mut this.selectedAttendees)}}
+                                @onInput={{this.checkLength}} as |name|>
+                                {{name.name}}
+                            </PowerSelectMultiple>
+                        </div>
+                        <div style='display: table-cell;'>
+                            <button onClick={{action (mut this.showRegisterWebMeetingAppsEmailDialog) true}} style='font-size: x-small; white-space: nowrap;'>{{t 'integromat.meetingDialog.registerBtn'}}</button>
+                        </div>
                     </div>
                 </div>
                 <div style='padding-left: 5px;' class='text-danger'>{{this.msgInvalidAttendees}}</div>
@@ -637,20 +641,20 @@
                 <div local-class='Integromat__input_items'>
                     <label>{{t 'integromat.attendees'}}</label>
                     <div>
-                        <span id='attendees_inputs'>
-                            {{#each this.webMeetingAttendeesNow as |attendee|}}
-                                <label local-class='Integromat__label_normal' data-toggle='tooltip' title={{attendee.email}}>
-                                    <input class='webexMeetingsAttendeesCheck' type='checkBox' style='width: 15px; height: 15px;' id={{attendee.email}} checked>
-                                    {{attendee.fullname}}
-                                </label>
-                            {{/each}}
-                            {{#each this.notwebMeetingAttendeesNow as |attendee|}}
-                                <label local-class='Integromat__label_normal' data-toggle='tooltip' title={{attendee.email}}>
-                                    <input class='webexMeetingsAttendeesCheck' type='checkBox' style='width: 15px; height: 15px;' id={{attendee.email}}>
-                                    {{attendee.fullname}}
-                                </label>
-                            {{/each}}
-                        </span>
+                        <div style='display: table-cell; width: 100%'>
+                            <PowerSelectMultiple
+                                @searchField='name'
+                                @selected={{this.selectedAttendees}}
+                                @options={{this.institution_users_webex_meetings}}
+                                @renderInPlace={{true}}
+                                @onchange={{fn (mut this.selectedAttendees)}}
+                                @onInput={{this.checkLength}} as |name|>
+                                {{name.name}}
+                            </PowerSelectMultiple>
+                        </div>
+                        <div style='display: table-cell;'>
+                            <button onClick={{action (mut this.showRegisterWebMeetingAppsEmailDialog) true}} style='font-size: x-small; white-space: nowrap;'>{{t 'integromat.meetingDialog.registerBtn'}}</button>
+                        </div>
                     </div>
                 </div>
                 <div style='padding-left: 5px;' class='text-danger'>{{this.msgInvalidAttendees}}</div>
@@ -828,8 +832,8 @@
             </div>
             <div local-class='Integromat__input_items' style='padding-left: 20px;'>
                 <span>{{t 'integromat.attendees'}}{{t 'integromat.colon'}}
-                    {{#each this.webMeetingAttendeesNow as |attendee|}}
-                        <a href={{attendee.profile}} target='_blank' data-toggle='tooltip' title={{attendee.email}}>{{attendee.fullname}}</a>
+                    {{#each this.selectedAttendees as |attendee|}}
+                        <a href={{attendee.profile}} target='_blank' data-toggle='tooltip' title={{attendee.email}}>{{attendee.name}}</a>
                     {{/each}}
                 </span>
             </div>
@@ -860,7 +864,7 @@
     @open={{this.showRegisterAlternativeWebhookUrl}}
     @onSubmit={{action this.registerAlternativeWebhook}}
     @onHidden={{action (mut this.showRegisterAlternativeWebhookUrl) false}}
-    @onHide={{action this.resetValue}}
+    @onHide={{action this.resetValue 'registerWebhook'}}
     as |modal|
 >
     <modal.header>
@@ -896,5 +900,101 @@
             {{t 'integromat.registerBtn'}}
         </OsfButton>
     </modal.footer>
+</BsModal>
+
+<BsModal
+    data-test-register-meeting-attendee-modal
+    @backdropClose={{false}}
+    @backdrop={{false}}
+    @onSubmit={{action this.registerWebMeetingAppsEmail}}
+    @open={{this.showRegisterWebMeetingAppsEmailDialog}}
+    @onHidden={{action (mut this.showRegisterWebMeetingAppsEmailDialog) false}}
+    @onHide={{action this.resetValue 'registerAppsEmail'}}
+    as |modal|
+>
+    <modal.header>
+        <h4 style='font-weight:normal;'>
+            {{t 'integromat.meetingDialog.registerAppsEmailHeader' appName=this.webMeetingAppNameDisp}}
+        </h4>
+    </modal.header>
+    <modal.body>
+        <div class='form-group'>
+                <div local-class='Integromat__input_items'>
+                    <input type='radio' name='userType' id='radio_grdmUserOrRegisteredGuest' onClick={{action this.setUserType value='target.id'}}>
+                    <label for='radio_grdmUserOrRegisteredGuest'>{{t 'integromat.grdmUser'}}</label>
+                    <div style='margin-left: 10px;'>
+            {{#if (eq this.webMeetingAppName this.app_name_microsoft_teams)}}
+                        <PowerSelect
+                            @searchField='name'
+                            @selected={{this.selectedUser}}
+                            @options={{this.institution_users_microsoft_teams}}
+                            @renderInPlace={{true}}
+                            @onchange={{fn (mut this.selectedUser)}}
+                            @onInput={{this.checkLength}} as |name|>
+                            {{name.name}}
+                        </PowerSelect>
+            {{/if}}
+            {{#if (eq this.webMeetingAppName this.app_name_webex_meetings)}}
+                        <PowerSelect
+                            @searchField='name'
+                            @selected={{this.selectedUser}}
+                            @options={{this.institution_users_webex_meetings}}
+                            @renderInPlace={{true}}
+                            @onchange={{fn (mut this.selectedUser)}}
+                            @onInput={{this.checkLength}} as |name|>
+                            {{name.name}}
+                        </PowerSelect>
+            {{/if}}
+                    </div>
+                    <input type='radio' name='userType' id='radio_newGuest' onClick={{action this.setWebMeetingApp value='target.id'}}>
+                    <label for='radio_newGuest'>{{t 'integromat.guest'}}</label>
+                    <div style='margin-left: 10px;'>
+                        {{input
+                            name='guestFullname'
+                            placeholder=(t 'integromat.placeholders.guestname')
+                            class='form-control'
+                            type='text'
+                            value=this.guestFullname
+                            style='margin-left: 10px;'
+                        }}
+                    </div>
+                </div>
+                <br>
+                <div local-class='Integromat__input_items'>
+                <label>{{this.webMeetingAppNameDisp}}</label>
+                    <div style='margin-left: 10px;'>
+                    <label>{{t 'integromat.signInAdress'}}</label>
+                        {{input
+                            name='signInAddressOfApp'
+                            placeholder=(t 'integromat.placeholders.signInAdress')
+                            class='form-control'
+                            type='text'
+                            value=this.signInAddressOfApp
+                        }}
+                        <label>{{t 'integromat.username'}}</label>
+                        {{input
+                            name='usernameOfApp'
+                            placeholder=(t 'integromat.placeholders.username')
+                            class='form-control'
+                            type='text'
+                            value=this.usernameOfApp
+                        }}
+                    </div>
+                </div>
+        </div>
+    </modal.body>
+    <modal.footer>
+            <BsButton
+                @onClick={{action modal.close}}
+            >
+                {{t 'integromat.meetingDialog.cancelBtn'}}
+            </BsButton>
+            <OsfButton
+                @type='success'
+                @onClick={{action modal.submit}}
+            >
+                {{t 'integromat.meetingDialog.registerBtn'}}
+            </OsfButton>
+        </modal.footer>
 </BsModal>
 <!-- modal-dialog -->

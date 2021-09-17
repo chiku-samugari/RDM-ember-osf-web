@@ -1989,11 +1989,13 @@ export default {
             updateLabel: '会議更新',
             deleteLabel: '会議削除',
             startLabel: '会議開始',
+            unregisteredLabel: '(未登録)',
             createHeader: '{{appName}}会議作成',
             updateHeader: '{{appName}}会議更新',
             deleteHeader: '{{appName}}会議削除',
             detailHeader: '{{appName}}会議詳細',
             startHeader: '{{appName}}会議開始',
+            registerAppsEmailHeader: '{{appName}}メール登録',
             deleteBody: 'この会議を削除しますか？',
             noAttendees: '出席者が登録されていません。',
             createBtn: '作成',
@@ -2002,8 +2004,10 @@ export default {
             cancelBtn: 'キャンセル',
             startBtn: '開始',
             closeBtn: '閉じる',
+            registerBtn: '登録',
             invalid: {
                 empty: '{{item}}を入力してください。',
+                invalid: '{{item}}の値が不正です。',
                 datetime: {
                     past: '開始日時が現在日時より前です。',
                     endBeforeStart: '終了日時が開始日時より前です。',
@@ -2015,6 +2019,8 @@ export default {
             location: '場所を入力してください',
             content: '詳細を入力してください',
             date_form: 'YYYY/MM/DD',
+            signInAdress: 'サインインアドレスを入力してください',
+            username: 'ユーザ名(または表示名)を入力してください',
         },
         workflows: {
             web_meeting: {
@@ -2036,15 +2042,20 @@ export default {
         content: '内容',
         joinUrl: '招待URL',
         datetime: '日時',
+        grdmUser: 'GakuNin RDMユーザ',
+        guest: 'ゲスト',
+        signInAdress: 'サインインアドレス',
+        username: 'ユーザ名',
         from_tilde: ' ～ ',
         from_hyphen: ' - ',
         colon: '：',
-        registerBtn: '登録',
         success: {
             registerAlternativeWebhookUrl: 'webhook登録に成功しました。',
+            registerWebMeetingAppsEmail: '{{appName}}メール登録に成功しました。',
         },
         fail: {
             registerAlternativeWebhookUrl: 'webhook登録に失敗しました。',
+            registerWebMeetingAppsEmail: '{{appName}}メール登録に失敗しました。',
         },
         info: {
             launch: 'ワークフローを起動しています。',

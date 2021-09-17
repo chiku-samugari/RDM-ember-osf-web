@@ -1833,11 +1833,13 @@ export default {
             updateLabel: 'Update Meeting',
             deleteLabel: 'Delete Meeting',
             startLabel: 'Start Meeting',
+            unregisteredLabel: '(Unregistered)',
             createHeader: 'Create {{appName}} Meeting',
             updateHeader: 'Update {{appName}} Meeting',
             deleteHeader: 'Delete {{appName}} Meeting',
             detailHeader: '{{appName}} Meeting Detail',
             startHeader: 'Start {{appName}} Meeting',
+            registerAppsEmailHeader: 'Register {{appName}} Email',
             deleteBody: 'Are you sure want to delete this meeting?',
             noAttendees: 'No attendees are registered.',
             createBtn: 'Create',
@@ -1846,8 +1848,10 @@ export default {
             cancelBtn: 'Cancel',
             startBtn: 'Start',
             closeBtn: 'Close',
+            registerBtn: 'Register',
             invalid: {
-                empty: 'Please Enter {{item}}',
+            empty: 'Please Enter {{item}}',
+                invalid: 'The value of {{item}} is invalid.',
                 datetime: {
                     past: 'Start Datetime is before current time.',
                     endBeforeStart: 'End Datetime is before Start Datetime.',
@@ -1859,6 +1863,8 @@ export default {
             location: 'Enter the location of this meeting',
             content: 'Enter the detail of this meeting',
             date_form: 'YYYY/MM/DD',
+            signInAdress: 'Enter the Sign-in Address',
+            username: 'Enter the Username or Display name',
         },
         workflows: {
             web_meeting: {
@@ -1880,15 +1886,20 @@ export default {
         content: 'Content',
         joinUrl: 'Join URL',
         datetime: 'datetime',
+        grdmUser: 'GakuNin RDM User',
+        guest: 'Guest',
+        signInAdress: 'Sign-in Adress',
+        username: 'Username',
         from_tilde: ' ～ ',
         from_hyphen: ' - ',
         colon: ':',
-        registerBtn: 'Register',
         success: {
-            registerAlternativeWebhookUrl: 'Success to register webhook URL to the workflow.',
+        registerAlternativeWebhookUrl: 'Success to register webhook URL to the workflow.',
+            registerWebMeetingAppsEmail: 'Success to register {{appName}} Email.',
         },
         fail: {
             registerAlternativeWebhookUrl: 'Failed to register webhook URL to the workflow.',
+            registerWebMeetingAppsEmail: 'Failed to register {{appName}} Email.',
         },
         info: {
             launch: 'Launching workflow.',

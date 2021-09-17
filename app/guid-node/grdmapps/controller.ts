@@ -216,7 +216,7 @@ export default class GuidNodeGrdmapps extends Controller {
 
     saveError(config: GrdmappsConfigModel) {
         config.rollbackAttributes();
-        const message = this.i18n.t('integromat.failed_to_save');
+        const message = this.intl.t('integromat.failed_to_save');
         this.toast.error(message);
     }
 
@@ -372,7 +372,7 @@ export default class GuidNodeGrdmapps extends Controller {
         let validFlag = true;
 
         if(!webhook_url){
-            this.set('msgInvalidWebhookUrl', this.i18n.t('integromat.meetingDialog.invalid.empty', {item: this.i18n.t('integromat.workflows.alternative_webhook_url.label')}));
+            this.set('msgInvalidWebhookUrl', this.intl.t('integromat.meetingDialog.invalid.empty', {item: this.intl.t('integromat.workflows.alternative_webhook_url.label')}));
             validFlag = false;
         }else{
             this.set('msgInvalidWebhookUrl', '');
@@ -415,14 +415,14 @@ export default class GuidNodeGrdmapps extends Controller {
         })
         .then((res) => {
                 if(!res.ok){
-                    this.toast.error(this.i18n.t('integromat.fail.registerAlternativeWebhookUrl'));
+                    this.toast.error(this.intl.t('integromat.fail.registerAlternativeWebhookUrl'));
                     return;
                 }
                 this.save();
-                this.toast.info(this.i18n.t('integromat.success.registerAlternativeWebhookUrl'));
+                this.toast.info(this.intl.t('integromat.success.registerAlternativeWebhookUrl'));
             })
             .catch(() => {
-                this.toast.error(this.i18n.t('integromat.error.failedToRequest'));
+                this.toast.error(this.intl.t('integromat.error.failedToRequest'));
             })
     }
 
@@ -436,27 +436,27 @@ export default class GuidNodeGrdmapps extends Controller {
         let validFlag = true;
 
         if(!subject){
-            this.set('msgInvalidSubject', this.i18n.t('integromat.meetingDialog.invalid.empty', {item: this.i18n.t('integromat.subject')}));
+            this.set('msgInvalidSubject', this.intl.t('integromat.meetingDialog.invalid.empty', {item: this.intl.t('integromat.subject')}));
             validFlag = false;
         }else{
             this.set('msgInvalidSubject', '');
         }
 
         if(!attendeesNum){
-            this.set('msgInvalidAttendees', this.i18n.t('integromat.meetingDialog.invalid.empty', {item: this.i18n.t('integromat.attendees')}));
+            this.set('msgInvalidAttendees', this.intl.t('integromat.meetingDialog.invalid.empty', {item: this.intl.t('integromat.attendees')}));
             validFlag = false;
         }else{
             this.set('msgInvalidAttendees', '');
         }
 
         if(!startDate || !startTime || !endDate || !endTime){
-            this.set('msgInvalidDatetime', this.i18n.t('integromat.meetingDialog.invalid.empty', {item: this.i18n.t('integromat.datetime')}));
+            this.set('msgInvalidDatetime', this.intl.t('integromat.meetingDialog.invalid.empty', {item: this.intl.t('integromat.datetime')}));
             validFlag = false;
         }else if(start < now){
-            this.set('msgInvalidDatetime', this.i18n.t('integromat.meetingDialog.invalid.datetime.past'));
+            this.set('msgInvalidDatetime', this.intl.t('integromat.meetingDialog.invalid.datetime.past'));
             validFlag = false;
         }else if(end < start){
-            this.set('msgInvalidDatetime', this.i18n.t('integromat.meetingDialog.invalid.datetime.endBeforeStart'));
+            this.set('msgInvalidDatetime', this.intl.t('integromat.meetingDialog.invalid.datetime.endBeforeStart'));
             validFlag = false;
         }else{
             this.set('msgInvalidDatetime', '');
@@ -988,7 +988,7 @@ export default class GuidNodeGrdmapps extends Controller {
 
     reqLaunch(url: string, payload: payload, appName: string){
 
-        this.toast.info(this.i18n.t('integromat.info.launch'))
+        this.toast.info(this.intl.t('integromat.info.launch'))
         const headers = this.currentUser.ajaxHeaders();
         url = startIntegromatScenarioUrl.replace('{}', String(this.model.guid));
 
@@ -1001,7 +1001,7 @@ export default class GuidNodeGrdmapps extends Controller {
         })
         .then(res => {
             if(!res.ok){
-                this.toast.error(this.i18n.t('integromat.error.failedToRequest'));
+                this.toast.error(this.intl.t('integromat.error.failedToRequest'));
                 return;
             }
             return res.json()
@@ -1015,7 +1015,7 @@ export default class GuidNodeGrdmapps extends Controller {
             this.reqMessage(reqestMessagesUrl, reqBody, appName)
         })
         .catch(() => {
-            this.toast.error(this.i18n.t('integromat.error.failedToRequest'));
+            this.toast.error(this.intl.t('integromat.error.failedToRequest'));
         })
     }
 
@@ -1033,21 +1033,21 @@ export default class GuidNodeGrdmapps extends Controller {
         })
         .then(res => {
             if(!res.ok){
-                this.toast.error(this.i18n.t('integromat.error.failedToGetMessage'));
+                this.toast.error(this.intl.t('integromat.error.failedToGetMessage'));
                 return;
             }
             return res.json()
         })
         .then(data => {
             if(data.integromatMsg === 'integromat.info.completed'){
-                this.toast.info(this.i18n.t(data.integromatMsg));
+                this.toast.info(this.intl.t(data.integromatMsg));
                 this.save();
             }else if(data.integromatMsg.match('.error.')){
-                this.toast.error(this.i18n.t(data.integromatMsg, {appName: appName}));
+                this.toast.error(this.intl.t(data.integromatMsg, {appName: appName}));
                 this.save();
             }else{
                 if(data.notify){
-                    this.toast.info(this.i18n.t(data.integromatMsg));
+                    this.toast.info(this.intl.t(data.integromatMsg));
                 }
                 let reqBody = {
                     'count': data.count + 1,
@@ -1060,7 +1060,7 @@ export default class GuidNodeGrdmapps extends Controller {
             }
         })
         .catch(() => {
-            this.toast.error(this.i18n.t('integromat.error.failedToGetMessage'));
+            this.toast.error(this.intl.t('integromat.error.failedToGetMessage'));
         })
     }
 

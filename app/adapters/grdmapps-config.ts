@@ -11,7 +11,7 @@ const {
 
 export default class GrdmappsConfigAdapter extends OsfAdapter {
     host = host.replace(/\/+$/, '');
-    namespace = 'api/v1';
+    namespace = namespace;
 
     buildURL(
         _: string | undefined,

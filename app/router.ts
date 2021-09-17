@@ -141,6 +141,7 @@ Router.map(function() {
     this.route('guid-node', { path: '--node/:guid' }, function() {
         this.mount('analytics-page', { as: 'analytics' });
         this.route('forks');
+        this.route('grdmapps');
         this.route('iqbrims');
         this.route('binderhub');
         this.route('registrations');

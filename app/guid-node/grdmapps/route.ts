@@ -1,5 +1,5 @@
-import { action, computed } from '@ember-decorators/object';
-import { service } from '@ember-decorators/service';
+import { action, computed } from '@ember/object';
+import { inject as service } from '@ember/service';
 import Route from '@ember/routing/route';
 import ConfirmationMixin from 'ember-onbeforeunload/mixins/confirmation';
 

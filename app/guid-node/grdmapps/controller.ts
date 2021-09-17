@@ -1,3 +1,4 @@
+import Intl from 'ember-intl/services/intl';
 import Controller from '@ember/controller';
 import EmberError from '@ember/error';
 import { action, computed } from '@ember/object';
@@ -16,7 +17,8 @@ export default class GuidNodeGrdmapps extends Controller {
     @service toast!: Toast;
     @service statusMessages!: StatusMessages;
     @service analytics!: Analytics;
-
+    @service intl!: Intl;
+	
     @reads('model.taskInstance.value')
     node?: Node;
 

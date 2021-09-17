@@ -1,9 +1,9 @@
-import I18N from 'ember-i18n/services/i18n';
+import Intl from 'ember-intl/services/intl';
 import Controller from '@ember/controller';
 import EmberError from '@ember/error';
-import { action, computed } from '@ember-decorators/object';
-import { reads } from '@ember-decorators/object/computed';
-import { service } from '@ember-decorators/service';
+import { action, computed } from '@ember/object';
+import { reads } from '@ember/object/computed';
+import { inject as service } from '@ember/service';
 import config from 'ember-get-config';
 
 import CurrentUser from 'ember-osf-web/services/current-user';
@@ -129,7 +129,7 @@ export default class GuidNodeGrdmapps extends Controller {
     @service toast!: Toast;
     @service statusMessages!: StatusMessages;
     @service analytics!: Analytics;
-    @service i18n!: I18N;
+    @service intl!: Intl;
     @service currentUser!: CurrentUser;
 
     @reads('model.taskInstance.value')

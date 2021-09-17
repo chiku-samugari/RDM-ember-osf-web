@@ -548,7 +548,6 @@ node_navbar:
     files: Files
     contributors: Contributors
     addons: Add-ons
-    grdmapps: 'Web Apps'
     settings: Settings
     comments: Comments
     binderhub: BinderHub

@@ -91,6 +91,7 @@ const nodeUrl = host + namespace + '/project/' + '{}';
 const integromatDir = '/integromat'
 const startIntegromatScenarioUrl = nodeUrl + integromatDir + '/start_scenario';
 const reqestMessagesUrl =  nodeUrl + integromatDir + '/requestNextMessages';
+const registerAlternativeWebhookUrl = nodeUrl + integromatDir + '/register_alternative_webhook_url';
 
 const TIME_LIMIT_EXECUTION_SCENARIO = 60;
 
@@ -114,7 +115,10 @@ export default class GuidNodeGrdmapps extends Controller {
 
     webhookUrl = '';
 
+    msgInvalidWebhookUrl = '';
+
     workflowDescription = '';
+    alternativeWebhookUrl = '';
 
     @computed('config.isFulfilled')
     get loading(): boolean {
@@ -207,10 +211,71 @@ export default class GuidNodeGrdmapps extends Controller {
     }
 
     @action
+    resetValue(this: GuidNodeGrdmapps) {
+
+        this.set('workflowDescription', '');
+        this.set('alternativeWebhookUrl', '');
+        this.set('showRegisterAlternativeWebhookUrl', false);
+    }
+
+    @action
+    webhookValidationCheck(this: GuidNodeGrdmapps, webhook_url: string) {
+
+        let validFlag = true;
+
+        if(!webhook_url){
+            this.set('msgInvalidWebhookUrl', this.i18n.t('integromat.meetingDialog.invalid.empty', {item: this.i18n.t('integromat.workflows.alternative_webhook_url.label')}));
+            validFlag = false;
+        }else{
+            this.set('msgInvalidWebhookUrl', '');
+        }
+
+        return validFlag
+    }
+
+    @action
     makeRegisterAlternativeWebhookUrl(this: GuidNodeGrdmapps, workflow_description: string) {
 
         this.set('workflowDescription', workflow_description);
         this.set('showRegisterAlternativeWebhookUrl', true);
+    }
+
+    @action
+    registerAlternativeWebhook(this: GuidNodeGrdmapps) {
+
+        const headers = this.currentUser.ajaxHeaders();
+        const url = registerAlternativeWebhookUrl.replace('{}', String(this.model.guid));
+
+        //validation check for webhook url input
+        if(!this.webhookValidationCheck(this.alternativeWebhookUrl)){
+            return;
+        }
+
+        const payload = {
+            'workflowDescription': this.workflowDescription,
+            'alternativeWebhookUrl': this.alternativeWebhookUrl,
+        };
+
+        this.resetValue();
+
+        return fetch(
+            url,
+            {
+                method: 'POST',
+                headers,
+                body: JSON.stringify(payload)
+        })
+        .then((res) => {
+                if(!res.ok){
+                    this.toast.error(this.i18n.t('integromat.fail.registerAlternativeWebhookUrl'));
+                    return;
+                }
+                this.save();
+                this.toast.info(this.i18n.t('integromat.success.registerAlternativeWebhookUrl'));
+            })
+            .catch(() => {
+                this.toast.error(this.i18n.t('integromat.error.failedToRequest'));
+            })
     }
 
     reqLaunch(url: string, payload: payload, appName: string){

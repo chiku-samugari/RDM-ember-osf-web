@@ -24,6 +24,15 @@ interface notwebMeetingAttendeesNow {
     fullname: string;
 }
 
+const {
+    OSF: {
+        url: host,
+//        webApiNamespace: namespace,
+    },
+} = config;
+
+const profileUrl = host + '/profile/'
+
 export default class GuidNodeGrdmapps extends Controller {
     @service toast!: Toast;
     @service statusMessages!: StatusMessages;

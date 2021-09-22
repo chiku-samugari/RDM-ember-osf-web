@@ -6,12 +6,23 @@ import { reads } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
 
 import DS from 'ember-data';
-
+import moment from 'moment';
 import GrdmappsConfigModel from 'ember-osf-web/models/grdmapps-config';
 import Node from 'ember-osf-web/models/node';
 import Analytics from 'ember-osf-web/services/analytics';
 import StatusMessages from 'ember-osf-web/services/status-messages';
 import Toast from 'ember-toastr/services/toast';
+
+interface webMeetingAttendeesNow {
+    email: string;
+    fullname: string;
+    profile: string;
+}
+
+interface notwebMeetingAttendeesNow {
+    email: string;
+    fullname: string;
+}
 
 export default class GuidNodeGrdmapps extends Controller {
     @service toast!: Toast;
@@ -67,6 +78,9 @@ export default class GuidNodeGrdmapps extends Controller {
     msgInvalidWebhookUrl = '';
 
     workflowDescription = '';
+
+    webMeetingAttendeesNow : webMeetingAttendeesNow[] = [];
+    notwebMeetingAttendeesNow : notwebMeetingAttendeesNow[] = [];
 
     @computed('config.isFulfilled')
     get loading(): boolean {

@@ -121,7 +121,6 @@ const integromatDir = '/integromat'
 const startIntegromatScenarioUrl = nodeUrl + integromatDir + '/start_scenario';
 const reqestMessagesUrl =  nodeUrl + integromatDir + '/requestNextMessages';
 const registerAlternativeWebhookUrl = nodeUrl + integromatDir + '/register_alternative_webhook_url';
-const profileUrl = host + '/profile/'
 
 const TIME_LIMIT_EXECUTION_SCENARIO = 60;
 
@@ -994,16 +993,4 @@ declare module '@ember/controller' {
         'guid-node/grdmapps': GuidNodeGrdmapps;
     }
 }
-© 2021 GitHub, Inc.
-Terms
-Privacy
-Security
-Status
-Docs
-Contact GitHub
-Pricing
-API
-Training
-Blog
-About
-Loading complete
+

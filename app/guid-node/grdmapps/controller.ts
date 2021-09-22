@@ -1,22 +1,20 @@
+import Intl from 'ember-intl/services/intl';
 import Controller from '@ember/controller';
 import EmberError from '@ember/error';
 import { action, computed } from '@ember/object';
 import { reads } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
+import config from 'ember-get-config';
+
+import CurrentUser from 'ember-osf-web/services/current-user';
 
 import DS from 'ember-data';
 
-import Intl from 'ember-intl/services/intl';
 import GrdmappsConfigModel from 'ember-osf-web/models/grdmapps-config';
 import Node from 'ember-osf-web/models/node';
 import Analytics from 'ember-osf-web/services/analytics';
 import StatusMessages from 'ember-osf-web/services/status-messages';
 import Toast from 'ember-toastr/services/toast';
-
-import config from 'ember-get-config';
-import CurrentUser from 'ember-osf-web/services/current-user';
-import moment from 'moment';
-import $ from 'jquery';
 
 interface reqBody {
     count: number;
@@ -39,17 +37,6 @@ interface webexMeetingsAttendee {
 
 interface webexMeetingsCreateInvitee {
     email: string;
-}
-
-interface webMeetingAttendeesNow {
-    email: string;
-    fullname: string;
-    profile: string;
-}
-
-interface notwebMeetingAttendeesNow {
-    email: string;
-    fullname: string;
 }
 
 interface payload {
@@ -119,8 +106,6 @@ const nodeUrl = host + namespace + '/project/' + '{}';
 const integromatDir = '/integromat'
 const startIntegromatScenarioUrl = nodeUrl + integromatDir + '/start_scenario';
 const reqestMessagesUrl =  nodeUrl + integromatDir + '/requestNextMessages';
-const registerAlternativeWebhookUrl = nodeUrl + integromatDir + '/register_alternative_webhook_url';
-const profileUrl = host + '/profile/'
 
 const TIME_LIMIT_EXECUTION_SCENARIO = 60;
 
@@ -312,6 +297,39 @@ export default class GuidNodeGrdmapps extends Controller {
         this.set('showRegisterAlternativeWebhookUrl', true);
     }
 
+    reqLaunch(url: string, payload: payload, appName: string){
+
+        this.toast.info(this.intl.t('integromat.info.launch'))
+        const headers = this.currentUser.ajaxHeaders();
+        url = startIntegromatScenarioUrl.replace('{}', String(this.model.guid));
+
+        return fetch(
+            url,
+            {
+                method: 'POST',
+                headers,
+                body: JSON.stringify(payload)
+        })
+        .then(res => {
+            if(!res.ok){
+                this.toast.error(this.intl.t('integromat.error.failedToRequest'));
+                return;
+            }
+            return res.json()
+        })
+        .then(data => {
+            let reqBody = {
+                'count': 1,
+                'nodeId': data.nodeId,
+                'timestamp': data.timestamp,
+            }
+            this.reqMessage(reqestMessagesUrl, reqBody, appName)
+        })
+        .catch(() => {
+            this.toast.error(this.intl.t('integromat.error.failedToRequest'));
+        })
+    }
+
     @action
     registerAlternativeWebhook(this: GuidNodeGrdmapps) {
 
@@ -360,27 +378,27 @@ export default class GuidNodeGrdmapps extends Controller {
         let validFlag = true;
 
         if(!subject){
-            this.set('msgInvalidSubject', this.intl.t('integromat.meetingDialog.invalid.empty', {item: this.intl.t('integromat.subject')}));
+            this.set('msgInvalidSubject', this.i18n.t('integromat.meetingDialog.invalid.empty', {item: this.i18n.t('integromat.subject')}));
             validFlag = false;
         }else{
             this.set('msgInvalidSubject', '');
         }
 
         if(!attendeesNum){
-            this.set('msgInvalidAttendees', this.intl.t('integromat.meetingDialog.invalid.empty', {item: this.intl.t('integromat.attendees')}));
+            this.set('msgInvalidAttendees', this.i18n.t('integromat.meetingDialog.invalid.empty', {item: this.i18n.t('integromat.attendees')}));
             validFlag = false;
         }else{
             this.set('msgInvalidAttendees', '');
         }
 
         if(!startDate || !startTime || !endDate || !endTime){
-            this.set('msgInvalidDatetime', this.intl.t('integromat.meetingDialog.invalid.empty', {item: this.intl.t('integromat.datetime')}));
+            this.set('msgInvalidDatetime', this.i18n.t('integromat.meetingDialog.invalid.empty', {item: this.i18n.t('integromat.datetime')}));
             validFlag = false;
         }else if(start < now){
-            this.set('msgInvalidDatetime', this.intl.t('integromat.meetingDialog.invalid.datetime.past'));
+            this.set('msgInvalidDatetime', this.i18n.t('integromat.meetingDialog.invalid.datetime.past'));
             validFlag = false;
         }else if(end < start){
-            this.set('msgInvalidDatetime', this.intl.t('integromat.meetingDialog.invalid.datetime.endBeforeStart'));
+            this.set('msgInvalidDatetime', this.i18n.t('integromat.meetingDialog.invalid.datetime.endBeforeStart'));
             validFlag = false;
         }else{
             this.set('msgInvalidDatetime', '');
@@ -908,39 +926,6 @@ export default class GuidNodeGrdmapps extends Controller {
 
 //        this.setWebMeetingApp(appName, 'detail');
         this.makeWebMeetingAttendee(appName, 'detail');
-    }
-
-    reqLaunch(url: string, payload: payload, appName: string){
-
-        this.toast.info(this.intl.t('integromat.info.launch'))
-        const headers = this.currentUser.ajaxHeaders();
-        url = startIntegromatScenarioUrl.replace('{}', String(this.model.guid));
-
-        return fetch(
-            url,
-            {
-                method: 'POST',
-                headers,
-                body: JSON.stringify(payload)
-        })
-        .then(res => {
-            if(!res.ok){
-                this.toast.error(this.intl.t('integromat.error.failedToRequest'));
-                return;
-            }
-            return res.json()
-        })
-        .then(data => {
-            let reqBody = {
-                'count': 1,
-                'nodeId': data.nodeId,
-                'timestamp': data.timestamp,
-            }
-            this.reqMessage(reqestMessagesUrl, reqBody, appName)
-        })
-        .catch(() => {
-            this.toast.error(this.intl.t('integromat.error.failedToRequest'));
-        })
     }
 
     reqMessage(url: string, reqBody: reqBody, appName: string) {

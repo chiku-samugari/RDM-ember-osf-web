@@ -518,7 +518,7 @@ export default class GuidNodeGrdmapps extends Controller {
         const webMeetingApps = JSON.parse(config.web_meeting_apps);
 
         let appName = '';
-        console.log(appName);
+
         this.set('webMeetingPk', meetingPk);
         this.set('webMeetingSubject', subject);
         this.set('webMeetingAttendees', attendees);
@@ -763,7 +763,7 @@ export default class GuidNodeGrdmapps extends Controller {
         const config = this.config.content as GrdmappsConfigModel;
         const webMeetingApps = JSON.parse(config.web_meeting_apps);
         let appName = '';
-        console.log(appName);
+
         for(let i=0; i < webMeetingApps.length; i++){
 
             if(webMeetingApps[i].pk === appId){
@@ -884,7 +884,7 @@ export default class GuidNodeGrdmapps extends Controller {
         const webMeetingApps = JSON.parse(config.web_meeting_apps);
 
         let appName = '';
-        console.log(appName);
+
         this.set('webMeetingPk', meetingPk);
         this.set('webMeetingSubject', subject);
         this.set('webMeetingOrganizerFullname', organizer_fullname);

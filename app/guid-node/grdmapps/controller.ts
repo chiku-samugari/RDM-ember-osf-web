@@ -9,7 +9,7 @@ import config from 'ember-get-config';
 import CurrentUser from 'ember-osf-web/services/current-user';
 
 import DS from 'ember-data';
-
+import moment from 'moment';
 import GrdmappsConfigModel from 'ember-osf-web/models/grdmapps-config';
 import Node from 'ember-osf-web/models/node';
 import Analytics from 'ember-osf-web/services/analytics';
@@ -87,6 +87,21 @@ const {
     },
 } = config;
 
+const infoGrdmScenarioStarted = 'integromat.info.started';
+const infoGrdmScenarioCompleted = 'integromat.info.completed';
+const errorWebappsCreateMeeting = 'integromat.error.webappsCreateMeeting';
+const errorGrdmRegisterMeeting = 'integromat.error.grdmCreateMeeting';
+const errorSlackCreateMeeting = 'integromat.error.slackCreateMeeting';
+const errorWebappsUpdateMeeting = 'integromat.error.webappsUpdateMeeting';
+const errorWebappsUpdateAttendees = 'integromat.error.webappsUpdateAttendees';
+const errorWebappsUpdateAttendeesGrdmMeetingReg = 'integromat.error.webappsUpdateAttendeesGrdmMeeting';
+const errorGrdmUpdateMeetingReg = 'integromat.error.grdmUpdateMeeting';
+const errorSlackUpdateMeeting = 'integromat.error.slackUpdateMeeting';
+const errorWebappsDeleteMeeting = 'integromat.error.webappsDeleteMeeting';
+const errorGrdmDeleteMeetingReg = 'integromat.error.grdmDeleteMeeting';
+const errorSlackDeleteMeeting = 'integromat.error.slackDeleteMeeting';
+const errorScenarioProcessing = 'integromat.error.scenarioProcessing';
+
 const nodeUrl = host + namespace + '/project/' + '{}';
 const integromatDir = '/integromat'
 const startIntegromatScenarioUrl = nodeUrl + integromatDir + '/start_scenario';
@@ -147,8 +162,6 @@ export default class GuidNodeGrdmapps extends Controller {
     msgInvalidSubject = '';
     msgInvalidAttendees = '';
     msgInvalidDatetime = '';
-    msgInvalidWebhookUrl = '';
-
     msgInvalidWebhookUrl = '';
 
     workflowDescription = '';

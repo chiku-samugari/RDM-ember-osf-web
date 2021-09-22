@@ -5,6 +5,8 @@ import { action, computed } from '@ember/object';
 import { reads } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
 
+import CurrentUser from 'ember-osf-web/services/current-user';
+
 import DS from 'ember-data';
 
 import GrdmappsConfigModel from 'ember-osf-web/models/grdmapps-config';
@@ -13,12 +15,19 @@ import Analytics from 'ember-osf-web/services/analytics';
 import StatusMessages from 'ember-osf-web/services/status-messages';
 import Toast from 'ember-toastr/services/toast';
 
+interface reqBody {
+    count: number;
+    nodeId: string;
+    timestamp: string;
+}
+
 export default class GuidNodeGrdmapps extends Controller {
     @service toast!: Toast;
     @service statusMessages!: StatusMessages;
     @service analytics!: Analytics;
     @service intl!: Intl;
-	
+    @service currentUser!: CurrentUser;
+
     @reads('model.taskInstance.value')
     node?: Node;
 
@@ -129,6 +138,84 @@ export default class GuidNodeGrdmapps extends Controller {
 
         this.set('workflowDescription', workflow_description);
         this.set('showRegisterAlternativeWebhookUrl', true);
+    }
+
+    reqLaunch(url: string, payload: payload, appName: string){
+
+        this.toast.info(this.i18n.t('integromat.info.launch'))
+        const headers = this.currentUser.ajaxHeaders();
+        url = startIntegromatScenarioUrl.replace('{}', String(this.model.guid));
+
+        return fetch(
+            url,
+            {
+                method: 'POST',
+                headers,
+                body: JSON.stringify(payload)
+        })
+        .then(res => {
+            if(!res.ok){
+                this.toast.error(this.i18n.t('integromat.error.failedToRequest'));
+                return;
+            }
+            return res.json()
+        })
+        .then(data => {
+            let reqBody = {
+                'count': 1,
+                'nodeId': data.nodeId,
+                'timestamp': data.timestamp,
+            }
+            this.reqMessage(reqestMessagesUrl, reqBody, appName)
+        })
+        .catch(() => {
+            this.toast.error(this.i18n.t('integromat.error.failedToRequest'));
+        })
+    }
+
+    reqMessage(url: string, reqBody: reqBody, appName: string) {
+
+        const headers = this.currentUser.ajaxHeaders();
+        url = reqestMessagesUrl.replace('{}', String(this.model.guid));
+
+        return fetch(
+            url,
+            {
+                method: 'POST',
+                headers,
+                body: JSON.stringify(reqBody)
+        })
+        .then(res => {
+            if(!res.ok){
+                this.toast.error(this.i18n.t('integromat.error.failedToGetMessage'));
+                return;
+            }
+            return res.json()
+        })
+        .then(data => {
+            if(data.integromatMsg === 'integromat.info.completed'){
+                this.toast.info(this.i18n.t(data.integromatMsg));
+                this.save();
+            }else if(data.integromatMsg.match('.error.')){
+                this.toast.error(this.i18n.t(data.integromatMsg, {appName: appName}));
+                this.save();
+            }else{
+                if(data.notify){
+                    this.toast.info(this.i18n.t(data.integromatMsg));
+                }
+                let reqBody = {
+                    'count': data.count + 1,
+                    'nodeId': data.nodeId,
+                    'timestamp': data.timestamp
+                }
+                if(reqBody.count < TIME_LIMIT_EXECUTION_SCENARIO + 1){
+                    this.reqMessage(url, reqBody, appName)
+                }
+            }
+        })
+        .catch(() => {
+            this.toast.error(this.i18n.t('integromat.error.failedToGetMessage'));
+        })
     }
 
     @computed('config.all_web_meetings')

@@ -1,20 +1,22 @@
-import Intl from 'ember-intl/services/intl';
 import Controller from '@ember/controller';
 import EmberError from '@ember/error';
 import { action, computed } from '@ember/object';
 import { reads } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
-import config from 'ember-get-config';
-
-import CurrentUser from 'ember-osf-web/services/current-user';
 
 import DS from 'ember-data';
-import moment from 'moment';
+
+import Intl from 'ember-intl/services/intl';
 import GrdmappsConfigModel from 'ember-osf-web/models/grdmapps-config';
 import Node from 'ember-osf-web/models/node';
 import Analytics from 'ember-osf-web/services/analytics';
 import StatusMessages from 'ember-osf-web/services/status-messages';
 import Toast from 'ember-toastr/services/toast';
+
+import config from 'ember-get-config';
+import CurrentUser from 'ember-osf-web/services/current-user';
+import moment from 'moment';
+import $ from 'jquery';
 
 interface reqBody {
     count: number;
@@ -37,6 +39,17 @@ interface webexMeetingsAttendee {
 
 interface webexMeetingsCreateInvitee {
     email: string;
+}
+
+interface webMeetingAttendeesNow {
+    email: string;
+    fullname: string;
+    profile: string;
+}
+
+interface notwebMeetingAttendeesNow {
+    email: string;
+    fullname: string;
 }
 
 interface payload {
@@ -102,11 +115,13 @@ const errorGrdmDeleteMeetingReg = 'integromat.error.grdmDeleteMeeting';
 const errorSlackDeleteMeeting = 'integromat.error.slackDeleteMeeting';
 const errorScenarioProcessing = 'integromat.error.scenarioProcessing';
 
+
 const nodeUrl = host + namespace + '/project/' + '{}';
 const integromatDir = '/integromat'
 const startIntegromatScenarioUrl = nodeUrl + integromatDir + '/start_scenario';
 const reqestMessagesUrl =  nodeUrl + integromatDir + '/requestNextMessages';
 const registerAlternativeWebhookUrl = nodeUrl + integromatDir + '/register_alternative_webhook_url';
+const profileUrl = host + '/profile/'
 
 const TIME_LIMIT_EXECUTION_SCENARIO = 60;
 
@@ -125,7 +140,13 @@ export default class GuidNodeGrdmapps extends Controller {
     configCache?: DS.PromiseObject<GrdmappsConfigModel>;
 
     showCreateWebMeetingDialog = false;
-
+    showUpdateWebMeetingDialog = false;
+    showCreateMicrosoftTeamsMeetingDialog = false;
+    showCreateWebexMeetingDialog = false;
+    showUpdateMicrosoftTeamsMeetingDialog = false;
+    showUpdateWebexMeetingsDialog = false;
+    showDeleteWebMeetingDialog = false;
+    showDetailWebMeetingDialog = false;
     showWorkflows = true;
     showWebMeetingWorkflow = false;
     showRegisterAlternativeWebhookUrl = false;
@@ -166,6 +187,11 @@ export default class GuidNodeGrdmapps extends Controller {
 
     workflowDescription = '';
     alternativeWebhookUrl = '';
+
+    teamsMeetingAttendees : string[] = [];
+    notTeamsMeetingAttendees : string[] = [];
+    webMeetingAttendeesNow : webMeetingAttendeesNow[] = [];
+    notwebMeetingAttendeesNow : notwebMeetingAttendeesNow[] = [];
 
     @computed('config.isFulfilled')
     get loading(): boolean {
@@ -325,8 +351,7 @@ export default class GuidNodeGrdmapps extends Controller {
             })
     }
 
-    @action
-    webMeetingvalidationCheck(this: GuidNodeGrdmapps, subject: string, attendeesNum: number, startDate: string, startTime: string, endDate: string, endTime: string, startDatetime: string, endDatetime: string) {
+    webMeetingvalidationCheck(subject: string, attendeesNum: number, startDate: string, startTime: string, endDate: string, endTime: string, startDatetime: string, endDatetime: string) {
 
         const now = new Date();
         const start = new Date(startDatetime);
@@ -471,6 +496,253 @@ export default class GuidNodeGrdmapps extends Controller {
             'attendees': arrayAttendees,
             'location': webMeetingLocation,
             'content': webMeetingContent,
+            'webhook_url': webhookUrl,
+            'timestamp': timestamp,
+        };
+
+//        this.setWebMeetingApp('', '');
+
+        return this.reqLaunch(startIntegromatScenarioUrl, payload, appNameDisp);
+    }
+
+    @action
+    setDefaultDate() {
+        (<any>$('#update_start_date')[0]).value = this.webMeetingStartDate;
+        (<any>$('#update_end_date')[0]).value = this.webMeetingEndDate;
+    }
+
+    @action
+    updateWebMeeting(this: GuidNodeGrdmapps) {
+        if (!this.config) {
+            throw new EmberError('Illegal config');
+        }
+        const config = this.config.content as GrdmappsConfigModel;
+        const webhookUrl = this.webhookUrl;;
+        const node_id = config.node_settings_id;
+        const appName = this.webMeetingAppName;
+        const appNameDisp = this.webMeetingAppNameDisp;
+        const webMeetingSubject = this.webMeetingSubject;
+        const webMeetingStartDate = moment(this.webMeetingStartDate).format('YYYY-MM-DD');
+        const webMeetingStartTime = (<HTMLInputElement>document.querySelectorAll('select[id=update_start_time]')[0]).value;
+        const strWebMeetingStartDatetime = webMeetingStartDate + ' ' + webMeetingStartTime;
+        const webMeetingEndDate = moment(this.webMeetingEndDate).format('YYYY-MM-DD');
+        const webMeetingEndTime = (<HTMLInputElement>document.querySelectorAll('select[id=update_end_time]')[0]).value;
+        const strWebMeetingEndDatetime = webMeetingEndDate + ' ' + webMeetingEndTime;
+        const webMeetingLocation = this.webMeetingLocation;
+        const webMeetingContent = this.webMeetingContent;
+        const webMeetingId = this.webMeetingUpdateMeetingId;
+        const webMeetingJoinUrl = this.webMeetingJoinUrl;
+        const webMeetingPassword = this.webMeetingPassword;
+        const microsoftTeamsAttendeesChecked = document.querySelectorAll('input[class=microsoftTeamsAttendeesCheck]:checked');
+        const webexMeetingsAttendeesChecked = document.querySelectorAll('input[class=webexMeetingsAttendeesCheck]:checked');
+        const empty = '';
+        const timestamp = new Date().getTime();
+
+        const nodeWebMeetingAttendeesRelation =JSON.parse(config.node_web_meetings_attendees_relation)
+        const nodeWebexMeetingsAttendees = JSON.parse(config.node_webex_meetings_attendees);
+
+        let action = '';
+        let microsoftTeamsAttendeesCollectionAtCreate: microsoftTeamsAttendeeAtCreate[] = [];
+        let microsoftTeamsAttendeesCollectionAtUpdate: microsoftTeamsAttendeeAtUpdate[] = [];
+        let webexMeetingsAttendeesCollection: webexMeetingsAttendee[] = [];
+        let arrayAttendees = [];
+        let arrayAttendeePks: string[] = [];
+
+        let arrayCreateAttendeePks = [];
+        let arrayDeleteAttendeePks = [];
+        let webexMeetingsCreateInvitees: webexMeetingsCreateInvitee[] = [];
+        let webexMeetingsDeleteInviteeIds: string[] = [];
+
+        let attendeeNum = 0;
+
+        if (this.webMeetingAppName === config.app_name_microsoft_teams) {
+
+            attendeeNum = microsoftTeamsAttendeesChecked.length;
+        }else if (this.webMeetingAppName === config.app_name_webex_meetings) {
+
+            attendeeNum = webexMeetingsAttendeesChecked.length;
+        }
+        //validation check for input
+        if(!this.webMeetingvalidationCheck(webMeetingSubject, attendeeNum, this.webMeetingStartDate, webMeetingStartTime, this.webMeetingEndDate, webMeetingEndTime, strWebMeetingStartDatetime, strWebMeetingEndDatetime)){
+            return;
+        }
+        //make attendees format
+        if (appName === config.app_name_microsoft_teams) {
+
+            action = 'updateMicrosoftTeamsMeeting';
+
+            for(let i = 0; i < microsoftTeamsAttendeesChecked.length; i++){ 
+                microsoftTeamsAttendeesCollectionAtUpdate.push({'address': microsoftTeamsAttendeesChecked[i].id, 'name': 'Unregistered'});
+                arrayAttendees.push(microsoftTeamsAttendeesChecked[i].id);
+            }
+        }else if (appName === config.app_name_webex_meetings) {
+
+            action = 'updateWebexMeetings';
+
+            for(let i = 0; i < webexMeetingsAttendeesChecked.length; i++){
+                webexMeetingsAttendeesCollection.push({'email': webexMeetingsAttendeesChecked[i].id});
+                arrayAttendees.push(webexMeetingsAttendeesChecked[i].id);
+
+                for(let j = 0; j < nodeWebexMeetingsAttendees.length; j++){
+
+                    if(webexMeetingsAttendeesChecked[i].id === nodeWebexMeetingsAttendees[j].fields.webex_meetings_mail){
+                        arrayAttendeePks.push(nodeWebexMeetingsAttendees[j].pk);
+                    }
+                }
+            }
+
+            arrayCreateAttendeePks = arrayAttendeePks.filter(i => (this.webMeetingAttendees).indexOf(i) == -1)
+            arrayDeleteAttendeePks = (this.webMeetingAttendees).filter(i => arrayAttendeePks.indexOf(i) == -1)
+
+            for(let i = 0; i < arrayCreateAttendeePks.length; i++){
+                for(let j = 0; j < nodeWebexMeetingsAttendees.length; j++){
+                    if(arrayCreateAttendeePks[i] === nodeWebexMeetingsAttendees[j].pk){
+                        webexMeetingsCreateInvitees.push({'email': nodeWebexMeetingsAttendees[j].fields.webex_meetings_mail});
+                    }
+                }
+            }
+
+            for(let i = 0; i < arrayDeleteAttendeePks.length; i++){
+                for(let j = 0; j < nodeWebMeetingAttendeesRelation.length; j++){
+                    if(this.webMeetingPk === nodeWebMeetingAttendeesRelation[j].fields.all_meeting_information){
+                        if(arrayDeleteAttendeePks[i] === nodeWebMeetingAttendeesRelation[j].fields.attendees){
+
+                            webexMeetingsDeleteInviteeIds.push(nodeWebMeetingAttendeesRelation[j].fields.webex_meetings_invitee_id);
+                        }
+                    }
+                }
+            }
+        }
+
+        const webMeetingStartDatetime = (new Date(strWebMeetingStartDatetime)).toISOString();
+        const webMeetingEndDatetime = (new Date(strWebMeetingEndDatetime)).toISOString();
+
+        const payload = {
+            'nodeId': node_id,
+            'appName': appName,
+            'appNameDisp': appNameDisp,
+            'guid': empty,
+            'meetingId': webMeetingId,
+            'joinUrl': webMeetingJoinUrl,
+            'action': action,
+            'info': {
+                "grdmScenarioStarted": infoGrdmScenarioStarted,
+                'grdmScenarioCompleted': infoGrdmScenarioCompleted,
+            },
+            'error': {
+                'webappsCreateMeeting': errorWebappsCreateMeeting,
+                'grdmRegisterMeeting': errorGrdmRegisterMeeting,
+                'slackCreateMeeting': errorSlackCreateMeeting,
+                'webappsUpdateMeeting': errorWebappsUpdateMeeting,
+                'webappsUpdateAttendees': errorWebappsUpdateAttendees,
+                'webappsUpdateAttendeesGrdmMeetingReg' : errorWebappsUpdateAttendeesGrdmMeetingReg,
+                'grdmUpdateMeetingReg': errorGrdmUpdateMeetingReg,
+                'slackUpdateMeeting': errorSlackUpdateMeeting,
+                'webappsDeleteMeeting': errorWebappsDeleteMeeting,
+                'grdmDeleteMeetingReg': errorGrdmDeleteMeetingReg,
+                'slackDeleteMeeting': errorSlackDeleteMeeting,
+                'scenarioProcessing': errorScenarioProcessing,
+            },
+            'startDatetime': webMeetingStartDatetime,
+            'endDatetime': webMeetingEndDatetime,
+            'subject': webMeetingSubject,
+            'microsoftTeamsAttendeesCollectionAtCreate': microsoftTeamsAttendeesCollectionAtCreate,
+            'microsoftTeamsAttendeesCollectionAtUpdate': microsoftTeamsAttendeesCollectionAtUpdate,
+            'webexMeetingsAttendeesCollection': webexMeetingsAttendeesCollection,
+            'webexMeetingsCreateInvitees': webexMeetingsCreateInvitees,
+            'webexMeetingsDeleteInviteeIds': webexMeetingsDeleteInviteeIds,
+            'attendees': arrayAttendees,
+            'location': webMeetingLocation,
+            'content': webMeetingContent,
+            'password': webMeetingPassword,
+            'webhook_url': webhookUrl,
+            'timestamp': timestamp,
+        };
+
+//        this.setWebMeetingApp('', '');
+
+        return this.reqLaunch(startIntegromatScenarioUrl, payload, appName);
+    }
+
+
+    @action
+    deleteWebMeeting(this: GuidNodeGrdmapps) {
+
+        if (!this.config) {
+            throw new EmberError('Illegal config');
+        }
+
+        const config = this.config.content as GrdmappsConfigModel;
+        const webhookUrl = this.webhookUrl;
+        const nodeId = config.node_settings_id;
+        const appName = this.webMeetingAppName;
+        const appNameDisp = this.webMeetingAppNameDisp;
+        const webMeetingSubject = this.webMeetingDeleteSubject;
+        const strWebMeetingStartDatetime = this.webMeetingDeleteStartDate + ' ' + this.webMeetingDeleteStartTime;
+        const strWebMeetingEndDatetime = this.webMeetingDeleteEndDate + ' ' + this.webMeetingDeleteEndTime;
+        const timestamp = new Date().getTime();
+
+        const empty = '';
+        const emptyList : string[] = [];
+        const microsoftTeamsAttendeesCollectionAtCreate: microsoftTeamsAttendeeAtCreate[] = [];
+        const microsoftTeamsAttendeesCollectionAtUpdate: microsoftTeamsAttendeeAtUpdate[] = [];
+        const webexMeetingsAttendeesCollection: webexMeetingsAttendee[] = [];
+
+        let webexMeetingsCreateInvitees : webexMeetingsCreateInvitee[] = [];
+        let webexMeetingsDeleteInviteeIds : string[] = [];
+
+        let action = '';
+
+        if (this.webMeetingAppName === config.app_name_microsoft_teams) {
+
+            action = 'deleteMicrosoftTeamsMeeting';
+
+        }else if (this.webMeetingAppName === config.app_name_webex_meetings) {
+
+            action = 'deleteWebexMeetings';
+
+        }
+
+        const webMeetingStartDatetime = (new Date(strWebMeetingStartDatetime)).toISOString();
+        const webMeetingEndDatetime = (new Date(strWebMeetingEndDatetime)).toISOString();
+
+        const payload = {
+            'nodeId': nodeId,
+            'appName': appName,
+            'appNameDisp': appNameDisp,
+            'guid': empty,
+            'meetingId': this.webMeetingDeleteMeetingId,
+            'joinUrl': empty,
+            'action': action,
+            'info': {
+                "grdmScenarioStarted": infoGrdmScenarioStarted,
+                'grdmScenarioCompleted': infoGrdmScenarioCompleted,
+            },
+            'error': {
+                'webappsCreateMeeting': errorWebappsCreateMeeting,
+                'grdmRegisterMeeting': errorGrdmRegisterMeeting,
+                'slackCreateMeeting': errorSlackCreateMeeting,
+                'webappsUpdateMeeting': errorWebappsUpdateMeeting,
+                'webappsUpdateAttendees': errorWebappsUpdateAttendees,
+                'webappsUpdateAttendeesGrdmMeetingReg' : errorWebappsUpdateAttendeesGrdmMeetingReg,
+                'grdmUpdateMeetingReg': errorGrdmUpdateMeetingReg,
+                'slackUpdateMeeting': errorSlackUpdateMeeting,
+                'webappsDeleteMeeting': errorWebappsDeleteMeeting,
+                'grdmDeleteMeetingReg': errorGrdmDeleteMeetingReg,
+                'slackDeleteMeeting': errorSlackDeleteMeeting,
+                'scenarioProcessing': errorScenarioProcessing,
+            },
+            'startDatetime': webMeetingStartDatetime,
+            'endDatetime': webMeetingEndDatetime,
+            'subject': webMeetingSubject,
+            'microsoftTeamsAttendeesCollectionAtCreate': microsoftTeamsAttendeesCollectionAtCreate,
+            'microsoftTeamsAttendeesCollectionAtUpdate': microsoftTeamsAttendeesCollectionAtUpdate,
+            'webexMeetingsAttendeesCollection': webexMeetingsAttendeesCollection,
+            'webexMeetingsCreateInvitees': webexMeetingsCreateInvitees,
+            'webexMeetingsDeleteInviteeIds': webexMeetingsDeleteInviteeIds,
+            'attendees': emptyList,
+            'location': empty,
+            'content': empty,
             'webhook_url': webhookUrl,
             'timestamp': timestamp,
         };
@@ -722,3 +994,16 @@ declare module '@ember/controller' {
         'guid-node/grdmapps': GuidNodeGrdmapps;
     }
 }
+© 2021 GitHub, Inc.
+Terms
+Privacy
+Security
+Status
+Docs
+Contact GitHub
+Pricing
+API
+Training
+Blog
+About
+Loading complete

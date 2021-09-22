@@ -224,7 +224,7 @@ export default class GuidNodeGrdmapps extends Controller {
         let validFlag = true;
 
         if(!webhook_url){
-            this.set('msgInvalidWebhookUrl', this.i18n.t('integromat.meetingDialog.invalid.empty', {item: this.i18n.t('integromat.workflows.alternative_webhook_url.label')}));
+            this.set('msgInvalidWebhookUrl', this.intl.t('integromat.meetingDialog.invalid.empty', {item: this.intl.t('integromat.workflows.alternative_webhook_url.label')}));
             validFlag = false;
         }else{
             this.set('msgInvalidWebhookUrl', '');
@@ -267,14 +267,14 @@ export default class GuidNodeGrdmapps extends Controller {
         })
         .then((res) => {
                 if(!res.ok){
-                    this.toast.error(this.i18n.t('integromat.fail.registerAlternativeWebhookUrl'));
+                    this.toast.error(this.intl.t('integromat.fail.registerAlternativeWebhookUrl'));
                     return;
                 }
                 this.save();
-                this.toast.info(this.i18n.t('integromat.success.registerAlternativeWebhookUrl'));
+                this.toast.info(this.intl.t('integromat.success.registerAlternativeWebhookUrl'));
             })
             .catch(() => {
-                this.toast.error(this.i18n.t('integromat.error.failedToRequest'));
+                this.toast.error(this.intl.t('integromat.error.failedToRequest'));
             })
     }
 

@@ -4,6 +4,7 @@ import EmberError from '@ember/error';
 import { action, computed } from '@ember/object';
 import { reads } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
+import config from 'ember-get-config';
 
 import DS from 'ember-data';
 import moment from 'moment';

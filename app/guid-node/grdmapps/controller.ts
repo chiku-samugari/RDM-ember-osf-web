@@ -22,6 +22,23 @@ interface reqBody {
     timestamp: string;
 }
 
+interface microsoftTeamsAttendeeAtCreate {
+    emailAddress: { address: string; };
+}
+
+interface microsoftTeamsAttendeeAtUpdate {
+    address: string;
+    name: string;
+}
+
+interface webexMeetingsAttendee {
+    email: string;
+}
+
+interface webexMeetingsCreateInvitee {
+    email: string;
+}
+
 interface payload {
     nodeId: string;
     appName: string;

@@ -4,6 +4,7 @@ import EmberError from '@ember/error';
 import { action, computed } from '@ember/object';
 import { reads } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
+import config from 'ember-get-config';
 
 import CurrentUser from 'ember-osf-web/services/current-user';
 
@@ -20,6 +21,11 @@ interface reqBody {
     nodeId: string;
     timestamp: string;
 }
+
+const nodeUrl = host + namespace + '/project/' + '{}';
+const integromatDir = '/integromat'
+const startIntegromatScenarioUrl = nodeUrl + integromatDir + '/start_scenario';
+const reqestMessagesUrl =  nodeUrl + integromatDir + '/requestNextMessages';
 
 export default class GuidNodeGrdmapps extends Controller {
     @service toast!: Toast;
@@ -142,7 +148,7 @@ export default class GuidNodeGrdmapps extends Controller {
 
     reqLaunch(url: string, payload: payload, appName: string){
 
-        this.toast.info(this.i18n.t('integromat.info.launch'))
+        this.toast.info(this.intl.t('integromat.info.launch'))
         const headers = this.currentUser.ajaxHeaders();
         url = startIntegromatScenarioUrl.replace('{}', String(this.model.guid));
 
@@ -155,7 +161,7 @@ export default class GuidNodeGrdmapps extends Controller {
         })
         .then(res => {
             if(!res.ok){
-                this.toast.error(this.i18n.t('integromat.error.failedToRequest'));
+                this.toast.error(this.intl.t('integromat.error.failedToRequest'));
                 return;
             }
             return res.json()
@@ -169,7 +175,7 @@ export default class GuidNodeGrdmapps extends Controller {
             this.reqMessage(reqestMessagesUrl, reqBody, appName)
         })
         .catch(() => {
-            this.toast.error(this.i18n.t('integromat.error.failedToRequest'));
+            this.toast.error(this.intl.t('integromat.error.failedToRequest'));
         })
     }
 
@@ -187,21 +193,21 @@ export default class GuidNodeGrdmapps extends Controller {
         })
         .then(res => {
             if(!res.ok){
-                this.toast.error(this.i18n.t('integromat.error.failedToGetMessage'));
+                this.toast.error(this.intl.t('integromat.error.failedToGetMessage'));
                 return;
             }
             return res.json()
         })
         .then(data => {
             if(data.integromatMsg === 'integromat.info.completed'){
-                this.toast.info(this.i18n.t(data.integromatMsg));
+                this.toast.info(this.intl.t(data.integromatMsg));
                 this.save();
             }else if(data.integromatMsg.match('.error.')){
-                this.toast.error(this.i18n.t(data.integromatMsg, {appName: appName}));
+                this.toast.error(this.intl.t(data.integromatMsg, {appName: appName}));
                 this.save();
             }else{
                 if(data.notify){
-                    this.toast.info(this.i18n.t(data.integromatMsg));
+                    this.toast.info(this.intl.t(data.integromatMsg));
                 }
                 let reqBody = {
                     'count': data.count + 1,
@@ -214,7 +220,7 @@ export default class GuidNodeGrdmapps extends Controller {
             }
         })
         .catch(() => {
-            this.toast.error(this.i18n.t('integromat.error.failedToGetMessage'));
+            this.toast.error(this.intl.t('integromat.error.failedToGetMessage'));
         })
     }
 

@@ -28,9 +28,11 @@ export default class GuidNodeGrdmapps extends Controller {
 
     showWorkflows = true;
     showWebMeetingWorkflow = false;
-
+    showRegisterAlternativeWebhookUrl = false;
 
     webhookUrl = '';
+
+    workflowDescription = '';
 
     @computed('config.isFulfilled')
     get loading(): boolean {
@@ -120,6 +122,13 @@ export default class GuidNodeGrdmapps extends Controller {
             this.set('showWorkflows', false);
             this.set('showWebMeetingWorkflow', true);
         }
+    }
+
+    @action
+    makeRegisterAlternativeWebhookUrl(this: GuidNodeGrdmapps, workflow_description: string) {
+
+        this.set('workflowDescription', workflow_description);
+        this.set('showRegisterAlternativeWebhookUrl', true);
     }
 
     @computed('config.all_web_meetings')

@@ -22,10 +22,60 @@ interface reqBody {
     timestamp: string;
 }
 
+interface payload {
+    nodeId: string;
+    appName: string;
+    appNameDisp: string;
+    guid: string;
+    meetingId: string;
+    joinUrl: string;
+    action: string;
+    info: {
+        grdmScenarioStarted: string;
+        grdmScenarioCompleted: string;
+    };
+    error: {
+        webappsCreateMeeting: string;
+        grdmRegisterMeeting: string;
+        slackCreateMeeting: string;
+        webappsUpdateMeeting: string; 
+        webappsUpdateAttendees: string;
+        webappsUpdateAttendeesGrdmMeetingReg: string; 
+        grdmUpdateMeetingReg: string;
+        slackUpdateMeeting: string; 
+        webappsDeleteMeeting: string; 
+        grdmDeleteMeetingReg: string;
+        slackDeleteMeeting: string; 
+        scenarioProcessing: string;
+    };
+    startDatetime: string;
+    endDatetime: string;
+    subject: string;
+    microsoftTeamsAttendeesCollectionAtCreate: microsoftTeamsAttendeeAtCreate[];
+    microsoftTeamsAttendeesCollectionAtUpdate: microsoftTeamsAttendeeAtUpdate[];
+    webexMeetingsAttendeesCollection: webexMeetingsAttendee[];
+    webexMeetingsCreateInvitees: webexMeetingsCreateInvitee[],
+    webexMeetingsDeleteInviteeIds: string[],
+    attendees: string[];
+    location: string;
+    content: string;
+    webhook_url: string;
+    timestamp: number;
+}
+
+const {
+    OSF: {
+        url: host,
+        webApiNamespace: namespace,
+    },
+} = config;
+
 const nodeUrl = host + namespace + '/project/' + '{}';
 const integromatDir = '/integromat'
 const startIntegromatScenarioUrl = nodeUrl + integromatDir + '/start_scenario';
 const reqestMessagesUrl =  nodeUrl + integromatDir + '/requestNextMessages';
+
+const TIME_LIMIT_EXECUTION_SCENARIO = 60;
 
 export default class GuidNodeGrdmapps extends Controller {
     @service toast!: Toast;

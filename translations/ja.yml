@@ -1838,6 +1838,7 @@ integromat:
         location: '場所を入力してください'
         content: '詳細を入力してください'
         date_form: 'YYYY/MM/DD'
+        guestname: 'ゲスト名を入力してください'
         signInAdress: 'サインインアドレスを入力してください'
         username: 'ユーザ名(または表示名)を入力してください'
     workflows:

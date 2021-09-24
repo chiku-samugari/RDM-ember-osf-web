@@ -1332,14 +1332,14 @@ export default class GuidNodeGrdmapps extends Controller {
         const config = this.config.content as GrdmappsConfigModel;
         const node_attendees_all = JSON.parse(config.node_attendees_all);
         const institution_users = JSON.parse(config.institution_users);
-        let institutionUsers : institutionUsers[] = [];
+        let institutionMicrosoftTeamsUsers : institutionUsers[] = [];
         let registeredIstitutionUsers : institutionUsers[] = [];
         let unregisteredIstitutionUsers : institutionUsers[] = [];
         let guestUsers : institutionUsers[] = [];
 
         for(let i = 0; i < institution_users.length; i++){
 
-            unregisteredIstitutionUsers.push({name: institution_users[j].fullname + '@' + institution_users[i].guid + this.intl.t('integromat.meetingDialog.unregisteredLabel'), email: '', nameForApp: '', profile: profileUrl + institution_users[i].guid, _id: '', is_guest: false, disabled: false});
+            unregisteredIstitutionUsers.push({name: institution_users[i].fullname + '@' + institution_users[i].guid + this.intl.t('integromat.meetingDialog.unregisteredLabel'), email: '', nameForApp: '', profile: profileUrl + institution_users[i].guid, _id: '', is_guest: false, disabled: false});
 
             for(let j = 0; j < node_attendees_all.length; j++){
 
@@ -1354,11 +1354,11 @@ export default class GuidNodeGrdmapps extends Controller {
             }
         }
 
-        institutionUsers.concat(registeredIstitutionUsers);
-        institutionUsers.concat(guestUsers);
-        institutionUsers.concat(unregisteredIstitutionUsers);
+        institutionMicrosoftTeamsUsers.concat(registeredIstitutionUsers);
+        institutionMicrosoftTeamsUsers.concat(guestUsers);
+        institutionMicrosoftTeamsUsers.concat(unregisteredIstitutionUsers);
 
-        return institutionUsers;
+        return institutionMicrosoftTeamsUsers;
     }
 
     @computed('config.institution_users')
@@ -1369,16 +1369,14 @@ export default class GuidNodeGrdmapps extends Controller {
         const config = this.config.content as GrdmappsConfigModel;
         const node_attendees_all = JSON.parse(config.node_attendees_all);
         const institution_users = JSON.parse(config.institution_users);
-        let institutionUsers : institutionUsers[] = [];
-
-        let institutionUsers : institutionUsers[] = [];
+        let institutionWebexMeetingsUsers : institutionUsers[] = [];
         let registeredIstitutionUsers : institutionUsers[] = [];
         let unregisteredIstitutionUsers : institutionUsers[] = [];
         let guestUsers : institutionUsers[] = [];
 
         for(let i = 0; i < institution_users.length; i++){
 
-            unregisteredIstitutionUsers.push({name: institution_users[j].fullname + '@' + institution_users[i].guid + this.intl.t('integromat.meetingDialog.unregisteredLabel'), email: '', nameForApp: '', profile: profileUrl + institution_users[i].guid, _id: '', is_guest: false, disabled: false});
+            unregisteredIstitutionUsers.push({name: institution_users[i].fullname + '@' + institution_users[i].guid + this.intl.t('integromat.meetingDialog.unregisteredLabel'), email: '', nameForApp: '', profile: profileUrl + institution_users[i].guid, _id: '', is_guest: false, disabled: false});
 
             for(let j = 0; j < node_attendees_all.length; j++){
 
@@ -1393,11 +1391,11 @@ export default class GuidNodeGrdmapps extends Controller {
             }
         }
 
-        institutionUsers.concat(registeredIstitutionUsers);
-        institutionUsers.concat(guestUsers);
-        institutionUsers.concat(unregisteredIstitutionUsers);
+        institutionWebexMeetingsUsers.concat(registeredIstitutionUsers);
+        institutionWebexMeetingsUsers.concat(guestUsers);
+        institutionWebexMeetingsUsers.concat(unregisteredIstitutionUsers);
 
-        return institutionUsers;
+        return institutionWebexMeetingsUsers;
     }
 
     @computed('config.workflows')

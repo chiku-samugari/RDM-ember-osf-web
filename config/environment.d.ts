@@ -43,6 +43,7 @@ declare const config: {
     moment: {
         includeTimezone: string;
         outputFormat: string;
+        includeLocales: boolean;
     };
     metricsAdapters: Array<{
         name: string;

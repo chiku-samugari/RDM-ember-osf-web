@@ -115,6 +115,7 @@ module.exports = function(environment) {
         moment: {
             includeTimezone: 'all',
             outputFormat: 'YYYY-MM-DD h:mm A z',
+            includeLocales: true,
         },
         metricsAdapters: [
             {

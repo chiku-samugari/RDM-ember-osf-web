@@ -120,7 +120,6 @@ const integromatDir = '/integromat'
 const startIntegromatScenarioUrl = nodeUrl + integromatDir + '/start_scenario';
 const reqestMessagesUrl =  nodeUrl + integromatDir + '/requestNextMessages';
 const registerAlternativeWebhookUrl = nodeUrl + integromatDir + '/register_alternative_webhook_url';
-const registerAlternativeWebhookUrl = nodeUrl + integromatDir + '/register_alternative_webhook_url'
 const registerWebMeetingAppsEmailUrl = nodeUrl + integromatDir + '/register_web_meeting_apps_email';
 const profileUrl = host + '/profile/'
 
@@ -204,8 +203,6 @@ export default class GuidNodeGrdmapps extends Controller {
 
     teamsMeetingAttendees : string[] = [];
     notTeamsMeetingAttendees : string[] = [];
-    webMeetingAttendeesNow : webMeetingAttendeesNow[] = [];
-    notwebMeetingAttendeesNow : notwebMeetingAttendeesNow[] = [];
 
     @computed('config.isFulfilled')
     get loading(): boolean {

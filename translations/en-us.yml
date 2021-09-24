@@ -1832,7 +1832,7 @@ integromat:
         registerBtn: 'Register'
         invalid:
             empty: 'Please Enter {item}'
-            invalid: 'The value of {item} is invalid.',
+            invalid: 'The value of {item} is invalid.'
             datetime:
                 past: 'Start Datetime is before current time.'
                 endBeforeStart: 'End Datetime is before Start Datetime.'

@@ -1348,7 +1348,7 @@ export default class GuidNodeGrdmapps extends Controller {
                 }
             }
         }
-        return institution_users;
+        return institutionUsers;
     }
 
     @computed('config.institution_users')
@@ -1376,7 +1376,7 @@ export default class GuidNodeGrdmapps extends Controller {
 
             }
         }
-        return institution_users;
+        return institutionUsers;
     }
 
     @computed('config.workflows')

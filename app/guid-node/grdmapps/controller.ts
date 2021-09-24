@@ -1354,9 +1354,9 @@ export default class GuidNodeGrdmapps extends Controller {
             }
         }
 
-        institutionMicrosoftTeamsUsers.concat(registeredIstitutionUsers);
-        institutionMicrosoftTeamsUsers.concat(guestUsers);
-        institutionMicrosoftTeamsUsers.concat(unregisteredIstitutionUsers);
+        institutionMicrosoftTeamsUsers = institutionMicrosoftTeamsUsers.concat(registeredIstitutionUsers);
+        institutionMicrosoftTeamsUsers = institutionMicrosoftTeamsUsers.concat(guestUsers);
+        institutionMicrosoftTeamsUsers = institutionMicrosoftTeamsUsers.concat(unregisteredIstitutionUsers);
 
         return institutionMicrosoftTeamsUsers;
     }
@@ -1391,9 +1391,9 @@ export default class GuidNodeGrdmapps extends Controller {
             }
         }
 
-        institutionWebexMeetingsUsers.concat(registeredIstitutionUsers);
-        institutionWebexMeetingsUsers.concat(guestUsers);
-        institutionWebexMeetingsUsers.concat(unregisteredIstitutionUsers);
+        institutionMicrosoftTeamsUsers = institutionMicrosoftTeamsUsers.concat(registeredIstitutionUsers);
+        institutionMicrosoftTeamsUsers = institutionMicrosoftTeamsUsers.concat(guestUsers);
+        institutionMicrosoftTeamsUsers = institutionMicrosoftTeamsUsers.concat(unregisteredIstitutionUsers);
 
         return institutionWebexMeetingsUsers;
     }

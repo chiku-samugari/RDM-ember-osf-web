@@ -1333,21 +1333,31 @@ export default class GuidNodeGrdmapps extends Controller {
         const node_attendees_all = JSON.parse(config.node_attendees_all);
         const institution_users = JSON.parse(config.institution_users);
         let institutionUsers : institutionUsers[] = [];
+        let registeredIstitutionUsers : institutionUsers[] = [];
+        let unregisteredIstitutionUsers : institutionUsers[] = [];
+        let guestUsers : institutionUsers[] = [];
 
         for(let i = 0; i < institution_users.length; i++){
+
+            unregisteredIstitutionUsers.push({name: institution_users[j].fullname + '@' + institution_users[i].guid + this.intl.t('integromat.meetingDialog.unregisteredLabel'), email: '', nameForApp: '', profile: profileUrl + institution_users[i].guid, _id: '', is_guest: false, disabled: false});
+
             for(let j = 0; j < node_attendees_all.length; j++){
 
                 if(institution_users[i].guid === node_attendees_all[j].user_guid){
-                    institutionUsers.push({name: node_attendees_all[j].fields.fullname + '@' + node_attendees_all[j].fields.user_guid, email: node_attendees_all[j].fields.microsoft_teams_mail, nameForApp: node_attendees_all[j].fields.microsoft_teams_user_name, profile: profileUrl + node_attendees_all[j].fields.user_guid, _id: node_attendees_all[j].fields._id, is_guest: false, disabled: true});
-                }else{
-                    institutionUsers.push({name: institution_users[j].fullname + '@' + institution_users[i].guid + this.intl.t('integromat.meetingDialog.unregisteredLabel'), email: '', nameForApp: '', profile: profileUrl + institution_users[i].guid, _id: '', is_guest: false, disabled: false});
+                    registeredIstitutionUsers.push({name: node_attendees_all[j].fields.fullname + '@' + node_attendees_all[j].fields.user_guid, email: node_attendees_all[j].fields.microsoft_teams_mail, nameForApp: node_attendees_all[j].fields.microsoft_teams_user_name, profile: profileUrl + node_attendees_all[j].fields.user_guid, _id: node_attendees_all[j].fields._id, is_guest: false, disabled: true});
+                unregisteredIstitutionUsers.pop();
                 }
 
                 if(node_attendees_all[j].is_guest){
-                    institutionUsers.push({name: node_attendees_all[j].fields.fullname + '(' + node_attendees_all[j].fields.microsoft_teams_mail + ')', email: node_attendees_all[j].fields.microsoft_teams_mail, nameForApp: node_attendees_all[j].fields.microsoft_teams_user_name, profile: '', _id: node_attendees_all[j].fields._id, is_guest: node_attendees_all[j].fields.is_guest, disabled: false});
+                    guestUsers.push({name: node_attendees_all[j].fields.fullname + '(' + node_attendees_all[j].fields.microsoft_teams_mail + ')', email: node_attendees_all[j].fields.microsoft_teams_mail, nameForApp: node_attendees_all[j].fields.microsoft_teams_user_name, profile: '', _id: node_attendees_all[j].fields._id, is_guest: node_attendees_all[j].fields.is_guest, disabled: false});
                 }
             }
         }
+
+        institutionUsers.concat(registeredIstitutionUsers);
+        institutionUsers.concat(guestUsers);
+        institutionUsers.concat(unregisteredIstitutionUsers);
+
         return institutionUsers;
     }
 
@@ -1361,21 +1371,32 @@ export default class GuidNodeGrdmapps extends Controller {
         const institution_users = JSON.parse(config.institution_users);
         let institutionUsers : institutionUsers[] = [];
 
+        let institutionUsers : institutionUsers[] = [];
+        let registeredIstitutionUsers : institutionUsers[] = [];
+        let unregisteredIstitutionUsers : institutionUsers[] = [];
+        let guestUsers : institutionUsers[] = [];
+
         for(let i = 0; i < institution_users.length; i++){
+
+            unregisteredIstitutionUsers.push({name: institution_users[j].fullname + '@' + institution_users[i].guid + this.intl.t('integromat.meetingDialog.unregisteredLabel'), email: '', nameForApp: '', profile: profileUrl + institution_users[i].guid, _id: '', is_guest: false, disabled: false});
+
             for(let j = 0; j < node_attendees_all.length; j++){
 
                 if(institution_users[i].guid === node_attendees_all[j].user_guid){
-                    institutionUsers.push({name: node_attendees_all[j].fields.fullname + '@' + node_attendees_all[j].fields.user_guid, email: node_attendees_all[j].fields.webex_meetings_mail, nameForApp: node_attendees_all[j].fields.webex_meetings_user_name, profile: profileUrl + node_attendees_all[j].fields.user_guid, _id: node_attendees_all[j].fields._id, is_guest: node_attendees_all[j].fields.is_guest, disabled: true});
-                }else{
-                    institutionUsers.push({name: institution_users[j].fullname + '@' + institution_users[i].guid + this.intl.t('integromat.meetingDialog.unregisteredLabel'), email: '', nameForApp: '', profile: profileUrl + institution_users[i].guid, _id: '', is_guest: false, disabled: false});
+                    registeredIstitutionUsers.push({name: node_attendees_all[j].fields.fullname + '@' + node_attendees_all[j].fields.user_guid, email: node_attendees_all[j].fields.webex_meetings_mail, nameForApp: node_attendees_all[j].fields.webex_meetings_user_name, profile: profileUrl + node_attendees_all[j].fields.user_guid, _id: node_attendees_all[j].fields._id, is_guest: node_attendees_all[j].fields.is_guest, disabled: true});
+                    unregisteredIstitutionUsers.pop();
                 }
 
                 if(node_attendees_all[j].is_guest){
-                    institutionUsers.push({name: node_attendees_all[j].fields.fullname + '(' + node_attendees_all[j].fields.webex_meetings_mail + ')', email: node_attendees_all[j].fields.webex_meetings_mail, nameForApp: node_attendees_all[j].fields.webex_meetings_user_name, profile: '', _id: node_attendees_all[j].fields._id, is_guest: node_attendees_all[j].fields.is_guest, disabled: false});
+                    guestUsers.push({name: node_attendees_all[j].fields.fullname + '(' + node_attendees_all[j].fields.webex_meetings_mail + ')', email: node_attendees_all[j].fields.webex_meetings_mail, nameForApp: node_attendees_all[j].fields.webex_meetings_user_name, profile: '', _id: node_attendees_all[j].fields._id, is_guest: node_attendees_all[j].fields.is_guest, disabled: false});
                 }
-
             }
         }
+
+        institutionUsers.concat(registeredIstitutionUsers);
+        institutionUsers.concat(guestUsers);
+        institutionUsers.concat(unregisteredIstitutionUsers);
+
         return institutionUsers;
     }
 

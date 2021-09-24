@@ -1391,9 +1391,9 @@ export default class GuidNodeGrdmapps extends Controller {
             }
         }
 
-        institutionMicrosoftTeamsUsers = institutionMicrosoftTeamsUsers.concat(registeredIstitutionUsers);
-        institutionMicrosoftTeamsUsers = institutionMicrosoftTeamsUsers.concat(guestUsers);
-        institutionMicrosoftTeamsUsers = institutionMicrosoftTeamsUsers.concat(unregisteredIstitutionUsers);
+        institutionWebexMeetingsUsers = institutionWebexMeetingsUsers.concat(registeredIstitutionUsers);
+        institutionWebexMeetingsUsers = institutionWebexMeetingsUsers.concat(guestUsers);
+        institutionWebexMeetingsUsers = institutionWebexMeetingsUsers.concat(unregisteredIstitutionUsers);
 
         return institutionWebexMeetingsUsers;
     }

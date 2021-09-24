@@ -121,6 +121,7 @@ const integromatDir = '/integromat'
 const startIntegromatScenarioUrl = nodeUrl + integromatDir + '/start_scenario';
 const reqestMessagesUrl =  nodeUrl + integromatDir + '/requestNextMessages';
 const registerAlternativeWebhookUrl = nodeUrl + integromatDir + '/register_alternative_webhook_url';
+const profileUrl = host + '/profile/'
 
 const TIME_LIMIT_EXECUTION_SCENARIO = 60;
 
@@ -283,6 +284,81 @@ export default class GuidNodeGrdmapps extends Controller {
     }
 
     @action
+    setWebMeetingApp(this: GuidNodeGrdmapps, v: string, actionType: string) {
+
+        if (!this.config) {
+            throw new EmberError('Illegal config');
+        }
+
+        const config = this.config.content as GrdmappsConfigModel;
+        let appNameDisp = '';
+
+        if(v === config.app_name_microsoft_teams){
+
+            if(actionType === 'create'){
+                this.set('showCreateMicrosoftTeamsMeetingDialog', true);
+                this.set('showCreateWebexMeetingDialog', false);
+            }else if(actionType === 'update'){
+                this.set('showUpdateMicrosoftTeamsMeetingDialog', true);
+                this.set('showUpdateWebexMeetingsDialog', false);
+            }
+            appNameDisp = this.camel2space(v);
+            this.set('webMeetingAppName', v);
+            this.set('webMeetingAppNameDisp', appNameDisp);
+
+        }else if(v === config.app_name_webex_meetings){
+
+            if(actionType === 'create'){
+                this.set('showCreateMicrosoftTeamsMeetingDialog', false);
+                this.set('showCreateWebexMeetingDialog', true);
+            }else if(actionType === 'update'){
+                this.set('showUpdateMicrosoftTeamsMeetingDialog', false);
+                this.set('showUpdateWebexMeetingsDialog', true);
+            }
+            appNameDisp = this.camel2space(v);
+            this.set('webMeetingAppName', v);
+            this.set('webMeetingAppNameDisp', appNameDisp);
+
+        }else if (!v && !actionType){
+
+            this.set('showCreateWebMeetingDialog', false);
+            this.set('showUpdateWebMeetingDialog', false);
+            this.set('showDeleteWebMeetingDialog', false);
+            this.set('showCreateMicrosoftTeamsMeetingDialog', false);
+            this.set('showCreateWebexMeetingDialog', false);
+            this.set('showUpdateMicrosoftTeamsMeetingDialog', false);
+            this.set('showUpdateWebexMeetingsDialog', false);
+            this.set('showDeleteWebMeetingDialog', false);
+            this.set('showDetailWebMeetingDialog', false);
+
+            this.set('webMeetingAppName', '');
+            this.set('webMeetingAppNameDisp', '');
+            this.set('webMeetingPk', '');
+            this.set('webMeetingSubject', '');
+            this.set('webMeetingOrganizerFullname', '');
+            this.set('webMeetingAttendees', 0);
+            this.set('webMeetingStartDate', '');
+            this.set('webMeetingStartTime', '');
+            this.set('webMeetingEndDate', '');
+            this.set('webMeetingEndTime', '');
+            this.set('webMeetingLocation', '');
+            this.set('webMeetingContent', '');
+            this.set('webMeetingUpdateMeetingId', '');
+            this.set('webMeetingJoinUrl', '');
+            this.set('webMeetingPassword', '');
+            this.set('webMeetingDeleteMeetingId', '');
+            this.set('webMeetingDeleteSubject', '');
+            this.set('webMeetingDeleteStartDate', '');
+            this.set('webMeetingDeleteStartTime', '');
+            this.set('webMeetingDeleteEndDate', '');
+            this.set('webMeetingDeleteEndTime', '');
+            this.set('msgInvalidSubject', '');
+            this.set('msgInvalidAttendees', '');
+            this.set('msgInvalidDatetime', '');
+        }
+    }
+
+    @action
     resetValue(this: GuidNodeGrdmapps) {
 
         this.set('workflowDescription', '');
@@ -350,7 +426,8 @@ export default class GuidNodeGrdmapps extends Controller {
             })
     }
 
-    webMeetingvalidationCheck(subject: string, attendeesNum: number, startDate: string, startTime: string, endDate: string, endTime: string, startDatetime: string, endDatetime: string) {
+    @action
+    webMeetingvalidationCheck(this: GuidNodeGrdmapps, subject: string, attendeesNum: number, startDate: string, startTime: string, endDate: string, endTime: string, startDatetime: string, endDatetime: string) {
 
         const now = new Date();
         const start = new Date(startDatetime);
@@ -413,7 +490,7 @@ export default class GuidNodeGrdmapps extends Controller {
         const empty = '';
         const timestamp = new Date().getTime();
 
-        let action = '';
+        let workflowAction = '';
         let microsoftTeamsAttendeesCollectionAtCreate: microsoftTeamsAttendeeAtCreate[] = [];
         let microsoftTeamsAttendeesCollectionAtUpdate: microsoftTeamsAttendeeAtUpdate[] = [];
         let webexMeetingsAttendeesCollection: webexMeetingsAttendee[] = [];
@@ -439,7 +516,7 @@ export default class GuidNodeGrdmapps extends Controller {
         //make attendees format
         if (this.webMeetingAppName === config.app_name_microsoft_teams) {
 
-            action = 'createMicrosoftTeamsMeeting';
+            workflowAction = 'createMicrosoftTeamsMeeting';
 
             for(let i = 0; i < microsoftTeamsAttendeesChecked.length; i++){ 
                 microsoftTeamsAttendeesCollectionAtCreate.push({'emailAddress': {'address': microsoftTeamsAttendeesChecked[i].id}});
@@ -447,7 +524,7 @@ export default class GuidNodeGrdmapps extends Controller {
             }
         }else if (this.webMeetingAppName === config.app_name_webex_meetings) {
 
-            action = 'createWebexMeetings';
+            workflowAction = 'createWebexMeetings';
 
             for(let i = 0; i < webexMeetingsAttendeesChecked.length; i++){
                 webexMeetingsAttendeesCollection.push({'email': webexMeetingsAttendeesChecked[i].id});
@@ -465,7 +542,7 @@ export default class GuidNodeGrdmapps extends Controller {
             'guid': guid,
             'meetingId': empty,
             'joinUrl': empty,
-            'action': action,
+            'action': workflowAction,
             'info': {
                 "grdmScenarioStarted": infoGrdmScenarioStarted,
                 'grdmScenarioCompleted': infoGrdmScenarioCompleted,
@@ -499,13 +576,102 @@ export default class GuidNodeGrdmapps extends Controller {
             'timestamp': timestamp,
         };
 
-//        this.setWebMeetingApp('', '');
+        this.setWebMeetingApp('', '');
 
         return this.reqLaunch(startIntegromatScenarioUrl, payload, appNameDisp);
     }
 
     @action
-    setDefaultDate() {
+    makeUpdateMeetingDialog(this: GuidNodeGrdmapps, meetingPk: string, meetingId: string, joinUrl: string, meetingPassword: string, appId: string, subject: string, attendees:string[], startDatetime: string, endDatetime: string, location: string, content: string) {
+
+        this.set('showUpdateWebMeetingDialog', true);
+
+        if (!this.config) {
+            throw new EmberError('Illegal config');
+        }
+
+        const config = this.config.content as GrdmappsConfigModel;
+        const webMeetingApps = JSON.parse(config.web_meeting_apps);
+
+        let appName = '';
+
+        this.set('webMeetingPk', meetingPk);
+        this.set('webMeetingSubject', subject);
+        this.set('webMeetingAttendees', attendees);
+        this.set('webMeetingStartDate', moment(startDatetime).format('YYYY/MM/DD'));
+        this.set('webMeetingStartTime', moment(startDatetime).format('HH:mm'));
+        this.set('webMeetingEndDate', moment(endDatetime).format('YYYY/MM/DD'));
+        this.set('webMeetingEndTime', moment(endDatetime).format('HH:mm'));
+        this.set('webMeetingLocation', location);
+        this.set('webMeetingContent', content);
+        this.set('webMeetingUpdateMeetingId', meetingId);
+        this.set('webMeetingJoinUrl', joinUrl);
+        this.set('webMeetingPassword', meetingPassword);
+
+        for(let i=0; i < webMeetingApps.length; i++){
+
+            if(webMeetingApps[i].pk === appId){
+                appName = webMeetingApps[i].fields.app_name;
+                break;
+            }
+        }
+
+        this.setWebMeetingApp(appName, 'update');
+        this.makeWebMeetingAttendee(appName, 'update');
+
+    }
+
+    makeWebMeetingAttendee(this: GuidNodeGrdmapps, appName: string, type: string) {
+
+        if (!this.config) {
+            throw new EmberError('Illegal config');
+        }
+        const config = this.config.content as GrdmappsConfigModel;
+
+        const nodeMicrosoftTeamsAttendees = JSON.parse(config.node_microsoft_teams_attendees_all);
+        const nodeWebexMeetingsAttendees = JSON.parse(config.node_microsoft_teams_attendees_all);
+
+        this.webMeetingAttendeesNow.length = 0;
+        this.notwebMeetingAttendeesNow.length = 0;
+
+        if(appName === config.app_name_microsoft_teams){
+
+            for(let j = 0; j < nodeMicrosoftTeamsAttendees.length; j++){
+
+                if(type === 'update' && !(nodeMicrosoftTeamsAttendees[j].fields.microsoft_teams_mail)){
+                    continue;
+                }
+                this.notwebMeetingAttendeesNow.push({'email': nodeMicrosoftTeamsAttendees[j].fields.microsoft_teams_mail, 'fullname': nodeMicrosoftTeamsAttendees[j].fields.fullname});
+
+                for(let k = 0; k < this.webMeetingAttendees.length; k++){
+                    if(nodeMicrosoftTeamsAttendees[j].pk === this.webMeetingAttendees[k]){
+                        this.webMeetingAttendeesNow.push({'email': nodeMicrosoftTeamsAttendees[j].fields.microsoft_teams_mail, 'fullname': nodeMicrosoftTeamsAttendees[j].fields.fullname, 'profile': profileUrl + nodeMicrosoftTeamsAttendees[j].fields.user_guid});
+                        this.notwebMeetingAttendeesNow.pop();
+                        break;
+                    }
+                }
+            }
+        }else if(appName === config.app_name_webex_meetings){
+            for(let l = 0; l < nodeWebexMeetingsAttendees.length; l++){
+
+                if(type === 'update' && !(nodeWebexMeetingsAttendees[l].fields.webex_meetings_mail)){
+                    continue;
+                }
+                this.notwebMeetingAttendeesNow.push({'email': nodeWebexMeetingsAttendees[l].fields.webex_meetings_mail, 'fullname': nodeWebexMeetingsAttendees[l].fields.fullname});
+
+                for(let m = 0; m < this.webMeetingAttendees.length; m++){
+                    if(nodeWebexMeetingsAttendees[l].pk === this.webMeetingAttendees[m]){
+                        this.webMeetingAttendeesNow.push({'email': nodeWebexMeetingsAttendees[l].fields.webex_meetings_mail, 'fullname': nodeWebexMeetingsAttendees[l].fields.fullname, 'profile': profileUrl + nodeWebexMeetingsAttendees[l].fields.user_guid});
+                        this.notwebMeetingAttendeesNow.pop();
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    @action
+    setDefaultDate(this: GuidNodeGrdmapps) {
         (<any>$('#update_start_date')[0]).value = this.webMeetingStartDate;
         (<any>$('#update_end_date')[0]).value = this.webMeetingEndDate;
     }
@@ -540,7 +706,7 @@ export default class GuidNodeGrdmapps extends Controller {
         const nodeWebMeetingAttendeesRelation =JSON.parse(config.node_web_meetings_attendees_relation)
         const nodeWebexMeetingsAttendees = JSON.parse(config.node_webex_meetings_attendees);
 
-        let action = '';
+        let workflowAction = '';
         let microsoftTeamsAttendeesCollectionAtCreate: microsoftTeamsAttendeeAtCreate[] = [];
         let microsoftTeamsAttendeesCollectionAtUpdate: microsoftTeamsAttendeeAtUpdate[] = [];
         let webexMeetingsAttendeesCollection: webexMeetingsAttendee[] = [];
@@ -568,7 +734,7 @@ export default class GuidNodeGrdmapps extends Controller {
         //make attendees format
         if (appName === config.app_name_microsoft_teams) {
 
-            action = 'updateMicrosoftTeamsMeeting';
+            workflowAction = 'updateMicrosoftTeamsMeeting';
 
             for(let i = 0; i < microsoftTeamsAttendeesChecked.length; i++){ 
                 microsoftTeamsAttendeesCollectionAtUpdate.push({'address': microsoftTeamsAttendeesChecked[i].id, 'name': 'Unregistered'});
@@ -576,7 +742,7 @@ export default class GuidNodeGrdmapps extends Controller {
             }
         }else if (appName === config.app_name_webex_meetings) {
 
-            action = 'updateWebexMeetings';
+            workflowAction = 'updateWebexMeetings';
 
             for(let i = 0; i < webexMeetingsAttendeesChecked.length; i++){
                 webexMeetingsAttendeesCollection.push({'email': webexMeetingsAttendeesChecked[i].id});
@@ -623,7 +789,7 @@ export default class GuidNodeGrdmapps extends Controller {
             'guid': empty,
             'meetingId': webMeetingId,
             'joinUrl': webMeetingJoinUrl,
-            'action': action,
+            'action': workflowAction,
             'info': {
                 "grdmScenarioStarted": infoGrdmScenarioStarted,
                 'grdmScenarioCompleted': infoGrdmScenarioCompleted,
@@ -658,11 +824,41 @@ export default class GuidNodeGrdmapps extends Controller {
             'timestamp': timestamp,
         };
 
-//        this.setWebMeetingApp('', '');
+        this.setWebMeetingApp('', '');
 
         return this.reqLaunch(startIntegromatScenarioUrl, payload, appName);
     }
 
+    @action
+    makeDeleteDialog(this: GuidNodeGrdmapps, meetingId: string, appId: string, subject: string, startDatetime: string, endDatetime: string) {
+
+        if (!this.config) {
+            throw new EmberError('Illegal config');
+        }
+
+        const config = this.config.content as GrdmappsConfigModel;
+        const webMeetingApps = JSON.parse(config.web_meeting_apps);
+        let appName = '';
+
+        for(let i=0; i < webMeetingApps.length; i++){
+
+            if(webMeetingApps[i].pk === appId){
+                appName = webMeetingApps[i].fields.app_name
+                break;
+            }
+        }
+
+        this.setWebMeetingApp(appName, 'delete');
+
+        this.set('showDeleteWebMeetingDialog', true);
+        this.set('webMeetingDeleteMeetingId', meetingId);
+        this.set('webMeetingDeleteSubject', subject);
+        this.set('webMeetingDeleteStartDate', moment(startDatetime).format('YYYY/MM/DD'));
+        this.set('webMeetingDeleteStartTime', moment(startDatetime).format('HH:mm'));
+        this.set('webMeetingDeleteEndDate', moment(endDatetime).format('YYYY/MM/DD'));
+        this.set('webMeetingDeleteEndTime', moment(endDatetime).format('HH:mm'));
+
+    }
 
     @action
     deleteWebMeeting(this: GuidNodeGrdmapps) {
@@ -690,15 +886,15 @@ export default class GuidNodeGrdmapps extends Controller {
         let webexMeetingsCreateInvitees : webexMeetingsCreateInvitee[] = [];
         let webexMeetingsDeleteInviteeIds : string[] = [];
 
-        let action = '';
+        let workflowAction = '';
 
         if (this.webMeetingAppName === config.app_name_microsoft_teams) {
 
-            action = 'deleteMicrosoftTeamsMeeting';
+            workflowAction = 'deleteMicrosoftTeamsMeeting';
 
         }else if (this.webMeetingAppName === config.app_name_webex_meetings) {
 
-            action = 'deleteWebexMeetings';
+            workflowAction = 'deleteWebexMeetings';
 
         }
 
@@ -712,7 +908,7 @@ export default class GuidNodeGrdmapps extends Controller {
             'guid': empty,
             'meetingId': this.webMeetingDeleteMeetingId,
             'joinUrl': empty,
-            'action': action,
+            'action': workflowAction,
             'info': {
                 "grdmScenarioStarted": infoGrdmScenarioStarted,
                 'grdmScenarioCompleted': infoGrdmScenarioCompleted,
@@ -746,9 +942,48 @@ export default class GuidNodeGrdmapps extends Controller {
             'timestamp': timestamp,
         };
 
-//        this.setWebMeetingApp('', '');
+        this.setWebMeetingApp('', '');
 
         return this.reqLaunch(startIntegromatScenarioUrl, payload, appNameDisp);
+    }
+
+    @action
+    makeDetailMeetingDialog(this: GuidNodeGrdmapps, meetingPk: string, meetingId: string, joinUrl: string, appId: string, subject: string, organizer_fullname: string, attendees:string[], startDatetime: string, endDatetime: string, location: string, content: string) {
+
+        this.set('showDetailWebMeetingDialog', true);
+
+        if (!this.config) {
+            throw new EmberError('Illegal config');
+        }
+
+        const config = this.config.content as GrdmappsConfigModel;
+        const webMeetingApps = JSON.parse(config.web_meeting_apps);
+
+        let appName = '';
+
+        this.set('webMeetingPk', meetingPk);
+        this.set('webMeetingSubject', subject);
+        this.set('webMeetingOrganizerFullname', organizer_fullname);
+        this.set('webMeetingAttendees', attendees);
+        this.set('webMeetingStartDate', moment(startDatetime).format('YYYY/MM/DD'));
+        this.set('webMeetingStartTime', moment(startDatetime).format('HH:mm'));
+        this.set('webMeetingEndDate', moment(endDatetime).format('YYYY/MM/DD'));
+        this.set('webMeetingEndTime', moment(endDatetime).format('HH:mm'));
+        this.set('webMeetingLocation', location);
+        this.set('webMeetingContent', content);
+        this.set('webMeetingUpdateMeetingId', meetingId);
+        this.set('webMeetingJoinUrl', joinUrl);
+
+        for(let i=0; i < webMeetingApps.length; i++){
+
+            if(webMeetingApps[i].pk === appId){
+                appName = webMeetingApps[i].fields.app_name;
+                break;
+            }
+        }
+
+        this.setWebMeetingApp(appName, 'detail');
+        this.makeWebMeetingAttendee(appName, 'detail');
     }
 
     reqLaunch(url: string, payload: payload, appName: string){
@@ -993,4 +1228,3 @@ declare module '@ember/controller' {
         'guid-node/grdmapps': GuidNodeGrdmapps;
     }
 }
-

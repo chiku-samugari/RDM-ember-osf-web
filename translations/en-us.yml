@@ -1820,7 +1820,7 @@ integromat:
         deleteHeader: 'Delete {appName} Meeting'
         detailHeader: '{appName} Meeting Detail'
         startHeader: 'Start {appName} Meeting'
-        registerAppsEmailHeader: 'Register {{appName}} Email'
+        registerAppsEmailHeader: 'Register {appName} Email'
         deleteBody: 'Are you sure want to delete this meeting?'
         noAttendees: 'No attendees are registered.'
         createBtn: 'Create'
@@ -1832,7 +1832,7 @@ integromat:
         registerBtn: 'Register'
         invalid:
             empty: 'Please Enter {item}'
-            invalid: 'The value of {{item}} is invalid.',
+            invalid: 'The value of {item} is invalid.',
             datetime:
                 past: 'Start Datetime is before current time.'
                 endBeforeStart: 'End Datetime is before Start Datetime.'
@@ -1870,10 +1870,10 @@ integromat:
     registerBtn: 'Register'
     success:
         registerAlternativeWebhookUrl: 'Success to register webhook URL to the workflow.'
-        registerWebMeetingAppsEmail: 'Success to register {{appName}} Email.'
+        registerWebMeetingAppsEmail: 'Success to register {appName} Email.'
     fail:
         registerAlternativeWebhookUrl: 'Failed to register webhook URL to the workflow.'
-        registerWebMeetingAppsEmail: 'Failed to register {{appName}} Email.'
+        registerWebMeetingAppsEmail: 'Failed to register {appName} Email.'
     info:
         launch: 'Launching workflow.'
         started: 'The workflow has started.'

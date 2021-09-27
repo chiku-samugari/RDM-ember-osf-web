@@ -47,6 +47,7 @@ interface attendees {
     webex_meetings_mail: string;
     webex_meetings_user_name: string;
     _id: string;
+    is_guest: boolean;
 }
 
 interface nodeAppAttendees {

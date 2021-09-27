@@ -503,7 +503,7 @@ export default class GuidNodeGrdmapps extends Controller {
         let fullname = '';
         let is_guest = false;
 
-        if(!this.selectedUser._id){
+        if(this.selectedUser._id){
             _id = this.selectedUser._id;
         }
         //validation check

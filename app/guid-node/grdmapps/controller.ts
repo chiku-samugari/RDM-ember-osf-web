@@ -1350,7 +1350,7 @@ export default class GuidNodeGrdmapps extends Controller {
         return institution_users;
     }
 
-    makeInstitutionUserList(this: GuidNodeGrdmapps, node_app_attendees: nodeAppAttendees[], institution_users: insutitutionUsers[], suggestion_disabled: boolean, appName: string) {
+    makeInstitutionUserList(this: GuidNodeGrdmapps, node_app_attendees: nodeAppAttendees[], institution_users: institutionUsers[], suggestion_disabled: boolean, appName: string) {
 
         if (!this.config) {
             return '';

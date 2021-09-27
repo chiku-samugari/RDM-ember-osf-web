@@ -1343,7 +1343,7 @@ export default class GuidNodeGrdmapps extends Controller {
 
             for(let j = 0; j < node_attendees_all.length; j++){
 
-                if(institution_users[i].guid === node_attendees_all[j].user_guid){
+                if(institution_users[i].guid === node_attendees_all[j].fields.user_guid){
                     registeredIstitutionUsers.push({name: node_attendees_all[j].fields.fullname + '@' + node_attendees_all[j].fields.user_guid, email: node_attendees_all[j].fields.microsoft_teams_mail, nameForApp: node_attendees_all[j].fields.microsoft_teams_user_name, profile: profileUrl + node_attendees_all[j].fields.user_guid, _id: node_attendees_all[j].fields._id, is_guest: false, disabled: false});
                 unregisteredIstitutionUsers.pop();
                 }
@@ -1380,7 +1380,7 @@ export default class GuidNodeGrdmapps extends Controller {
 
             for(let j = 0; j < node_attendees_all.length; j++){
 
-                if(institution_users[i].guid === node_attendees_all[j].user_guid){
+                if(institution_users[i].guid === node_attendees_all[j].fields.user_guid){
                     registeredIstitutionUsers.push({name: node_attendees_all[j].fields.fullname + '@' + node_attendees_all[j].fields.user_guid, email: node_attendees_all[j].fields.microsoft_teams_mail, nameForApp: node_attendees_all[j].fields.microsoft_teams_user_name, profile: profileUrl + node_attendees_all[j].fields.user_guid, _id: node_attendees_all[j].fields._id, is_guest: false, disabled: false});
                 unregisteredIstitutionUsers.pop();
                 }
@@ -1417,7 +1417,7 @@ export default class GuidNodeGrdmapps extends Controller {
 
             for(let j = 0; j < node_attendees_all.length; j++){
 
-                if(institution_users[i].guid === node_attendees_all[j].user_guid){
+                if(institution_users[i].guid === node_attendees_all[j].fields.user_guid){
                     registeredIstitutionUsers.push({name: node_attendees_all[j].fields.fullname + '@' + node_attendees_all[j].fields.user_guid, email: node_attendees_all[j].fields.webex_meetings_mail, nameForApp: node_attendees_all[j].fields.webex_meetings_user_name, profile: profileUrl + node_attendees_all[j].fields.user_guid, _id: node_attendees_all[j].fields._id, is_guest: node_attendees_all[j].fields.is_guest, disabled: true});
                     unregisteredIstitutionUsers.pop();
                 }

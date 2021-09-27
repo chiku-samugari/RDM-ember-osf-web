@@ -498,10 +498,14 @@ export default class GuidNodeGrdmapps extends Controller {
         const selectedUser = this.selectedUser;
         const guestFullname = this.guestFullname;
         const userType = this.userType;
-        let _id = this.selectedUser._id;
+        let _id = null;
         let guid = null;
         let fullname = '';
         let is_guest = false;
+
+        if(!this.selectedUser._id){
+            _id = this.selectedUser._id;
+        }
         //validation check
 //        if(!this.webMeetingAppsEmailValidationCheck(userType, selectedUser, guestFullname, this.signInAddressOfApp)){
 //            return;

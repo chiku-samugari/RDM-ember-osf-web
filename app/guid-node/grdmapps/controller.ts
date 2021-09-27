@@ -520,7 +520,7 @@ export default class GuidNodeGrdmapps extends Controller {
             }
 
         }else if(userType == 'radio_newGuest'){
-            guid = null;
+            guid = 'guest' + (new Date()).getTime();
             fullname = guestFullname;
             is_guest = true;
         }

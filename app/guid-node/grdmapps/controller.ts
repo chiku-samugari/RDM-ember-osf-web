@@ -1331,6 +1331,38 @@ export default class GuidNodeGrdmapps extends Controller {
         return institution_users;
     }
 
+    makeInstitutionUserList(this: GuidNodeGrdmapps, node_app_attendees: string, institution_users: string, suggestion_disabled: boolean) {
+
+        let institutionUsersList : institutionUsers[] = [];
+        let registeredIstitutionUsers : institutionUsers[] = [];
+        let unregisteredIstitutionUsers : institutionUsers[] = [];
+        let guestUsers : institutionUsers[] = [];
+
+        for(let i = 0; i < institution_users.length; i++){
+
+            unregisteredIstitutionUsers.push({name: institution_users[i].fullname + '@' + institution_users[i].guid + this.intl.t('integromat.meetingDialog.unregisteredLabel'), email: '', nameForApp: '', profile: profileUrl + institution_users[i].guid, _id: '', is_guest: false, disabled: suggestion_disabled});
+
+            for(let j = 0; j < node_app_attendees.length; j++){
+
+                if(institution_users[i].guid === node_app_attendees[j].user_guid){
+                    registeredIstitutionUsers.push({name: node_app_attendees[j].fields.fullname + '@' + node_app_attendees[j].fields.user_guid, email: node_app_attendees[j].fields.microsoft_teams_mail, nameForApp: node_app_attendees[j].fields.microsoft_teams_user_name, profile: profileUrl + node_app_attendees[j].fields.user_guid, _id: node_app_attendees[j].fields._id, is_guest: false, disabled: false});
+                unregisteredIstitutionUsers.pop();
+                }
+
+                if(node_app_attendees[j].is_guest){
+                    guestUsers.push({name: node_app_attendees[j].fields.fullname + '(' + node_app_attendees[j].fields.microsoft_teams_mail + ')', email: node_app_attendees[j].fields.microsoft_teams_mail, nameForApp: node_app_attendees[j].fields.microsoft_teams_user_name, profile: '', _id: node_app_attendees[j].fields._id, is_guest: node_app_attendees[j].fields.is_guest, disabled: false});
+                }
+            }
+        }
+
+        institutionUsersList = institutionUsersList.concat(registeredIstitutionUsers);
+        institutionUsersList = institutionUsersList.concat(guestUsers);
+        institutionUsersList = institutionUsersList.concat(unregisteredIstitutionUsers);
+
+        return institutionUsersList;
+
+    }
+
     @computed('config.node_microsoft_teams_attendees')
     get institution_users_microsoft_teams() {
         if (!this.config) {
@@ -1339,33 +1371,8 @@ export default class GuidNodeGrdmapps extends Controller {
         const config = this.config.content as GrdmappsConfigModel;
         const node_microsoft_teams_attendees = JSON.parse(config.node_microsoft_teams_attendees);
         const institution_users = JSON.parse(config.institution_users);
-        let institutionMicrosoftTeamsUsers : institutionUsers[] = [];
-        let registeredIstitutionUsers : institutionUsers[] = [];
-        let unregisteredIstitutionUsers : institutionUsers[] = [];
-        let guestUsers : institutionUsers[] = [];
 
-        for(let i = 0; i < institution_users.length; i++){
-
-            unregisteredIstitutionUsers.push({name: institution_users[i].fullname + '@' + institution_users[i].guid + this.intl.t('integromat.meetingDialog.unregisteredLabel'), email: '', nameForApp: '', profile: profileUrl + institution_users[i].guid, _id: '', is_guest: false, disabled: true});
-
-            for(let j = 0; j < node_microsoft_teams_attendees.length; j++){
-
-                if(institution_users[i].guid === node_microsoft_teams_attendees[j].fields.user_guid){
-                    registeredIstitutionUsers.push({name: node_microsoft_teams_attendees[j].fields.fullname + '@' + node_microsoft_teams_attendees[j].fields.user_guid, email: node_microsoft_teams_attendees[j].fields.microsoft_teams_mail, nameForApp: node_microsoft_teams_attendees[j].fields.microsoft_teams_user_name, profile: profileUrl + node_microsoft_teams_attendees[j].fields.user_guid, _id: node_microsoft_teams_attendees[j].fields._id, is_guest: false, disabled: false});
-                unregisteredIstitutionUsers.pop();
-                }
-
-                if(i === 0){
-                    if(node_microsoft_teams_attendees[j].fields.is_guest){
-                        guestUsers.push({name: node_microsoft_teams_attendees[j].fields.fullname + '(' + node_microsoft_teams_attendees[j].fields.microsoft_teams_mail + ')', email: node_microsoft_teams_attendees[j].fields.microsoft_teams_mail, nameForApp: node_microsoft_teams_attendees[j].fields.microsoft_teams_user_name, profile: '', _id: node_microsoft_teams_attendees[j].fields._id, is_guest: node_microsoft_teams_attendees[j].fields.is_guest, disabled: false});
-                    }
-                }
-            }
-        }
-
-        institutionMicrosoftTeamsUsers = institutionMicrosoftTeamsUsers.concat(registeredIstitutionUsers);
-        institutionMicrosoftTeamsUsers = institutionMicrosoftTeamsUsers.concat(guestUsers);
-        institutionMicrosoftTeamsUsers = institutionMicrosoftTeamsUsers.concat(unregisteredIstitutionUsers);
+        institutionMicrosoftTeamsUsers = this.makeInstitutionUserList(node_microsoft_teams_attendees, institution_users, true)
 
         return institutionMicrosoftTeamsUsers;
     }
@@ -1378,32 +1385,8 @@ export default class GuidNodeGrdmapps extends Controller {
         const config = this.config.content as GrdmappsConfigModel;
         const node_microsoft_teams_attendees = JSON.parse(config.node_microsoft_teams_attendees);
         const institution_users = JSON.parse(config.institution_users);
-        let institutionMicrosoftTeamsUsers : institutionUsers[] = [];
-        let registeredIstitutionUsers : institutionUsers[] = [];
-        let unregisteredIstitutionUsers : institutionUsers[] = [];
-        let guestUsers : institutionUsers[] = [];
 
-        for(let i = 0; i < institution_users.length; i++){
-
-            unregisteredIstitutionUsers.push({name: institution_users[i].fullname + '@' + institution_users[i].guid + this.intl.t('integromat.meetingDialog.unregisteredLabel'), email: '', nameForApp: '', profile: profileUrl + institution_users[i].guid, _id: '', is_guest: false, disabled: false});
-
-            for(let j = 0; j < node_microsoft_teams_attendees.length; j++){
-
-                if(institution_users[i].guid === node_microsoft_teams_attendees[j].fields.user_guid){
-                    registeredIstitutionUsers.push({name: node_microsoft_teams_attendees[j].fields.fullname + '@' + node_microsoft_teams_attendees[j].fields.user_guid, email: node_microsoft_teams_attendees[j].fields.microsoft_teams_mail, nameForApp: node_microsoft_teams_attendees[j].fields.microsoft_teams_user_name, profile: profileUrl + node_microsoft_teams_attendees[j].fields.user_guid, _id: node_microsoft_teams_attendees[j].fields._id, is_guest: false, disabled: false});
-                unregisteredIstitutionUsers.pop();
-                }
-                if(i === 0){
-                    if(node_microsoft_teams_attendees[j].fields.is_guest){
-                        guestUsers.push({name: node_microsoft_teams_attendees[j].fields.fullname + '(' + node_microsoft_teams_attendees[j].fields.microsoft_teams_mail + ')', email: node_microsoft_teams_attendees[j].fields.microsoft_teams_mail, nameForApp: node_microsoft_teams_attendees[j].fields.microsoft_teams_user_name, profile: '', _id: node_microsoft_teams_attendees[j].fields._id, is_guest: node_microsoft_teams_attendees[j].fields.is_guest, disabled: false});
-                    }
-                }
-            }
-        }
-
-        institutionMicrosoftTeamsUsers = institutionMicrosoftTeamsUsers.concat(registeredIstitutionUsers);
-        institutionMicrosoftTeamsUsers = institutionMicrosoftTeamsUsers.concat(guestUsers);
-        institutionMicrosoftTeamsUsers = institutionMicrosoftTeamsUsers.concat(unregisteredIstitutionUsers);
+        institutionMicrosoftTeamsUsers = this.makeInstitutionUserList(node_microsoft_teams_attendees, institution_users, false)
 
         return institutionMicrosoftTeamsUsers;
     }

@@ -196,7 +196,8 @@ export default class GuidNodeGrdmapps extends Controller {
     userType = '';
 
     selectedUser : institutionUsers = {} as institutionUsers;
-    selectedAttendees : institutionUsers[] = [];
+    selectedMicrosoftTeamsAttendees : institutionUsers[] = [];
+    selectedWebexMeetingsAttendees : institutionUsers[] = [];
 
     workflowDescription = '';
     alternativeWebhookUrl = '';
@@ -357,7 +358,8 @@ export default class GuidNodeGrdmapps extends Controller {
             this.set('webMeetingSubject', '');
             this.set('webMeetingOrganizerFullname', '');
             this.set('webMeetingAttendees', 0);
-            this.set('selectedAttendees', 0);
+            this.set('selectedMicrosoftTeamsAttendees', 0);
+            this.set('selectedWebexMeetingsAttendees', 0);
             this.set('webMeetingStartDate', '');
             this.set('webMeetingStartTime', '');
             this.set('webMeetingEndDate', '');
@@ -630,13 +632,13 @@ export default class GuidNodeGrdmapps extends Controller {
 
         let attendeeNum = 0;
 
-        const selectedAttendees = this.selectedAttendees;
+        const selectedAttendees : institutionUsers[] = [];
 
         if (this.webMeetingAppName === config.app_name_microsoft_teams) {
-
+            selectedAttendees = this.selectedMicrosoftTeamsAttendees;
             attendeeNum = selectedAttendees.length;
         }else if (this.webMeetingAppName === config.app_name_webex_meetings) {
-
+            selectedAttendees = this.selectedWebexMeetingsAttendees;
             attendeeNum = selectedAttendees.length;
         }
         //validation check for input

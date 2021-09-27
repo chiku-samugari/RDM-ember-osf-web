@@ -295,10 +295,10 @@
                         <div style='display: table-cell; width: 100%'>
                             <PowerSelectMultiple
                                 @searchField='name'
-                                @selected={{this.selectedAttendees}}
+                                @selected={{this.selectedMicrosoftTeamsAttendees}}
                                 @options={{this.institution_users_microsoft_teams}}
                                 @renderInPlace={{true}}
-                                @onchange={{fn (mut this.selectedAttendees)}}
+                                @onchange={{fn (mut this.selectedMicrosoftTeamsAttendees)}}
                                 @onInput={{this.checkLength}} as |name|>
                                 {{name.name}}
                             </PowerSelectMultiple>
@@ -404,10 +404,10 @@
                         <div style='display: table-cell; width: 100%'>
                             <PowerSelectMultiple
                                 @searchField='name'
-                                @selected={{this.selectedAttendees}}
+                                @selected={{this.selectedWebexMeetingsAttendees}}
                                 @options={{this.institution_users_webex_meetings}}
                                 @renderInPlace={{true}}
-                                @onchange={{fn (mut this.selectedAttendees)}}
+                                @onchange={{fn (mut this.selectedWebexMeetingsAttendees)}}
                                 @onInput={{this.checkLength}} as |name|>
                                 {{name.name}}
                             </PowerSelectMultiple>

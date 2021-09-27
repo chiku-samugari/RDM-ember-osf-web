@@ -1368,7 +1368,7 @@ export default class GuidNodeGrdmapps extends Controller {
 
             for(let j = 0; j < node_app_attendees.length; j++){
 
-                if(institution_users[i].guid === node_app_attendees[j].user_guid){
+                if(institution_users[i].guid === node_app_attendees[j].fields.user_guid){
                     if(appName === config.app_name_microsoft_teams){
                         registeredIstitutionUsers.push({name: node_app_attendees[j].fields.fullname + '@' + node_app_attendees[j].fields.user_guid, email: node_app_attendees[j].fields.microsoft_teams_mail, nameForApp: node_app_attendees[j].fields.microsoft_teams_user_name, profile: profileUrl + node_app_attendees[j].fields.user_guid, _id: node_app_attendees[j].fields._id, is_guest: false, disabled: false});
                     }else if(appName === config.app_name_webex_meetings){

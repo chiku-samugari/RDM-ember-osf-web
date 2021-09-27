@@ -511,8 +511,8 @@ export default class GuidNodeGrdmapps extends Controller {
             if(selectedUser.is_guest){
                 is_guest = true;
             }else{
-                let index = (selectedUser.name).indexOf('@');
-                guid = (selectedUser.name).slice(index + 1);
+                let index = (selectedUser.name).indexOf('@') + 1;
+                guid = (selectedUser.name).slice(index, index + 5);
             }
 
         }else if(userType == 'radio_newGuest'){

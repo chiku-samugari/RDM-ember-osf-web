@@ -633,7 +633,7 @@ export default class GuidNodeGrdmapps extends Controller {
 
         let attendeeNum = 0;
 
-        const selectedAttendees : institutionUsers[] = [];
+        let selectedAttendees : institutionUsers[] = [];
 
         if (this.webMeetingAppName === config.app_name_microsoft_teams) {
             selectedAttendees = this.selectedMicrosoftTeamsAttendees;

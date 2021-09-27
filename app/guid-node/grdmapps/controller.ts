@@ -1339,7 +1339,7 @@ export default class GuidNodeGrdmapps extends Controller {
 
         for(let i = 0; i < institution_users.length; i++){
 
-            unregisteredIstitutionUsers.push({name: institution_users[i].fullname + '@' + institution_users[i].guid + this.intl.t('integromat.meetingDialog.unregisteredLabel'), email: '', nameForApp: '', profile: profileUrl + institution_users[i].guid, _id: '', is_guest: false, disabled: false});
+            unregisteredIstitutionUsers.push({name: institution_users[i].fullname + '@' + institution_users[i].guid + this.intl.t('integromat.meetingDialog.unregisteredLabel'), email: '', nameForApp: '', profile: profileUrl + institution_users[i].guid, _id: '', is_guest: false, disabled: true});
 
             for(let j = 0; j < node_attendees_all.length; j++){
 
@@ -1376,7 +1376,7 @@ export default class GuidNodeGrdmapps extends Controller {
 
         for(let i = 0; i < institution_users.length; i++){
 
-            unregisteredIstitutionUsers.push({name: institution_users[i].fullname + '@' + institution_users[i].guid + this.intl.t('integromat.meetingDialog.unregisteredLabel'), email: '', nameForApp: '', profile: profileUrl + institution_users[i].guid, _id: '', is_guest: false, disabled: false});
+            unregisteredIstitutionUsers.push({name: institution_users[i].fullname + '@' + institution_users[i].guid + this.intl.t('integromat.meetingDialog.unregisteredLabel'), email: '', nameForApp: '', profile: profileUrl + institution_users[i].guid, _id: '', is_guest: false, disabled: true});
 
             for(let j = 0; j < node_attendees_all.length; j++){
 

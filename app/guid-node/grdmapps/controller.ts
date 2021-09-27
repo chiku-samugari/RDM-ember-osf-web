@@ -196,6 +196,7 @@ export default class GuidNodeGrdmapps extends Controller {
     userType = '';
 
     selectedUser : institutionUsers = {} as institutionUsers;
+    selectedAttendees : institutionUsers[] = [];
     selectedMicrosoftTeamsAttendees : institutionUsers[] = [];
     selectedWebexMeetingsAttendees : institutionUsers[] = [];
 

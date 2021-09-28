@@ -1443,6 +1443,21 @@ export default class GuidNodeGrdmapps extends Controller {
         return institutionWebexMeetingsUsers;
     }
 
+    @computed('config.node_webex_meetings_attendees')
+    get institution_users_list_webex_meetings() {
+        if (!this.config) {
+            return '';
+        }
+        const config = this.config.content as GrdmappsConfigModel;
+        const node_webex_meetings_attendees = JSON.parse(config.node_webex_meetings_attendees);
+        const institution_users = JSON.parse(config.institution_users);
+        const app_name = config.app_name_webex_meetings;
+
+        const institutionWebexMeetingsUsers = this.makeInstitutionUserList(node_webex_meetings_attendees, institution_users, false, app_name)
+
+        return institutionWebexMeetingsUsers;
+    }
+
     @computed('config.workflows')
     get workflows() {
         if (!this.config) {

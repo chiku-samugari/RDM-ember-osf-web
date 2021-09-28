@@ -378,10 +378,10 @@ export default class GuidNodeGrdmapps extends Controller {
             this.set('webMeetingPk', '');
             this.set('webMeetingSubject', '');
             this.set('webMeetingOrganizerFullname', '');
-            this.set('webMeetingAttendees', 0);
-            this.set('selectedAttendees', 0);
-            this.set('selectedMicrosoftTeamsAttendees', 0);
-            this.set('selectedWebexMeetingsAttendees', 0);
+            this.set('webMeetingAttendees', []);
+            this.set('selectedAttendees', []);
+            this.set('selectedMicrosoftTeamsAttendees', []);
+            this.set('selectedWebexMeetingsAttendees', []);
             this.set('webMeetingStartDate', '');
             this.set('webMeetingStartTime', '');
             this.set('webMeetingEndDate', '');

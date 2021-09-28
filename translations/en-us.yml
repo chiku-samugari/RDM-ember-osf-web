@@ -1830,7 +1830,7 @@ integromat:
         startBtn: 'Start'
         closeBtn: 'Close'
         registerBtn: 'Register'
-        createOrUpdateBtn: 'Create/Update'
+        registerOrCreateBtn: 'Register/Update'
         invalid:
             empty: 'Please Enter {item}'
             invalid: 'The value of {item} is invalid.'

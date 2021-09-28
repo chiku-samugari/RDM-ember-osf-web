@@ -794,7 +794,7 @@ export default class GuidNodeGrdmapps extends Controller {
                         continue;
                     }
                     if(this.webMeetingAttendees[i] === nodeAttendeesAll[j].pk){
-                        this.set('selectedAttendees', {name: nodeAttendeesAll[j].fields.fullname + '@' + '(' + nodeAttendeesAll[j].fields.user_guid + ')', email: nodeAttendeesAll[j].fields.microsoft_teams_mail, nameForApp: nodeAttendeesAll[j].fields.node_microsoft_teams_attendees, profile: profileUrl + nodeAttendeesAll[j].fields.user_guid});
+                        this.set('selectedAttendees', {name: nodeAttendeesAll[j].fields.fullname + '@' + '(' + nodeAttendeesAll[j].fields.user_guid + ')', email: nodeAttendeesAll[j].fields.microsoft_teams_mail, nameForApp: nodeAttendeesAll[j].fields.microsoft_teams_user_name, profile: profileUrl + nodeAttendeesAll[j].fields.user_guid});
                     }
                 }
             }
@@ -805,7 +805,7 @@ export default class GuidNodeGrdmapps extends Controller {
                         continue;
                     }
                     if(this.webMeetingAttendees[i] === nodeAttendeesAll[j].pk){
-                        this.set('selectedAttendees', {name: nodeAttendeesAll[j].fields.fullname + '@' + '(' + nodeAttendeesAll[j].fields.user_guid + ')', email: nodeAttendeesAll[j].fields.webex_meetings_mail, nameForApp: nodeAttendeesAll[j].fields.node_webex_meetings_attendees, profile: profileUrl + nodeAttendeesAll[j].fields.user_guid});
+                        this.set('selectedAttendees', {name: nodeAttendeesAll[j].fields.fullname + '@' + '(' + nodeAttendeesAll[j].fields.user_guid + ')', email: nodeAttendeesAll[j].fields.webex_meetings_mail, nameForApp: nodeAttendeesAll[j].fields.webex_meetings_display_name, profile: profileUrl + nodeAttendeesAll[j].fields.user_guid});
                     }
                 }
             }

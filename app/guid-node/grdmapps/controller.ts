@@ -740,8 +740,6 @@ export default class GuidNodeGrdmapps extends Controller {
     @action
     makeUpdateMeetingDialog(this: GuidNodeGrdmapps, meetingPk: string, meetingId: string, joinUrl: string, meetingPassword: string, appId: string, subject: string, attendees:string[], startDatetime: string, endDatetime: string, location: string, content: string) {
 
-        this.set('showUpdateWebMeetingDialog', true);
-
         if (!this.config) {
             throw new EmberError('Illegal config');
         }
@@ -774,6 +772,8 @@ export default class GuidNodeGrdmapps extends Controller {
 
         this.setWebMeetingApp(appName, 'update');
         this.makeWebMeetingAttendee(appName, 'update');
+
+        this.set('showUpdateWebMeetingDialog', true);
 
     }
 

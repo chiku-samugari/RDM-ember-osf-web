@@ -412,7 +412,7 @@
                                 {{name.name}}
                             </PowerSelectMultiple>
                         </div>
-                        <div style='display: table-cell;'>
+                        <div style='display: table-cell; vertical-align: top;'>
                             <button onClick={{action (mut this.showRegisterWebMeetingAppsEmailDialog) true}} style='font-size: x-small; white-space: nowrap;'>{{t 'integromat.meetingDialog.registerBtn'}}</button>
                         </div>
                     </div>
@@ -496,7 +496,7 @@
                 <OsfButton
                         @type='success'
                         @onClick={{action modal.submit}}>
-                    {{t 'integromat.meetingDialog.createBtn'}}
+                    {{t 'integromat.meetingDialog.createOrUpdateBtn'}}
                 </OsfButton>
             {{/if}}
         </modal.footer>
@@ -938,7 +938,7 @@
                         <PowerSelect
                             @searchField='name'
                             @selected={{this.selectedUser}}
-                            @options={{this.institution_users_webex_meetings}}
+                            @options={{this.institution_users_list_webex_meetings}}
                             @renderInPlace={{true}}
                             @onchange={{fn (mut this.selectedUser)}}
                             @onInput={{this.checkLength}} as |name|>

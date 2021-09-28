@@ -526,15 +526,17 @@ export default class GuidNodeGrdmapps extends Controller {
         let fullname = '';
         let is_guest = false;
 
-        if(this.selectedUser._id){
-            _id = this.selectedUser._id;
-        }
         //validation check
 //        if(!this.webMeetingAppsEmailValidationCheck(userType, selectedUser, guestFullname, this.signInAddressOfApp)){
 //            return;
 //        }
 
         if(userType == 'radio_grdmUserOrRegisteredGuest'){
+
+            if(this.selectedUser._id){
+                _id = this.selectedUser._id;
+            }
+
             if(selectedUser.is_guest){
                 is_guest = true;
             }else{

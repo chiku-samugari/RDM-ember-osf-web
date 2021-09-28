@@ -789,7 +789,7 @@ export default class GuidNodeGrdmapps extends Controller {
         if(appName === config.app_name_microsoft_teams){
 
             for(let i = 0; i < this.webMeetingAttendees.length; i++){
-                for(let j = 0; j < nodeAttendeesAll; j++){
+                for(let j = 0; j < nodeAttendeesAll.length; j++){
                     if(type === 'update' && !(nodeAttendeesAll[j].fields.microsoft_teams_mail)){
                         continue;
                     }
@@ -800,7 +800,7 @@ export default class GuidNodeGrdmapps extends Controller {
             }
         }else if(appName === config.app_name_webex_meetings){
             for(let i = 0; i < this.webMeetingAttendees.length; i++){
-                for(let j = 0; j < nodeAttendeesAll; j++){
+                for(let j = 0; j < nodeAttendeesAll.length; j++){
                     if(type === 'update' && !(nodeAttendeesAll[j].fields.webex_meetings_mail)){
                         continue;
                     }

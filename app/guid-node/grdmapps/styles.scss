@@ -71,6 +71,14 @@
     max-width: 200px;
 }
 
+.Integromat__div_overflow {
+    vertical-align: middle;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    max-width: 94%;
+}
+
 .Integromat__microsoftTeamsMeetings {
     margin-top: 30px;
     height: 575px;

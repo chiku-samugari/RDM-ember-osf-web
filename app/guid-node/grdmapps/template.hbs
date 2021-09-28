@@ -257,6 +257,7 @@
 <!-- modal-dialog -->
 <BsModal
     data-test-create-meeting-modal
+    local-class='Integromat__modal'
     @backdropClose={{false}}
     @open={{this.showCreateWebMeetingDialog}}
     @onSubmit={{action this.createWebMeeting}}
@@ -504,6 +505,7 @@
 
 <BsModal
     data-test-update-meeting-modal
+    local-class='Integromat__modal'
     @backdropClose={{false}}
     @open={{this.showUpdateWebMeetingDialog}}
     @onSubmit={{action this.updateWebMeeting}}
@@ -741,6 +743,7 @@
 
 <BsModal
     data-test-delete-meeting-modal
+    local-class='Integromat__modal'
     @open={{this.showDeleteWebMeetingDialog}}
     @onSubmit={{action this.deleteWebMeeting}}
     @onHidden={{action (mut this.showDeleteWebMeetingDialog) false}}
@@ -791,6 +794,7 @@
 
 <BsModal
     data-test-detail-meeting-modal
+    local-class='Integromat__modal'
     @open={{this.showDetailWebMeetingDialog}}
     @onHidden={{action (mut this.showDetailWebMeetingDialog) false}}
     @onHide={{action this.setWebMeetingApp}}
@@ -860,6 +864,7 @@
 
 <BsModal
     data-test-register-alternative-webhookurl-modal
+    local-class='Integromat__modal'
     @backdropClose={{false}}
     @open={{this.showRegisterAlternativeWebhookUrl}}
     @onSubmit={{action this.registerAlternativeWebhook}}

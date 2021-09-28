@@ -1827,7 +1827,7 @@ integromat:
         startBtn: '開始'
         closeBtn: '閉じる'
         registerBtn: '登録'
-        registerOrCreateBtn: '登録/更新'
+        registerOrUpdateBtn: '登録/更新'
         invalid:
             empty: '{item}を入力してください。'
             invalid: '{item}の値が不正です。'

@@ -807,12 +807,11 @@
                 {{this.webMeetingSubject}}
             </div>
             <div local-class='Integromat__input_items' style='padding-left: 20px;'>
-                <div local-class='Integromat__div_overflow' style='display: inline-block;'>{{this.webMeetingJoinUrl}}</div>
+            <div local-class='Integromat__div_overflow' style='display: inline-block;' title={{this.webMeetingJoinUrl}}><a local-class='Integromat__link' href={{this.webMeetingJoinUrl}} target='_blank'>{{this.webMeetingJoinUrl}}</a></div>
                 <CopyableIcon
                     @text={{this.webMeetingJoinUrl}}
                     local-class='Integromat__div_inline_block'
                     style='font-size: medium'
-                    title={{this.webMeetingJoinUrl}}
                 />
             </div>
             <div style='padding-left: 20px; padding-top: 5px;'>

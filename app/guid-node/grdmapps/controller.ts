@@ -20,7 +20,6 @@ import $ from 'jquery';
 
 interface reqBody {
     count: number;
-    nodeId: string;
     timestamp: string;
 }
 
@@ -72,7 +71,6 @@ interface webexMeetingsCreateInvitee {
 }
 
 interface payload {
-    nodeId: string;
     appName: string;
     appNameDisp: string;
     guid: string;
@@ -629,7 +627,6 @@ export default class GuidNodeGrdmapps extends Controller {
 
         const config = this.config.content as GrdmappsConfigModel;
         const webhookUrl = this.webhookUrl;
-        const node_id = config.node_settings_id;
         const appName = this.webMeetingAppName;
         const appNameDisp = this.webMeetingAppNameDisp;
         const guid = String(this.model.guid);
@@ -693,7 +690,6 @@ export default class GuidNodeGrdmapps extends Controller {
         const webMeetingEndDatetime = (new Date(strWebMeetingEndDatetime)).toISOString();
 
         const payload = {
-            'nodeId': node_id,
             'appName': appName,
             'appNameDisp': appNameDisp,
             'guid': guid,
@@ -827,10 +823,10 @@ export default class GuidNodeGrdmapps extends Controller {
             throw new EmberError('Illegal config');
         }
         const config = this.config.content as GrdmappsConfigModel;
-        const webhookUrl = this.webhookUrl;;
-        const node_id = config.node_settings_id;
+        const webhookUrl = this.webhookUrl;
         const appName = this.webMeetingAppName;
         const appNameDisp = this.webMeetingAppNameDisp;
+        const guid = String(this.model.guid);
         const webMeetingSubject = this.webMeetingSubject;
         const webMeetingStartDate = moment(this.webMeetingStartDate).format('YYYY-MM-DD');
         const webMeetingStartTime = (<HTMLInputElement>document.querySelectorAll('select[id=update_start_time]')[0]).value;
@@ -843,7 +839,6 @@ export default class GuidNodeGrdmapps extends Controller {
         const webMeetingId = this.webMeetingUpdateMeetingId;
         const webMeetingJoinUrl = this.webMeetingJoinUrl;
         const webMeetingPassword = this.webMeetingPassword;
-        const empty = '';
         const timestamp = new Date().getTime();
 
         const nodeWebMeetingAttendeesRelation =JSON.parse(config.node_web_meetings_attendees_relation)
@@ -928,10 +923,9 @@ export default class GuidNodeGrdmapps extends Controller {
         const webMeetingEndDatetime = (new Date(strWebMeetingEndDatetime)).toISOString();
 
         const payload = {
-            'nodeId': node_id,
             'appName': appName,
             'appNameDisp': appNameDisp,
-            'guid': empty,
+            'guid': guid,
             'meetingId': webMeetingId,
             'joinUrl': webMeetingJoinUrl,
             'action': workflowAction,
@@ -1014,9 +1008,9 @@ export default class GuidNodeGrdmapps extends Controller {
 
         const config = this.config.content as GrdmappsConfigModel;
         const webhookUrl = this.webhookUrl;
-        const nodeId = config.node_settings_id;
         const appName = this.webMeetingAppName;
         const appNameDisp = this.webMeetingAppNameDisp;
+        const guid = String(this.model.guid);
         const webMeetingSubject = this.webMeetingDeleteSubject;
         const strWebMeetingStartDatetime = this.webMeetingDeleteStartDate + ' ' + this.webMeetingDeleteStartTime;
         const strWebMeetingEndDatetime = this.webMeetingDeleteEndDate + ' ' + this.webMeetingDeleteEndTime;
@@ -1047,10 +1041,9 @@ export default class GuidNodeGrdmapps extends Controller {
         const webMeetingEndDatetime = (new Date(strWebMeetingEndDatetime)).toISOString();
 
         const payload = {
-            'nodeId': nodeId,
             'appName': appName,
             'appNameDisp': appNameDisp,
-            'guid': empty,
+            'guid': guid,
             'meetingId': this.webMeetingDeleteMeetingId,
             'joinUrl': empty,
             'action': workflowAction,
@@ -1154,7 +1147,6 @@ export default class GuidNodeGrdmapps extends Controller {
         .then(data => {
             let reqBody = {
                 'count': 1,
-                'nodeId': data.nodeId,
                 'timestamp': data.timestamp,
             }
             this.reqMessage(reqestMessagesUrl, reqBody, appName)
@@ -1196,7 +1188,6 @@ export default class GuidNodeGrdmapps extends Controller {
                 }
                 let reqBody = {
                     'count': data.count + 1,
-                    'nodeId': data.nodeId,
                     'timestamp': data.timestamp
                 }
                 if(reqBody.count < TIME_LIMIT_EXECUTION_SCENARIO + 1){

@@ -414,7 +414,7 @@ export default class GuidNodeGrdmapps extends Controller {
         }else if(type === 'registerWebhook'){
             this.set('workflowDescription', '');
             this.set('alternativeWebhookUrl', '');
-            this.set('showRegisterWebMeetingAppsEmailDialog', false);
+            this.set('showRegisterAlternativeWebhookUrl', false);
 		}
     }
 

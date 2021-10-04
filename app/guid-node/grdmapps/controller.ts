@@ -483,7 +483,7 @@ export default class GuidNodeGrdmapps extends Controller {
     webMeetingAppsEmailValidationCheck(this: GuidNodeGrdmapps, userType: string, selectedUser: attendeesInfo, guestFullname: string, email: string) {
 
         let validFlag = true;
-        let reg = new RegExp();
+//        let reg = new RegExp();
 
         if(userType == 'grdmUser'){
             if(!selectedUser){
@@ -500,10 +500,11 @@ export default class GuidNodeGrdmapps extends Controller {
         if(!email){
             this.set('msgInvalidEmail', this.intl.t('integromat.meetingDialog.invalid.empty', {item: this.intl.t('integromat.signInAdress')}));
             validFlag = false;
-        }else if(!(reg.test(email))){
-            this.set('msgInvalidEmail', this.intl.t('integromat.meetingDialog.invalid.invalid', {item: this.intl.t('integromat.signInAdress')}));
-            validFlag = false;
         }
+//        else if(!(reg.test(email))){
+//            this.set('msgInvalidEmail', this.intl.t('integromat.meetingDialog.invalid.invalid', {item: this.intl.t('integromat.signInAdress')}));
+//            validFlag = false;
+//        }
 
         return validFlag
     }

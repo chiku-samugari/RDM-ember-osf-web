@@ -925,7 +925,7 @@
                     <input type='radio' name='userType' id='radio_grdmUserOrRegisteredGuest' onClick={{action this.setUserType value='target.id'}}>
                     <label for='radio_grdmUserOrRegisteredGuest'>{{t 'integromat.grdmUser'}}</label>
                     <div style='margin-left: 10px;'>
-            {{#if (eq this.webMeetingAppName this.app_name_microsoft_teams)}}
+                    {{#if (eq this.webMeetingAppName this.app_name_microsoft_teams)}}
                         <PowerSelect
                             @searchField='name'
                             @selected={{this.selectedUser}}
@@ -935,8 +935,8 @@
                             @onInput={{this.checkLength}} as |name|>
                             {{name.name}}
                         </PowerSelect>
-            {{/if}}
-            {{#if (eq this.webMeetingAppName this.app_name_webex_meetings)}}
+                    {{/if}}
+                    {{#if (eq this.webMeetingAppName this.app_name_webex_meetings)}}
                         <PowerSelect
                             @searchField='name'
                             @selected={{this.selectedUser}}
@@ -946,7 +946,7 @@
                             @onInput={{this.checkLength}} as |name|>
                             {{name.name}}
                         </PowerSelect>
-            {{/if}}
+                    {{/if}}
                     </div>
                     <input type='radio' name='userType' id='radio_newGuest' onClick={{action this.setUserType value='target.id'}}>
                     <label for='radio_newGuest'>{{t 'integromat.guest'}}</label>
@@ -960,6 +960,8 @@
                             style='margin-left: 10px;'
                         }}
                     </div>
+                    <div style='padding-left: 5px;' class='text-danger'>{{this.msgInvalidSelectedUser}}</div>
+                    <div style='padding-left: 5px;' class='text-danger'>{{this.msgInvalidGuestUser}}</div>
                 </div>
                 <br>
                 <div local-class='Integromat__input_items'>
@@ -973,6 +975,7 @@
                             type='text'
                             value=this.signInAddressOfApp
                         }}
+                        <div style='padding-left: 5px;' class='text-danger'>{{this.msgInvalidEmail}}</div>
                         <label>{{t 'integromat.username'}}</label>
                         {{input
                             name='usernameOfApp'

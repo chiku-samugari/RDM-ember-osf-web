@@ -69,6 +69,7 @@ interface webexMeetingsAttendee {
 
 interface webexMeetingsCreateInvitee {
     email: string;
+    displayName: string;
 }
 
 interface payload {

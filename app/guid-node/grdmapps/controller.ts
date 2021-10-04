@@ -902,7 +902,7 @@ export default class GuidNodeGrdmapps extends Controller {
             for(let i = 0; i < arrayCreateAttendeePks.length; i++){
                 for(let j = 0; j < nodeWebexMeetingsAttendees.length; j++){
                     if(arrayCreateAttendeePks[i] === nodeWebexMeetingsAttendees[j].pk){
-                        webexMeetingsCreateInvitees.push({'email': nodeWebexMeetingsAttendees[j].fields.webex_meetings_mail, 'displayName': selectedAttendees[i].name});
+                        webexMeetingsCreateInvitees.push({'email': nodeWebexMeetingsAttendees[j].fields.webex_meetings_mail, 'displayName': nodeWebexMeetingsAttendees[j].fields.webex_meetings_display_name});
                     }
                 }
             }

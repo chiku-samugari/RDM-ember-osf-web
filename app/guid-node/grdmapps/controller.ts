@@ -44,7 +44,7 @@ interface attendees {
     microsoft_teams_mail: string;
     microsoft_teams_user_name: string;
     webex_meetings_mail: string;
-    webex_meetings_user_name: string;
+    webex_meetings_display_name: string;
     _id: string;
     is_guest: boolean;
 }
@@ -1371,7 +1371,7 @@ export default class GuidNodeGrdmapps extends Controller {
                     if(appName === config.app_name_microsoft_teams){
                         registeredIstitutionUsers.push({name: node_app_attendees[j].fields.fullname + '@' + node_app_attendees[j].fields.user_guid, email: node_app_attendees[j].fields.microsoft_teams_mail, nameForApp: node_app_attendees[j].fields.microsoft_teams_user_name, profile: profileUrl + node_app_attendees[j].fields.user_guid, _id: node_app_attendees[j].fields._id, is_guest: false, disabled: false});
                     }else if(appName === config.app_name_webex_meetings){
-                        registeredIstitutionUsers.push({name: node_app_attendees[j].fields.fullname + '@' + node_app_attendees[j].fields.user_guid, email: node_app_attendees[j].fields.webex_meetings_mail, nameForApp: node_app_attendees[j].fields.webex_meetings_user_name, profile: profileUrl + node_app_attendees[j].fields.user_guid, _id: node_app_attendees[j].fields._id, is_guest: false, disabled: false});
+                        registeredIstitutionUsers.push({name: node_app_attendees[j].fields.fullname + '@' + node_app_attendees[j].fields.user_guid, email: node_app_attendees[j].fields.webex_meetings_mail, nameForApp: node_app_attendees[j].fields.webex_meetings_display_name, profile: profileUrl + node_app_attendees[j].fields.user_guid, _id: node_app_attendees[j].fields._id, is_guest: false, disabled: false});
                 }
 
                     unregisteredIstitutionUsers.pop();
@@ -1381,7 +1381,7 @@ export default class GuidNodeGrdmapps extends Controller {
                         if(appName === config.app_name_microsoft_teams){
                             guestUsers.push({name: node_app_attendees[j].fields.fullname + '(' + node_app_attendees[j].fields.microsoft_teams_mail + ')', email: node_app_attendees[j].fields.microsoft_teams_mail, nameForApp: node_app_attendees[j].fields.microsoft_teams_user_name, profile: '', _id: node_app_attendees[j].fields._id, is_guest: true, disabled: false});
                         }else if(appName === config.app_name_webex_meetings){
-                            guestUsers.push({name: node_app_attendees[j].fields.fullname + '(' + node_app_attendees[j].fields.webex_meetings_mail + ')', email: node_app_attendees[j].fields.webex_meetings_mail, nameForApp: node_app_attendees[j].fields.webex_meetings_user_name, profile: '', _id: node_app_attendees[j].fields._id, is_guest: true, disabled: false});
+                            guestUsers.push({name: node_app_attendees[j].fields.fullname + '(' + node_app_attendees[j].fields.webex_meetings_mail + ')', email: node_app_attendees[j].fields.webex_meetings_mail, nameForApp: node_app_attendees[j].fields.webex_meetings_display_name, profile: '', _id: node_app_attendees[j].fields._id, is_guest: true, disabled: false});
                         }
                     }
                 }

@@ -482,7 +482,7 @@ export default class GuidNodeGrdmapps extends Controller {
     webMeetingAppsEmailValidationCheck(this: GuidNodeGrdmapps, userType: string, selectedUser: attendeesInfo, guestFullname: string, email: string) {
 
         let validFlag = true;
-        let reg = new RegExp('^[A-Za-z0-9]{1}[A-Za-z0-9_.-]*@{1}[A-Za-z0-9_.-]{1,}.[A-Za-z0-9]{1,}$');
+        let reg = new RegExp();
 
         if(userType == 'grdmUser'){
             if(!selectedUser){

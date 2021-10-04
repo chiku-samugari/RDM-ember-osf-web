@@ -481,7 +481,7 @@ export default class GuidNodeGrdmapps extends Controller {
     webMeetingAppsEmailValidationCheck(this: GuidNodeGrdmapps, userType: string, selectedUser: attendeesInfo, guestFullname: string, email: string) {
 
         let validFlag = true;
-        let reg = /^[A-Za-z0-9]{1}[A-Za-z0-9_.-]*@{1}[A-Za-z0-9_.-]{1,}.[A-Za-z0-9]{1,}$/;
+        let reg = new RegExp('^[A-Za-z0-9]{1}[A-Za-z0-9_.-]*@{1}[A-Za-z0-9_.-]{1,}.[A-Za-z0-9]{1,}$');
 
         if(userType == 'grdmUser'){
             if(!selectedUser){
@@ -526,9 +526,9 @@ export default class GuidNodeGrdmapps extends Controller {
         let is_guest = false;
 
         //validation check
-//        if(!this.webMeetingAppsEmailValidationCheck(userType, selectedUser, guestFullname, this.signInAddressOfApp)){
-//            return;
-//        }
+        if(!this.webMeetingAppsEmailValidationCheck(userType, selectedUser, guestFullname, this.signInAddressOfApp)){
+            return;
+        }
 
         if(userType == 'radio_grdmUserOrRegisteredGuest'){
 

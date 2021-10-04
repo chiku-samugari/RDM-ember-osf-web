@@ -54,7 +54,7 @@ interface nodeAppAttendees {
 }
 
 interface microsoftTeamsAttendeeAtCreate {
-    emailAddress: { address: string; };
+    emailAddress: { address: string; name: string;};
 }
 
 interface microsoftTeamsAttendeeAtUpdate {
@@ -64,6 +64,7 @@ interface microsoftTeamsAttendeeAtUpdate {
 
 interface webexMeetingsAttendee {
     email: string;
+    displayName: string;
 }
 
 interface webexMeetingsCreateInvitee {
@@ -673,7 +674,7 @@ export default class GuidNodeGrdmapps extends Controller {
             workflowAction = 'createMicrosoftTeamsMeeting';
 
             for(let i = 0; i < selectedAttendees.length; i++){ 
-                microsoftTeamsAttendeesCollectionAtCreate.push({'emailAddress': {'address': selectedAttendees[i].email}});
+                microsoftTeamsAttendeesCollectionAtCreate.push({'emailAddress': {'address': selectedAttendees[i].email, 'name': selectedAttendees[i].name}});
                 arrayAttendees.push(selectedAttendees[i].email);
             }
         }else if (this.webMeetingAppName === config.app_name_webex_meetings) {
@@ -681,7 +682,7 @@ export default class GuidNodeGrdmapps extends Controller {
             workflowAction = 'createWebexMeetings';
 
             for(let i = 0; i < selectedAttendees.length; i++){
-                webexMeetingsAttendeesCollection.push({'email': selectedAttendees[i].email});
+                webexMeetingsAttendeesCollection.push({'email': selectedAttendees[i].email, 'displayName': selectedAttendees[i].name});
                 arrayAttendees.push(selectedAttendees[i].email);
             }
         }
@@ -877,7 +878,7 @@ export default class GuidNodeGrdmapps extends Controller {
             workflowAction = 'updateMicrosoftTeamsMeeting';
 
             for(let i = 0; i < selectedAttendees.length; i++){ 
-                microsoftTeamsAttendeesCollectionAtUpdate.push({'address': selectedAttendees[i].email, 'name': 'Unregistered'});
+                microsoftTeamsAttendeesCollectionAtUpdate.push({'address': selectedAttendees[i].email, 'name': selectedAttendees[i].name});
                 arrayAttendees.push(selectedAttendees[i].email);
             }
         }else if (appName === config.app_name_webex_meetings) {
@@ -885,7 +886,6 @@ export default class GuidNodeGrdmapps extends Controller {
             workflowAction = 'updateWebexMeetings';
 
             for(let i = 0; i < selectedAttendees.length; i++){
-                webexMeetingsAttendeesCollection.push({'email': selectedAttendees[i].email});
                 arrayAttendees.push(selectedAttendees[i].email);
 
                 for(let j = 0; j < nodeWebexMeetingsAttendees.length; j++){
@@ -902,7 +902,7 @@ export default class GuidNodeGrdmapps extends Controller {
             for(let i = 0; i < arrayCreateAttendeePks.length; i++){
                 for(let j = 0; j < nodeWebexMeetingsAttendees.length; j++){
                     if(arrayCreateAttendeePks[i] === nodeWebexMeetingsAttendees[j].pk){
-                        webexMeetingsCreateInvitees.push({'email': nodeWebexMeetingsAttendees[j].fields.webex_meetings_mail});
+                        webexMeetingsCreateInvitees.push({'email': nodeWebexMeetingsAttendees[j].fields.webex_meetings_mail, 'displayName': selectedAttendees[i].name});
                     }
                 }
             }

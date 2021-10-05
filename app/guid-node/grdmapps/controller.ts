@@ -676,7 +676,7 @@ export default class GuidNodeGrdmapps extends Controller {
             workflowAction = 'createMicrosoftTeamsMeeting';
 
             for(let i = 0; i < selectedAttendees.length; i++){ 
-                microsoftTeamsAttendeesCollectionAtCreate.push({'emailAddress': {'address': selectedAttendees[i].email, 'name': selectedAttendees[i].nameForApp}});
+                microsoftTeamsAttendeesCollectionAtCreate.push({'emailAddress': {'address': selectedAttendees[i].email, 'name': selectedAttendees[i].nameForApp ? selectedAttendees[i].nameForApp : 'Unregistered'}});
                 arrayAttendees.push(selectedAttendees[i].email);
             }
         }else if (this.webMeetingAppName === config.app_name_webex_meetings) {
@@ -880,7 +880,7 @@ export default class GuidNodeGrdmapps extends Controller {
             workflowAction = 'updateMicrosoftTeamsMeeting';
 
             for(let i = 0; i < selectedAttendees.length; i++){ 
-                microsoftTeamsAttendeesCollectionAtUpdate.push({'address': selectedAttendees[i].email, 'name': selectedAttendees[i].nameForApp});
+                microsoftTeamsAttendeesCollectionAtUpdate.push({'address': selectedAttendees[i].email, 'name': selectedAttendees[i].nameForApp ? selectedAttendees[i].nameForApp : 'Unregistered'});
                 arrayAttendees.push(selectedAttendees[i].email);
             }
         }else if (appName === config.app_name_webex_meetings) {

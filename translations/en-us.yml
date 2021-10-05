@@ -193,10 +193,10 @@ dashboard:
     quicksearch:
         search: 'Search your projects'
         other_links: |-
-            'Go to <a href="/myprojects/">My Projects</a> to organize your work {useSearch, select,
-                true { 'or <a href="/search/">search</a>' }
+            Go to <a href="/myprojects/">My Projects</a> to organize your work {useSearch, select,
+                true { or <a href="/search/">search</a> }
                 other { 'in' }
-            } GakuNin RDM'
+            } GakuNin RDM
         no_results: 'No results found.'
         no_projects:
             line1: 'You have no projects yet. Create a project with the button on the top right.'

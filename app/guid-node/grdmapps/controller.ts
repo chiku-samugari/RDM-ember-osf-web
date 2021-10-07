@@ -208,6 +208,7 @@ export default class GuidNodeGrdmapps extends Controller {
 
     msgInvalidSelectedUser ='';
     msgInvalidGuestUser = '';
+    msgErrorEmailVal = '';
     msgInvalidEmail = '';
 
     guestFullname = '';
@@ -413,6 +414,11 @@ export default class GuidNodeGrdmapps extends Controller {
             this.set('signInAddressOfApp', '');
             this.set('usernameOfApp', '');
             this.set('showRegisterWebMeetingAppsEmailDialog', false);
+            this.set('msgInvalidSelectedUser', '');
+            this.set('msgInvalidGuestUser', '');
+            this.set('msgErrorEmailVal', '');
+            this.set('msgInvalidEmail', '');
+
         }else if(type === 'registerWebhook'){
             this.set('workflowDescription', '');
             this.set('alternativeWebhookUrl', '');
@@ -497,7 +503,7 @@ export default class GuidNodeGrdmapps extends Controller {
                 validFlag = false;
             }
         }else if(!userType){
-            this.set('msgError', this.intl.t('integromat.failed_to_save'));
+            this.set('msgErrorEmailVal', this.intl.t('integromat.failed_to_save'));
             validFlag = false;
         }
 

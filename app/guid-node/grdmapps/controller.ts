@@ -285,6 +285,7 @@ export default class GuidNodeGrdmapps extends Controller {
         this.set('showWorkflows', true);
         this.set('showWebMeetingWorkflow', false);
         this.set('webhookUrl', '');
+        this.save();
     }
 
     @action
@@ -485,16 +486,19 @@ export default class GuidNodeGrdmapps extends Controller {
         let validFlag = true;
 //        let reg = new RegExp();
 
-        if(userType == 'grdmUser'){
+        if(userType == 'radio_grdmUserOrRegisteredGuest'){
             if(!selectedUser){
                 this.set('msgInvalidSelectedUser', this.intl.t('integromat.meetingDialog.invalid.empty', {item: this.intl.t('integromat.grdmUser')}));
                 validFlag = false;
             }
-        }else if(userType == 'guest'){
+        }else if(userType == 'radio_newGuest'){
             if(!guestFullname){
                 this.set('msgInvalidGuestUser', this.intl.t('integromat.meetingDialog.invalid.empty', {item: this.intl.t('integromat.guest')}));
                 validFlag = false;
             }
+        }else if(!userType){
+            this.set('msgError', this.intl.t('integromat.failed_to_save'));
+            validFlag = false;
         }
 
         if(!email){

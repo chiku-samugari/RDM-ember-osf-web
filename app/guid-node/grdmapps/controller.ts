@@ -73,7 +73,7 @@ interface webexMeetingsCreateInvitee {
 }
 
 interface webexMeetingsDeleteInvitee {
-    inviteeId: string;
+    meetingId: string;
 }
 
 interface payload {
@@ -928,7 +928,7 @@ export default class GuidNodeGrdmapps extends Controller {
                     if(this.webMeetingPk === nodeWebMeetingAttendeesRelation[j].fields.all_meeting_information){
                         if(arrayDeleteAttendeePks[i] === nodeWebMeetingAttendeesRelation[j].fields.attendees){
 
-                            webexMeetingsDeleteInviteeIds.push({'inviteeId': nodeWebMeetingAttendeesRelation[j].fields.webex_meetings_invitee_id});
+                            webexMeetingsDeleteInviteeIds.push({'meetingId': nodeWebMeetingAttendeesRelation[j].fields.webex_meetings_invitee_id});
                         }
                     }
                 }

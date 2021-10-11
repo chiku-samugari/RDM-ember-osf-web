@@ -72,10 +72,6 @@ interface webexMeetingsCreateInvitee {
     displayName: string;
 }
 
-interface webexMeetingsDeleteInvitee {
-    meetingId: string;
-}
-
 interface payload {
     appName: string;
     appNameDisp: string;
@@ -108,7 +104,7 @@ interface payload {
     microsoftTeamsAttendeesCollectionAtUpdate: microsoftTeamsAttendeeAtUpdate[];
     webexMeetingsAttendeesCollection: webexMeetingsAttendee[];
     webexMeetingsCreateInvitees: webexMeetingsCreateInvitee[],
-    webexMeetingsDeleteInviteeIds: webexMeetingsDeleteInvitee[],
+    webexMeetingsDeleteInviteeIds: string[],
     attendees: string[];
     location: string;
     content: string;
@@ -666,7 +662,7 @@ export default class GuidNodeGrdmapps extends Controller {
         let arrayAttendees = [];
 
         let webexMeetingsCreateInvitees: webexMeetingsCreateInvitee[] = [];
-        let webexMeetingsDeleteInviteeIds: webexMeetingsDeleteInvitee[] = [];
+        let webexMeetingsDeleteInviteeIds: string[] = [];
 
         let attendeeNum = 0;
 
@@ -871,7 +867,7 @@ export default class GuidNodeGrdmapps extends Controller {
         let arrayCreateAttendeePks = [];
         let arrayDeleteAttendeePks = [];
         let webexMeetingsCreateInvitees: webexMeetingsCreateInvitee[] = [];
-        let webexMeetingsDeleteInviteeIds: webexMeetingsDeleteInvitee[] = [];
+        let webexMeetingsDeleteInviteeIds: string[] = [];
 
         let attendeeNum = 0;
 
@@ -928,7 +924,7 @@ export default class GuidNodeGrdmapps extends Controller {
                     if(this.webMeetingPk === nodeWebMeetingAttendeesRelation[j].fields.all_meeting_information){
                         if(arrayDeleteAttendeePks[i] === nodeWebMeetingAttendeesRelation[j].fields.attendees){
 
-                            webexMeetingsDeleteInviteeIds.push({'meetingId': nodeWebMeetingAttendeesRelation[j].fields.webex_meetings_invitee_id});
+                            webexMeetingsDeleteInviteeIds.push(nodeWebMeetingAttendeesRelation[j].fields.webex_meetings_invitee_id);
                         }
                     }
                 }
@@ -1039,7 +1035,7 @@ export default class GuidNodeGrdmapps extends Controller {
         const webexMeetingsAttendeesCollection: webexMeetingsAttendee[] = [];
 
         let webexMeetingsCreateInvitees : webexMeetingsCreateInvitee[] = [];
-        let webexMeetingsDeleteInviteeIds : webexMeetingsDeleteInvitee[] = [];
+        let webexMeetingsDeleteInviteeIds : string[] = [];
 
         let workflowAction = '';
 

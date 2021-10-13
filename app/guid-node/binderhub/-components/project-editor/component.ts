@@ -209,20 +209,32 @@ export default class ProjectEditor extends Component {
         return this.verifyHashHeader(content);
     }
 
-    @computed('requirements')
+    @computed('requirements', 'environment')
     get requirementsManuallyChanged() {
+        const env = this.get('environment');
+        if (!env) {
+            return false;
+        }
         const content = this.get('requirements');
         return this.verifyHashHeader(content);
     }
 
-    @computed('apt')
+    @computed('apt', 'environment')
     get aptManuallyChanged() {
+        const env = this.get('environment');
+        if (!env) {
+            return false;
+        }
         const content = this.get('apt');
         return this.verifyHashHeader(content);
     }
 
-    @computed('apt')
+    @computed('apt', 'environment')
     get installRManuallyChanged() {
+        const env = this.get('environment');
+        if (!env) {
+            return false;
+        }
         const content = this.get('apt');
         return this.verifyHashHeader(content);
     }

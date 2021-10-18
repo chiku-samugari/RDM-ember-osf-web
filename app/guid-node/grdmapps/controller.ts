@@ -141,7 +141,7 @@ const startIntegromatScenarioUrl = nodeUrl + integromatDir + '/start_scenario';
 const reqestMessagesUrl =  nodeUrl + integromatDir + '/requestNextMessages';
 const registerAlternativeWebhookUrl = nodeUrl + integromatDir + '/register_alternative_webhook_url';
 const registerWebMeetingAppsEmailUrl = nodeUrl + integromatDir + '/register_web_meeting_apps_email';
-const profileUrl = host + '/profile/'
+const profileUrlBase = host + '/profile/'
 
 const TIME_LIMIT_EXECUTION_SCENARIO = 60;
 
@@ -795,7 +795,8 @@ export default class GuidNodeGrdmapps extends Controller {
         const config = this.config.content as GrdmappsConfigModel;
         const nodeAttendeesAll = JSON.parse(config.node_attendees_all);
 
-        let supplementInfo ='';
+        let guidOrEmail ='';
+        let profileUrl = '';
 
         if(appName === config.app_name_microsoft_teams){
 
@@ -806,8 +807,9 @@ export default class GuidNodeGrdmapps extends Controller {
                     }
                     if(this.webMeetingAttendees[i] === nodeAttendeesAll[j].pk){
 
-                        supplementInfo = nodeAttendeesAll[j].fields.is_guest ? '(' + nodeAttendeesAll[j].fields.microsoft_teams_mail + ')' : '@' + nodeAttendeesAll[j].fields.user_guid;
-                        this.selectedAttendees.push({name: nodeAttendeesAll[j].fields.fullname + supplementInfo, email: nodeAttendeesAll[j].fields.microsoft_teams_mail, nameForApp: nodeAttendeesAll[j].fields.microsoft_teams_user_name, profile: profileUrl + nodeAttendeesAll[j].fields.user_guid, _id: nodeAttendeesAll[j].fields._id, is_guest: nodeAttendeesAll[j].fields.is_guest, disabled: false});
+                        guidOrEmail = nodeAttendeesAll[j].fields.is_guest ? '(' + nodeAttendeesAll[j].fields.microsoft_teams_mail + ')' : '@' + nodeAttendeesAll[j].fields.user_guid;
+                        profileUrl = nodeAttendeesAll[j].fields.is_guest ? '' : profileUrlBase + nodeAttendeesAll[j].fields.user_guid;
+                        this.selectedAttendees.push({name: nodeAttendeesAll[j].fields.fullname + guidOrEmail, email: nodeAttendeesAll[j].fields.microsoft_teams_mail, nameForApp: nodeAttendeesAll[j].fields.microsoft_teams_user_name, profile: profileUrl, _id: nodeAttendeesAll[j].fields._id, is_guest: nodeAttendeesAll[j].fields.is_guest, disabled: false});
                     }
                 }
             }
@@ -819,8 +821,9 @@ export default class GuidNodeGrdmapps extends Controller {
                     }
                     if(this.webMeetingAttendees[i] === nodeAttendeesAll[j].pk){
 
-                        supplementInfo = nodeAttendeesAll[j].fields.is_guest ? '(' + nodeAttendeesAll[j].fields.webex_meetings_mail + ')': '@' + nodeAttendeesAll[j].fields.user_guid;
-                        this.selectedAttendees.push({name: nodeAttendeesAll[j].fields.fullname + supplementInfo, email: nodeAttendeesAll[j].fields.webex_meetings_mail, nameForApp: nodeAttendeesAll[j].fields.webex_meetings_display_name, profile: profileUrl + nodeAttendeesAll[j].fields.user_guid, _id: nodeAttendeesAll[j].fields._id, is_guest: nodeAttendeesAll[j].fields.is_guest, disabled: false});
+                        guidOrEmail = nodeAttendeesAll[j].fields.is_guest ? '(' + nodeAttendeesAll[j].fields.webex_meetings_mail + ')': '@' + nodeAttendeesAll[j].fields.user_guid;
+                        profileUrl = nodeAttendeesAll[j].fields.is_guest ? '' : profileUrlBase + nodeAttendeesAll[j].fields.user_guid;
+                        this.selectedAttendees.push({name: nodeAttendeesAll[j].fields.fullname + guidOrEmail, email: nodeAttendeesAll[j].fields.webex_meetings_mail, nameForApp: nodeAttendeesAll[j].fields.webex_meetings_display_name, profile: profileUrl, _id: nodeAttendeesAll[j].fields._id, is_guest: nodeAttendeesAll[j].fields.is_guest, disabled: false});
                     }
                 }
             }
@@ -1376,15 +1379,15 @@ export default class GuidNodeGrdmapps extends Controller {
 
         for(let i = 0; i < institution_users.length; i++){
 
-            unregisteredIstitutionUsers.push({name: institution_users[i].fullname + '@' + institution_users[i].guid + this.intl.t('integromat.meetingDialog.unregisteredLabel'), email: '', nameForApp: '', profile: profileUrl + institution_users[i].guid, _id: '', is_guest: false, disabled: suggestion_disabled});
+            unregisteredIstitutionUsers.push({name: institution_users[i].fullname + '@' + institution_users[i].guid + this.intl.t('integromat.meetingDialog.unregisteredLabel'), email: '', nameForApp: '', profile: profileUrlBase + institution_users[i].guid, _id: '', is_guest: false, disabled: suggestion_disabled});
 
             for(let j = 0; j < node_app_attendees.length; j++){
 
                 if(institution_users[i].guid === node_app_attendees[j].fields.user_guid){
                     if(appName === config.app_name_microsoft_teams){
-                        registeredIstitutionUsers.push({name: node_app_attendees[j].fields.fullname + '@' + node_app_attendees[j].fields.user_guid, email: node_app_attendees[j].fields.microsoft_teams_mail, nameForApp: node_app_attendees[j].fields.microsoft_teams_user_name, profile: profileUrl + node_app_attendees[j].fields.user_guid, _id: node_app_attendees[j].fields._id, is_guest: false, disabled: false});
+                        registeredIstitutionUsers.push({name: node_app_attendees[j].fields.fullname + '@' + node_app_attendees[j].fields.user_guid, email: node_app_attendees[j].fields.microsoft_teams_mail, nameForApp: node_app_attendees[j].fields.microsoft_teams_user_name, profile: profileUrlBase + node_app_attendees[j].fields.user_guid, _id: node_app_attendees[j].fields._id, is_guest: false, disabled: false});
                     }else if(appName === config.app_name_webex_meetings){
-                        registeredIstitutionUsers.push({name: node_app_attendees[j].fields.fullname + '@' + node_app_attendees[j].fields.user_guid, email: node_app_attendees[j].fields.webex_meetings_mail, nameForApp: node_app_attendees[j].fields.webex_meetings_display_name, profile: profileUrl + node_app_attendees[j].fields.user_guid, _id: node_app_attendees[j].fields._id, is_guest: false, disabled: false});
+                        registeredIstitutionUsers.push({name: node_app_attendees[j].fields.fullname + '@' + node_app_attendees[j].fields.user_guid, email: node_app_attendees[j].fields.webex_meetings_mail, nameForApp: node_app_attendees[j].fields.webex_meetings_display_name, profile: profileUrlBase + node_app_attendees[j].fields.user_guid, _id: node_app_attendees[j].fields._id, is_guest: false, disabled: false});
                 }
 
                     unregisteredIstitutionUsers.pop();

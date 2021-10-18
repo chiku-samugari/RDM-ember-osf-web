@@ -193,10 +193,10 @@ dashboard:
     quicksearch:
         search: プロジェクトを検索
         other_links: |-
-            'あなたのプロジェクトを整理{useSearch, select,
-                true { '、<a href="/search/">検索</a>' }
-                other { '' }
-            }するには、<a href="/myprojects/">マイプロジェクト</a>を開きます'
+            あなたのプロジェクトを整理{useSearch, select,
+                true { 、<a href="/search/">検索</a> }
+                other {  }
+            }するには、<a href="/myprojects/">マイプロジェクト</a>を開きます
         no_results: プロジェクトが見つかりません。
         no_projects:
             line1: まだプロジェクトがありません。画面右上のボタンからプロジェクトを作成して下さい。

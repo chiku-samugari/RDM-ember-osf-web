@@ -834,9 +834,15 @@
             </div>
             <div local-class='Integromat__input_items' style='padding-left: 20px;'>
                 <span>{{t 'integromat.attendees'}}{{t 'integromat.colon'}}
-                    {{#each this.selectedAttendees as |attendee|}}
-                        <a href={{attendee.profile}} target='_blank' data-toggle='tooltip' title={{attendee.email}}>{{attendee.name}}</a>
-                    {{/each}}
+                    <div style='padding-left: 10px;'>
+                        {{#each this.selectedAttendees as |attendee|}}
+                            {{#if attendees.is_guest}}
+                                {{attendee.name}}
+                            {{else}}
+                                <a href={{attendee.profile}} target='_blank' data-toggle='tooltip' title={{attendee.email}}>{{attendee.name}}</a>
+                            {{/if}}
+                        {{/each}}
+                    </div>
                 </span>
             </div>
             <div local-class='Integromat__input_items' style='padding-left: 20px; padding-bottom: 10px;'>

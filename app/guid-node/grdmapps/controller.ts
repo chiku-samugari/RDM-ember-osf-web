@@ -87,14 +87,14 @@ interface payload {
         webappsCreateMeeting: string;
         grdmRegisterMeeting: string;
         slackCreateMeeting: string;
-        webappsUpdateMeeting: string; 
+        webappsUpdateMeeting: string;
         webappsUpdateAttendees: string;
-        webappsUpdateAttendeesGrdmMeetingReg: string; 
+        webappsUpdateAttendeesGrdmMeetingReg: string;
         grdmUpdateMeetingReg: string;
-        slackUpdateMeeting: string; 
-        webappsDeleteMeeting: string; 
+        slackUpdateMeeting: string;
+        webappsDeleteMeeting: string;
         grdmDeleteMeetingReg: string;
-        slackDeleteMeeting: string; 
+        slackDeleteMeeting: string;
         scenarioProcessing: string;
     };
     startDatetime: string;
@@ -136,12 +136,12 @@ const errorScenarioProcessing = 'integromat.error.scenarioProcessing';
 
 
 const nodeUrl = host + namespace + '/project/' + '{}';
-const integromatDir = '/integromat'
+const integromatDir = '/integromat';
 const startIntegromatScenarioUrl = nodeUrl + integromatDir + '/start_scenario';
 const reqestMessagesUrl =  nodeUrl + integromatDir + '/requestNextMessages';
 const registerAlternativeWebhookUrl = nodeUrl + integromatDir + '/register_alternative_webhook_url';
 const registerWebMeetingAppsEmailUrl = nodeUrl + integromatDir + '/register_web_meeting_apps_email';
-const profileUrlBase = host + '/profile/'
+const profileUrlBase = host + '/profile/';
 
 const TIME_LIMIT_EXECUTION_SCENARIO = 60;
 
@@ -255,25 +255,24 @@ export default class GuidNodeGrdmapps extends Controller {
     }
 
     camel2space(v: string) {
-
         const separator = ' ';
         return v
                 .replace(/[A-Z][a-z]/g, function (match) {
-                    return separator + match;
-                })
+                return separator + match;
+            })
                 .replace(/[A-Z]+$/g, function (match) {
-                    return separator + match;
-                })
+                return separator + match;
+            })
                 .trim();
     }
 
     @action
     checkLength(text: string, select: any) {
-      if (select.searchText.length >= 3 && text.length < 3) {
-        return '';
-      } else {
-        return text.length >= 3;
-      }
+        if (select.searchText.length >= 3 && text.length < 3) {
+            return '';
+        } else {
+            return text.length >= 3;
+        }
     }
 
     @action
@@ -291,7 +290,6 @@ export default class GuidNodeGrdmapps extends Controller {
 
     @action
     setWorkflow(this: GuidNodeGrdmapps, workflow_desp: string) {
-
         const workflowType = workflow_desp.split('.')[2];
 
         if (!this.config) {

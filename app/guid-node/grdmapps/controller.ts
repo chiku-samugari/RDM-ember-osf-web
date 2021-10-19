@@ -318,7 +318,7 @@ export default class GuidNodeGrdmapps extends Controller {
 
         this.set('webhookUrl', url);
 
-        if(workflowType === 'web_meeting'){
+        if (workflowType === 'web_meeting') {
 
             this.set('showWorkflows', false);
             this.set('showWebMeetingWorkflow', true);
@@ -335,12 +335,12 @@ export default class GuidNodeGrdmapps extends Controller {
         const config = this.config.content as GrdmappsConfigModel;
         let appNameDisp = '';
 
-        if(v === config.app_name_microsoft_teams){
+        if (v === config.app_name_microsoft_teams) {
 
-            if(actionType === 'create'){
+            if (actionType === 'create') {
                 this.set('showCreateMicrosoftTeamsMeetingDialog', true);
                 this.set('showCreateWebexMeetingDialog', false);
-            }else if(actionType === 'update'){
+            } else if(actionType === 'update') {
                 this.set('showUpdateMicrosoftTeamsMeetingDialog', true);
                 this.set('showUpdateWebexMeetingsDialog', false);
             }
@@ -348,12 +348,12 @@ export default class GuidNodeGrdmapps extends Controller {
             this.set('webMeetingAppName', v);
             this.set('webMeetingAppNameDisp', appNameDisp);
 
-        }else if(v === config.app_name_webex_meetings){
+        } else if(v === config.app_name_webex_meetings) {
 
-            if(actionType === 'create'){
+            if (actionType === 'create') {
                 this.set('showCreateMicrosoftTeamsMeetingDialog', false);
                 this.set('showCreateWebexMeetingDialog', true);
-            }else if(actionType === 'update'){
+            } else if (actionType === 'update') {
                 this.set('showUpdateMicrosoftTeamsMeetingDialog', false);
                 this.set('showUpdateWebexMeetingsDialog', true);
             }
@@ -361,7 +361,7 @@ export default class GuidNodeGrdmapps extends Controller {
             this.set('webMeetingAppName', v);
             this.set('webMeetingAppNameDisp', appNameDisp);
 
-        }else if (!v && !actionType){
+        } else if (!v && !actionType) {
 
             this.set('showCreateWebMeetingDialog', false);
             this.set('showUpdateWebMeetingDialog', false);
@@ -405,7 +405,7 @@ export default class GuidNodeGrdmapps extends Controller {
 
     resetValue(this: GuidNodeGrdmapps, type: string) {
 
-        if(type === 'registerAppsEmail'){
+        if (type === 'registerAppsEmail') {
             this.set('selectedUser', {});
             this.set('guestFullname', '');
             this.set('userType', '');
@@ -417,11 +417,11 @@ export default class GuidNodeGrdmapps extends Controller {
             this.set('msgErrorEmailVal', '');
             this.set('msgInvalidEmail', '');
 
-        }else if(type === 'registerWebhook'){
+        } else if(type === 'registerWebhook') {
             this.set('workflowDescription', '');
             this.set('alternativeWebhookUrl', '');
             this.set('showRegisterAlternativeWebhookUrl', false);
-		}
+        }
     }
 
     @action
@@ -429,14 +429,14 @@ export default class GuidNodeGrdmapps extends Controller {
 
         let validFlag = true;
 
-        if(!webhook_url){
+        if (!webhook_url) {
             this.set('msgInvalidWebhookUrl', this.intl.t('integromat.meetingDialog.invalid.empty', {item: this.intl.t('integromat.workflows.alternative_webhook_url.label')}));
             validFlag = false;
-        }else{
+        } else {
             this.set('msgInvalidWebhookUrl', '');
         }
 
-        return validFlag
+        return validFlag;
     }
 
     @action
@@ -452,8 +452,8 @@ export default class GuidNodeGrdmapps extends Controller {
         const headers = this.currentUser.ajaxHeaders();
         const url = registerAlternativeWebhookUrl.replace('{}', String(this.model.guid));
 
-        //validation check for webhook url input
-        if(!this.webhookValidationCheck(this.alternativeWebhookUrl)){
+        // validation check for webhook url input
+        if (!this.webhookValidationCheck(this.alternativeWebhookUrl)) {
             return;
         }
 
@@ -469,8 +469,9 @@ export default class GuidNodeGrdmapps extends Controller {
             {
                 method: 'POST',
                 headers,
-                body: JSON.stringify(payload)
-        })
+                body: JSON.stringify(payload),
+            }
+        )
         .then((res) => {
                 if(!res.ok){
                     this.toast.error(this.intl.t('integromat.fail.registerAlternativeWebhookUrl'));
@@ -514,7 +515,7 @@ export default class GuidNodeGrdmapps extends Controller {
 //            validFlag = false;
 //        }
 
-        return validFlag
+        return validFlag;
     }
 
     @action

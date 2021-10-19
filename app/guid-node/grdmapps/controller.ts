@@ -257,11 +257,11 @@ export default class GuidNodeGrdmapps extends Controller {
     camel2space(v: string) {
         const separator = ' ';
         return v
-                .replace(/[A-Z][a-z]/g, function(match) {
-            return separator + match;
+            .replace(/[A-Z][a-z]/g, function(match) {
+                return separator + match;
             })
-                .replace(/[A-Z]+$/g, function(match) {
-            return separator + match;
+            .replace(/[A-Z]+$/g, function(match) {
+                return separator + match;
             })
             .trim();
     }
@@ -319,7 +319,6 @@ export default class GuidNodeGrdmapps extends Controller {
         this.set('webhookUrl', url);
 
         if (workflowType === 'web_meeting') {
-
             this.set('showWorkflows', false);
             this.set('showWebMeetingWorkflow', true);
         }
@@ -327,7 +326,6 @@ export default class GuidNodeGrdmapps extends Controller {
 
     @action
     setWebMeetingApp(this: GuidNodeGrdmapps, v: string, actionType: string) {
-
         if (!this.config) {
             throw new EmberError('Illegal config');
         }
@@ -336,11 +334,10 @@ export default class GuidNodeGrdmapps extends Controller {
         let appNameDisp = '';
 
         if (v === config.app_name_microsoft_teams) {
-
             if (actionType === 'create') {
                 this.set('showCreateMicrosoftTeamsMeetingDialog', true);
                 this.set('showCreateWebexMeetingDialog', false);
-            } else if(actionType === 'update') {
+            } else if (actionType === 'update') {
                 this.set('showUpdateMicrosoftTeamsMeetingDialog', true);
                 this.set('showUpdateWebexMeetingsDialog', false);
             }
@@ -348,8 +345,7 @@ export default class GuidNodeGrdmapps extends Controller {
             this.set('webMeetingAppName', v);
             this.set('webMeetingAppNameDisp', appNameDisp);
 
-        } else if(v === config.app_name_webex_meetings) {
-
+        } else if (v === config.app_name_webex_meetings) {
             if (actionType === 'create') {
                 this.set('showCreateMicrosoftTeamsMeetingDialog', false);
                 this.set('showCreateWebexMeetingDialog', true);
@@ -362,7 +358,6 @@ export default class GuidNodeGrdmapps extends Controller {
             this.set('webMeetingAppNameDisp', appNameDisp);
 
         } else if (!v && !actionType) {
-
             this.set('showCreateWebMeetingDialog', false);
             this.set('showUpdateWebMeetingDialog', false);
             this.set('showDeleteWebMeetingDialog', false);
@@ -404,7 +399,6 @@ export default class GuidNodeGrdmapps extends Controller {
     }
 
     resetValue(this: GuidNodeGrdmapps, type: string) {
-
         if (type === 'registerAppsEmail') {
             this.set('selectedUser', {});
             this.set('guestFullname', '');
@@ -441,14 +435,12 @@ export default class GuidNodeGrdmapps extends Controller {
 
     @action
     makeRegisterAlternativeWebhookUrl(this: GuidNodeGrdmapps, workflow_description: string) {
-
         this.set('workflowDescription', workflow_description);
         this.set('showRegisterAlternativeWebhookUrl', true);
     }
 
     @action
     registerAlternativeWebhook(this: GuidNodeGrdmapps) {
-
         const headers = this.currentUser.ajaxHeaders();
         const url = registerAlternativeWebhookUrl.replace('{}', String(this.model.guid));
 
@@ -469,11 +461,11 @@ export default class GuidNodeGrdmapps extends Controller {
             {
                 method: 'POST',
                 headers,
-                body: JSON.stringify(payload),
+                body: JSON.stringify(payload)
             }
         )
-        .then((res) => {
-                if(!res.ok){
+            .then((res) => {
+                if (!res.ok) {
                     this.toast.error(this.intl.t('integromat.fail.registerAlternativeWebhookUrl'));
                     return;
                 }
@@ -482,7 +474,7 @@ export default class GuidNodeGrdmapps extends Controller {
             })
             .catch(() => {
                 this.toast.error(this.intl.t('integromat.error.failedToRequest'));
-            })
+            });
     }
 
     @action
@@ -491,22 +483,22 @@ export default class GuidNodeGrdmapps extends Controller {
         let validFlag = true;
 //        let reg = new RegExp();
 
-        if(userType == 'radio_grdmUserOrRegisteredGuest'){
-            if(!selectedUser){
+        if (userType === 'radio_grdmUserOrRegisteredGuest') {
+            if (!selectedUser) {
                 this.set('msgInvalidSelectedUser', this.intl.t('integromat.meetingDialog.invalid.empty', {item: this.intl.t('integromat.grdmUser')}));
                 validFlag = false;
             }
-        }else if(userType == 'radio_newGuest'){
-            if(!guestFullname){
+        } else if (userType === 'radio_newGuest') {
+            if (!guestFullname) {
                 this.set('msgInvalidGuestUser', this.intl.t('integromat.meetingDialog.invalid.empty', {item: this.intl.t('integromat.guest')}));
                 validFlag = false;
             }
-        }else if(!userType){
+        }else if (!userType) {
             this.set('msgErrorEmailVal', this.intl.t('integromat.failed_to_save'));
             validFlag = false;
         }
 
-        if(!email){
+        if (!email) {
             this.set('msgInvalidEmail', this.intl.t('integromat.meetingDialog.invalid.empty', {item: this.intl.t('integromat.signInAdress')}));
             validFlag = false;
         }
@@ -538,24 +530,23 @@ export default class GuidNodeGrdmapps extends Controller {
         let is_guest = false;
 
         //validation check
-        if(!this.webMeetingAppsEmailValidationCheck(userType, selectedUser, guestFullname, this.signInAddressOfApp)){
+        if (!this.webMeetingAppsEmailValidationCheck(userType, selectedUser, guestFullname, this.signInAddressOfApp)) {
             return;
         }
 
-        if(userType == 'radio_grdmUserOrRegisteredGuest'){
-
-            if(this.selectedUser._id){
+        if (userType === 'radio_grdmUserOrRegisteredGuest') {
+            if (this.selectedUser._id) {
                 _id = this.selectedUser._id;
             }
 
-            if(selectedUser.is_guest){
+            if (selectedUser.is_guest) {
                 is_guest = true;
-            }else{
+            } else {
                 let index = (selectedUser.name).indexOf('@') + 1;
                 guid = (selectedUser.name).slice(index, index + 5);
             }
 
-        }else if(userType == 'radio_newGuest'){
+        } else if (userType === 'radio_newGuest') {
             guid = 'guest' + (new Date()).getTime();
             fullname = guestFullname;
             is_guest = true;
@@ -568,7 +559,7 @@ export default class GuidNodeGrdmapps extends Controller {
             'appName': this.webMeetingAppName,
             'email': this.signInAddressOfApp,
             'username': this.usernameOfApp,
-            'is_guest': is_guest
+            'is_guest': is_guest,
         };
 
         this.resetValue('registerAppsEmail');
@@ -578,10 +569,11 @@ export default class GuidNodeGrdmapps extends Controller {
             {
                 method: 'POST',
                 headers,
-                body: JSON.stringify(payload)
-        })
+                body: JSON.stringify(payload),
+            }
+        )
         .then((res) => {
-                if(!res.ok){
+                if (!res.ok) {
                     this.toast.error(this.intl.t('integromat.fail.registerWebMeetingAppsEmail', {appName: this.webMeetingAppName}));
                     return;
                 }

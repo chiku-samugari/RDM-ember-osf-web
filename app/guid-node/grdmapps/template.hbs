@@ -837,10 +837,11 @@
                     <div style='padding-left: 10px; padding-top: 5px'>
                         {{#each this.selectedAttendees as |attendee|}}
                             {{#if attendees.fields.is_guest}}
-                                {{attendee.name}}
+                                <label local-class='Integromat__label_normal'>{{attendee.name}}<label>
                             {{else}}
-                                <a href={{attendee.profile}} target='_blank' data-toggle='tooltip' title={{attendee.email}}>{{attendee.name}}</a>
+                                <label local-class='Integromat__label_normal'><a href={{attendee.profile}} target='_blank' data-toggle='tooltip' title={{attendee.email}}>{{attendee.name}}</a><label>
                             {{/if}}
+                            &nbsp;&nbsp;&nbsp;
                         {{/each}}
                     </div>
                 </span>

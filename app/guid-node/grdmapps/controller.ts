@@ -533,7 +533,7 @@ export default class GuidNodeGrdmapps extends Controller {
             if (selectedUser.is_guest) {
                 is_guest = true;
             } else {
-                let index = (selectedUser.name).indexOf('@') + 1;
+                const index = (selectedUser.name).indexOf('@') + 1;
                 guid = (selectedUser.name).slice(index, index + 5);
             }
         } else if (userType === 'radio_newGuest') {
@@ -636,13 +636,13 @@ export default class GuidNodeGrdmapps extends Controller {
         const timestamp = new Date().getTime();
 
         let workflowAction = '';
-        let microsoftTeamsAttendeesCollectionAtCreate: microsoftTeamsAttendeeAtCreate[] = [];
-        let microsoftTeamsAttendeesCollectionAtUpdate: microsoftTeamsAttendeeAtUpdate[] = [];
-        let webexMeetingsAttendeesCollection: webexMeetingsAttendee[] = [];
-        let arrayAttendees = [];
+        const microsoftTeamsAttendeesCollectionAtCreate: microsoftTeamsAttendeeAtCreate[] = [];
+        const microsoftTeamsAttendeesCollectionAtUpdate: microsoftTeamsAttendeeAtUpdate[] = [];
+        const webexMeetingsAttendeesCollection: webexMeetingsAttendee[] = [];
+        const arrayAttendees = [];
 
-        let webexMeetingsCreateInvitees: webexMeetingsCreateInvitee[] = [];
-        let webexMeetingsDeleteInviteeIds: string[] = [];
+        const webexMeetingsCreateInvitees: webexMeetingsCreateInvitee[] = [];
+        const webexMeetingsDeleteInviteeIds: string[] = [];
 
         let attendeeNum = 0;
 
@@ -748,7 +748,7 @@ export default class GuidNodeGrdmapps extends Controller {
         this.set('webMeetingJoinUrl', joinUrl);
         this.set('webMeetingPassword', meetingPassword);
 
-        for (let i=0; i < webMeetingApps.length; i++) {
+        for (let i = 0; i < webMeetingApps.length; i++) {
             if (webMeetingApps[i].pk === appId) {
                 appName = webMeetingApps[i].fields.app_name;
                 break;
@@ -768,7 +768,7 @@ export default class GuidNodeGrdmapps extends Controller {
         const config = this.config.content as GrdmappsConfigModel;
         const nodeAttendeesAll = JSON.parse(config.node_attendees_all);
 
-        let guidOrEmail ='';
+        let guidOrEmail = '';
         let profileUrl = '';
 
         if (appName === config.app_name_microsoft_teams) {
@@ -791,7 +791,7 @@ export default class GuidNodeGrdmapps extends Controller {
                         continue;
                     }
                     if (this.webMeetingAttendees[i] === nodeAttendeesAll[j].pk) {
-                        guidOrEmail = nodeAttendeesAll[j].fields.is_guest ? '(' + nodeAttendeesAll[j].fields.webex_meetings_mail + ')': '@' + nodeAttendeesAll[j].fields.user_guid;
+                        guidOrEmail = nodeAttendeesAll[j].fields.is_guest ? '(' + nodeAttendeesAll[j].fields.webex_meetings_mail + ')' : '@' + nodeAttendeesAll[j].fields.user_guid;
                         profileUrl = nodeAttendeesAll[j].fields.is_guest ? '' : profileUrlBase + nodeAttendeesAll[j].fields.user_guid;
                         this.selectedAttendees.push({ name: nodeAttendeesAll[j].fields.fullname + guidOrEmail, email: nodeAttendeesAll[j].fields.webex_meetings_mail, nameForApp: nodeAttendeesAll[j].fields.webex_meetings_display_name, profile: profileUrl, _id: nodeAttendeesAll[j].fields._id, is_guest: nodeAttendeesAll[j].fields.is_guest, disabled: false });
                     }
@@ -830,20 +830,20 @@ export default class GuidNodeGrdmapps extends Controller {
         const webMeetingPassword = this.webMeetingPassword;
         const timestamp = new Date().getTime();
 
-        const nodeWebMeetingAttendeesRelation =JSON.parse(config.node_web_meetings_attendees_relation);
+        const nodeWebMeetingAttendeesRelation = JSON.parse(config.node_web_meetings_attendees_relation);
         const nodeWebexMeetingsAttendees = JSON.parse(config.node_webex_meetings_attendees);
 
         let workflowAction = '';
-        let microsoftTeamsAttendeesCollectionAtCreate: microsoftTeamsAttendeeAtCreate[] = [];
-        let microsoftTeamsAttendeesCollectionAtUpdate: microsoftTeamsAttendeeAtUpdate[] = [];
-        let webexMeetingsAttendeesCollection: webexMeetingsAttendee[] = [];
-        let arrayAttendees = [];
-        let arrayAttendeePks: string[] = [];
+        const microsoftTeamsAttendeesCollectionAtCreate: microsoftTeamsAttendeeAtCreate[] = [];
+        const microsoftTeamsAttendeesCollectionAtUpdate: microsoftTeamsAttendeeAtUpdate[] = [];
+        const webexMeetingsAttendeesCollection: webexMeetingsAttendee[] = [];
+        const arrayAttendees = [];
+        const arrayAttendeePks: string[] = [];
 
         let arrayCreateAttendeePks = [];
         let arrayDeleteAttendeePks = [];
-        let webexMeetingsCreateInvitees: webexMeetingsCreateInvitee[] = [];
-        let webexMeetingsDeleteInviteeIds: string[] = [];
+        const webexMeetingsCreateInvitees: webexMeetingsCreateInvitee[] = [];
+        const webexMeetingsDeleteInviteeIds: string[] = [];
 
         let attendeeNum = 0;
 
@@ -960,7 +960,7 @@ export default class GuidNodeGrdmapps extends Controller {
         const webMeetingApps = JSON.parse(config.web_meeting_apps);
         let appName = '';
 
-        for (let i=0; i < webMeetingApps.length; i++) {
+        for (let i = 0; i < webMeetingApps.length; i++) {
             if (webMeetingApps[i].pk === appId) {
                 appName = webMeetingApps[i].fields.app_name;
                 break;
@@ -999,8 +999,8 @@ export default class GuidNodeGrdmapps extends Controller {
         const microsoftTeamsAttendeesCollectionAtUpdate: microsoftTeamsAttendeeAtUpdate[] = [];
         const webexMeetingsAttendeesCollection: webexMeetingsAttendee[] = [];
 
-        let webexMeetingsCreateInvitees : webexMeetingsCreateInvitee[] = [];
-        let webexMeetingsDeleteInviteeIds : string[] = [];
+        const webexMeetingsCreateInvitees : webexMeetingsCreateInvitee[] = [];
+        const webexMeetingsDeleteInviteeIds : string[] = [];
 
         let workflowAction = '';
 
@@ -1084,7 +1084,7 @@ export default class GuidNodeGrdmapps extends Controller {
         this.set('webMeetingUpdateMeetingId', meetingId);
         this.set('webMeetingJoinUrl', joinUrl);
 
-        for (let i=0; i < webMeetingApps.length; i++) {
+        for (let i = 0; i < webMeetingApps.length; i++) {
             if (webMeetingApps[i].pk === appId) {
                 appName = webMeetingApps[i].fields.app_name;
                 break;
@@ -1115,7 +1115,7 @@ export default class GuidNodeGrdmapps extends Controller {
                 return res.json();
             })
             .then(data => {
-                let reqBody = {
+                const reqBody = {
                     count: 1,
                     timestamp: data.timestamp,
                 };
@@ -1155,7 +1155,7 @@ export default class GuidNodeGrdmapps extends Controller {
                     if (data.notify) {
                         this.toast.info(this.intl.t(data.integromatMsg));
                     }
-                    let reqBody = {
+                    const reqBody = {
                         count: data.count + 1,
                         timestamp: data.timestamp,
                     };
@@ -1185,8 +1185,8 @@ export default class GuidNodeGrdmapps extends Controller {
             return '';
         }
         const config = this.config.content as GrdmappsConfigModel;
-        let upcoming_web_meetings = JSON.parse(config.upcoming_web_meetings);
-        let web_meeting_apps = JSON.parse(config.web_meeting_apps);
+        const upcoming_web_meetings = JSON.parse(config.upcoming_web_meetings);
+        const web_meeting_apps = JSON.parse(config.web_meeting_apps);
 
         let previousDatetime;
         let currentDatetime;
@@ -1206,13 +1206,13 @@ export default class GuidNodeGrdmapps extends Controller {
             if (i === 0) {
                 upcoming_web_meetings[i]['date_bar'] = false;
             } else if (i !== 0) {
-                previousDatetime =new Date(upcoming_web_meetings[i-1].fields.start_datetime);
-                currentDatetime =new Date(upcoming_web_meetings[i].fields.start_datetime);
+                previousDatetime = new Date(upcoming_web_meetings[i - 1].fields.start_datetime);
+                currentDatetime = new Date(upcoming_web_meetings[i].fields.start_datetime);
 
                 previousDate = previousDatetime.getFullYear() + '/' + (previousDatetime.getMonth() + 1) + '/' + previousDatetime.getDate();
                 currentDate = currentDatetime.getFullYear() + '/' + (currentDatetime.getMonth() + 1) + '/' + currentDatetime.getDate();
 
-                if (currentDate != previousDate) {
+                if (currentDate !== previousDate) {
                     upcoming_web_meetings[i]['date_bar'] = true;
                 } else {
                     upcoming_web_meetings[i]['date_bar'] = false;
@@ -1228,8 +1228,8 @@ export default class GuidNodeGrdmapps extends Controller {
             return '';
         }
         const config = this.config.content as GrdmappsConfigModel;
-        let previous_web_meetings = JSON.parse(config.previous_web_meetings);
-        let web_meeting_apps = JSON.parse(config.web_meeting_apps);
+        const previous_web_meetings = JSON.parse(config.previous_web_meetings);
+        const web_meeting_apps = JSON.parse(config.web_meeting_apps);
 
         let currentDatetime;
         let nextDatetime;
@@ -1248,13 +1248,13 @@ export default class GuidNodeGrdmapps extends Controller {
             if (i === 0) {
                 previous_web_meetings[i]['date_bar'] = false;
             } else if (i !== 0) {
-                nextDatetime = new Date(previous_web_meetings[i-1].fields.start_datetime);
+                nextDatetime = new Date(previous_web_meetings[i - 1].fields.start_datetime);
                 currentDatetime = new Date(previous_web_meetings[i].fields.start_datetime);
 
                 nextDate = nextDatetime.getFullYear() + '/' + (nextDatetime.getMonth() + 1) + '/' + nextDatetime.getDate();
                 currentDate = currentDatetime.getFullYear() + '/' + (currentDatetime.getMonth() + 1) + '/' + currentDatetime.getDate();
 
-                if (currentDate != nextDate) {
+                if (currentDate !== nextDate) {
                     previous_web_meetings[i]['date_bar'] = true;
                 } else {
                     previous_web_meetings[i]['date_bar'] = false;
@@ -1302,7 +1302,7 @@ export default class GuidNodeGrdmapps extends Controller {
         }
         const config = this.config.content as GrdmappsConfigModel;
         const institution_users = JSON.parse(config.institution_users);
-        let attendeesInfo : attendeesInfo[] = [];
+        const attendeesInfo : attendeesInfo[] = [];
 
         for (let i = 0; i < institution_users.length; i++) {
             attendeesInfo.push({ name: institution_users[i].fullname + '@' + institution_users[i].guid, email: '', nameForApp: '', profile: '', _id: '', is_guest: false, disabled: true });
@@ -1318,9 +1318,9 @@ export default class GuidNodeGrdmapps extends Controller {
         const config = this.config.content as GrdmappsConfigModel;
 
         let institutionUserList : attendeesInfo[] = [];
-        let registeredIstitutionUsers : attendeesInfo[] = [];
-        let unregisteredIstitutionUsers : attendeesInfo[] = [];
-        let guestUsers : attendeesInfo[] = [];
+        const registeredIstitutionUsers : attendeesInfo[] = [];
+        const unregisteredIstitutionUsers : attendeesInfo[] = [];
+        const guestUsers : attendeesInfo[] = [];
 
         for (let i = 0; i < institution_users.length; i++) {
             unregisteredIstitutionUsers.push({ name: institution_users[i].fullname + '@' + institution_users[i].guid + this.intl.t('integromat.meetingDialog.unregisteredLabel'), email: '', nameForApp: '', profile: profileUrlBase + institution_users[i].guid, _id: '', is_guest: false, disabled: suggestion_disabled });
@@ -1432,7 +1432,7 @@ export default class GuidNodeGrdmapps extends Controller {
         const config = this.config.content as GrdmappsConfigModel;
         const web_meeting_apps = JSON.parse(config.web_meeting_apps);
 
-        for (let i = 0; i< web_meeting_apps.length; i++) {
+        for (let i = 0; i < web_meeting_apps.length; i++) {
             web_meeting_apps[i]['app_name_disp'] = this.camel2space(web_meeting_apps[i].fields.app_name);
         }
 

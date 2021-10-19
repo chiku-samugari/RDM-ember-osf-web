@@ -520,7 +520,7 @@ export default class GuidNodeGrdmapps extends Controller {
         let fullname = '';
         let is_guest = false;
 
-        //validation check
+        // validation check
         if (!this.webMeetingAppsEmailValidationCheck(userType, selectedUser, guestFullname, this.signInAddressOfApp)) {
             return;
         }
@@ -543,9 +543,9 @@ export default class GuidNodeGrdmapps extends Controller {
         }
 
         const payload = {
-            _id: _id,
-            guid: guid,
-            fullname: fullname,
+            _id,
+            guid,
+            fullname,
             appName: this.webMeetingAppName,
             email: this.signInAddressOfApp,
             username: this.usernameOfApp,
@@ -680,9 +680,9 @@ export default class GuidNodeGrdmapps extends Controller {
         const webMeetingEndDatetime = (new Date(strWebMeetingEndDatetime)).toISOString();
 
         const payload = {
-            appName: appName,
-            appNameDisp: appNameDisp,
-            guid: guid,
+            appName,
+            appNameDisp,
+            guid,
             meetingId: empty,
             joinUrl: empty,
             action: workflowAction,
@@ -707,16 +707,16 @@ export default class GuidNodeGrdmapps extends Controller {
             startDatetime: webMeetingStartDatetime,
             endDatetime: webMeetingEndDatetime,
             subject: webMeetingSubject,
-            microsoftTeamsAttendeesCollectionAtCreate: microsoftTeamsAttendeesCollectionAtCreate,
-            microsoftTeamsAttendeesCollectionAtUpdate: microsoftTeamsAttendeesCollectionAtUpdate,
-            webexMeetingsAttendeesCollection: webexMeetingsAttendeesCollection,
-            webexMeetingsCreateInvitees: webexMeetingsCreateInvitees,
-            webexMeetingsDeleteInviteeIds: webexMeetingsDeleteInviteeIds,
+            microsoftTeamsAttendeesCollectionAtCreate,
+            microsoftTeamsAttendeesCollectionAtUpdate,
+            webexMeetingsAttendeesCollection,
+            webexMeetingsCreateInvitees,
+            webexMeetingsDeleteInviteeIds,
             attendees: arrayAttendees,
             location: webMeetingLocation,
             content: webMeetingContent,
             webhook_url: webhookUrl,
-            timestamp: timestamp,
+            timestamp,
         };
 
         this.setWebMeetingApp('', '');
@@ -905,9 +905,9 @@ export default class GuidNodeGrdmapps extends Controller {
         const webMeetingEndDatetime = (new Date(strWebMeetingEndDatetime)).toISOString();
 
         const payload = {
-            appName: appName,
-            appNameDisp: appNameDisp,
-            guid: guid,
+            appName,
+            appNameDisp,
+            guid,
             meetingId: webMeetingId,
             joinUrl: webMeetingJoinUrl,
             action: workflowAction,
@@ -932,17 +932,17 @@ export default class GuidNodeGrdmapps extends Controller {
             startDatetime: webMeetingStartDatetime,
             endDatetime: webMeetingEndDatetime,
             subject: webMeetingSubject,
-            microsoftTeamsAttendeesCollectionAtCreate: microsoftTeamsAttendeesCollectionAtCreate,
-            microsoftTeamsAttendeesCollectionAtUpdate: microsoftTeamsAttendeesCollectionAtUpdate,
-            webexMeetingsAttendeesCollection: webexMeetingsAttendeesCollection,
-            webexMeetingsCreateInvitees: webexMeetingsCreateInvitees,
-            webexMeetingsDeleteInviteeIds: webexMeetingsDeleteInviteeIds,
+            microsoftTeamsAttendeesCollectionAtCreate,
+            microsoftTeamsAttendeesCollectionAtUpdate,
+            webexMeetingsAttendeesCollection,
+            webexMeetingsCreateInvitees,
+            webexMeetingsDeleteInviteeIds,
             attendees: arrayAttendees,
             location: webMeetingLocation,
             content: webMeetingContent,
             password: webMeetingPassword,
             webhook_url: webhookUrl,
-            timestamp: timestamp,
+            timestamp,
         };
 
         this.setWebMeetingApp('', '');
@@ -1014,9 +1014,9 @@ export default class GuidNodeGrdmapps extends Controller {
         const webMeetingEndDatetime = (new Date(strWebMeetingEndDatetime)).toISOString();
 
         const payload = {
-            appName: appName,
-            appNameDisp: appNameDisp,
-            guid: guid,
+            appName,
+            appNameDisp,
+            guid,
             meetingId: this.webMeetingDeleteMeetingId,
             joinUrl: empty,
             action: workflowAction,
@@ -1041,16 +1041,16 @@ export default class GuidNodeGrdmapps extends Controller {
             startDatetime: webMeetingStartDatetime,
             endDatetime: webMeetingEndDatetime,
             subject: webMeetingSubject,
-            microsoftTeamsAttendeesCollectionAtCreate: microsoftTeamsAttendeesCollectionAtCreate,
-            microsoftTeamsAttendeesCollectionAtUpdate: microsoftTeamsAttendeesCollectionAtUpdate,
-            webexMeetingsAttendeesCollection: webexMeetingsAttendeesCollection,
-            webexMeetingsCreateInvitees: webexMeetingsCreateInvitees,
-            webexMeetingsDeleteInviteeIds: webexMeetingsDeleteInviteeIds,
+            microsoftTeamsAttendeesCollectionAtCreate,
+            microsoftTeamsAttendeesCollectionAtUpdate,
+            webexMeetingsAttendeesCollection,
+            webexMeetingsCreateInvitees,
+            webexMeetingsDeleteInviteeIds,
             attendees: emptyList,
             location: empty,
             content: empty,
             webhook_url: webhookUrl,
-            timestamp: timestamp,
+            timestamp,
         };
 
         this.setWebMeetingApp('', '');
@@ -1167,7 +1167,7 @@ export default class GuidNodeGrdmapps extends Controller {
             .catch(() => {
                 this.toast.error(this.intl.t('integromat.error.failedToGetMessage'));
             });
-        }
+    }
 
     @computed('config.all_web_meetings')
     get all_web_meetings() {

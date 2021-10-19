@@ -10,7 +10,7 @@ export default {
     name: 'i18n',
     initialize(app) {
         const intl = app.lookup('service:intl');
-        let moment = app.lookup('service:moment');
+        const moment = app.lookup('service:moment');
         moment.setLocale(calculateLocale(intl.get('locales')));
 
         intl.addTranslations('ja-jp');

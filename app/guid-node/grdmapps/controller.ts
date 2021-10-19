@@ -257,13 +257,13 @@ export default class GuidNodeGrdmapps extends Controller {
     camel2space(v: string) {
         const separator = ' ';
         return v
-                .replace(/[A-Z][a-z]/g, function (match) {
-                return separator + match;
+                .replace(/[A-Z][a-z]/g, function(match) {
+            return separator + match;
             })
-                .replace(/[A-Z]+$/g, function (match) {
-                return separator + match;
+                .replace(/[A-Z]+$/g, function(match) {
+            return separator + match;
             })
-                .trim();
+            .trim();
     }
 
     @action
@@ -301,15 +301,15 @@ export default class GuidNodeGrdmapps extends Controller {
         const nodeWorkflows = JSON.parse(config.node_workflows);
 
         let workflowId = '';
-        let url = '' ;
+        let url = '';
 
-        for(let i = 0; i < workflows.length; i++){
-            if(workflows[i].fields.workflow_description === workflow_desp){
-                workflowId = workflows[i].pk
-                for(let j = 0; j < nodeWorkflows.length; j++){
-                    if(nodeWorkflows[j].fields.workflow === workflowId){
-                        if(!nodeWorkflows[j].fields.scenarios){
-                            url = nodeWorkflows[j].fields.alternative_webhook_url
+        for (let i = 0; i < workflows.length; i++) {
+            if (workflows[i].fields.workflow_description === workflow_desp) {
+                workflowId = workflows[i].pk;
+                for (let j = 0; j < nodeWorkflows.length; j++) {
+                    if (nodeWorkflows[j].fields.workflow === workflowId) {
+                        if (!nodeWorkflows[j].fields.scenarios) {
+                            url = nodeWorkflows[j].fields.alternative_webhook_url;
                         }
                     }
                 }

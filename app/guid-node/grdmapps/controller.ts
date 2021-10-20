@@ -430,8 +430,8 @@ export default class GuidNodeGrdmapps extends Controller {
                 'msgInvalidWebhookUrl',
                 this.intl.t(
                     'integromat.meetingDialog.invalid.empty', 
-                    { item: this.intl.t('integromat.workflows.alternative_webhook_url.label') }
-                )
+                    { item: this.intl.t('integromat.workflows.alternative_webhook_url.label') },
+                ),
             );
             validFlag = false;
         } else {
@@ -495,10 +495,8 @@ export default class GuidNodeGrdmapps extends Controller {
                     'msgInvalidSelectedUser',
                     this.intl.t(
                         'integromat.meetingDialog.invalid.empty',
-                        { 
-                            item: this.intl.t('integromat.grdmUser')
-                        }
-                    )
+                        { item: this.intl.t('integromat.grdmUser') },
+                    ),
                 );
                 validFlag = false;
             }
@@ -508,10 +506,8 @@ export default class GuidNodeGrdmapps extends Controller {
                     'msgInvalidGuestUser',
                     this.intl.t(
                         'integromat.meetingDialog.invalid.empty',
-                        {
-                            item: this.intl.t('integromat.guest')
-                        }
-                    )
+                        { item: this.intl.t('integromat.guest') },
+                    ),
                 );
                 validFlag = false;
             }
@@ -524,10 +520,8 @@ export default class GuidNodeGrdmapps extends Controller {
             this.set('msgInvalidEmail',
                 this.intl.t(
                     'integromat.meetingDialog.invalid.empty',
-                    {
-                        item: this.intl.t('integromat.signInAdress')
-                    }
-                )
+                    { item: this.intl.t('integromat.signInAdress') },
+                ),
             );
             validFlag = false;
         }
@@ -601,10 +595,7 @@ export default class GuidNodeGrdmapps extends Controller {
             .then((res) => {
                 if (!res.ok) {
                     this.toast.error(
-                        this.intl.t(
-                            'integromat.fail.registerWebMeetingAppsEmail',
-                            { appName: this.webMeetingAppName }
-                        )
+                        this.intl.t('integromat.fail.registerWebMeetingAppsEmail',{ appName: this.webMeetingAppName })
                     );
                     return;
                 }
@@ -629,10 +620,8 @@ export default class GuidNodeGrdmapps extends Controller {
                 'msgInvalidSubject',
                 this.intl.t(
                     'integromat.meetingDialog.invalid.empty',
-                    {
-                        item: this.intl.t('integromat.subject')
-                    }
-                )
+                    { item: this.intl.t('integromat.subject') },
+                ),
             );
             validFlag = false;
         } else {
@@ -644,10 +633,8 @@ export default class GuidNodeGrdmapps extends Controller {
                 'msgInvalidAttendees',
                 this.intl.t(
                     'integromat.meetingDialog.invalid.empty',
-                    {
-                        item: this.intl.t('integromat.attendees')
-                    }
-                )
+                    { item: this.intl.t('integromat.attendees') },
+                ),
             );
             validFlag = false;
         } else {
@@ -659,10 +646,8 @@ export default class GuidNodeGrdmapps extends Controller {
                 'msgInvalidDatetime',
                 this.intl.t(
                     'integromat.meetingDialog.invalid.empty',
-                    { 
-                        item: this.intl.t('integromat.datetime')
-                    }
-                )
+                    { item: this.intl.t('integromat.datetime') },
+                ),
             );
             validFlag = false;
         } else if (start < now) {
@@ -883,7 +868,7 @@ export default class GuidNodeGrdmapps extends Controller {
                                 nameForApp: nodeAttendeesAll[j].fields.microsoft_teams_user_name,
                                 profile: profileUrl, _id: nodeAttendeesAll[j].fields._id,
                                 is_guest: nodeAttendeesAll[j].fields.is_guest,
-                                disabled: false
+                                disabled: false,
                             }
                         );
                     }
@@ -910,7 +895,7 @@ export default class GuidNodeGrdmapps extends Controller {
                                 profile: profileUrl,
                                 _id: nodeAttendeesAll[j].fields._id,
                                 is_guest: nodeAttendeesAll[j].fields.is_guest,
-                                disabled: false
+                                disabled: false,
                             }
                         );
                     }
@@ -998,8 +983,8 @@ export default class GuidNodeGrdmapps extends Controller {
                 }
             }
 
-            arrayCreateAttendeePks = arrayAttendeePks.filter(i => (this.webMeetingAttendees).indexOf(i) == -1);
-            arrayDeleteAttendeePks = (this.webMeetingAttendees).filter(i => arrayAttendeePks.indexOf(i) == -1);
+            arrayCreateAttendeePks = arrayAttendeePks.filter(i => (this.webMeetingAttendees).indexOf(i) === -1);
+            arrayDeleteAttendeePks = (this.webMeetingAttendees).filter(i => arrayAttendeePks.indexOf(i) === -1);
 
             for (let i = 0; i < arrayCreateAttendeePks.length; i++) {
                 for (let j = 0; j < nodeWebexMeetingsAttendees.length; j++) {

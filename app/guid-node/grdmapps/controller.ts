@@ -13,7 +13,7 @@ import Analytics from 'ember-osf-web/services/analytics';
 import StatusMessages from 'ember-osf-web/services/status-messages';
 import Toast from 'ember-toastr/services/toast';
 
-import { config as emberGetConfig } from 'ember-get-config';
+import config as emberGetConfig from 'ember-get-config';
 import CurrentUser from 'ember-osf-web/services/current-user';
 import moment from 'moment';
 import $ from 'jquery';
@@ -175,8 +175,8 @@ export default class GuidNodeGrdmapps extends Controller {
     currentTime = new Date();
     start = this.currentTime.setMinutes(Math.round(this.currentTime.getMinutes() / 30) * 30);
     end = this.currentTime.setMinutes((Math.round(this.currentTime.getMinutes() / 30) * 30) + 60);
-    defaultStartTime = moment(start).format('HH:mm');
-    defaultEndTime = moment(end).format('HH:mm');
+    defaultStartTime = moment(this.start).format('HH:mm');
+    defaultEndTime = moment(this.end).format('HH:mm');
 
     times = [
         '00:00', '00:30', '01:00', '01:30', '02:00', '02:30', '03:00', '03:30', '04:00', '04:30', '05:00', '05:30',
@@ -848,7 +848,7 @@ export default class GuidNodeGrdmapps extends Controller {
         let guidOrEmail = '';
         let profileUrl = '';
         let isGuest = false;
-        let microsoftTeamsMail = '';
+        let microsoftTeamsMail, webexMeetingsMail;
         let userGuid = '';
 
         if (appName === config.app_name_microsoft_teams) {
@@ -1313,8 +1313,8 @@ export default class GuidNodeGrdmapps extends Controller {
 
         let previousDatetime;
         let pYear, pMonth, pDate;
-        let cYear, cMonth, cDate;
         let currentDatetime;
+        let cYear, cMonth, cDate;
         let previousDate = '';
         let currentDate = '';
 
@@ -1362,7 +1362,9 @@ export default class GuidNodeGrdmapps extends Controller {
         const web_meeting_apps = JSON.parse(config.web_meeting_apps);
 
         let currentDatetime;
+        let cYear, cMonth, cDate;
         let nextDatetime;
+        let nYear, nMonth, nDate;
         let nextDate = '';
         let currentDate = '';
 

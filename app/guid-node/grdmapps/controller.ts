@@ -602,7 +602,7 @@ export default class GuidNodeGrdmapps extends Controller {
                 }
                 this.save();
                 this.toast.info(
-                    this.intl.t('integromat.success.registerWebMeetingAppsEmail', { appName: this.webMeetingAppName })
+                    this.intl.t('integromat.success.registerWebMeetingAppsEmail', { appName: this.webMeetingAppName }),
                 );
             })
             .catch(() => {
@@ -872,7 +872,7 @@ export default class GuidNodeGrdmapps extends Controller {
                                 profile: profileUrl, _id: nodeAttendeesAll[j].fields._id,
                                 is_guest: nodeAttendeesAll[j].fields.is_guest,
                                 disabled: false,
-                            }
+                            },
                         );
                     }
                 }
@@ -899,7 +899,7 @@ export default class GuidNodeGrdmapps extends Controller {
                                 _id: nodeAttendeesAll[j].fields._id,
                                 is_guest: nodeAttendeesAll[j].fields.is_guest,
                                 disabled: false,
-                            }
+                            },
                         );
                     }
                 }
@@ -1005,7 +1005,7 @@ export default class GuidNodeGrdmapps extends Controller {
                             {
                                 email: nodeWebexMeetingsAttendees[j].fields.webex_meetings_mail,
                                 displayName: nodeWebexMeetingsAttendees[j].fields.webex_meetings_display_name,
-                            }
+                            },
                         );
                     }
                 }
@@ -1016,7 +1016,7 @@ export default class GuidNodeGrdmapps extends Controller {
                     if (this.webMeetingPk === nodeWebMeetingAttendeesRelation[j].fields.all_meeting_information) {
                         if (arrayDeleteAttendeePks[i] === nodeWebMeetingAttendeesRelation[j].fields.attendees) {
                             webexMeetingsDeleteInviteeIds.push(
-                                nodeWebMeetingAttendeesRelation[j].fields.webex_meetings_invitee_id
+                                nodeWebMeetingAttendeesRelation[j].fields.webex_meetings_invitee_id,
                             );
                         }
                     }
@@ -1446,7 +1446,7 @@ export default class GuidNodeGrdmapps extends Controller {
                     _id: '',
                     is_guest: false,
                     disabled: true,
-                }
+                },
             );
         }
 
@@ -1474,7 +1474,7 @@ export default class GuidNodeGrdmapps extends Controller {
                     _id: '',
                     is_guest: false,
                     disabled: suggestion_disabled,
-                }
+                },
             );
 
             for (let j = 0; j < node_app_attendees.length; j++) {
@@ -1489,7 +1489,7 @@ export default class GuidNodeGrdmapps extends Controller {
                                 _id: node_app_attendees[j].fields._id,
                                 is_guest: false,
                                 disabled: false,
-                            }
+                            },
                         );
                     } else if (appName === config.app_name_webex_meetings) {
                         registeredIstitutionUsers.push(
@@ -1501,7 +1501,7 @@ export default class GuidNodeGrdmapps extends Controller {
                                 _id: node_app_attendees[j].fields._id,
                                 is_guest: false,
                                 disabled: false,
-                            }
+                            },
                         );
                     }
 
@@ -1519,7 +1519,7 @@ export default class GuidNodeGrdmapps extends Controller {
                                     _id: node_app_attendees[j].fields._id,
                                     is_guest: true,
                                     disabled: false,
-                                 }
+                                 },
                             );
                         } else if (appName === config.app_name_webex_meetings) {
                             guestUsers.push(
@@ -1531,7 +1531,7 @@ export default class GuidNodeGrdmapps extends Controller {
                                     _id: node_app_attendees[j].fields._id,
                                     is_guest: true,
                                     disabled: false,
-                                }
+                                },
                             );
                         }
                     }

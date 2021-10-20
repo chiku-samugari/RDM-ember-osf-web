@@ -3,7 +3,6 @@ import OsfModel from './osf-model';
 
 const { attr } = DS;
 
-/* eslint-disable camelcase */
 export default class GrdmappsConfigModel extends OsfModel {
     @attr('string') all_web_meetings!: string;
     @attr('string') upcoming_web_meetings!: string;

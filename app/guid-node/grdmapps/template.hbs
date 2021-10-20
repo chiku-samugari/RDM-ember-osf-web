@@ -83,7 +83,7 @@
                     </div>
                     <BsTab local-class='Integromat__web_meeting_tab' as |tab|>
                         <tab.pane @title={{t 'integromat.upcoming'}}>
-                            {{#if (eq this.upcoming_web_meetings.length 0)}}
+                            {{#if (eq this.upcomingWebMeetings.length 0)}}
                                 <p local-class='Integromat__statement'>{{t 'integromat.noUpcomingMeetings'}}</p>
                             {{else}}
                                 <div class='row' id='upcoming-meeting-table-row'>
@@ -107,7 +107,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {{#each this.upcoming_web_meetings as |row index|}}
+                                                {{#each this.upcomingWebMeetings as |row index|}}
                                                    {{#if (eq index 0)}}
                                                         <tr style='background-color: #efefef;'>
                                                             <th local-class='Integromat__th' style='padding: 3px; padding-left: 10px;'>{{moment-format row.fields.start_datetime 'll'}}</th>
@@ -165,7 +165,7 @@
                             {{/if}}
                         </tab.pane>
                         <tab.pane @title={{t 'integromat.previous'}}>
-                            {{#if (eq this.previous_web_meetings.length 0)}}
+                            {{#if (eq this.previousWebMeetings.length 0)}}
                                 <p local-class='Integromat__statement'>{{t 'integromat.noPreviousMeetings'}}</p>
                             {{else}}
                                 <div class='row' id='previous-meeting-table-row'>
@@ -189,7 +189,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {{#each this.previous_web_meetings as |row index|}}
+                                                {{#each this.previousWebMeetings as |row index|}}
                                                    {{#if (eq index 0)}}
                                                         <tr style='background-color: #efefef;'>
                                                             <th local-class='Integromat__th' style='padding: 3px; padding-left: 10px;'>{{moment-format row.fields.start_datetime 'll'}}</th>
@@ -271,7 +271,7 @@
     </modal.header>
     <modal.body>
         <div class='form-group'>
-            {{#each this.web_meeting_apps as |appName|}}
+            {{#each this.webMeetingApps as |appName|}}
                 <input type='radio' name='webMeetingAppName' id='radio_{{appName.fields.app_name}}' onClick={{action this.setWebMeetingApp appName.fields.app_name 'create'}}>
                 <label for='radio_{{appName.fields.app_name}}'>
                     {{appName.app_name_disp}}
@@ -296,7 +296,7 @@
                             <PowerSelectMultiple
                                 @searchField='name'
                                 @selected={{this.selectedMicrosoftTeamsAttendees}}
-                                @options={{this.institution_users_microsoft_teams}}
+                                @options={{this.institutionUsersMicrosoftTeams}}
                                 @renderInPlace={{true}}
                                 @onchange={{fn (mut this.selectedMicrosoftTeamsAttendees)}}
                                 @onInput={{this.checkLength}} as |name|>
@@ -405,7 +405,7 @@
                             <PowerSelectMultiple
                                 @searchField='name'
                                 @selected={{this.selectedWebexMeetingsAttendees}}
-                                @options={{this.institution_users_webex_meetings}}
+                                @options={{this.institutionUsersWebexMeetings}}
                                 @renderInPlace={{true}}
                                 @onchange={{fn (mut this.selectedWebexMeetingsAttendees)}}
                                 @onInput={{this.checkLength}} as |name|>
@@ -538,7 +538,7 @@
                             <PowerSelectMultiple
                                 @searchField='name'
                                 @selected={{this.selectedAttendees}}
-                                @options={{this.institution_users_microsoft_teams}}
+                                @options={{this.institutionUsersMicrosoftTeams}}
                                 @renderInPlace={{true}}
                                 @onchange={{fn (mut this.selectedAttendees)}}
                                 @onInput={{this.checkLength}} as |name|>
@@ -645,7 +645,7 @@
                             <PowerSelectMultiple
                                 @searchField='name'
                                 @selected={{this.selectedAttendees}}
-                                @options={{this.institution_users_webex_meetings}}
+                                @options={{this.institutionUsersWebexMeetings}}
                                 @renderInPlace={{true}}
                                 @onchange={{fn (mut this.selectedAttendees)}}
                                 @onInput={{this.checkLength}} as |name|>
@@ -932,22 +932,22 @@
                     <input type='radio' name='userType' id='radio_grdmUserOrRegisteredGuest' onClick={{action this.setUserType value='target.id'}}>
                     <label for='radio_grdmUserOrRegisteredGuest'>{{t 'integromat.grdmUser'}}</label>
                     <div style='margin-left: 10px;'>
-                    {{#if (eq this.webMeetingAppName this.app_name_microsoft_teams)}}
+                    {{#if (eq this.webMeetingAppName this.appNameMicrosoftTeams)}}
                         <PowerSelect
                             @searchField='name'
                             @selected={{this.selectedUser}}
-                            @options={{this.institution_users_list_microsoft_teams}}
+                            @options={{this.institutionUsersListMicrosoftTeams}}
                             @renderInPlace={{true}}
                             @onchange={{fn (mut this.selectedUser)}}
                             @onInput={{this.checkLength}} as |name|>
                             {{name.name}}
                         </PowerSelect>
                     {{/if}}
-                    {{#if (eq this.webMeetingAppName this.app_name_webex_meetings)}}
+                    {{#if (eq this.webMeetingAppName this.appNameWebexMeetings)}}
                         <PowerSelect
                             @searchField='name'
                             @selected={{this.selectedUser}}
-                            @options={{this.institution_users_list_webex_meetings}}
+                            @options={{this.institutionUsersListWebexMeetings}}
                             @renderInPlace={{true}}
                             @onchange={{fn (mut this.selectedUser)}}
                             @onInput={{this.checkLength}} as |name|>

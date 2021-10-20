@@ -13,7 +13,7 @@ import Analytics from 'ember-osf-web/services/analytics';
 import StatusMessages from 'ember-osf-web/services/status-messages';
 import Toast from 'ember-toastr/services/toast';
 
-import config from 'ember-get-config';
+import config as ember-get-config from 'ember-get-config';
 import CurrentUser from 'ember-osf-web/services/current-user';
 import moment from 'moment';
 import $ from 'jquery';
@@ -117,7 +117,7 @@ const {
         url: host,
         webApiNamespace: namespace,
     },
-} = config;
+} = ember-get-config;
 
 const infoGrdmScenarioStarted = 'integromat.info.started';
 const infoGrdmScenarioCompleted = 'integromat.info.completed';

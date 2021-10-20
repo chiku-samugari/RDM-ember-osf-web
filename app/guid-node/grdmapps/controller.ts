@@ -37,7 +37,7 @@ interface institutionUsers {
     fullname: string;
     guid: string;
 }
-
+/* eslint-disable camelcase */
 interface attendees {
     fullname: string;
     user_guid: string;

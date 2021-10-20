@@ -179,10 +179,10 @@ export default class GuidNodeGrdmapps extends Controller {
     defaultEndTime = moment(end).format('HH:mm');
 
     times = [
-    '00:00', '00:30', '01:00', '01:30', '02:00', '02:30', '03:00', '03:30', '04:00', '04:30', '05:00', '05:30', '06:00',
-    '06:30', '07:00', '07:30', '08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30',
-    '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00',
-    '19:30', '20:00', '20:30', '21:00', '21:30', '22:00', '22:30', '23:00', '23:30', '24:00'
+        '00:00', '00:30', '01:00', '01:30', '02:00', '02:30', '03:00', '03:30', '04:00', '04:30', '05:00', '05:30', '06:00',
+        '06:30', '07:00', '07:30', '08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30',
+        '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00',
+        '19:30', '20:00', '20:30', '21:00', '21:30', '22:00', '22:30', '23:00', '23:30', '24:00',
     ];
 
     webMeetingAppName = '';
@@ -430,9 +430,7 @@ export default class GuidNodeGrdmapps extends Controller {
                 'msgInvalidWebhookUrl',
                 this.intl.t(
                     'integromat.meetingDialog.invalid.empty', 
-                    {
-                        item: this.intl.t('integromat.workflows.alternative_webhook_url.label')
-                    }
+                    { item: this.intl.t('integromat.workflows.alternative_webhook_url.label') }
                 )
             );
             validFlag = false;
@@ -657,7 +655,15 @@ export default class GuidNodeGrdmapps extends Controller {
         }
 
         if (!startDate || !startTime || !endDate || !endTime) {
-            this.set('msgInvalidDatetime', this.intl.t('integromat.meetingDialog.invalid.empty', { item: this.intl.t('integromat.datetime') }));
+            this.set(
+                'msgInvalidDatetime',
+                this.intl.t(
+                    'integromat.meetingDialog.invalid.empty',
+                    { 
+                        item: this.intl.t('integromat.datetime')
+                    }
+                )
+            );
             validFlag = false;
         } else if (start < now) {
             this.set('msgInvalidDatetime', this.intl.t('integromat.meetingDialog.invalid.datetime.past'));
@@ -684,10 +690,14 @@ export default class GuidNodeGrdmapps extends Controller {
         const guid = String(this.model.guid);
         const webMeetingSubject = this.webMeetingSubject;
         const webMeetingStartDate = moment(this.webMeetingStartDate).format('YYYY-MM-DD');
-        const webMeetingStartTime = (<HTMLInputElement>document.querySelectorAll('select[id=create_teams_start_time]')[0]).value;
+        const webMeetingStartTime = (
+            <HTMLInputElement>document.querySelectorAll('select[id=create_teams_start_time]')[0]
+            ).value;
         const strWebMeetingStartDatetime = webMeetingStartDate + ' ' + webMeetingStartTime;
         const webMeetingEndDate = moment(this.webMeetingEndDate).format('YYYY-MM-DD');
-        const webMeetingEndTime = (<HTMLInputElement>document.querySelectorAll('select[id=create_teams_end_time]')[0]).value;
+        const webMeetingEndTime = (
+            <HTMLInputElement>document.querySelectorAll('select[id=create_teams_end_time]')[0]
+            ).value;
         const strWebMeetingEndDatetime = webMeetingEndDate + ' ' + webMeetingEndTime;
         const webMeetingLocation = this.webMeetingLocation;
         const webMeetingContent = this.webMeetingContent;
@@ -715,7 +725,15 @@ export default class GuidNodeGrdmapps extends Controller {
             attendeeNum = selectedAttendees.length;
         }
         // validation check for input
-        if (!this.webMeetingvalidationCheck(webMeetingSubject, attendeeNum, this.webMeetingStartDate, webMeetingStartTime, this.webMeetingEndDate, webMeetingEndTime, strWebMeetingStartDatetime, strWebMeetingEndDatetime)) {
+        if (!this.webMeetingvalidationCheck(
+            webMeetingSubject, attendeeNum,
+            this.webMeetingStartDate,
+            webMeetingStartTime,
+            this.webMeetingEndDate,
+            webMeetingEndTime,
+            strWebMeetingStartDatetime,
+            strWebMeetingEndDatetime
+            )) {
             return;
         }
 
@@ -723,14 +741,26 @@ export default class GuidNodeGrdmapps extends Controller {
         if (this.webMeetingAppName === config.app_name_microsoft_teams) {
             workflowAction = 'createMicrosoftTeamsMeeting';
             for (let i = 0; i < selectedAttendees.length; i++) { 
-                microsoftTeamsAttendeesCollectionAtCreate.push({ emailAddress: { address: selectedAttendees[i].email, name: selectedAttendees[i].nameForApp ? selectedAttendees[i].nameForApp : 'Unregistered' } });
+                microsoftTeamsAttendeesCollectionAtCreate.push(
+                    { 
+                        emailAddress: {
+                            address: selectedAttendees[i].email,
+                            name: selectedAttendees[i].nameForApp ? selectedAttendees[i].nameForApp : 'Unregistered'
+                        }
+                    }
+                );
                 arrayAttendees.push(selectedAttendees[i].email);
             }
         } else if (this.webMeetingAppName === config.app_name_webex_meetings) {
             workflowAction = 'createWebexMeetings';
 
             for (let i = 0; i < selectedAttendees.length; i++) {
-                webexMeetingsAttendeesCollection.push({ email: selectedAttendees[i].email, displayName: selectedAttendees[i].nameForApp });
+                webexMeetingsAttendeesCollection.push(
+                    {
+                        email: selectedAttendees[i].email,
+                        displayName: selectedAttendees[i].nameForApp
+                    }
+                );
                 arrayAttendees.push(selectedAttendees[i].email);
             }
         }
@@ -829,6 +859,9 @@ export default class GuidNodeGrdmapps extends Controller {
 
         let guidOrEmail = '';
         let profileUrl = '';
+        let isGuest = false;
+        let microsoftTeamsMail = '';
+        let userGuid = '';
 
         if (appName === config.app_name_microsoft_teams) {
             for (let i = 0; i < this.webMeetingAttendees.length; i++) {
@@ -837,9 +870,22 @@ export default class GuidNodeGrdmapps extends Controller {
                         continue;
                     }
                     if (this.webMeetingAttendees[i] === nodeAttendeesAll[j].pk) {
-                        guidOrEmail = nodeAttendeesAll[j].fields.is_guest ? '(' + nodeAttendeesAll[j].fields.microsoft_teams_mail + ')' : '@' + nodeAttendeesAll[j].fields.user_guid;
-                        profileUrl = nodeAttendeesAll[j].fields.is_guest ? '' : profileUrlBase + nodeAttendeesAll[j].fields.user_guid;
-                        this.selectedAttendees.push({ name: nodeAttendeesAll[j].fields.fullname + guidOrEmail, email: nodeAttendeesAll[j].fields.microsoft_teams_mail, nameForApp: nodeAttendeesAll[j].fields.microsoft_teams_user_name, profile: profileUrl, _id: nodeAttendeesAll[j].fields._id, is_guest: nodeAttendeesAll[j].fields.is_guest, disabled: false });
+                        isGuest = nodeAttendeesAll[j].fields.is_guest;
+                        microsoftTeamsMail = nodeAttendeesAll[j].fields.microsoft_teams_mail;
+                        userGuid = nodeAttendeesAll[j].fields.user_guid;
+
+                        guidOrEmail = isGuest ? '(' + microsoftTeamsMail + ')' : '@' + userGuid;
+                        profileUrl = isGuest ? '' : profileUrlBase + userGuid;
+                        this.selectedAttendees.push(
+                            {
+                                name: nodeAttendeesAll[j].fields.fullname + guidOrEmail,
+                                email: nodeAttendeesAll[j].fields.microsoft_teams_mail,
+                                nameForApp: nodeAttendeesAll[j].fields.microsoft_teams_user_name,
+                                profile: profileUrl, _id: nodeAttendeesAll[j].fields._id,
+                                is_guest: nodeAttendeesAll[j].fields.is_guest,
+                                disabled: false
+                            }
+                        );
                     }
                 }
             }
@@ -850,9 +896,23 @@ export default class GuidNodeGrdmapps extends Controller {
                         continue;
                     }
                     if (this.webMeetingAttendees[i] === nodeAttendeesAll[j].pk) {
-                        guidOrEmail = nodeAttendeesAll[j].fields.is_guest ? '(' + nodeAttendeesAll[j].fields.webex_meetings_mail + ')' : '@' + nodeAttendeesAll[j].fields.user_guid;
-                        profileUrl = nodeAttendeesAll[j].fields.is_guest ? '' : profileUrlBase + nodeAttendeesAll[j].fields.user_guid;
-                        this.selectedAttendees.push({ name: nodeAttendeesAll[j].fields.fullname + guidOrEmail, email: nodeAttendeesAll[j].fields.webex_meetings_mail, nameForApp: nodeAttendeesAll[j].fields.webex_meetings_display_name, profile: profileUrl, _id: nodeAttendeesAll[j].fields._id, is_guest: nodeAttendeesAll[j].fields.is_guest, disabled: false });
+                        isGuest = nodeAttendeesAll[j].fields.is_guest;
+                        webexMeetingsMail = nodeAttendeesAll[j].fields.webex_meetings_mail;
+                        userGuid = nodeAttendeesAll[j].fields.user_guid;
+
+                        guidOrEmail = isGuest ? '(' + webexMeetingsMail + ')' : '@' + userGuid;
+                        profileUrl = isGuest ? '' : profileUrlBase + userGuid;
+                        this.selectedAttendees.push(
+                            {
+                                name: nodeAttendeesAll[j].fields.fullname + guidOrEmail,
+                                email: nodeAttendeesAll[j].fields.webex_meetings_mail,
+                                nameForApp: nodeAttendeesAll[j].fields.webex_meetings_display_name,
+                                profile: profileUrl,
+                                _id: nodeAttendeesAll[j].fields._id,
+                                is_guest: nodeAttendeesAll[j].fields.is_guest,
+                                disabled: false
+                            }
+                        );
                     }
                 }
             }

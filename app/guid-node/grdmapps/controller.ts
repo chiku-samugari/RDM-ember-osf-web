@@ -1389,7 +1389,7 @@ export default class GuidNodeGrdmapps extends Controller {
                 cMonth = currentDatetime.getMonth() + 1;
                 cDate = currentDatetime.getDate();
                 nextDate = nYear + '/' + nMonth + '/' + nDate;
-                currentDate = cYear + '/' + cDate + '/' + cDate;
+                currentDate = cYear + '/' + cMonth + '/' + cDate;
 
                 if (currentDate !== nextDate) {
                     previous_web_meetings[i]['date_bar'] = true;

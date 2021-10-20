@@ -1312,6 +1312,8 @@ export default class GuidNodeGrdmapps extends Controller {
         const web_meeting_apps = JSON.parse(config.web_meeting_apps);
 
         let previousDatetime;
+        let pYear, pMonth, pDate;
+        let cYear, cMonth, cDate;
         let currentDatetime;
         let previousDate = '';
         let currentDate = '';

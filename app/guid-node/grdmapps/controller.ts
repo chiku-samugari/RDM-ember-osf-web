@@ -426,7 +426,7 @@ export default class GuidNodeGrdmapps extends Controller {
             this.set(
                 'msgInvalidWebhookUrl',
                 this.intl.t(
-                    'integromat.meetingDialog.invalid.empty', 
+                    'integromat.meetingDialog.invalid.empty',
                     { item: this.intl.t('integromat.workflows.alternative_webhook_url.label') },
                 ),
             );
@@ -469,7 +469,7 @@ export default class GuidNodeGrdmapps extends Controller {
                 body: JSON.stringify(payload),
             },
         )
-            .then((res) => {
+            .then(res => {
                 if (!res.ok) {
                     this.toast.error(this.intl.t('integromat.fail.registerAlternativeWebhookUrl'));
                     return;
@@ -518,8 +518,7 @@ export default class GuidNodeGrdmapps extends Controller {
                 this.intl.t(
                     'integromat.meetingDialog.invalid.empty',
                     { item: this.intl.t('integromat.signInAdress') },
-                ),
-            );
+                ));
             validFlag = false;
         }
         // else if(!(reg.test(email))){
@@ -564,7 +563,7 @@ export default class GuidNodeGrdmapps extends Controller {
                 guid = (selectedUser.name).slice(index, index + 5);
             }
         } else if (userType === 'radio_newGuest') {
-            guid = 'guest' + (new Date()).getTime();
+            guid = `guest${(new Date()).getTime()}`
             fullname = guestFullname;
             is_guest = true;
         }
@@ -589,7 +588,7 @@ export default class GuidNodeGrdmapps extends Controller {
                 body: JSON.stringify(payload),
             },
         )
-            .then((res) => {
+            .then(res => {
                 if (!res.ok) {
                     this.toast.error(
                         this.intl.t('integromat.fail.registerWebMeetingAppsEmail', { appName: this.webMeetingAppName }),
@@ -677,12 +676,12 @@ export default class GuidNodeGrdmapps extends Controller {
         const webMeetingStartTime = (
             <HTMLInputElement>document.querySelectorAll('select[id=create_teams_start_time]')[0]
         ).value;
-        const strWebMeetingStartDatetime = webMeetingStartDate + ' ' + webMeetingStartTime;
+        const strWebMeetingStartDatetime = `${webMeetingStartDate} {webMeetingStartTime}`;     
         const webMeetingEndDate = moment(this.webMeetingEndDate).format('YYYY-MM-DD');
         const webMeetingEndTime = (
             <HTMLInputElement>document.querySelectorAll('select[id=create_teams_end_time]')[0]
         ).value;
-        const strWebMeetingEndDatetime = webMeetingEndDate + ' ' + webMeetingEndTime;
+        const strWebMeetingEndDatetime = `${webMeetingEndDate} {webMeetingEndTime}`;
         const webMeetingLocation = this.webMeetingLocation;
         const webMeetingContent = this.webMeetingContent;
         const empty = '';
@@ -724,9 +723,9 @@ export default class GuidNodeGrdmapps extends Controller {
         // make attendees format
         if (this.webMeetingAppName === config.appNameMicrosoftTeams) {
             workflowAction = 'createMicrosoftTeamsMeeting';
-            for (let i = 0; i < selectedAttendees.length; i++) { 
+            for (let i = 0; i < selectedAttendees.length; i++) {
                 microsoftTeamsAttendeesCollectionAtCreate.push(
-                    { 
+                    {
                         emailAddress: {
                             address: selectedAttendees[i].email,
                             name: selectedAttendees[i].nameForApp ? selectedAttendees[i].nameForApp : 'Unregistered',
@@ -769,7 +768,7 @@ export default class GuidNodeGrdmapps extends Controller {
                 slackCreateMeeting: errorSlackCreateMeeting,
                 webappsUpdateMeeting: errorWebappsUpdateMeeting,
                 webappsUpdateAttendees: errorWebappsUpdateAttendees,
-                webappsUpdateAttendeesGrdmMeetingReg : errorWebappsUpdateAttendeesGrdmMeetingReg,
+                webappsUpdateAttendeesGrdmMeetingReg: errorWebappsUpdateAttendeesGrdmMeetingReg,
                 grdmUpdateMeetingReg: errorGrdmUpdateMeetingReg,
                 slackUpdateMeeting: errorSlackUpdateMeeting,
                 webappsDeleteMeeting: errorWebappsDeleteMeeting,
@@ -844,7 +843,8 @@ export default class GuidNodeGrdmapps extends Controller {
         let guidOrEmail = '';
         let profileUrl = '';
         let isGuest = false;
-        let microsoftTeamsMail, webexMeetingsMail;
+        let microsoftTeamsMail;
+        let webexMeetingsMail;
         let userGuid = '';
 
         if (appName === config.appNameMicrosoftTeams) {
@@ -858,14 +858,15 @@ export default class GuidNodeGrdmapps extends Controller {
                         microsoftTeamsMail = nodeAttendeesAll[j].fields.microsoft_teams_mail;
                         userGuid = nodeAttendeesAll[j].fields.user_guid;
 
-                        guidOrEmail = isGuest ? '(' + microsoftTeamsMail + ')' : '@' + userGuid;
+                        guidOrEmail = isGuest ? `(${microsoftTeamsMail})` : `@${userGuid}`;
                         profileUrl = isGuest ? '' : profileUrlBase + userGuid;
                         this.selectedAttendees.push(
                             {
                                 name: nodeAttendeesAll[j].fields.fullname + guidOrEmail,
                                 email: nodeAttendeesAll[j].fields.microsoft_teams_mail,
                                 nameForApp: nodeAttendeesAll[j].fields.microsoft_teams_user_name,
-                                profile: profileUrl, _id: nodeAttendeesAll[j].fields._id,
+                                profile: profileUrl,
+                                _id: nodeAttendeesAll[j].fields._id,
                                 is_guest: nodeAttendeesAll[j].fields.is_guest,
                                 disabled: false,
                             },
@@ -884,7 +885,7 @@ export default class GuidNodeGrdmapps extends Controller {
                         webexMeetingsMail = nodeAttendeesAll[j].fields.webex_meetings_mail;
                         userGuid = nodeAttendeesAll[j].fields.user_guid;
 
-                        guidOrEmail = isGuest ? '(' + webexMeetingsMail + ')' : '@' + userGuid;
+                        guidOrEmail = isGuest ? `(${webexMeetingsMail})` : `@${userGuid}`;
                         profileUrl = isGuest ? '' : profileUrlBase + userGuid;
                         this.selectedAttendees.push(
                             {
@@ -924,12 +925,12 @@ export default class GuidNodeGrdmapps extends Controller {
         const webMeetingStartTime = (
             <HTMLInputElement>document.querySelectorAll('select[id=update_start_time]')[0]
         ).value;
-        const strWebMeetingStartDatetime = webMeetingStartDate + ' ' + webMeetingStartTime;
+        const strWebMeetingStartDatetime = `${webMeetingStartDate} ${webMeetingStartTime}`;
         const webMeetingEndDate = moment(this.webMeetingEndDate).format('YYYY-MM-DD');
         const webMeetingEndTime = (
             <HTMLInputElement>document.querySelectorAll('select[id=update_end_time]')[0]
         ).value;
-        const strWebMeetingEndDatetime = webMeetingEndDate + ' ' + webMeetingEndTime;
+        const strWebMeetingEndDatetime = `${webMeetingEndDate} ${webMeetingEndTime}`;
         const webMeetingLocation = this.webMeetingLocation;
         const webMeetingContent = this.webMeetingContent;
         const webMeetingId = this.webMeetingUpdateMeetingId;
@@ -1040,7 +1041,7 @@ export default class GuidNodeGrdmapps extends Controller {
                 slackCreateMeeting: errorSlackCreateMeeting,
                 webappsUpdateMeeting: errorWebappsUpdateMeeting,
                 webappsUpdateAttendees: errorWebappsUpdateAttendees,
-                webappsUpdateAttendeesGrdmMeetingReg : errorWebappsUpdateAttendeesGrdmMeetingReg,
+                webappsUpdateAttendeesGrdmMeetingReg: errorWebappsUpdateAttendeesGrdmMeetingReg,
                 grdmUpdateMeetingReg: errorGrdmUpdateMeetingReg,
                 slackUpdateMeeting: errorSlackUpdateMeeting,
                 webappsDeleteMeeting: errorWebappsDeleteMeeting,
@@ -1108,8 +1109,8 @@ export default class GuidNodeGrdmapps extends Controller {
         const appNameDisp = this.webMeetingAppNameDisp;
         const guid = String(this.model.guid);
         const webMeetingSubject = this.webMeetingDeleteSubject;
-        const strWebMeetingStartDatetime = this.webMeetingDeleteStartDate + ' ' + this.webMeetingDeleteStartTime;
-        const strWebMeetingEndDatetime = this.webMeetingDeleteEndDate + ' ' + this.webMeetingDeleteEndTime;
+        const strWebMeetingStartDatetime = `${this.webMeetingDeleteStartDate} ${this.webMeetingDeleteStartTime}`;
+        const strWebMeetingEndDatetime = `${this.webMeetingDeleteEndDate} ${this.webMeetingDeleteEndTime}`;   
         const timestamp = new Date().getTime();
 
         const empty = '';
@@ -1335,8 +1336,8 @@ export default class GuidNodeGrdmapps extends Controller {
                 cYear = currentDatetime.getFullYear();
                 cMonth = currentDatetime.getMonth() + 1;
                 cDate = currentDatetime.getDate();
-                previousDate = pYear + '/' + pMonth + '/' + pDate;
-                currentDate = cYear + '/' + cMonth + '/' + cDate;
+                previousDate = `${pYear}/${pMonth}/${pDate}`;
+                currentDate = `${cYear}/${cMonth}/${cDate}`;
 
                 if (currentDate !== previousDate) {
                     upcomingWebMeetings[i]['date_bar'] = true;
@@ -1440,7 +1441,8 @@ export default class GuidNodeGrdmapps extends Controller {
         for (let i = 0; i < institutionUsers.length; i++) {
             attendeesInfo.push(
                 {
-                    name: institutionUsers[i].fullname + '@' + institutionUsers[i].guid, email: '',
+                    name: `${institutionUsers[i].fullname}@${institutionUsers[i].guid}`,
+                    email: '',
                     nameForApp: '',
                     profile: '',
                     _id: '',
@@ -1467,7 +1469,7 @@ export default class GuidNodeGrdmapps extends Controller {
         for (let i = 0; i < institutionUsers.length; i++) {
             unregisteredIstitutionUsers.push(
                 {
-                    name: institutionUsers[i].fullname + '@' + institutionUsers[i].guid + this.intl.t('integromat.meetingDialog.unregisteredLabel'),
+                    name: `${institutionUsers[i].fullname}@${institutionUsers[i].guid}${this.intl.t('integromat.meetingDialog.unregisteredLabel')}`
                     email: '',
                     nameForApp: '',
                     profile: profileUrlBase + institutionUsers[i].guid,
@@ -1482,7 +1484,7 @@ export default class GuidNodeGrdmapps extends Controller {
                     if (appName === config.appNameMicrosoftTeams) {
                         registeredIstitutionUsers.push(
                             {
-                                name: node_app_attendees[j].fields.fullname + '@' + node_app_attendees[j].fields.user_guid,
+                                name: `${node_app_attendees[j].fields.fullname}@${node_app_attendees[j].fields.user_guid}`,
                                 email: node_app_attendees[j].fields.microsoft_teams_mail,
                                 nameForApp: node_app_attendees[j].fields.microsoft_teams_user_name,
                                 profile: profileUrlBase + node_app_attendees[j].fields.user_guid,
@@ -1494,7 +1496,7 @@ export default class GuidNodeGrdmapps extends Controller {
                     } else if (appName === config.appNameWebexMeetings) {
                         registeredIstitutionUsers.push(
                             {
-                                name: node_app_attendees[j].fields.fullname + '@' + node_app_attendees[j].fields.user_guid,
+                                name: `${node_app_attendees[j].fields.fullname}@${node_app_attendees[j].fields.user_guid}`,
                                 email: node_app_attendees[j].fields.webex_meetings_mail,
                                 nameForApp: node_app_attendees[j].fields.webex_meetings_display_name,
                                 profile: profileUrlBase + node_app_attendees[j].fields.user_guid,
@@ -1512,7 +1514,7 @@ export default class GuidNodeGrdmapps extends Controller {
                         if (appName === config.appNameMicrosoftTeams) {
                             guestUsers.push(
                                 {
-                                    name: node_app_attendees[j].fields.fullname + '(' + node_app_attendees[j].fields.microsoft_teams_mail + ')',
+                                    name: `${node_app_attendees[j].fields.fullname}(${node_app_attendees[j].fields.microsoft_teams_mail})`,
                                     email: node_app_attendees[j].fields.microsoft_teams_mail,
                                     nameForApp: node_app_attendees[j].fields.microsoft_teams_user_name,
                                     profile: '',
@@ -1524,7 +1526,7 @@ export default class GuidNodeGrdmapps extends Controller {
                         } else if (appName === config.appNameWebexMeetings) {
                             guestUsers.push(
                                 {
-                                    name: node_app_attendees[j].fields.fullname + '(' + node_app_attendees[j].fields.webex_meetings_mail + ')',
+                                    name: `${node_app_attendees[j].fields.fullname}(${node_app_attendees[j].fields.webex_meetings_mail})`,
                                     email: node_app_attendees[j].fields.webex_meetings_mail,
                                     nameForApp: node_app_attendees[j].fields.webex_meetings_display_name,
                                     profile: '',

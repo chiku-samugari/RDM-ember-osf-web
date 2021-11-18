@@ -48,6 +48,7 @@ interface attendees {
     _id: string;
     is_guest: boolean;
 }
+/* eslint-enable camelcase */
 
 interface nodeAppAttendees {
     [fields: string]: attendees;
@@ -482,7 +483,13 @@ export default class GuidNodeGrdmapps extends Controller {
             });
     }
     @action
-    webMeetingAppsEmailValidationCheck(this: GuidNodeGrdmapps, userType: string, selectedUser: attendeesInfo, guestFullname: string, email: string) {
+    webMeetingAppsEmailValidationCheck(
+        this: GuidNodeGrdmapps,
+        userType: string,
+        selectedUser: attendeesInfo,
+        guestFullname: string,
+        email: string
+    ) {
         let validFlag = true;
         // let reg = new RegExp();
 

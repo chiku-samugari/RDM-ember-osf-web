@@ -892,6 +892,14 @@ export default class ProjectEditor extends Component {
         return `${this.node.links.html}files`;
     }
 
+    @computed('environmentModel')
+    get postScriptName() {
+        if (this.get('environmentModel') === null) {
+            return 'postInstall';
+        }
+        return 'postBuild';
+    }
+
     validateToken() {
         if (!this.binderHubConfig || !this.binderHubConfig.get('isFulfilled')) {
             return true;
@@ -976,7 +984,7 @@ export default class ProjectEditor extends Component {
         if (!files) {
             return;
         }
-        const scriptFiles = files.filter(file => file.name === 'postInstall');
+        const scriptFiles = files.filter(file => file.name === this.get('postScriptName'));
         this.set('postInstallScriptModel', scriptFiles.length > 0 ? scriptFiles[0] : null);
         if (scriptFiles.length === 0 && this.hasPostInstall === false) {
             return;

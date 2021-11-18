@@ -1773,6 +1773,8 @@ binderhub:
         unavailable: 'Dockerfileがエディタ以外で変更されました。'
         has_post_install: 'postInstallスクリプトを使用します。'
         no_post_install: 'デフォルトストレージ内にpostInstallスクリプトを定義すると、イメージビルド時に任意の処理を実行できます。'
+        has_post_build: 'postBuildスクリプトを使用します。'
+        no_post_build: 'デフォルトストレージ内にpostBuildスクリプトを定義すると、イメージビルド時に任意の処理を実行できます。'
         open_post_install: 'ファイルを開く'
         open_node_files: 'ファイル一覧を開く'
         refresh_post_install: '更新'

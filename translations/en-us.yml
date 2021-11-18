@@ -1774,6 +1774,8 @@ binderhub:
         unavailable: 'This Editor is disabled because its Dockerfile was customized manually.'
         has_post_install: 'Using the postInstall script.'
         no_post_install: 'You can define a postInstall script in the default storage to perform optional operations during image build.'
+        has_post_build: 'Using the postBuild script.'
+        no_post_build: 'You can define a postBuild script in the default storage to perform optional operations during image build.'
         open_post_install: 'Open File'
         open_node_files: 'Open Files'
         refresh_post_install: 'Refresh'

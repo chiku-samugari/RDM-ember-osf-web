@@ -88,6 +88,8 @@ interface ConfigurationFile {
     name: string;
     property: 'dockerfile' | 'environment' | 'requirements' | 'apt' | 'installR';
     modelProperty: 'dockerfileModel' | 'environmentModel' | 'requirementsModel' | 'aptModel' | 'installRModel';
+    changedProperty: 'dockerfileManuallyChanged' | 'environmentManuallyChanged' |
+        'requirementsManuallyChanged' | 'aptManuallyChanged' | 'installRManuallyChanged';
 }
 
 interface ImageURL {
@@ -182,28 +184,14 @@ export default class ProjectEditor extends Component {
         return this.binderHubConfig.get('deployment');
     }
 
-    @computed(
-        'dockerfileManuallyChanged', 'environmentManuallyChanged',
-        'requirementsManuallyChanged', 'aptManuallyChanged',
-        'installRManuallyChanged',
-    )
+    @computed('dirtyConfigurationFiles')
     get manuallyChanged() {
-        if (this.dockerfileManuallyChanged) {
-            return true;
-        }
-        if (this.environmentManuallyChanged) {
-            return true;
-        }
-        if (this.requirementsManuallyChanged) {
-            return true;
-        }
-        if (this.aptManuallyChanged) {
-            return true;
-        }
-        if (this.installRManuallyChanged) {
-            return true;
-        }
-        return false;
+        return this.get('dirtyConfigurationFiles').length > 0;
+    }
+
+    @computed('dirtyConfigurationFiles')
+    get dirtyConfigurationFilenames() {
+        return this.get('dirtyConfigurationFiles').map(file => file.name).join(', ');
     }
 
     @computed('dockerfile')
@@ -238,13 +226,13 @@ export default class ProjectEditor extends Component {
         return this.verifyHashHeader(content);
     }
 
-    @computed('apt', 'environment')
+    @computed('installR', 'environment')
     get installRManuallyChanged() {
         const env = this.get('environment');
         if (!env) {
             return false;
         }
-        const content = this.get('apt');
+        const content = this.get('installR');
         return this.verifyHashHeader(content);
     }
 
@@ -934,12 +922,46 @@ export default class ProjectEditor extends Component {
 
     get configurationFiles(): ConfigurationFile[] {
         return [
-            { name: 'Dockerfile', property: 'dockerfile', modelProperty: 'dockerfileModel' },
-            { name: 'environment.yml', property: 'environment', modelProperty: 'environmentModel' },
-            { name: 'requirements.txt', property: 'requirements', modelProperty: 'requirementsModel' },
-            { name: 'apt.txt', property: 'apt', modelProperty: 'aptModel' },
-            { name: 'install.R', property: 'installR', modelProperty: 'installRModel' },
+            {
+                name: 'Dockerfile',
+                property: 'dockerfile',
+                modelProperty: 'dockerfileModel',
+                changedProperty: 'dockerfileManuallyChanged',
+            },
+            {
+                name: 'environment.yml',
+                property: 'environment',
+                modelProperty: 'environmentModel',
+                changedProperty: 'environmentManuallyChanged',
+            },
+            {
+                name: 'requirements.txt',
+                property: 'requirements',
+                modelProperty: 'requirementsModel',
+                changedProperty: 'requirementsManuallyChanged',
+            },
+            {
+                name: 'apt.txt',
+                property: 'apt',
+                modelProperty: 'aptModel',
+                changedProperty: 'aptManuallyChanged',
+            },
+            {
+                name: 'install.R',
+                property: 'installR',
+                modelProperty: 'installRModel',
+                changedProperty: 'installRManuallyChanged',
+            },
         ];
+    }
+
+    @computed(
+        'dockerfileManuallyChanged', 'environmentManuallyChanged',
+        'requirementsManuallyChanged', 'aptManuallyChanged',
+        'installRManuallyChanged',
+    )
+    get dirtyConfigurationFiles(): ConfigurationFile[] {
+        return this.get('configurationFiles').filter(file => this.get(file.changedProperty));
     }
 
     async getRootFiles(reload: boolean = false) {
@@ -1069,19 +1091,25 @@ export default class ProjectEditor extends Component {
         await this.loadCurrentConfig(true);
     }
 
-    async performResetDockerfile() {
-        if (!this.dockerfileModel) {
+    async performResetDirtyFiles() {
+        const files = this.get('dirtyConfigurationFiles');
+        await Promise.all(files.map(file => this.performResetDirtyFile(file)));
+        window.location.reload();
+    }
+
+    async performResetDirtyFile(configFile: ConfigurationFile) {
+        const fileModel = this.get(configFile.modelProperty);
+        if (!fileModel) {
             throw new EmberError('Illegal config');
         }
-        const links = this.dockerfileModel.get('links');
+        const links = fileModel.get('links');
         await this.currentUser.authenticatedAJAX({
             url: getHref(links.delete),
             type: 'DELETE',
             xhrFields: { withCredentials: true },
         });
-        this.set('dockerfileModel', null);
-        this.set('dockerfile', '');
-        window.location.reload();
+        this.set(configFile.modelProperty, null);
+        this.set(configFile.property, '');
     }
 
     @action
@@ -1144,19 +1172,32 @@ export default class ProjectEditor extends Component {
     }
 
     @action
-    viewDockerfile(this: ProjectEditor) {
-        if (!this.dockerfileModel) {
+    viewDirtyFiles(this: ProjectEditor) {
+        const files = this.get('dirtyConfigurationFiles');
+        if (files.length === 0) {
             throw new EmberError('Illegal config');
         }
-        const fileUrl = this.dockerfileModel.get('links').html as string;
+        if (files.length > 1) {
+            const link = this.get('nodeFilesLink');
+            if (!link) {
+                throw new EmberError('Illegal config');
+            }
+            window.open(link, '_blank');
+            return;
+        }
+        const fileModel = this.get(files[0].modelProperty);
+        if (!fileModel) {
+            throw new EmberError('Illegal config');
+        }
+        const fileUrl = fileModel.get('links').html as string;
         window.open(fileUrl, '_blank');
     }
 
     @action
-    resetDockerfile(this: ProjectEditor) {
+    resetDirtyFiles(this: ProjectEditor) {
         later(async () => {
             try {
-                await this.performResetDockerfile();
+                await this.performResetDirtyFiles();
             } catch (exception) {
                 this.onError(exception, this.intl.t('binderhub.error.modify_files_error'));
             }

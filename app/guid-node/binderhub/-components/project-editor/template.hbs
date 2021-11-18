@@ -9,9 +9,10 @@
                     data-test-view-dockerfile
                     type='button'
                     class='btn btn-default'
-                    {{action this.viewDockerfile target=this}}
+                    {{action this.viewDirtyFiles target=this}}
                 >
                     {{t 'binderhub.deployment.view_dockerfile'}}
+                    {{this.dirtyConfigurationFilenames}}
                 </button>
                 <button
                     data-test-reset-dockerfile
@@ -20,6 +21,7 @@
                     {{action (mut this.showResetDockerfileConfirmDialog) true}}
                 >
                     {{t 'binderhub.deployment.reset_dockerfile'}}
+                    {{this.dirtyConfigurationFilenames}}
                 </button>
             {{/if}}
         {{else}}
@@ -186,6 +188,7 @@
     <modal.header>
         <h4>
             {{t 'binderhub.deployment.reset_dockerfile_confirm_dialog_title'}}
+            {{this.dirtyConfigurationFilenames}}
         </h4>
     </modal.header>
     <modal.body>
@@ -198,7 +201,7 @@
             {{t 'general.cancel'}}
         </BsButton>
         <BsButton
-            @onClick={{action this.resetDockerfile}}
+            @onClick={{action this.resetDirtyFiles}}
             @type='success'
         >
             {{t 'general.ok'}}

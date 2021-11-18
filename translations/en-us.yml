@@ -1791,3 +1791,5 @@ binderhub:
         jupyterhub_auth_error: 'An error occurred while connecting to the JupyterHub. Please reauthenticate.'
         jupyterhub_api_error: 'An error occurred while connecting to the JupyterHub. Please reload this page.'
         reconnect_jupyterhub: 'Authorize'
+        modify_files_error: 'Failed to update the files. Please check your network connection.'
+        load_files_error: 'Failed to load the files. Please check your network connection.'

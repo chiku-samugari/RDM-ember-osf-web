@@ -5,6 +5,7 @@ import { action, computed } from '@ember/object';
 import { later } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 import DS from 'ember-data';
+import Intl from 'ember-intl/services/intl';
 import { requiredAction } from 'ember-osf-web/decorators/component';
 import BinderHubConfigModel from 'ember-osf-web/models/binderhub-config';
 import FileModel from 'ember-osf-web/models/file';
@@ -98,6 +99,8 @@ interface ImageURL {
 export default class ProjectEditor extends Component {
     @service currentUser!: CurrentUser;
 
+    @service intl!: Intl;
+
     node?: Node | null = null;
 
     binderHubConfig: DS.PromiseObject<BinderHubConfigModel> & BinderHubConfigModel = this.binderHubConfig;
@@ -140,6 +143,8 @@ export default class ProjectEditor extends Component {
 
     @requiredAction renewToken!: () => void;
 
+    @requiredAction onError!: (exception: any, message: string) => void;
+
     didReceiveAttrs() {
         if (!this.validateToken()) {
             return;
@@ -149,8 +154,12 @@ export default class ProjectEditor extends Component {
         }
         this.loadingPath = this.configFolder.get('path');
         later(async () => {
-            await this.loadCurrentConfig();
-            await this.performRefreshPostInstall();
+            try {
+                await this.loadCurrentConfig();
+                await this.performRefreshPostInstall();
+            } catch (exception) {
+                this.onError(exception, this.intl.t('binderhub.error.load_files_error'));
+            }
         }, 0);
     }
 
@@ -428,7 +437,11 @@ export default class ProjectEditor extends Component {
         props.installR = this.getUpdatedInstallR(key, value);
 
         later(async () => {
-            await this.saveCurrentConfig(props);
+            try {
+                await this.saveCurrentConfig(props);
+            } catch (exception) {
+                this.onError(exception, this.intl.t('binderhub.error.modify_files_error'));
+            }
         }, 0);
     }
 
@@ -1134,7 +1147,11 @@ export default class ProjectEditor extends Component {
     @action
     resetDockerfile(this: ProjectEditor) {
         later(async () => {
-            await this.performResetDockerfile();
+            try {
+                await this.performResetDockerfile();
+            } catch (exception) {
+                this.onError(exception, this.intl.t('binderhub.error.modify_files_error'));
+            }
         }, 0);
     }
 
@@ -1142,7 +1159,11 @@ export default class ProjectEditor extends Component {
     refreshPostInstall(this: ProjectEditor) {
         this.set('refreshingPostInstallScript', true);
         later(async () => {
-            await this.performRefreshPostInstall(true);
+            try {
+                await this.performRefreshPostInstall(true);
+            } catch (exception) {
+                this.onError(exception, this.intl.t('binderhub.error.modify_files_error'));
+            }
             this.set('refreshingPostInstallScript', false);
         }, 0);
     }

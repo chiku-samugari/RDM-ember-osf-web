@@ -36,7 +36,9 @@
                                     local-class='jupyter-link'
                                     {{action this.openServer server target=this}}
                                 >
-                                    {{server.url}}
+                                    {{#if server.ready}}
+                                        {{server.url}}
+                                    {{/if}}
                                 </button>
                             </td>
                             <td class='col-md-3'> {{moment-format server.last_activity 'YYYY-MM-DD hh:mm A'}}</td>

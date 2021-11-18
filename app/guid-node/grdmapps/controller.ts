@@ -1469,7 +1469,7 @@ export default class GuidNodeGrdmapps extends Controller {
         for (let i = 0; i < institutionUsers.length; i++) {
             unregisteredIstitutionUsers.push(
                 {
-                    name: `${institutionUsers[i].fullname}@${institutionUsers[i].guid}${this.intl.t('integromat.meetingDialog.unregisteredLabel')}`
+                    name: `${institutionUsers[i].fullname}@${institutionUsers[i].guid}${this.intl.t('integromat.meetingDialog.unregisteredLabel')}`,
                     email: '',
                     nameForApp: '',
                     profile: profileUrlBase + institutionUsers[i].guid,

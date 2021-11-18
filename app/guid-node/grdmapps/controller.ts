@@ -563,7 +563,7 @@ export default class GuidNodeGrdmapps extends Controller {
                 guid = (selectedUser.name).slice(index, index + 5);
             }
         } else if (userType === 'radio_newGuest') {
-            guid = `guest${(new Date()).getTime()}`
+            guid = `guest${(new Date()).getTime()}`;
             fullname = guestFullname;
             is_guest = true;
         }
@@ -676,7 +676,7 @@ export default class GuidNodeGrdmapps extends Controller {
         const webMeetingStartTime = (
             <HTMLInputElement>document.querySelectorAll('select[id=create_teams_start_time]')[0]
         ).value;
-        const strWebMeetingStartDatetime = `${webMeetingStartDate} {webMeetingStartTime}`;     
+        const strWebMeetingStartDatetime = `${webMeetingStartDate} {webMeetingStartTime}`;
         const webMeetingEndDate = moment(this.webMeetingEndDate).format('YYYY-MM-DD');
         const webMeetingEndTime = (
             <HTMLInputElement>document.querySelectorAll('select[id=create_teams_end_time]')[0]
@@ -962,11 +962,11 @@ export default class GuidNodeGrdmapps extends Controller {
         } else if (this.webMeetingAppName === config.appNameWebexMeetings) {
             attendeeNum = selectedAttendees.length;
         }
-        //validation check for input
+        // validation check for input
         if (!this.webMeetingvalidationCheck(webMeetingSubject, attendeeNum, this.webMeetingStartDate, webMeetingStartTime, this.webMeetingEndDate, webMeetingEndTime, strWebMeetingStartDatetime, strWebMeetingEndDatetime)) {
             return;
         }
-        //make attendees format
+        // make attendees format
         if (appName === config.appNameMicrosoftTeams) {
             workflowAction = 'updateMicrosoftTeamsMeeting';
 
@@ -1110,7 +1110,7 @@ export default class GuidNodeGrdmapps extends Controller {
         const guid = String(this.model.guid);
         const webMeetingSubject = this.webMeetingDeleteSubject;
         const strWebMeetingStartDatetime = `${this.webMeetingDeleteStartDate} ${this.webMeetingDeleteStartTime}`;
-        const strWebMeetingEndDatetime = `${this.webMeetingDeleteEndDate} ${this.webMeetingDeleteEndTime}`;   
+        const strWebMeetingEndDatetime = `${this.webMeetingDeleteEndDate} ${this.webMeetingDeleteEndTime}`;
         const timestamp = new Date().getTime();
 
         const empty = '';
@@ -1226,7 +1226,8 @@ export default class GuidNodeGrdmapps extends Controller {
                 method: 'POST',
                 headers,
                 body: JSON.stringify(payload),
-            })
+            }
+            )
             .then(res => {
                 if (!res.ok) {
                     this.toast.error(this.intl.t('integromat.error.failedToRequest'));
@@ -1246,7 +1247,7 @@ export default class GuidNodeGrdmapps extends Controller {
             });
     }
 
-    reqMessage(url: string, reqBody: reqBody, appName: string) {
+    reqMessage(url: string, body: reqBody, appName: string) {
         const headers = this.currentUser.ajaxHeaders();
         url = reqestMessagesUrl.replace('{}', String(this.model.guid));
 
@@ -1255,8 +1256,9 @@ export default class GuidNodeGrdmapps extends Controller {
             {
                 method: 'POST',
                 headers,
-                body: JSON.stringify(reqBody),
-            })
+                body: JSON.stringify(body),
+            }
+            )
             .then(res => {
                 if (!res.ok) {
                     this.toast.error(this.intl.t('integromat.error.failedToGetMessage'));
@@ -1269,7 +1271,7 @@ export default class GuidNodeGrdmapps extends Controller {
                     this.toast.info(this.intl.t(data.integromatMsg));
                     this.save();
                 } else if (data.integromatMsg.match('.error.')) {
-                    this.toast.error(this.intl.t(data.integromatMsg, { appName: appName }));
+                    this.toast.error(this.intl.t(data.integromatMsg, { appName }));
                     this.save();
                 } else {
                     if (data.notify) {
@@ -1309,9 +1311,13 @@ export default class GuidNodeGrdmapps extends Controller {
         const webMeetingApps = JSON.parse(config.webMeetingApps);
 
         let previousDatetime;
-        let pYear, pMonth, pDate;
+        let pYear;
+        let pMonth;
+        let pDate;
         let currentDatetime;
-        let cYear, cMonth, cDate;
+        let cYear;
+        let cMonth;
+        let cDate;
         let previousDate = '';
         let currentDate = '';
 
@@ -1324,14 +1330,14 @@ export default class GuidNodeGrdmapps extends Controller {
                 }
             }
 
-            //for display Date Bar
+            // for display Date Bar
             if (i === 0) {
                 upcomingWebMeetings[i]['date_bar'] = false;
             } else if (i !== 0) {
                 previousDatetime = new Date(upcomingWebMeetings[i - 1].fields.start_datetime);
                 pYear = previousDatetime.getFullYear();
                 pMonth = previousDatetime.getMonth() + 1;
-                pDate = previousDatetime.getDate()
+                pDate = previousDatetime.getDate();
                 currentDatetime = new Date(upcomingWebMeetings[i].fields.start_datetime);
                 cYear = currentDatetime.getFullYear();
                 cMonth = currentDatetime.getMonth() + 1;
@@ -1385,8 +1391,8 @@ export default class GuidNodeGrdmapps extends Controller {
                 cYear = currentDatetime.getFullYear();
                 cMonth = currentDatetime.getMonth() + 1;
                 cDate = currentDatetime.getDate();
-                nextDate = nYear + '/' + nMonth + '/' + nDate;
-                currentDate = cYear + '/' + cMonth + '/' + cDate;
+                nextDate = `${nYear}/${nMonth}/${nDate}`;
+                currentDate = `${cYear}/${cMonth}/${cDate}`;
 
                 if (currentDate !== nextDate) {
                     previousWebMeetings[i]['date_bar'] = true;
@@ -1521,7 +1527,7 @@ export default class GuidNodeGrdmapps extends Controller {
                                     _id: node_app_attendees[j].fields._id,
                                     is_guest: true,
                                     disabled: false,
-                                 },
+                                },
                             );
                         } else if (appName === config.appNameWebexMeetings) {
                             guestUsers.push(

@@ -970,7 +970,7 @@ export default class GuidNodeGrdmapps extends Controller {
         if (appName === config.appNameMicrosoftTeams) {
             workflowAction = 'updateMicrosoftTeamsMeeting';
 
-            for (let i = 0; i < selectedAttendees.length; i++) { 
+            for (let i = 0; i < selectedAttendees.length; i++) {
                 microsoftTeamsAttendeesCollectionAtUpdate.push(
                     {
                         address: selectedAttendees[i].email,
@@ -1226,8 +1226,8 @@ export default class GuidNodeGrdmapps extends Controller {
                 method: 'POST',
                 headers,
                 body: JSON.stringify(payload),
-            }
-            )
+            },
+        )
             .then(res => {
                 if (!res.ok) {
                     this.toast.error(this.intl.t('integromat.error.failedToRequest'));
@@ -1257,8 +1257,8 @@ export default class GuidNodeGrdmapps extends Controller {
                 method: 'POST',
                 headers,
                 body: JSON.stringify(body),
-            }
-            )
+            },
+        )
             .then(res => {
                 if (!res.ok) {
                     this.toast.error(this.intl.t('integromat.error.failedToGetMessage'));
@@ -1365,9 +1365,13 @@ export default class GuidNodeGrdmapps extends Controller {
         const webMeetingApps = JSON.parse(config.webMeetingApps);
 
         let currentDatetime;
-        let cYear, cMonth, cDate;
+        let cYear;
+        let cMonth;
+        let cDate;
         let nextDatetime;
-        let nYear, nMonth, nDate;
+        let nYear;
+        let nMonth;
+        let nDate;
         let nextDate = '';
         let currentDate = '';
 

@@ -545,9 +545,9 @@ export default class GuidNodeGrdmapps extends Controller {
     registerWebMeetingAppsEmail(this: GuidNodeGrdmapps) {
         const headers = this.currentUser.ajaxHeaders();
         const url = registerWebMeetingAppsEmailUrl.replace('{}', String(this.model.guid));
-        const selectedUser = this.selectedUser;
-        const guestFullname = this.guestFullname;
-        const userType = this.userType;
+        const selectedUser = this.selectedUser as attendeesInfo;
+        const guestFullname = this.guestFullname as string;
+        const userType = this.userType as string;
         let _id = null;
         let guid = null;
         let fullname = '';
@@ -559,8 +559,8 @@ export default class GuidNodeGrdmapps extends Controller {
         }
 
         if (userType === 'radio_grdmUserOrRegisteredGuest') {
-            if (this.selectedUser._id) {
-                _id = this.selectedUser._id;
+            if (selectedUser._id) {
+                _id = selectedUser._id;
             }
 
             if (selectedUser.is_guest) {

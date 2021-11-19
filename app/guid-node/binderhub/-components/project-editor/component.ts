@@ -417,6 +417,10 @@ export default class ProjectEditor extends Component {
     }
 
     updateFiles(key: DockerfileProperty, value: string) {
+        if (this.manuallyChanged) {
+            // Skip updating
+            return;
+        }
         const props: { [key: string]: string; } = {};
         props.dockerfile = this.getUpdatedDockerfile(key, value);
         props.environment = this.getUpdatedEnvironment(key, value);

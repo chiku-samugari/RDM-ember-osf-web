@@ -23,6 +23,11 @@ interface reqBody {
     timestamp: string;
 }
 
+interface institutionUsers {
+    fullname: string;
+    guid: string;
+}
+/* eslint-disable camelcase */
 interface attendeesInfo {
     name: string;
     email: string;
@@ -33,11 +38,6 @@ interface attendeesInfo {
     disabled: boolean;
 }
 
-interface institutionUsers {
-    fullname: string;
-    guid: string;
-}
-/* eslint-disable camelcase */
 interface attendees {
     fullname: string;
     user_guid: string;
@@ -294,8 +294,8 @@ export default class GuidNodeGrdmapps extends Controller {
     }
 
     @action
-    setWorkflow(this: GuidNodeGrdmapps, workflow_desp: string) {
-        const workflowType = workflow_desp.split('.')[2];
+    setWorkflow(this: GuidNodeGrdmapps, workflowDesp: string) {
+        const workflowType = workflowDesp.split('.')[2];
 
         if (!this.config) {
             throw new EmberError('Illegal config');
@@ -309,7 +309,7 @@ export default class GuidNodeGrdmapps extends Controller {
         let url = '';
 
         for (let i = 0; i < workflows.length; i++) {
-            if (workflows[i].fields.workflow_description === workflow_desp) {
+            if (workflows[i].fields.workflow_description === workflowDesp) {
                 workflowId = workflows[i].pk;
                 for (let j = 0; j < nodeWorkflows.length; j++) {
                     if (nodeWorkflows[j].fields.workflow === workflowId) {
@@ -551,7 +551,7 @@ export default class GuidNodeGrdmapps extends Controller {
         let _id = null;
         let guid = null;
         let fullname = '';
-        let is_guest = false;
+        let isGuest = false;
 
         // validation check
         if (!this.webMeetingAppsEmailValidationCheck(userType, selectedUser, guestFullname, this.signInAddressOfApp)) {
@@ -564,7 +564,7 @@ export default class GuidNodeGrdmapps extends Controller {
             }
 
             if (selectedUser.is_guest) {
-                is_guest = true;
+                isGuest = true;
             } else {
                 const index = (selectedUser.name).indexOf('@') + 1;
                 guid = (selectedUser.name).slice(index, index + 5);
@@ -572,7 +572,7 @@ export default class GuidNodeGrdmapps extends Controller {
         } else if (userType === 'radio_newGuest') {
             guid = `guest${(new Date()).getTime()}`;
             fullname = guestFullname;
-            is_guest = true;
+            isGuest = true;
         }
 
         const payload = {
@@ -582,7 +582,7 @@ export default class GuidNodeGrdmapps extends Controller {
             appName: this.webMeetingAppName,
             email: this.signInAddressOfApp,
             username: this.usernameOfApp,
-            is_guest: is_guest,
+            is_guest: isGuest,
         };
 
         this.resetValue('registerAppsEmail');

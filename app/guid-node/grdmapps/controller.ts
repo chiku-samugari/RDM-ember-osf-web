@@ -1528,7 +1528,7 @@ export default class GuidNodeGrdmapps extends Controller {
         this: GuidNodeGrdmapps,
         nodeAppAttendees: nodeAppAttendees[],
         institutionUsers: institutionUsers[],
-        suggestion_disabled: boolean,
+        suggestionDisabled: boolean,
         appName: string,
     ) {
         if (!this.config) {
@@ -1559,7 +1559,7 @@ export default class GuidNodeGrdmapps extends Controller {
                     profile: profileUrlBase + institutionUsers[i].guid,
                     _id: '',
                     is_guest: false,
-                    disabled: suggestion_disabled,
+                    disabled: suggestionDisabled,
                 },
             );
 
@@ -1645,13 +1645,13 @@ export default class GuidNodeGrdmapps extends Controller {
         const config = this.config.content as GrdmappsConfigModel;
         const nodeMicrosoftTeamsAttendees = JSON.parse(config.nodeMicrosoftTeamsAttendees);
         const institutionUsers = JSON.parse(config.institutionUsers);
-        const app_name = config.appNameMicrosoftTeams;
+        const appName = config.appNameMicrosoftTeams;
 
         const institutionMicrosoftTeamsUsers = this.makeInstitutionUserList(
             nodeMicrosoftTeamsAttendees,
             institutionUsers,
             true,
-            app_name,
+            appName,
         );
 
         return institutionMicrosoftTeamsUsers;
@@ -1665,13 +1665,13 @@ export default class GuidNodeGrdmapps extends Controller {
         const config = this.config.content as GrdmappsConfigModel;
         const nodeMicrosoftTeamsAttendees = JSON.parse(config.nodeMicrosoftTeamsAttendees);
         const institutionUsers = JSON.parse(config.institutionUsers);
-        const app_name = config.appNameMicrosoftTeams;
+        const appName = config.appNameMicrosoftTeams;
 
         const institutionMicrosoftTeamsUsers = this.makeInstitutionUserList(
             nodeMicrosoftTeamsAttendees,
             institutionUsers,
             false,
-            app_name,
+            appName,
         );
 
         return institutionMicrosoftTeamsUsers;
@@ -1685,13 +1685,13 @@ export default class GuidNodeGrdmapps extends Controller {
         const config = this.config.content as GrdmappsConfigModel;
         const nodeWebexMeetingsAttendees = JSON.parse(config.nodeWebexMeetingsAttendees);
         const institutionUsers = JSON.parse(config.institutionUsers);
-        const app_name = config.appNameWebexMeetings;
+        const appName = config.appNameWebexMeetings;
 
         const institutionWebexMeetingsUsers = this.makeInstitutionUserList(
             nodeWebexMeetingsAttendees,
             institutionUsers,
             true,
-            app_name,
+            appName,
         );
 
         return institutionWebexMeetingsUsers;
@@ -1705,13 +1705,13 @@ export default class GuidNodeGrdmapps extends Controller {
         const config = this.config.content as GrdmappsConfigModel;
         const nodeWebexMeetingsAttendees = JSON.parse(config.nodeWebexMeetingsAttendees);
         const institutionUsers = JSON.parse(config.institutionUsers);
-        const app_name = config.appNameWebexMeetings;
+        const appName = config.appNameWebexMeetings;
 
         const institutionWebexMeetingsUsers = this.makeInstitutionUserList(
             nodeWebexMeetingsAttendees,
             institutionUsers,
             false,
-            app_name,
+            appName,
         );
 
         return institutionWebexMeetingsUsers;

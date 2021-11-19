@@ -488,7 +488,7 @@ export default class GuidNodeGrdmapps extends Controller {
         userType: string,
         selectedUser: attendeesInfo,
         guestFullname: string,
-        email: string
+        email: string,
     ) {
         let validFlag = true;
         // let reg = new RegExp();
@@ -613,7 +613,17 @@ export default class GuidNodeGrdmapps extends Controller {
     }
 
     @action
-    webMeetingvalidationCheck(this: GuidNodeGrdmapps, subject: string, attendeesNum: number, startDate: string, startTime: string, endDate: string, endTime: string, startDatetime: string, endDatetime: string) {
+    webMeetingvalidationCheck(
+        this: GuidNodeGrdmapps,
+        subject: string,
+        attendeesNum: number,
+        startDate: string,
+        startTime: string,
+        endDate: string,
+        endTime: string,
+        startDatetime: string,
+        endDatetime: string,
+    ) {
         const now = new Date();
         const start = new Date(startDatetime);
         const end = new Date(endDatetime);
@@ -804,7 +814,20 @@ export default class GuidNodeGrdmapps extends Controller {
     }
 
     @action
-    makeUpdateMeetingDialog(this: GuidNodeGrdmapps, meetingPk: string, meetingId: string, joinUrl: string, meetingPassword: string, appId: string, subject: string, attendees:string[], startDatetime: string, endDatetime: string, location: string, content: string) {
+    makeUpdateMeetingDialog(
+        this: GuidNodeGrdmapps,
+        meetingPk: string,
+        meetingId: string,
+        joinUrl: string,
+        meetingPassword: string,
+        appId: string,
+        subject: string,
+        attendees:string[],
+        startDatetime: string,
+        endDatetime: string,
+        location: string,
+        content: string,
+    ) {
         if (!this.config) {
             throw new EmberError('Illegal config');
         }
@@ -970,7 +993,16 @@ export default class GuidNodeGrdmapps extends Controller {
             attendeeNum = selectedAttendees.length;
         }
         // validation check for input
-        if (!this.webMeetingvalidationCheck(webMeetingSubject, attendeeNum, this.webMeetingStartDate, webMeetingStartTime, this.webMeetingEndDate, webMeetingEndTime, strWebMeetingStartDatetime, strWebMeetingEndDatetime)) {
+        if (!this.webMeetingvalidationCheck(
+                webMeetingSubject,
+                attendeeNum,
+                this.webMeetingStartDate,
+                webMeetingStartTime,
+                this.webMeetingEndDate,
+                webMeetingEndTime,
+                strWebMeetingStartDatetime,
+                strWebMeetingEndDatetime,
+            )) {
             return;
         }
         // make attendees format
@@ -1078,7 +1110,14 @@ export default class GuidNodeGrdmapps extends Controller {
     }
 
     @action
-    makeDeleteDialog(this: GuidNodeGrdmapps, meetingId: string, appId: string, subject: string, startDatetime: string, endDatetime: string) {
+    makeDeleteDialog(
+        this: GuidNodeGrdmapps,
+        meetingId: string,
+        appId: string,
+        subject: string,
+        startDatetime: string,
+        endDatetime: string,
+    ) {
         if (!this.config) {
             throw new EmberError('Illegal config');
         }
@@ -1186,7 +1225,20 @@ export default class GuidNodeGrdmapps extends Controller {
     }
 
     @action
-    makeDetailMeetingDialog(this: GuidNodeGrdmapps, meetingPk: string, meetingId: string, joinUrl: string, appId: string, subject: string, organizer_fullname: string, attendees:string[], startDatetime: string, endDatetime: string, location: string, content: string) {
+    makeDetailMeetingDialog(
+        this: GuidNodeGrdmapps,
+        meetingPk: string,
+        meetingId: string,
+        joinUrl: string,
+        appId: string,
+        subject: string,
+        organizer_fullname: string,
+        attendees:string[],
+        startDatetime: string,
+        endDatetime: string,
+        location: string,
+        content: string,
+    ) {
         this.set('showDetailWebMeetingDialog', true);
 
         if (!this.config) {
@@ -1472,7 +1524,13 @@ export default class GuidNodeGrdmapps extends Controller {
         return institutionUsers;
     }
 
-    makeInstitutionUserList(this: GuidNodeGrdmapps, node_app_attendees: nodeAppAttendees[], institutionUsers: institutionUsers[], suggestion_disabled: boolean, appName: string) {
+    makeInstitutionUserList(
+        this: GuidNodeGrdmapps,
+        node_app_attendees: nodeAppAttendees[],
+        institutionUsers: institutionUsers[],
+        suggestion_disabled: boolean,
+        appName: string,
+    ) {
         if (!this.config) {
             return '';
         }

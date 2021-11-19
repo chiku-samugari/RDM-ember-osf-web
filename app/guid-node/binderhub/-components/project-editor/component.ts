@@ -141,6 +141,8 @@ export default class ProjectEditor extends Component {
 
     installR: string | undefined = undefined;
 
+    editingPackage: string | undefined = undefined;
+
     mranVersionSettingError = false;
 
     @requiredAction renewToken!: () => void;

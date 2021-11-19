@@ -1772,6 +1772,7 @@ binderhub:
         view_dockerfile: '参照: '
         reset_dockerfile: 'リセット: '
         unavailable: '設定ファイルがエディタ以外で変更されました。'
+        no_environment: 'エディタにより設定された環境ではありません。'
         has_post_install: 'postInstallスクリプトを使用します。'
         no_post_install: 'デフォルトストレージ内にpostInstallスクリプトを定義すると、イメージビルド時に任意の処理を実行できます。'
         has_post_build: 'postBuildスクリプトを使用します。'

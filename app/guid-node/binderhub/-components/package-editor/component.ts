@@ -11,26 +11,37 @@ export default class PackageEditor extends Component {
 
     packages: Array<[string, string]> = this.packages;
 
+    editing: string = '';
+
     editingIndex: number = -1;
 
     editingName: string = '';
 
     editingVersion: string = '';
 
-    newPackage: boolean = false;
-
     @requiredAction onUpdate!: (newPackages: Array<[string, string]>) => void;
+
+    @requiredAction onEditingStart!: () => void;
+
+    @requiredAction onEditingEnd!: () => void;
 
     @action
     addPackage(this: PackageEditor) {
-        this.set('newPackage', true);
+        this.set('editingIndex', -1);
         this.set('editingName', '');
         this.set('editingVersion', '');
+        if (!this.onEditingStart) {
+            return;
+        }
+        this.onEditingStart();
     }
 
     @action
     confirmAdd(this: PackageEditor, name: string, version: string) {
-        this.set('newPackage', false);
+        this.set('editingIndex', -1);
+        if (this.onEditingEnd) {
+            this.onEditingEnd();
+        }
         if (!this.onUpdate) {
             return;
         }
@@ -41,7 +52,11 @@ export default class PackageEditor extends Component {
 
     @action
     cancelAdd(this: PackageEditor) {
-        this.set('newPackage', false);
+        this.set('editingIndex', -1);
+        if (!this.onEditingEnd) {
+            return;
+        }
+        this.onEditingEnd();
     }
 
     @action
@@ -61,12 +76,19 @@ export default class PackageEditor extends Component {
         const editingPackage = allPackages[index];
         this.set('editingName', editingPackage[0]);
         this.set('editingVersion', editingPackage[1]);
+        if (!this.onEditingStart) {
+            return;
+        }
+        this.onEditingStart();
     }
 
     @action
     confirmEdit(this: PackageEditor, name: string, version: string) {
         const index = this.get('editingIndex');
         this.set('editingIndex', -1);
+        if (this.onEditingEnd) {
+            this.onEditingEnd();
+        }
         if (!this.onUpdate) {
             return;
         }
@@ -78,5 +100,9 @@ export default class PackageEditor extends Component {
     @action
     cancelEdit(this: PackageEditor) {
         this.set('editingIndex', -1);
+        if (!this.onEditingEnd) {
+            return;
+        }
+        this.onEditingEnd();
     }
 }

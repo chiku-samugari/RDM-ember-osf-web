@@ -994,15 +994,15 @@ export default class GuidNodeGrdmapps extends Controller {
         }
         // validation check for input
         if (!this.webMeetingvalidationCheck(
-                webMeetingSubject,
-                attendeeNum,
-                this.webMeetingStartDate,
-                webMeetingStartTime,
-                this.webMeetingEndDate,
-                webMeetingEndTime,
-                strWebMeetingStartDatetime,
-                strWebMeetingEndDatetime,
-            )) {
+            webMeetingSubject,
+            attendeeNum,
+            this.webMeetingStartDate,
+            webMeetingStartTime,
+            this.webMeetingEndDate,
+            webMeetingEndTime,
+            strWebMeetingStartDatetime,
+            strWebMeetingEndDatetime,
+        )) {
             return;
         }
         // make attendees format
@@ -1540,11 +1540,20 @@ export default class GuidNodeGrdmapps extends Controller {
         const registeredIstitutionUsers : attendeesInfo[] = [];
         const unregisteredIstitutionUsers : attendeesInfo[] = [];
         const guestUsers : attendeesInfo[] = [];
+        let unregisteredUserName = '';
+        let unregisteredUserInfo = '';
+        let unregisteredLabel = this.intl.t('integromat.meetingDialog.unregisteredLabel');
+        let registeredUserName = '';
+        let registeredUserInfo = '';
+        let guestUserName = '';
+        let guestUserInfo = '';
 
         for (let i = 0; i < institutionUsers.length; i++) {
+            unregisteredUserName = institutionUsers[i].fullname;
+            unregisteredUserInfo = `@${institutionUsers[i].guid}${unregisteredLabel}`;
             unregisteredIstitutionUsers.push(
                 {
-                    name: `${institutionUsers[i].fullname}@${institutionUsers[i].guid}${this.intl.t('integromat.meetingDialog.unregisteredLabel')}`,
+                    name: unregisteredUserName + unregisteredUserInfo,
                     email: '',
                     nameForApp: '',
                     profile: profileUrlBase + institutionUsers[i].guid,
@@ -1556,10 +1565,12 @@ export default class GuidNodeGrdmapps extends Controller {
 
             for (let j = 0; j < node_app_attendees.length; j++) {
                 if (institutionUsers[i].guid === node_app_attendees[j].fields.user_guid) {
+                    registeredUserName = node_app_attendees[j].fields.fullname;
+                    registeredUserInfo = `@${node_app_attendees[j].fields.user_guid}`
                     if (appName === config.appNameMicrosoftTeams) {
                         registeredIstitutionUsers.push(
                             {
-                                name: `${node_app_attendees[j].fields.fullname}@${node_app_attendees[j].fields.user_guid}`,
+                                name: registeredUserName + registeredUserInfo,
                                 email: node_app_attendees[j].fields.microsoft_teams_mail,
                                 nameForApp: node_app_attendees[j].fields.microsoft_teams_user_name,
                                 profile: profileUrlBase + node_app_attendees[j].fields.user_guid,
@@ -1571,7 +1582,7 @@ export default class GuidNodeGrdmapps extends Controller {
                     } else if (appName === config.appNameWebexMeetings) {
                         registeredIstitutionUsers.push(
                             {
-                                name: `${node_app_attendees[j].fields.fullname}@${node_app_attendees[j].fields.user_guid}`,
+                                name: registeredUserName + registeredUserInfo,
                                 email: node_app_attendees[j].fields.webex_meetings_mail,
                                 nameForApp: node_app_attendees[j].fields.webex_meetings_display_name,
                                 profile: profileUrlBase + node_app_attendees[j].fields.user_guid,
@@ -1586,10 +1597,12 @@ export default class GuidNodeGrdmapps extends Controller {
                 }
                 if (i === 0) {
                     if (node_app_attendees[j].fields.is_guest) {
+                        guestUserName = node_app_attendees[j].fields.fullname;
                         if (appName === config.appNameMicrosoftTeams) {
+                            guestUserInfo = `(${node_app_attendees[j].fields.microsoft_teams_mail})`
                             guestUsers.push(
                                 {
-                                    name: `${node_app_attendees[j].fields.fullname}(${node_app_attendees[j].fields.microsoft_teams_mail})`,
+                                    name: guestUserName + guestUserInfo,
                                     email: node_app_attendees[j].fields.microsoft_teams_mail,
                                     nameForApp: node_app_attendees[j].fields.microsoft_teams_user_name,
                                     profile: '',
@@ -1599,9 +1612,10 @@ export default class GuidNodeGrdmapps extends Controller {
                                 },
                             );
                         } else if (appName === config.appNameWebexMeetings) {
+                            guestUserInfo = `(${node_app_attendees[j].fields.webex_meetings_mail})`
                             guestUsers.push(
                                 {
-                                    name: `${node_app_attendees[j].fields.fullname}(${node_app_attendees[j].fields.webex_meetings_mail})`,
+                                    name: guestUserName + guestUserInfo,
                                     email: node_app_attendees[j].fields.webex_meetings_mail,
                                     nameForApp: node_app_attendees[j].fields.webex_meetings_display_name,
                                     profile: '',

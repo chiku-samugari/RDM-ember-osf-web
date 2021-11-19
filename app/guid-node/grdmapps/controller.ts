@@ -246,19 +246,19 @@ export default class GuidNodeGrdmapps extends Controller {
         if (!this.config) {
             throw new EmberError('Illegal config');
         }
-        const config = this.config.content as GrdmappsConfigModel;
+        const appsConfig = this.config.content as GrdmappsConfigModel;
 
-        config.save()
+        appsConfig.save()
             .then(() => {
                 this.set('isPageDirty', false);
             })
             .catch(() => {
-                this.saveError(config);
+                this.saveError(appsConfig);
             });
     }
 
-    saveError(config: GrdmappsConfigModel) {
-        config.rollbackAttributes();
+    saveError(appsConfig: GrdmappsConfigModel) {
+        appsConfig.rollbackAttributes();
         const message = this.intl.t('integromat.failed_to_save');
         this.toast.error(message);
     }
@@ -301,9 +301,9 @@ export default class GuidNodeGrdmapps extends Controller {
             throw new EmberError('Illegal config');
         }
 
-        const config = this.config.content as GrdmappsConfigModel;
-        const workflows = JSON.parse(config.workflows);
-        const nodeWorkflows = JSON.parse(config.nodeWorkflows);
+        const appsConfig = this.config.content as GrdmappsConfigModel;
+        const workflows = JSON.parse(appsConfig.workflows);
+        const nodeWorkflows = JSON.parse(appsConfig.nodeWorkflows);
 
         let workflowId = '';
         let url = '';
@@ -335,10 +335,10 @@ export default class GuidNodeGrdmapps extends Controller {
             throw new EmberError('Illegal config');
         }
 
-        const config = this.config.content as GrdmappsConfigModel;
+        const appsConfig = this.config.content as GrdmappsConfigModel;
         let appNameDisp = '';
 
-        if (v === config.appNameMicrosoftTeams) {
+        if (v === appsConfig.appNameMicrosoftTeams) {
             if (actionType === 'create') {
                 this.set('showCreateMicrosoftTeamsMeetingDialog', true);
                 this.set('showCreateWebexMeetingDialog', false);
@@ -349,7 +349,7 @@ export default class GuidNodeGrdmapps extends Controller {
             appNameDisp = this.camel2space(v);
             this.set('webMeetingAppName', v);
             this.set('webMeetingAppNameDisp', appNameDisp);
-        } else if (v === config.appNameWebexMeetings) {
+        } else if (v === appsConfig.appNameWebexMeetings) {
             if (actionType === 'create') {
                 this.set('showCreateMicrosoftTeamsMeetingDialog', false);
                 this.set('showCreateWebexMeetingDialog', true);
@@ -440,8 +440,8 @@ export default class GuidNodeGrdmapps extends Controller {
     }
 
     @action
-    makeRegisterAlternativeWebhookUrl(this: GuidNodeGrdmapps, workflow_description: string) {
-        this.set('workflowDescription', workflow_description);
+    makeRegisterAlternativeWebhookUrl(this: GuidNodeGrdmapps, workflowDescription: string) {
+        this.set('workflowDescription', workflowDescription);
         this.set('showRegisterAlternativeWebhookUrl', true);
     }
 
@@ -683,7 +683,7 @@ export default class GuidNodeGrdmapps extends Controller {
             throw new EmberError('Illegal config');
         }
 
-        const config = this.config.content as GrdmappsConfigModel;
+        const appsConfig = this.config.content as GrdmappsConfigModel;
         const webhookUrl = this.webhookUrl;
         const appName = this.webMeetingAppName;
         const appNameDisp = this.webMeetingAppNameDisp;
@@ -717,10 +717,10 @@ export default class GuidNodeGrdmapps extends Controller {
 
         let selectedAttendees : attendeesInfo[] = [];
 
-        if (this.webMeetingAppName === config.appNameMicrosoftTeams) {
+        if (this.webMeetingAppName === appsConfig.appNameMicrosoftTeams) {
             selectedAttendees = this.selectedMicrosoftTeamsAttendees;
             attendeeNum = selectedAttendees.length;
-        } else if (this.webMeetingAppName === config.appNameWebexMeetings) {
+        } else if (this.webMeetingAppName === appsConfig.appNameWebexMeetings) {
             selectedAttendees = this.selectedWebexMeetingsAttendees;
             attendeeNum = selectedAttendees.length;
         }
@@ -738,7 +738,7 @@ export default class GuidNodeGrdmapps extends Controller {
         }
 
         // make attendees format
-        if (this.webMeetingAppName === config.appNameMicrosoftTeams) {
+        if (this.webMeetingAppName === appsConfig.appNameMicrosoftTeams) {
             workflowAction = 'createMicrosoftTeamsMeeting';
             for (let i = 0; i < selectedAttendees.length; i++) {
                 microsoftTeamsAttendeesCollectionAtCreate.push(
@@ -751,7 +751,7 @@ export default class GuidNodeGrdmapps extends Controller {
                 );
                 arrayAttendees.push(selectedAttendees[i].email);
             }
-        } else if (this.webMeetingAppName === config.appNameWebexMeetings) {
+        } else if (this.webMeetingAppName === appsConfig.appNameWebexMeetings) {
             workflowAction = 'createWebexMeetings';
 
             for (let i = 0; i < selectedAttendees.length; i++) {
@@ -832,8 +832,8 @@ export default class GuidNodeGrdmapps extends Controller {
             throw new EmberError('Illegal config');
         }
 
-        const config = this.config.content as GrdmappsConfigModel;
-        const webMeetingApps = JSON.parse(config.webMeetingApps);
+        const appsConfig = this.config.content as GrdmappsConfigModel;
+        const webMeetingApps = JSON.parse(appsConfig.webMeetingApps);
 
         let appName = '';
 
@@ -867,8 +867,8 @@ export default class GuidNodeGrdmapps extends Controller {
         if (!this.config) {
             throw new EmberError('Illegal config');
         }
-        const config = this.config.content as GrdmappsConfigModel;
-        const nodeAttendeesAll = JSON.parse(config.nodeAttendeesAll);
+        const appsConfig = this.config.content as GrdmappsConfigModel;
+        const nodeAttendeesAll = JSON.parse(appsConfig.nodeAttendeesAll);
 
         let guidOrEmail = '';
         let profileUrl = '';
@@ -877,7 +877,7 @@ export default class GuidNodeGrdmapps extends Controller {
         let webexMeetingsMail;
         let userGuid = '';
 
-        if (appName === config.appNameMicrosoftTeams) {
+        if (appName === appsConfig.appNameMicrosoftTeams) {
             for (let i = 0; i < this.webMeetingAttendees.length; i++) {
                 for (let j = 0; j < nodeAttendeesAll.length; j++) {
                     if (type === 'update' && !(nodeAttendeesAll[j].fields.microsoft_teams_mail)) {
@@ -904,7 +904,7 @@ export default class GuidNodeGrdmapps extends Controller {
                     }
                 }
             }
-        } else if (appName === config.appNameWebexMeetings) {
+        } else if (appName === appsConfig.appNameWebexMeetings) {
             for (let i = 0; i < this.webMeetingAttendees.length; i++) {
                 for (let j = 0; j < nodeAttendeesAll.length; j++) {
                     if (type === 'update' && !(nodeAttendeesAll[j].fields.webex_meetings_mail)) {
@@ -945,7 +945,7 @@ export default class GuidNodeGrdmapps extends Controller {
         if (!this.config) {
             throw new EmberError('Illegal config');
         }
-        const config = this.config.content as GrdmappsConfigModel;
+        const appsConfig = this.config.content as GrdmappsConfigModel;
         const webhookUrl = this.webhookUrl;
         const appName = this.webMeetingAppName;
         const appNameDisp = this.webMeetingAppNameDisp;
@@ -968,8 +968,8 @@ export default class GuidNodeGrdmapps extends Controller {
         const webMeetingPassword = this.webMeetingPassword;
         const timestamp = new Date().getTime();
 
-        const nodeWebMeetingAttendeesRelation = JSON.parse(config.nodeWebMeetingsAttendeesRelation);
-        const nodeWebexMeetingsAttendees = JSON.parse(config.nodeWebexMeetingsAttendees);
+        const nodeWebMeetingAttendeesRelation = JSON.parse(appsConfig.nodeWebMeetingsAttendeesRelation);
+        const nodeWebexMeetingsAttendees = JSON.parse(appsConfig.nodeWebexMeetingsAttendees);
 
         let workflowAction = '';
         const microsoftTeamsAttendeesCollectionAtCreate: microsoftTeamsAttendeeAtCreate[] = [];
@@ -987,9 +987,9 @@ export default class GuidNodeGrdmapps extends Controller {
 
         const selectedAttendees = this.selectedAttendees;
 
-        if (this.webMeetingAppName === config.appNameMicrosoftTeams) {
+        if (this.webMeetingAppName === appsConfig.appNameMicrosoftTeams) {
             attendeeNum = selectedAttendees.length;
-        } else if (this.webMeetingAppName === config.appNameWebexMeetings) {
+        } else if (this.webMeetingAppName === appsConfig.appNameWebexMeetings) {
             attendeeNum = selectedAttendees.length;
         }
         // validation check for input
@@ -1006,7 +1006,7 @@ export default class GuidNodeGrdmapps extends Controller {
             return;
         }
         // make attendees format
-        if (appName === config.appNameMicrosoftTeams) {
+        if (appName === appsConfig.appNameMicrosoftTeams) {
             workflowAction = 'updateMicrosoftTeamsMeeting';
 
             for (let i = 0; i < selectedAttendees.length; i++) {
@@ -1018,7 +1018,7 @@ export default class GuidNodeGrdmapps extends Controller {
                 );
                 arrayAttendees.push(selectedAttendees[i].email);
             }
-        } else if (appName === config.appNameWebexMeetings) {
+        } else if (appName === appsConfig.appNameWebexMeetings) {
             workflowAction = 'updateWebexMeetings';
 
             for (let i = 0; i < selectedAttendees.length; i++) {
@@ -1122,8 +1122,8 @@ export default class GuidNodeGrdmapps extends Controller {
             throw new EmberError('Illegal config');
         }
 
-        const config = this.config.content as GrdmappsConfigModel;
-        const webMeetingApps = JSON.parse(config.webMeetingApps);
+        const appsConfig = this.config.content as GrdmappsConfigModel;
+        const webMeetingApps = JSON.parse(appsConfig.webMeetingApps);
         let appName = '';
 
         for (let i = 0; i < webMeetingApps.length; i++) {
@@ -1149,7 +1149,7 @@ export default class GuidNodeGrdmapps extends Controller {
             throw new EmberError('Illegal config');
         }
 
-        const config = this.config.content as GrdmappsConfigModel;
+        const appsConfig = this.config.content as GrdmappsConfigModel;
         const webhookUrl = this.webhookUrl;
         const appName = this.webMeetingAppName;
         const appNameDisp = this.webMeetingAppNameDisp;
@@ -1170,9 +1170,9 @@ export default class GuidNodeGrdmapps extends Controller {
 
         let workflowAction = '';
 
-        if (this.webMeetingAppName === config.appNameMicrosoftTeams) {
+        if (this.webMeetingAppName === appsConfig.appNameMicrosoftTeams) {
             workflowAction = 'deleteMicrosoftTeamsMeeting';
-        } else if (this.webMeetingAppName === config.appNameWebexMeetings) {
+        } else if (this.webMeetingAppName === appsConfig.appNameWebexMeetings) {
             workflowAction = 'deleteWebexMeetings';
         }
 
@@ -1196,7 +1196,7 @@ export default class GuidNodeGrdmapps extends Controller {
                 slackCreateMeeting: errorSlackCreateMeeting,
                 webappsUpdateMeeting: errorWebappsUpdateMeeting,
                 webappsUpdateAttendees: errorWebappsUpdateAttendees,
-                webappsUpdateAttendeesGrdmMeetingReg : errorWebappsUpdateAttendeesGrdmMeetingReg,
+                webappsUpdateAttendeesGrdmMeetingReg: errorWebappsUpdateAttendeesGrdmMeetingReg,
                 grdmUpdateMeetingReg: errorGrdmUpdateMeetingReg,
                 slackUpdateMeeting: errorSlackUpdateMeeting,
                 webappsDeleteMeeting: errorWebappsDeleteMeeting,
@@ -1245,8 +1245,8 @@ export default class GuidNodeGrdmapps extends Controller {
             throw new EmberError('Illegal config');
         }
 
-        const config = this.config.content as GrdmappsConfigModel;
-        const webMeetingApps = JSON.parse(config.webMeetingApps);
+        const appsConfig = this.config.content as GrdmappsConfigModel;
+        const webMeetingApps = JSON.parse(appsConfig.webMeetingApps);
 
         let appName = '';
 
@@ -1355,8 +1355,8 @@ export default class GuidNodeGrdmapps extends Controller {
         if (!this.config) {
             return '';
         }
-        const config = this.config.content as GrdmappsConfigModel;
-        const allWebMeetings = JSON.parse(config.allWebMeetings);
+        const appsConfig = this.config.content as GrdmappsConfigModel;
+        const allWebMeetings = JSON.parse(appsConfig.allWebMeetings);
         return allWebMeetings;
     }
 
@@ -1365,9 +1365,9 @@ export default class GuidNodeGrdmapps extends Controller {
         if (!this.config) {
             return '';
         }
-        const config = this.config.content as GrdmappsConfigModel;
-        const upcomingWebMeetings = JSON.parse(config.upcomingWebMeetings);
-        const webMeetingApps = JSON.parse(config.webMeetingApps);
+        const appsConfig = this.config.content as GrdmappsConfigModel;
+        const upcomingWebMeetings = JSON.parse(appsConfig.upcomingWebMeetings);
+        const webMeetingApps = JSON.parse(appsConfig.webMeetingApps);
 
         let previousDatetime;
         let pYear;
@@ -1419,9 +1419,9 @@ export default class GuidNodeGrdmapps extends Controller {
         if (!this.config) {
             return '';
         }
-        const config = this.config.content as GrdmappsConfigModel;
-        const previousWebMeetings = JSON.parse(config.previousWebMeetings);
-        const webMeetingApps = JSON.parse(config.webMeetingApps);
+        const appsConfig = this.config.content as GrdmappsConfigModel;
+        const previousWebMeetings = JSON.parse(appsConfig.previousWebMeetings);
+        const webMeetingApps = JSON.parse(appsConfig.webMeetingApps);
 
         let currentDatetime;
         let cYear;
@@ -1473,8 +1473,8 @@ export default class GuidNodeGrdmapps extends Controller {
         if (!this.config) {
             return '';
         }
-        const config = this.config.content as GrdmappsConfigModel;
-        const nodeAttendeesAll = JSON.parse(config.nodeAttendeesAll);
+        const appsConfig = this.config.content as GrdmappsConfigModel;
+        const nodeAttendeesAll = JSON.parse(appsConfig.nodeAttendeesAll);
         return nodeAttendeesAll;
     }
 
@@ -1483,8 +1483,8 @@ export default class GuidNodeGrdmapps extends Controller {
         if (!this.config) {
             return '';
         }
-        const config = this.config.content as GrdmappsConfigModel;
-        const nodeMicrosoftTeamsAttendees = JSON.parse(config.nodeMicrosoftTeamsAttendees);
+        const appsConfig = this.config.content as GrdmappsConfigModel;
+        const nodeMicrosoftTeamsAttendees = JSON.parse(appsConfig.nodeMicrosoftTeamsAttendees);
         return nodeMicrosoftTeamsAttendees;
     }
 
@@ -1493,8 +1493,8 @@ export default class GuidNodeGrdmapps extends Controller {
         if (!this.config) {
             return '';
         }
-        const config = this.config.content as GrdmappsConfigModel;
-        const nodeWebexMeetingsAttendees = JSON.parse(config.nodeWebexMeetingsAttendees);
+        const appsConfig = this.config.content as GrdmappsConfigModel;
+        const nodeWebexMeetingsAttendees = JSON.parse(appsConfig.nodeWebexMeetingsAttendees);
         return nodeWebexMeetingsAttendees;
     }
 
@@ -1503,8 +1503,8 @@ export default class GuidNodeGrdmapps extends Controller {
         if (!this.config) {
             return '';
         }
-        const config = this.config.content as GrdmappsConfigModel;
-        const institutionUsers = JSON.parse(config.institutionUsers);
+        const appsConfig = this.config.content as GrdmappsConfigModel;
+        const institutionUsers = JSON.parse(appsConfig.institutionUsers);
         const attendeesInfo : attendeesInfo[] = [];
 
         for (let i = 0; i < institutionUsers.length; i++) {
@@ -1534,7 +1534,7 @@ export default class GuidNodeGrdmapps extends Controller {
         if (!this.config) {
             return '';
         }
-        const config = this.config.content as GrdmappsConfigModel;
+        const appsConfig = this.config.content as GrdmappsConfigModel;
 
         let institutionUserList : attendeesInfo[] = [];
         const registeredIstitutionUsers : attendeesInfo[] = [];
@@ -1566,8 +1566,8 @@ export default class GuidNodeGrdmapps extends Controller {
             for (let j = 0; j < nodeAppAttendees.length; j++) {
                 if (institutionUsers[i].guid === nodeAppAttendees[j].fields.user_guid) {
                     registeredUserName = nodeAppAttendees[j].fields.fullname;
-                    registeredUserInfo = `@${nodeAppAttendees[j].fields.user_guid}`
-                    if (appName === config.appNameMicrosoftTeams) {
+                    registeredUserInfo = `@${nodeAppAttendees[j].fields.user_guid}`;
+                    if (appName === appsConfig.appNameMicrosoftTeams) {
                         registeredIstitutionUsers.push(
                             {
                                 name: registeredUserName + registeredUserInfo,
@@ -1579,7 +1579,7 @@ export default class GuidNodeGrdmapps extends Controller {
                                 disabled: false,
                             },
                         );
-                    } else if (appName === config.appNameWebexMeetings) {
+                    } else if (appName === appsConfig.appNameWebexMeetings) {
                         registeredIstitutionUsers.push(
                             {
                                 name: registeredUserName + registeredUserInfo,
@@ -1598,8 +1598,8 @@ export default class GuidNodeGrdmapps extends Controller {
                 if (i === 0) {
                     if (nodeAppAttendees[j].fields.is_guest) {
                         guestUserName = nodeAppAttendees[j].fields.fullname;
-                        if (appName === config.appNameMicrosoftTeams) {
-                            guestUserInfo = `(${nodeAppAttendees[j].fields.microsoft_teams_mail})`
+                        if (appName === appsConfig.appNameMicrosoftTeams) {
+                            guestUserInfo = `(${nodeAppAttendees[j].fields.microsoft_teams_mail})`;
                             guestUsers.push(
                                 {
                                     name: guestUserName + guestUserInfo,
@@ -1611,8 +1611,8 @@ export default class GuidNodeGrdmapps extends Controller {
                                     disabled: false,
                                 },
                             );
-                        } else if (appName === config.appNameWebexMeetings) {
-                            guestUserInfo = `(${nodeAppAttendees[j].fields.webex_meetings_mail})`
+                        } else if (appName === appsConfig.appNameWebexMeetings) {
+                            guestUserInfo = `(${nodeAppAttendees[j].fields.webex_meetings_mail})`;
                             guestUsers.push(
                                 {
                                     name: guestUserName + guestUserInfo,
@@ -1642,10 +1642,10 @@ export default class GuidNodeGrdmapps extends Controller {
         if (!this.config) {
             return '';
         }
-        const config = this.config.content as GrdmappsConfigModel;
-        const nodeMicrosoftTeamsAttendees = JSON.parse(config.nodeMicrosoftTeamsAttendees);
-        const institutionUsers = JSON.parse(config.institutionUsers);
-        const appName = config.appNameMicrosoftTeams;
+        const appsConfig = this.config.content as GrdmappsConfigModel;
+        const nodeMicrosoftTeamsAttendees = JSON.parse(appsConfig.nodeMicrosoftTeamsAttendees);
+        const institutionUsers = JSON.parse(appsConfig.institutionUsers);
+        const appName = appsConfig.appNameMicrosoftTeams;
 
         const institutionMicrosoftTeamsUsers = this.makeInstitutionUserList(
             nodeMicrosoftTeamsAttendees,
@@ -1662,10 +1662,10 @@ export default class GuidNodeGrdmapps extends Controller {
         if (!this.config) {
             return '';
         }
-        const config = this.config.content as GrdmappsConfigModel;
-        const nodeMicrosoftTeamsAttendees = JSON.parse(config.nodeMicrosoftTeamsAttendees);
-        const institutionUsers = JSON.parse(config.institutionUsers);
-        const appName = config.appNameMicrosoftTeams;
+        const appsConfig = this.config.content as GrdmappsConfigModel;
+        const nodeMicrosoftTeamsAttendees = JSON.parse(appsConfig.nodeMicrosoftTeamsAttendees);
+        const institutionUsers = JSON.parse(appsConfig.institutionUsers);
+        const appName = appsConfig.appNameMicrosoftTeams;
 
         const institutionMicrosoftTeamsUsers = this.makeInstitutionUserList(
             nodeMicrosoftTeamsAttendees,
@@ -1682,10 +1682,10 @@ export default class GuidNodeGrdmapps extends Controller {
         if (!this.config) {
             return '';
         }
-        const config = this.config.content as GrdmappsConfigModel;
-        const nodeWebexMeetingsAttendees = JSON.parse(config.nodeWebexMeetingsAttendees);
-        const institutionUsers = JSON.parse(config.institutionUsers);
-        const appName = config.appNameWebexMeetings;
+        const appsConfig = this.config.content as GrdmappsConfigModel;
+        const nodeWebexMeetingsAttendees = JSON.parse(appsConfig.nodeWebexMeetingsAttendees);
+        const institutionUsers = JSON.parse(appsConfig.institutionUsers);
+        const appName = appsConfig.appNameWebexMeetings;
 
         const institutionWebexMeetingsUsers = this.makeInstitutionUserList(
             nodeWebexMeetingsAttendees,
@@ -1702,10 +1702,10 @@ export default class GuidNodeGrdmapps extends Controller {
         if (!this.config) {
             return '';
         }
-        const config = this.config.content as GrdmappsConfigModel;
-        const nodeWebexMeetingsAttendees = JSON.parse(config.nodeWebexMeetingsAttendees);
-        const institutionUsers = JSON.parse(config.institutionUsers);
-        const appName = config.appNameWebexMeetings;
+        const appsConfig = this.config.content as GrdmappsConfigModel;
+        const nodeWebexMeetingsAttendees = JSON.parse(appsConfig.nodeWebexMeetingsAttendees);
+        const institutionUsers = JSON.parse(appsConfig.institutionUsers);
+        const appName = appsConfig.appNameWebexMeetings;
 
         const institutionWebexMeetingsUsers = this.makeInstitutionUserList(
             nodeWebexMeetingsAttendees,
@@ -1722,8 +1722,8 @@ export default class GuidNodeGrdmapps extends Controller {
         if (!this.config) {
             return '';
         }
-        const config = this.config.content as GrdmappsConfigModel;
-        const workflows = JSON.parse(config.workflows);
+        const appsConfig = this.config.content as GrdmappsConfigModel;
+        const workflows = JSON.parse(appsConfig.workflows);
         return workflows;
     }
 
@@ -1732,8 +1732,8 @@ export default class GuidNodeGrdmapps extends Controller {
         if (!this.config) {
             return '';
         }
-        const config = this.config.content as GrdmappsConfigModel;
-        const webMeetingApps = JSON.parse(config.webMeetingApps);
+        const appsConfig = this.config.content as GrdmappsConfigModel;
+        const webMeetingApps = JSON.parse(appsConfig.webMeetingApps);
 
         for (let i = 0; i < webMeetingApps.length; i++) {
             webMeetingApps[i]['app_name_disp'] = this.camel2space(webMeetingApps[i].fields.app_name);
@@ -1747,8 +1747,8 @@ export default class GuidNodeGrdmapps extends Controller {
         if (!this.config) {
             return '';
         }
-        const config = this.config.content as GrdmappsConfigModel;
-        const appNameMicrosoftTeams = config.appNameMicrosoftTeams;
+        const appsConfig = this.config.content as GrdmappsConfigModel;
+        const appNameMicrosoftTeams = appsConfig.appNameMicrosoftTeams;
 
         return appNameMicrosoftTeams;
     }
@@ -1758,8 +1758,8 @@ export default class GuidNodeGrdmapps extends Controller {
         if (!this.config) {
             return '';
         }
-        const config = this.config.content as GrdmappsConfigModel;
-        const appNameWebexMeetings = config.appNameWebexMeetings;
+        const appsConfig = this.config.content as GrdmappsConfigModel;
+        const appNameWebexMeetings = appsConfig.appNameWebexMeetings;
 
         return appNameWebexMeetings;
     }

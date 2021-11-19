@@ -462,7 +462,7 @@ export default class GuidNodeGrdmapps extends Controller {
 
         this.resetValue('registerWebhook');
 
-        return fetch(
+        fetch(
             url,
             {
                 method: 'POST',
@@ -587,7 +587,7 @@ export default class GuidNodeGrdmapps extends Controller {
 
         this.resetValue('registerAppsEmail');
 
-        return fetch(
+        fetch(
             url,
             {
                 method: 'POST',
@@ -810,7 +810,7 @@ export default class GuidNodeGrdmapps extends Controller {
 
         this.setWebMeetingApp('', '');
 
-        return this.reqLaunch(startIntegromatScenarioUrl, payload, appNameDisp);
+        return this.reqLaunch(payload, appNameDisp);
     }
 
     @action
@@ -1106,7 +1106,7 @@ export default class GuidNodeGrdmapps extends Controller {
 
         this.setWebMeetingApp('', '');
 
-        return this.reqLaunch(startIntegromatScenarioUrl, payload, appName);
+        return this.reqLaunch(payload, appName);
     }
 
     @action
@@ -1221,7 +1221,7 @@ export default class GuidNodeGrdmapps extends Controller {
 
         this.setWebMeetingApp('', '');
 
-        return this.reqLaunch(startIntegromatScenarioUrl, payload, appNameDisp);
+        return this.reqLaunch(payload, appNameDisp);
     }
 
     @action
@@ -1274,12 +1274,12 @@ export default class GuidNodeGrdmapps extends Controller {
         this.makeWebMeetingAttendee(appName, 'detail');
     }
 
-    reqLaunch(url: string, payload: payload, appName: string) {
+    reqLaunch(payload: payload, appName: string) {
         this.toast.info(this.intl.t('integromat.info.launch'));
         const headers = this.currentUser.ajaxHeaders();
-        url = startIntegromatScenarioUrl.replace('{}', String(this.model.guid));
+        const url = startIntegromatScenarioUrl.replace('{}', String(this.model.guid));
 
-        return fetch(
+        fetch(
             url,
             {
                 method: 'POST',
@@ -1292,7 +1292,6 @@ export default class GuidNodeGrdmapps extends Controller {
                     this.toast.error(this.intl.t('integromat.error.failedToRequest'));
                     return;
                 }
-                return res.json();
             })
             .then(data => {
                 const reqBody = {
@@ -1310,7 +1309,7 @@ export default class GuidNodeGrdmapps extends Controller {
         const headers = this.currentUser.ajaxHeaders();
         url = reqestMessagesUrl.replace('{}', String(this.model.guid));
 
-        return fetch(
+        fetch(
             url,
             {
                 method: 'POST',
@@ -1323,7 +1322,6 @@ export default class GuidNodeGrdmapps extends Controller {
                     this.toast.error(this.intl.t('integromat.error.failedToGetMessage'));
                     return;
                 }
-                return res.json();
             })
             .then(data => {
                 if (data.integromatMsg === 'integromat.info.completed') {

@@ -109,7 +109,7 @@ interface payload {
     attendees: string[];
     location: string;
     content: string;
-    webhook_url: string;
+    webhookUrl: string;
     timestamp: number;
 }
 
@@ -421,9 +421,9 @@ export default class GuidNodeGrdmapps extends Controller {
     }
 
     @action
-    webhookValidationCheck(this: GuidNodeGrdmapps, webhook_url: string) {
+    webhookValidationCheck(this: GuidNodeGrdmapps, webhookUrl: string) {
         let validFlag = true;
-        if (!webhook_url) {
+        if (!webhookUrl) {
             this.set(
                 'msgInvalidWebhookUrl',
                 this.intl.t(
@@ -804,7 +804,7 @@ export default class GuidNodeGrdmapps extends Controller {
             attendees: arrayAttendees,
             location: webMeetingLocation,
             content: webMeetingContent,
-            webhook_url: webhookUrl,
+            webhookUrl: webhookUrl,
             timestamp,
         };
 
@@ -1100,7 +1100,7 @@ export default class GuidNodeGrdmapps extends Controller {
             location: webMeetingLocation,
             content: webMeetingContent,
             password: webMeetingPassword,
-            webhook_url: webhookUrl,
+            webhookUrl: webhookUrl,
             timestamp,
         };
 
@@ -1215,7 +1215,7 @@ export default class GuidNodeGrdmapps extends Controller {
             attendees: emptyList,
             location: empty,
             content: empty,
-            webhook_url: webhookUrl,
+            webhookUrl: webhookUrl,
             timestamp,
         };
 
@@ -1542,7 +1542,7 @@ export default class GuidNodeGrdmapps extends Controller {
         const guestUsers : attendeesInfo[] = [];
         let unregisteredUserName = '';
         let unregisteredUserInfo = '';
-        let unregisteredLabel = this.intl.t('integromat.meetingDialog.unregisteredLabel');
+        const unregisteredLabel = this.intl.t('integromat.meetingDialog.unregisteredLabel');
         let registeredUserName = '';
         let registeredUserInfo = '';
         let guestUserName = '';

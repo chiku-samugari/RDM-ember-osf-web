@@ -684,11 +684,11 @@ export default class GuidNodeGrdmapps extends Controller {
         }
 
         const appsConfig = this.config.content as GrdmappsConfigModel;
-        const webhookUrl = this.webhookUrl;
-        const appName = this.webMeetingAppName;
-        const appNameDisp = this.webMeetingAppNameDisp;
+        const webhookUrl = this.webhookUrl as string;
+        const appName = this.webMeetingAppName as string;
+        const appNameDisp = this.webMeetingAppNameDisp as string;
         const guid = String(this.model.guid);
-        const webMeetingSubject = this.webMeetingSubject;
+        const webMeetingSubject = this.webMeetingSubject as string;
         const webMeetingStartDate = moment(this.webMeetingStartDate).format('YYYY-MM-DD');
         const webMeetingStartTime = (
             <HTMLInputElement>document.querySelectorAll('select[id=create_teams_start_time]')[0]
@@ -699,8 +699,8 @@ export default class GuidNodeGrdmapps extends Controller {
             <HTMLInputElement>document.querySelectorAll('select[id=create_teams_end_time]')[0]
         ).value;
         const strWebMeetingEndDatetime = `${webMeetingEndDate} {webMeetingEndTime}`;
-        const webMeetingLocation = this.webMeetingLocation;
-        const webMeetingContent = this.webMeetingContent;
+        const webMeetingLocation = this.webMeetingLocation as string;
+        const webMeetingContent = this.webMeetingContent as string;
         const empty = '';
         const timestamp = new Date().getTime();
 
@@ -946,11 +946,11 @@ export default class GuidNodeGrdmapps extends Controller {
             throw new EmberError('Illegal config');
         }
         const appsConfig = this.config.content as GrdmappsConfigModel;
-        const webhookUrl = this.webhookUrl;
+        const webhookUrl = this.webhookUrl as string;
         const appName = this.webMeetingAppName;
         const appNameDisp = this.webMeetingAppNameDisp;
         const guid = String(this.model.guid);
-        const webMeetingSubject = this.webMeetingSubject;
+        const webMeetingSubject = this.webMeetingSubject as string;
         const webMeetingStartDate = moment(this.webMeetingStartDate).format('YYYY-MM-DD');
         const webMeetingStartTime = (
             <HTMLInputElement>document.querySelectorAll('select[id=update_start_time]')[0]
@@ -961,11 +961,11 @@ export default class GuidNodeGrdmapps extends Controller {
             <HTMLInputElement>document.querySelectorAll('select[id=update_end_time]')[0]
         ).value;
         const strWebMeetingEndDatetime = `${webMeetingEndDate} ${webMeetingEndTime}`;
-        const webMeetingLocation = this.webMeetingLocation;
-        const webMeetingContent = this.webMeetingContent;
+        const webMeetingLocation = this.webMeetingLocation as string;
+        const webMeetingContent = this.webMeetingContent as string;
         const webMeetingId = this.webMeetingUpdateMeetingId;
-        const webMeetingJoinUrl = this.webMeetingJoinUrl;
-        const webMeetingPassword = this.webMeetingPassword;
+        const webMeetingJoinUrl = this.webMeetingJoinUrl as string;
+        const webMeetingPassword = this.webMeetingPassword as string;
         const timestamp = new Date().getTime();
 
         const nodeWebMeetingAttendeesRelation = JSON.parse(appsConfig.nodeWebMeetingsAttendeesRelation);
@@ -985,7 +985,7 @@ export default class GuidNodeGrdmapps extends Controller {
 
         let attendeeNum = 0;
 
-        const selectedAttendees = this.selectedAttendees;
+        const selectedAttendees = this.selectedAttendees as attendeesInfo;
 
         if (this.webMeetingAppName === appsConfig.appNameMicrosoftTeams) {
             attendeeNum = selectedAttendees.length;
@@ -1150,7 +1150,7 @@ export default class GuidNodeGrdmapps extends Controller {
         }
 
         const appsConfig = this.config.content as GrdmappsConfigModel;
-        const webhookUrl = this.webhookUrl;
+        const webhookUrl = this.webhookUrl as string;
         const appName = this.webMeetingAppName;
         const appNameDisp = this.webMeetingAppNameDisp;
         const guid = String(this.model.guid);
@@ -1748,7 +1748,7 @@ export default class GuidNodeGrdmapps extends Controller {
             return '';
         }
         const appsConfig = this.config.content as GrdmappsConfigModel;
-        const appNameMicrosoftTeams = appsConfig.appNameMicrosoftTeams;
+        const appNameMicrosoftTeams = appsConfig.appNameMicrosoftTeams as string;
 
         return appNameMicrosoftTeams;
     }
@@ -1759,7 +1759,7 @@ export default class GuidNodeGrdmapps extends Controller {
             return '';
         }
         const appsConfig = this.config.content as GrdmappsConfigModel;
-        const appNameWebexMeetings = appsConfig.appNameWebexMeetings;
+        const appNameWebexMeetings = appsConfig.appNameWebexMeetings as string;
 
         return appNameWebexMeetings;
     }

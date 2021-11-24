@@ -1279,7 +1279,7 @@ export default class GuidNodeGrdmapps extends Controller {
         const headers = this.currentUser.ajaxHeaders();
         const url = startIntegromatScenarioUrl.replace('{}', String(this.model.guid));
 
-        fetch(
+        return fetch(
             url,
             {
                 method: 'POST',
@@ -1309,7 +1309,7 @@ export default class GuidNodeGrdmapps extends Controller {
         const headers = this.currentUser.ajaxHeaders();
         const url = reqestMessagesUrl.replace('{}', String(this.model.guid));
 
-        fetch(
+        return fetch(
             url,
             {
                 method: 'POST',

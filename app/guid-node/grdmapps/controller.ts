@@ -1345,7 +1345,7 @@ export default class GuidNodeGrdmapps extends Controller {
                         timestamp: data.timestamp,
                     };
                     if (reqBody.count < TIME_LIMIT_EXECUTION_SCENARIO + 1) {
-                        this.reqMessage(url, reqBody, appName);
+                        this.reqMessage(reqBody, appName);
                     }
                 }
             })

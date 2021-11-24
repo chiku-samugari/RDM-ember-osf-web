@@ -1294,6 +1294,9 @@ export default class GuidNodeGrdmapps extends Controller {
                 }
             })
             .then(data => {
+                if (!data) {
+                    throw new Error();
+                }
                 const reqBody = {
                     count: 1,
                     timestamp: data.timestamp,
@@ -1324,6 +1327,9 @@ export default class GuidNodeGrdmapps extends Controller {
                 }
             })
             .then(data => {
+                if (!data) {
+                    throw new Error();
+                }
                 if (data.integromatMsg === 'integromat.info.completed') {
                     this.toast.info(this.intl.t(data.integromatMsg));
                     this.save();

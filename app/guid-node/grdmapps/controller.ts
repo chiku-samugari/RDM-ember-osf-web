@@ -1294,14 +1294,13 @@ export default class GuidNodeGrdmapps extends Controller {
                 }
             })
             .then(data => {
-                if (!data) {
-                    throw new Error();
+                if (data) {
+                    const reqBody = {
+                        count: 1,
+                        timestamp: data.timestamp,
+                    };
+                    this.reqMessage(reqBody, appName);
                 }
-                const reqBody = {
-                    count: 1,
-                    timestamp: data.timestamp,
-                };
-                this.reqMessage(reqBody, appName);
             })
             .catch(() => {
                 this.toast.error(this.intl.t('integromat.error.failedToRequest'));
@@ -1327,25 +1326,24 @@ export default class GuidNodeGrdmapps extends Controller {
                 }
             })
             .then(data => {
-                if (!data) {
-                    throw new Error();
-                }
-                if (data.integromatMsg === 'integromat.info.completed') {
-                    this.toast.info(this.intl.t(data.integromatMsg));
-                    this.save();
-                } else if (data.integromatMsg.match('.error.')) {
-                    this.toast.error(this.intl.t(data.integromatMsg, { appName }));
-                    this.save();
-                } else {
-                    if (data.notify) {
+                if (data) {
+                    if (data.integromatMsg === 'integromat.info.completed') {
                         this.toast.info(this.intl.t(data.integromatMsg));
-                    }
-                    const reqBody = {
-                        count: data.count + 1,
-                        timestamp: data.timestamp,
-                    };
-                    if (reqBody.count < TIME_LIMIT_EXECUTION_SCENARIO + 1) {
-                        this.reqMessage(reqBody, appName);
+                        this.save();
+                    } else if (data.integromatMsg.match('.error.')) {
+                        this.toast.error(this.intl.t(data.integromatMsg, { appName }));
+                        this.save();
+                    } else {
+                        if (data.notify) {
+                            this.toast.info(this.intl.t(data.integromatMsg));
+                        }
+                        const reqBody = {
+                            count: data.count + 1,
+                            timestamp: data.timestamp,
+                        };
+                        if (reqBody.count < TIME_LIMIT_EXECUTION_SCENARIO + 1) {
+                            this.reqMessage(reqBody, appName);
+                        }
                     }
                 }
             })

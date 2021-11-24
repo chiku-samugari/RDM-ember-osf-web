@@ -1300,6 +1300,8 @@ export default class GuidNodeGrdmapps extends Controller {
                         timestamp: data.timestamp,
                     };
                     this.reqMessage(reqBody, appName);
+                } else {
+                    return;
                 }
             })
             .catch(() => {
@@ -1345,6 +1347,8 @@ export default class GuidNodeGrdmapps extends Controller {
                             this.reqMessage(reqBody, appName);
                         }
                     }
+                } else {
+                    return;
                 }
             })
             .catch(() => {

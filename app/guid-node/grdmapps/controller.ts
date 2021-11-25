@@ -138,7 +138,7 @@ const errorScenarioProcessing = 'integromat.error.scenarioProcessing';
 const nodeUrl = host + namespace + '/project/' + '{}';
 const integromatDir = '/integromat';
 const startIntegromatScenarioUrl = nodeUrl + integromatDir + '/start_scenario';
-const reqestMessagesUrl =  nodeUrl + integromatDir + '/requestNextMessages';
+const reqestMessagesUrl = nodeUrl + integromatDir + '/requestNextMessages';
 const registerAlternativeWebhookUrl = nodeUrl + integromatDir + '/register_alternative_webhook_url';
 const registerWebMeetingAppsEmailUrl = nodeUrl + integromatDir + '/register_web_meeting_apps_email';
 const profileUrlBase = host + '/profile/';
@@ -173,10 +173,18 @@ export default class GuidNodeGrdmapps extends Controller {
     showRegisterWebMeetingAppsEmailDialog = false;
 
     currentTime = new Date();
-    defaultStartTime = moment(this.currentTime.setMinutes(Math.round(this.currentTime.getMinutes() / 30) * 30)).format('HH:mm');
-    defaultEndTime = moment(this.currentTime.setMinutes((Math.round(this.currentTime.getMinutes() / 30) * 30) + 60)).format('HH:mm');
+    start = this.currentTime.setMinutes(Math.round(this.currentTime.getMinutes() / 30) * 30);
+    end = this.currentTime.setMinutes((Math.round(this.currentTime.getMinutes() / 30) * 30) + 60);
+    defaultStartTime = moment(this.start).format('HH:mm');
+    defaultEndTime = moment(this.end).format('HH:mm');
 
-    times = ['00:00', '00:30', '01:00', '01:30', '02:00', '02:30', '03:00', '03:30', '04:00', '04:30', '05:00', '05:30', '06:00', '06:30', '07:00', '07:30', '08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30', '22:00', '22:30', '23:00', '23:30', '24:00'];
+    times = [
+        '00:00', '00:30', '01:00', '01:30', '02:00', '02:30', '03:00', '03:30', '04:00', '04:30', '05:00', '05:30',
+        '06:00', '06:30', '07:00', '07:30', '08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
+        '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30',
+        '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30', '22:00', '22:30', '23:00', '23:30',
+        '24:00',
+    ];
 
     webMeetingAppName = '';
     webMeetingAppNameDisp = '';
@@ -257,11 +265,11 @@ export default class GuidNodeGrdmapps extends Controller {
     camel2space(v: string) {
         const separator = ' ';
         return v
-                .replace(/[A-Z][a-z]/g, function(match) {
-            return separator + match;
+            .replace(/[A-Z][a-z]/g, function(match) {
+                return separator + match;
             })
-                .replace(/[A-Z]+$/g, function(match) {
-            return separator + match;
+            .replace(/[A-Z]+$/g, function(match) {
+                return separator + match;
             })
             .trim();
     }
@@ -298,7 +306,7 @@ export default class GuidNodeGrdmapps extends Controller {
 
         const config = this.config.content as GrdmappsConfigModel;
         const workflows = JSON.parse(config.workflows);
-        const nodeWorkflows = JSON.parse(config.node_workflows);
+        const nodeWorkflows = JSON.parse(config.nodeWorkflows);
 
         let workflowId = '';
         let url = '';
@@ -319,7 +327,6 @@ export default class GuidNodeGrdmapps extends Controller {
         this.set('webhookUrl', url);
 
         if (workflowType === 'web_meeting') {
-
             this.set('showWorkflows', false);
             this.set('showWebMeetingWorkflow', true);
         }
@@ -327,7 +334,6 @@ export default class GuidNodeGrdmapps extends Controller {
 
     @action
     setWebMeetingApp(this: GuidNodeGrdmapps, v: string, actionType: string) {
-
         if (!this.config) {
             throw new EmberError('Illegal config');
         }
@@ -335,21 +341,18 @@ export default class GuidNodeGrdmapps extends Controller {
         const config = this.config.content as GrdmappsConfigModel;
         let appNameDisp = '';
 
-        if (v === config.app_name_microsoft_teams) {
-
+        if (v === config.appNameMicrosoftTeams) {
             if (actionType === 'create') {
                 this.set('showCreateMicrosoftTeamsMeetingDialog', true);
                 this.set('showCreateWebexMeetingDialog', false);
-            } else if(actionType === 'update') {
+            } else if (actionType === 'update') {
                 this.set('showUpdateMicrosoftTeamsMeetingDialog', true);
                 this.set('showUpdateWebexMeetingsDialog', false);
             }
             appNameDisp = this.camel2space(v);
             this.set('webMeetingAppName', v);
             this.set('webMeetingAppNameDisp', appNameDisp);
-
-        } else if(v === config.app_name_webex_meetings) {
-
+        } else if (v === config.appNameWebexMeetings) {
             if (actionType === 'create') {
                 this.set('showCreateMicrosoftTeamsMeetingDialog', false);
                 this.set('showCreateWebexMeetingDialog', true);
@@ -360,9 +363,7 @@ export default class GuidNodeGrdmapps extends Controller {
             appNameDisp = this.camel2space(v);
             this.set('webMeetingAppName', v);
             this.set('webMeetingAppNameDisp', appNameDisp);
-
         } else if (!v && !actionType) {
-
             this.set('showCreateWebMeetingDialog', false);
             this.set('showUpdateWebMeetingDialog', false);
             this.set('showDeleteWebMeetingDialog', false);
@@ -404,7 +405,6 @@ export default class GuidNodeGrdmapps extends Controller {
     }
 
     resetValue(this: GuidNodeGrdmapps, type: string) {
-
         if (type === 'registerAppsEmail') {
             this.set('selectedUser', {});
             this.set('guestFullname', '');
@@ -416,8 +416,7 @@ export default class GuidNodeGrdmapps extends Controller {
             this.set('msgInvalidGuestUser', '');
             this.set('msgErrorEmailVal', '');
             this.set('msgInvalidEmail', '');
-
-        } else if(type === 'registerWebhook') {
+        } else if (type === 'registerWebhook') {
             this.set('workflowDescription', '');
             this.set('alternativeWebhookUrl', '');
             this.set('showRegisterAlternativeWebhookUrl', false);
@@ -426,11 +425,15 @@ export default class GuidNodeGrdmapps extends Controller {
 
     @action
     webhookValidationCheck(this: GuidNodeGrdmapps, webhook_url: string) {
-
         let validFlag = true;
-
         if (!webhook_url) {
-            this.set('msgInvalidWebhookUrl', this.intl.t('integromat.meetingDialog.invalid.empty', {item: this.intl.t('integromat.workflows.alternative_webhook_url.label')}));
+            this.set(
+                'msgInvalidWebhookUrl',
+                this.intl.t(
+                    'integromat.meetingDialog.invalid.empty', 
+                    { item: this.intl.t('integromat.workflows.alternative_webhook_url.label') },
+                ),
+            );
             validFlag = false;
         } else {
             this.set('msgInvalidWebhookUrl', '');
@@ -441,14 +444,12 @@ export default class GuidNodeGrdmapps extends Controller {
 
     @action
     makeRegisterAlternativeWebhookUrl(this: GuidNodeGrdmapps, workflow_description: string) {
-
         this.set('workflowDescription', workflow_description);
         this.set('showRegisterAlternativeWebhookUrl', true);
     }
 
     @action
     registerAlternativeWebhook(this: GuidNodeGrdmapps) {
-
         const headers = this.currentUser.ajaxHeaders();
         const url = registerAlternativeWebhookUrl.replace('{}', String(this.model.guid));
 
@@ -458,8 +459,8 @@ export default class GuidNodeGrdmapps extends Controller {
         }
 
         const payload = {
-            'workflowDescription': this.workflowDescription,
-            'alternativeWebhookUrl': this.alternativeWebhookUrl,
+            workflowDescription: this.workflowDescription,
+            alternativeWebhookUrl: this.alternativeWebhookUrl,
         };
 
         this.resetValue('registerWebhook');
@@ -470,10 +471,10 @@ export default class GuidNodeGrdmapps extends Controller {
                 method: 'POST',
                 headers,
                 body: JSON.stringify(payload),
-            }
+            },
         )
-        .then((res) => {
-                if(!res.ok){
+            .then((res) => {
+                if (!res.ok) {
                     this.toast.error(this.intl.t('integromat.fail.registerAlternativeWebhookUrl'));
                     return;
                 }
@@ -482,51 +483,64 @@ export default class GuidNodeGrdmapps extends Controller {
             })
             .catch(() => {
                 this.toast.error(this.intl.t('integromat.error.failedToRequest'));
-            })
+            });
     }
-
     @action
     webMeetingAppsEmailValidationCheck(this: GuidNodeGrdmapps, userType: string, selectedUser: attendeesInfo, guestFullname: string, email: string) {
-
         let validFlag = true;
-//        let reg = new RegExp();
+        // let reg = new RegExp();
 
-        if(userType == 'radio_grdmUserOrRegisteredGuest'){
-            if(!selectedUser){
-                this.set('msgInvalidSelectedUser', this.intl.t('integromat.meetingDialog.invalid.empty', {item: this.intl.t('integromat.grdmUser')}));
+        if (userType === 'radio_grdmUserOrRegisteredGuest') {
+            if (!selectedUser) {
+                this.set(
+                    'msgInvalidSelectedUser',
+                    this.intl.t(
+                        'integromat.meetingDialog.invalid.empty',
+                        { item: this.intl.t('integromat.grdmUser') },
+                    ),
+                );
                 validFlag = false;
             }
-        }else if(userType == 'radio_newGuest'){
-            if(!guestFullname){
-                this.set('msgInvalidGuestUser', this.intl.t('integromat.meetingDialog.invalid.empty', {item: this.intl.t('integromat.guest')}));
+        } else if (userType === 'radio_newGuest') {
+            if (!guestFullname) {
+                this.set(
+                    'msgInvalidGuestUser',
+                    this.intl.t(
+                        'integromat.meetingDialog.invalid.empty',
+                        { item: this.intl.t('integromat.guest') },
+                    ),
+                );
                 validFlag = false;
             }
-        }else if(!userType){
+        } else if (!userType) {
             this.set('msgErrorEmailVal', this.intl.t('integromat.failed_to_save'));
             validFlag = false;
         }
 
-        if(!email){
-            this.set('msgInvalidEmail', this.intl.t('integromat.meetingDialog.invalid.empty', {item: this.intl.t('integromat.signInAdress')}));
+        if (!email) {
+            this.set('msgInvalidEmail',
+                this.intl.t(
+                    'integromat.meetingDialog.invalid.empty',
+                    { item: this.intl.t('integromat.signInAdress') },
+                ),
+            );
             validFlag = false;
         }
-//        else if(!(reg.test(email))){
-//            this.set('msgInvalidEmail', this.intl.t('integromat.meetingDialog.invalid.invalid', {item: this.intl.t('integromat.signInAdress')}));
-//            validFlag = false;
-//        }
+        // else if(!(reg.test(email))){
+        // this.set('msgInvalidEmail', this.intl.t('integromat.meetingDialog.invalid.invalid', {item: this.intl.t('integromat.signInAdress')}));
+        // validFlag = false;
+        // }
 
         return validFlag;
     }
 
     @action
     setUserType(this: GuidNodeGrdmapps, userType: string) {
-
         this.set('userType', userType);
     }
 
     @action
     registerWebMeetingAppsEmail(this: GuidNodeGrdmapps) {
-
         const headers = this.currentUser.ajaxHeaders();
         const url = registerWebMeetingAppsEmailUrl.replace('{}', String(this.model.guid));
         const selectedUser = this.selectedUser;
@@ -537,38 +551,36 @@ export default class GuidNodeGrdmapps extends Controller {
         let fullname = '';
         let is_guest = false;
 
-        //validation check
-        if(!this.webMeetingAppsEmailValidationCheck(userType, selectedUser, guestFullname, this.signInAddressOfApp)){
+        // validation check
+        if (!this.webMeetingAppsEmailValidationCheck(userType, selectedUser, guestFullname, this.signInAddressOfApp)) {
             return;
         }
 
-        if(userType == 'radio_grdmUserOrRegisteredGuest'){
-
-            if(this.selectedUser._id){
+        if (userType === 'radio_grdmUserOrRegisteredGuest') {
+            if (this.selectedUser._id) {
                 _id = this.selectedUser._id;
             }
 
-            if(selectedUser.is_guest){
+            if (selectedUser.is_guest) {
                 is_guest = true;
-            }else{
-                let index = (selectedUser.name).indexOf('@') + 1;
+            } else {
+                const index = (selectedUser.name).indexOf('@') + 1;
                 guid = (selectedUser.name).slice(index, index + 5);
             }
-
-        }else if(userType == 'radio_newGuest'){
+        } else if (userType === 'radio_newGuest') {
             guid = 'guest' + (new Date()).getTime();
             fullname = guestFullname;
             is_guest = true;
         }
 
         const payload = {
-            '_id': _id,
-            'guid': guid,
-            'fullname': fullname,
-            'appName': this.webMeetingAppName,
-            'email': this.signInAddressOfApp,
-            'username': this.usernameOfApp,
-            'is_guest': is_guest
+            _id,
+            guid,
+            fullname,
+            appName: this.webMeetingAppName,
+            email: this.signInAddressOfApp,
+            username: this.usernameOfApp,
+            is_guest: is_guest,
         };
 
         this.resetValue('registerAppsEmail');
@@ -578,57 +590,79 @@ export default class GuidNodeGrdmapps extends Controller {
             {
                 method: 'POST',
                 headers,
-                body: JSON.stringify(payload)
-        })
-        .then((res) => {
-                if(!res.ok){
-                    this.toast.error(this.intl.t('integromat.fail.registerWebMeetingAppsEmail', {appName: this.webMeetingAppName}));
+                body: JSON.stringify(payload),
+            },
+        )
+            .then((res) => {
+                if (!res.ok) {
+                    this.toast.error(
+                        this.intl.t('integromat.fail.registerWebMeetingAppsEmail', { appName: this.webMeetingAppName }),
+                    );
                     return;
                 }
                 this.save();
-                this.toast.info(this.intl.t('integromat.success.registerWebMeetingAppsEmail', {appName: this.webMeetingAppName}));
+                this.toast.info(
+                    this.intl.t('integromat.success.registerWebMeetingAppsEmail', { appName: this.webMeetingAppName }),
+                );
             })
             .catch(() => {
                 this.toast.error(this.intl.t('integromat.error.failedToRequest'));
-            })
+            });
     }
 
     @action
     webMeetingvalidationCheck(this: GuidNodeGrdmapps, subject: string, attendeesNum: number, startDate: string, startTime: string, endDate: string, endTime: string, startDatetime: string, endDatetime: string) {
-
         const now = new Date();
         const start = new Date(startDatetime);
         const end = new Date(endDatetime);
 
         let validFlag = true;
 
-        if(!subject){
-            this.set('msgInvalidSubject', this.intl.t('integromat.meetingDialog.invalid.empty', {item: this.intl.t('integromat.subject')}));
+        if (!subject) {
+            this.set(
+                'msgInvalidSubject',
+                this.intl.t(
+                    'integromat.meetingDialog.invalid.empty',
+                    { item: this.intl.t('integromat.subject') },
+                ),
+            );
             validFlag = false;
-        }else{
+        } else {
             this.set('msgInvalidSubject', '');
         }
 
-        if(!attendeesNum){
-            this.set('msgInvalidAttendees', this.intl.t('integromat.meetingDialog.invalid.empty', {item: this.intl.t('integromat.attendees')}));
+        if (!attendeesNum) {
+            this.set(
+                'msgInvalidAttendees',
+                this.intl.t(
+                    'integromat.meetingDialog.invalid.empty',
+                    { item: this.intl.t('integromat.attendees') },
+                ),
+            );
             validFlag = false;
-        }else{
+        } else {
             this.set('msgInvalidAttendees', '');
         }
 
-        if(!startDate || !startTime || !endDate || !endTime){
-            this.set('msgInvalidDatetime', this.intl.t('integromat.meetingDialog.invalid.empty', {item: this.intl.t('integromat.datetime')}));
+        if (!startDate || !startTime || !endDate || !endTime) {
+            this.set(
+                'msgInvalidDatetime',
+                this.intl.t(
+                    'integromat.meetingDialog.invalid.empty',
+                    { item: this.intl.t('integromat.datetime') },
+                ),
+            );
             validFlag = false;
-        }else if(start < now){
+        } else if (start < now) {
             this.set('msgInvalidDatetime', this.intl.t('integromat.meetingDialog.invalid.datetime.past'));
             validFlag = false;
-        }else if(end < start){
+        } else if (end < start) {
             this.set('msgInvalidDatetime', this.intl.t('integromat.meetingDialog.invalid.datetime.endBeforeStart'));
             validFlag = false;
-        }else{
+        } else {
             this.set('msgInvalidDatetime', '');
         }
-        return validFlag
+        return validFlag;
     }
 
     @action
@@ -644,10 +678,14 @@ export default class GuidNodeGrdmapps extends Controller {
         const guid = String(this.model.guid);
         const webMeetingSubject = this.webMeetingSubject;
         const webMeetingStartDate = moment(this.webMeetingStartDate).format('YYYY-MM-DD');
-        const webMeetingStartTime = (<HTMLInputElement>document.querySelectorAll('select[id=create_teams_start_time]')[0]).value;
+        const webMeetingStartTime = (
+            <HTMLInputElement>document.querySelectorAll('select[id=create_teams_start_time]')[0]
+        ).value;
         const strWebMeetingStartDatetime = webMeetingStartDate + ' ' + webMeetingStartTime;
         const webMeetingEndDate = moment(this.webMeetingEndDate).format('YYYY-MM-DD');
-        const webMeetingEndTime = (<HTMLInputElement>document.querySelectorAll('select[id=create_teams_end_time]')[0]).value;
+        const webMeetingEndTime = (
+            <HTMLInputElement>document.querySelectorAll('select[id=create_teams_end_time]')[0]
+        ).value;
         const strWebMeetingEndDatetime = webMeetingEndDate + ' ' + webMeetingEndTime;
         const webMeetingLocation = this.webMeetingLocation;
         const webMeetingContent = this.webMeetingContent;
@@ -655,45 +693,62 @@ export default class GuidNodeGrdmapps extends Controller {
         const timestamp = new Date().getTime();
 
         let workflowAction = '';
-        let microsoftTeamsAttendeesCollectionAtCreate: microsoftTeamsAttendeeAtCreate[] = [];
-        let microsoftTeamsAttendeesCollectionAtUpdate: microsoftTeamsAttendeeAtUpdate[] = [];
-        let webexMeetingsAttendeesCollection: webexMeetingsAttendee[] = [];
-        let arrayAttendees = [];
+        const microsoftTeamsAttendeesCollectionAtCreate: microsoftTeamsAttendeeAtCreate[] = [];
+        const microsoftTeamsAttendeesCollectionAtUpdate: microsoftTeamsAttendeeAtUpdate[] = [];
+        const webexMeetingsAttendeesCollection: webexMeetingsAttendee[] = [];
+        const arrayAttendees = [];
 
-        let webexMeetingsCreateInvitees: webexMeetingsCreateInvitee[] = [];
-        let webexMeetingsDeleteInviteeIds: string[] = [];
+        const webexMeetingsCreateInvitees: webexMeetingsCreateInvitee[] = [];
+        const webexMeetingsDeleteInviteeIds: string[] = [];
 
         let attendeeNum = 0;
 
         let selectedAttendees : attendeesInfo[] = [];
 
-        if (this.webMeetingAppName === config.app_name_microsoft_teams) {
+        if (this.webMeetingAppName === config.appNameMicrosoftTeams) {
             selectedAttendees = this.selectedMicrosoftTeamsAttendees;
             attendeeNum = selectedAttendees.length;
-        }else if (this.webMeetingAppName === config.app_name_webex_meetings) {
+        } else if (this.webMeetingAppName === config.appNameWebexMeetings) {
             selectedAttendees = this.selectedWebexMeetingsAttendees;
             attendeeNum = selectedAttendees.length;
         }
-        //validation check for input
-        if(!this.webMeetingvalidationCheck(webMeetingSubject, attendeeNum, this.webMeetingStartDate, webMeetingStartTime, this.webMeetingEndDate, webMeetingEndTime, strWebMeetingStartDatetime, strWebMeetingEndDatetime)){
+        // validation check for input
+        if (!this.webMeetingvalidationCheck(
+            webMeetingSubject, attendeeNum,
+            this.webMeetingStartDate,
+            webMeetingStartTime,
+            this.webMeetingEndDate,
+            webMeetingEndTime,
+            strWebMeetingStartDatetime,
+            strWebMeetingEndDatetime,
+        )) {
             return;
         }
 
-        //make attendees format
-        if (this.webMeetingAppName === config.app_name_microsoft_teams) {
-
+        // make attendees format
+        if (this.webMeetingAppName === config.appNameMicrosoftTeams) {
             workflowAction = 'createMicrosoftTeamsMeeting';
-
-            for(let i = 0; i < selectedAttendees.length; i++){ 
-                microsoftTeamsAttendeesCollectionAtCreate.push({'emailAddress': {'address': selectedAttendees[i].email, 'name': selectedAttendees[i].nameForApp ? selectedAttendees[i].nameForApp : 'Unregistered'}});
+            for (let i = 0; i < selectedAttendees.length; i++) { 
+                microsoftTeamsAttendeesCollectionAtCreate.push(
+                    { 
+                        emailAddress: {
+                            address: selectedAttendees[i].email,
+                            name: selectedAttendees[i].nameForApp ? selectedAttendees[i].nameForApp : 'Unregistered',
+                        },
+                    },
+                );
                 arrayAttendees.push(selectedAttendees[i].email);
             }
-        }else if (this.webMeetingAppName === config.app_name_webex_meetings) {
-
+        } else if (this.webMeetingAppName === config.appNameWebexMeetings) {
             workflowAction = 'createWebexMeetings';
 
-            for(let i = 0; i < selectedAttendees.length; i++){
-                webexMeetingsAttendeesCollection.push({'email': selectedAttendees[i].email, 'displayName': selectedAttendees[i].nameForApp});
+            for (let i = 0; i < selectedAttendees.length; i++) {
+                webexMeetingsAttendeesCollection.push(
+                    {
+                        email: selectedAttendees[i].email,
+                        displayName: selectedAttendees[i].nameForApp,
+                    },
+                );
                 arrayAttendees.push(selectedAttendees[i].email);
             }
         }
@@ -702,43 +757,43 @@ export default class GuidNodeGrdmapps extends Controller {
         const webMeetingEndDatetime = (new Date(strWebMeetingEndDatetime)).toISOString();
 
         const payload = {
-            'appName': appName,
-            'appNameDisp': appNameDisp,
-            'guid': guid,
-            'meetingId': empty,
-            'joinUrl': empty,
-            'action': workflowAction,
-            'info': {
-                "grdmScenarioStarted": infoGrdmScenarioStarted,
-                'grdmScenarioCompleted': infoGrdmScenarioCompleted,
+            appName,
+            appNameDisp,
+            guid,
+            meetingId: empty,
+            joinUrl: empty,
+            action: workflowAction,
+            info: {
+                grdmScenarioStarted: infoGrdmScenarioStarted,
+                grdmScenarioCompleted: infoGrdmScenarioCompleted,
             },
-            'error': {
-                'webappsCreateMeeting': errorWebappsCreateMeeting,
-                'grdmRegisterMeeting': errorGrdmRegisterMeeting,
-                'slackCreateMeeting': errorSlackCreateMeeting,
-                'webappsUpdateMeeting': errorWebappsUpdateMeeting,
-                'webappsUpdateAttendees': errorWebappsUpdateAttendees,
-                'webappsUpdateAttendeesGrdmMeetingReg' : errorWebappsUpdateAttendeesGrdmMeetingReg,
-                'grdmUpdateMeetingReg': errorGrdmUpdateMeetingReg,
-                'slackUpdateMeeting': errorSlackUpdateMeeting,
-                'webappsDeleteMeeting': errorWebappsDeleteMeeting,
-                'grdmDeleteMeetingReg': errorGrdmDeleteMeetingReg,
-                'slackDeleteMeeting': errorSlackDeleteMeeting,
-                'scenarioProcessing': errorScenarioProcessing,
+            error: {
+                webappsCreateMeeting: errorWebappsCreateMeeting,
+                grdmRegisterMeeting: errorGrdmRegisterMeeting,
+                slackCreateMeeting: errorSlackCreateMeeting,
+                webappsUpdateMeeting: errorWebappsUpdateMeeting,
+                webappsUpdateAttendees: errorWebappsUpdateAttendees,
+                webappsUpdateAttendeesGrdmMeetingReg : errorWebappsUpdateAttendeesGrdmMeetingReg,
+                grdmUpdateMeetingReg: errorGrdmUpdateMeetingReg,
+                slackUpdateMeeting: errorSlackUpdateMeeting,
+                webappsDeleteMeeting: errorWebappsDeleteMeeting,
+                grdmDeleteMeetingReg: errorGrdmDeleteMeetingReg,
+                slackDeleteMeeting: errorSlackDeleteMeeting,
+                scenarioProcessing: errorScenarioProcessing,
             },
-            'startDatetime': webMeetingStartDatetime,
-            'endDatetime': webMeetingEndDatetime,
-            'subject': webMeetingSubject,
-            'microsoftTeamsAttendeesCollectionAtCreate': microsoftTeamsAttendeesCollectionAtCreate,
-            'microsoftTeamsAttendeesCollectionAtUpdate': microsoftTeamsAttendeesCollectionAtUpdate,
-            'webexMeetingsAttendeesCollection': webexMeetingsAttendeesCollection,
-            'webexMeetingsCreateInvitees': webexMeetingsCreateInvitees,
-            'webexMeetingsDeleteInviteeIds': webexMeetingsDeleteInviteeIds,
-            'attendees': arrayAttendees,
-            'location': webMeetingLocation,
-            'content': webMeetingContent,
-            'webhook_url': webhookUrl,
-            'timestamp': timestamp,
+            startDatetime: webMeetingStartDatetime,
+            endDatetime: webMeetingEndDatetime,
+            subject: webMeetingSubject,
+            microsoftTeamsAttendeesCollectionAtCreate,
+            microsoftTeamsAttendeesCollectionAtUpdate,
+            webexMeetingsAttendeesCollection,
+            webexMeetingsCreateInvitees,
+            webexMeetingsDeleteInviteeIds,
+            attendees: arrayAttendees,
+            location: webMeetingLocation,
+            content: webMeetingContent,
+            webhook_url: webhookUrl,
+            timestamp,
         };
 
         this.setWebMeetingApp('', '');
@@ -748,13 +803,12 @@ export default class GuidNodeGrdmapps extends Controller {
 
     @action
     makeUpdateMeetingDialog(this: GuidNodeGrdmapps, meetingPk: string, meetingId: string, joinUrl: string, meetingPassword: string, appId: string, subject: string, attendees:string[], startDatetime: string, endDatetime: string, location: string, content: string) {
-
         if (!this.config) {
             throw new EmberError('Illegal config');
         }
 
         const config = this.config.content as GrdmappsConfigModel;
-        const webMeetingApps = JSON.parse(config.web_meeting_apps);
+        const webMeetingApps = JSON.parse(config.webMeetingApps);
 
         let appName = '';
 
@@ -771,9 +825,8 @@ export default class GuidNodeGrdmapps extends Controller {
         this.set('webMeetingJoinUrl', joinUrl);
         this.set('webMeetingPassword', meetingPassword);
 
-        for(let i=0; i < webMeetingApps.length; i++){
-
-            if(webMeetingApps[i].pk === appId){
+        for (let i = 0; i < webMeetingApps.length; i++) {
+            if (webMeetingApps[i].pk === appId) {
                 appName = webMeetingApps[i].fields.app_name;
                 break;
             }
@@ -783,46 +836,71 @@ export default class GuidNodeGrdmapps extends Controller {
         this.makeWebMeetingAttendee(appName, 'update');
 
         this.set('showUpdateWebMeetingDialog', true);
-
     }
 
     makeWebMeetingAttendee(this: GuidNodeGrdmapps, appName: string, type: string) {
-
         if (!this.config) {
             throw new EmberError('Illegal config');
         }
         const config = this.config.content as GrdmappsConfigModel;
-        const nodeAttendeesAll = JSON.parse(config.node_attendees_all);
+        const nodeAttendeesAll = JSON.parse(config.nodeAttendeesAll);
 
-        let guidOrEmail ='';
+        let guidOrEmail = '';
         let profileUrl = '';
+        let isGuest = false;
+        let microsoftTeamsMail, webexMeetingsMail;
+        let userGuid = '';
 
-        if(appName === config.app_name_microsoft_teams){
-
-            for(let i = 0; i < this.webMeetingAttendees.length; i++){
-                for(let j = 0; j < nodeAttendeesAll.length; j++){
-                    if(type === 'update' && !(nodeAttendeesAll[j].fields.microsoft_teams_mail)){
+        if (appName === config.appNameMicrosoftTeams) {
+            for (let i = 0; i < this.webMeetingAttendees.length; i++) {
+                for (let j = 0; j < nodeAttendeesAll.length; j++) {
+                    if (type === 'update' && !(nodeAttendeesAll[j].fields.microsoft_teams_mail)) {
                         continue;
                     }
-                    if(this.webMeetingAttendees[i] === nodeAttendeesAll[j].pk){
+                    if (this.webMeetingAttendees[i] === nodeAttendeesAll[j].pk) {
+                        isGuest = nodeAttendeesAll[j].fields.is_guest;
+                        microsoftTeamsMail = nodeAttendeesAll[j].fields.microsoft_teams_mail;
+                        userGuid = nodeAttendeesAll[j].fields.user_guid;
 
-                        guidOrEmail = nodeAttendeesAll[j].fields.is_guest ? '(' + nodeAttendeesAll[j].fields.microsoft_teams_mail + ')' : '@' + nodeAttendeesAll[j].fields.user_guid;
-                        profileUrl = nodeAttendeesAll[j].fields.is_guest ? '' : profileUrlBase + nodeAttendeesAll[j].fields.user_guid;
-                        this.selectedAttendees.push({name: nodeAttendeesAll[j].fields.fullname + guidOrEmail, email: nodeAttendeesAll[j].fields.microsoft_teams_mail, nameForApp: nodeAttendeesAll[j].fields.microsoft_teams_user_name, profile: profileUrl, _id: nodeAttendeesAll[j].fields._id, is_guest: nodeAttendeesAll[j].fields.is_guest, disabled: false});
+                        guidOrEmail = isGuest ? '(' + microsoftTeamsMail + ')' : '@' + userGuid;
+                        profileUrl = isGuest ? '' : profileUrlBase + userGuid;
+                        this.selectedAttendees.push(
+                            {
+                                name: nodeAttendeesAll[j].fields.fullname + guidOrEmail,
+                                email: nodeAttendeesAll[j].fields.microsoft_teams_mail,
+                                nameForApp: nodeAttendeesAll[j].fields.microsoft_teams_user_name,
+                                profile: profileUrl, _id: nodeAttendeesAll[j].fields._id,
+                                is_guest: nodeAttendeesAll[j].fields.is_guest,
+                                disabled: false,
+                            },
+                        );
                     }
                 }
             }
-        }else if(appName === config.app_name_webex_meetings){
-            for(let i = 0; i < this.webMeetingAttendees.length; i++){
-                for(let j = 0; j < nodeAttendeesAll.length; j++){
-                    if(type === 'update' && !(nodeAttendeesAll[j].fields.webex_meetings_mail)){
+        } else if (appName === config.appNameWebexMeetings) {
+            for (let i = 0; i < this.webMeetingAttendees.length; i++) {
+                for (let j = 0; j < nodeAttendeesAll.length; j++) {
+                    if (type === 'update' && !(nodeAttendeesAll[j].fields.webex_meetings_mail)) {
                         continue;
                     }
-                    if(this.webMeetingAttendees[i] === nodeAttendeesAll[j].pk){
+                    if (this.webMeetingAttendees[i] === nodeAttendeesAll[j].pk) {
+                        isGuest = nodeAttendeesAll[j].fields.is_guest;
+                        webexMeetingsMail = nodeAttendeesAll[j].fields.webex_meetings_mail;
+                        userGuid = nodeAttendeesAll[j].fields.user_guid;
 
-                        guidOrEmail = nodeAttendeesAll[j].fields.is_guest ? '(' + nodeAttendeesAll[j].fields.webex_meetings_mail + ')': '@' + nodeAttendeesAll[j].fields.user_guid;
-                        profileUrl = nodeAttendeesAll[j].fields.is_guest ? '' : profileUrlBase + nodeAttendeesAll[j].fields.user_guid;
-                        this.selectedAttendees.push({name: nodeAttendeesAll[j].fields.fullname + guidOrEmail, email: nodeAttendeesAll[j].fields.webex_meetings_mail, nameForApp: nodeAttendeesAll[j].fields.webex_meetings_display_name, profile: profileUrl, _id: nodeAttendeesAll[j].fields._id, is_guest: nodeAttendeesAll[j].fields.is_guest, disabled: false});
+                        guidOrEmail = isGuest ? '(' + webexMeetingsMail + ')' : '@' + userGuid;
+                        profileUrl = isGuest ? '' : profileUrlBase + userGuid;
+                        this.selectedAttendees.push(
+                            {
+                                name: nodeAttendeesAll[j].fields.fullname + guidOrEmail,
+                                email: nodeAttendeesAll[j].fields.webex_meetings_mail,
+                                nameForApp: nodeAttendeesAll[j].fields.webex_meetings_display_name,
+                                profile: profileUrl,
+                                _id: nodeAttendeesAll[j].fields._id,
+                                is_guest: nodeAttendeesAll[j].fields.is_guest,
+                                disabled: false,
+                            },
+                        );
                     }
                 }
             }
@@ -847,10 +925,14 @@ export default class GuidNodeGrdmapps extends Controller {
         const guid = String(this.model.guid);
         const webMeetingSubject = this.webMeetingSubject;
         const webMeetingStartDate = moment(this.webMeetingStartDate).format('YYYY-MM-DD');
-        const webMeetingStartTime = (<HTMLInputElement>document.querySelectorAll('select[id=update_start_time]')[0]).value;
+        const webMeetingStartTime = (
+            <HTMLInputElement>document.querySelectorAll('select[id=update_start_time]')[0]
+        ).value;
         const strWebMeetingStartDatetime = webMeetingStartDate + ' ' + webMeetingStartTime;
         const webMeetingEndDate = moment(this.webMeetingEndDate).format('YYYY-MM-DD');
-        const webMeetingEndTime = (<HTMLInputElement>document.querySelectorAll('select[id=update_end_time]')[0]).value;
+        const webMeetingEndTime = (
+            <HTMLInputElement>document.querySelectorAll('select[id=update_end_time]')[0]
+        ).value;
         const strWebMeetingEndDatetime = webMeetingEndDate + ' ' + webMeetingEndTime;
         const webMeetingLocation = this.webMeetingLocation;
         const webMeetingContent = this.webMeetingContent;
@@ -859,77 +941,83 @@ export default class GuidNodeGrdmapps extends Controller {
         const webMeetingPassword = this.webMeetingPassword;
         const timestamp = new Date().getTime();
 
-        const nodeWebMeetingAttendeesRelation =JSON.parse(config.node_web_meetings_attendees_relation)
-        const nodeWebexMeetingsAttendees = JSON.parse(config.node_webex_meetings_attendees);
+        const nodeWebMeetingAttendeesRelation = JSON.parse(config.nodeWebMeetingsAttendeesRelation);
+        const nodeWebexMeetingsAttendees = JSON.parse(config.nodeWebexMeetingsAttendees);
 
         let workflowAction = '';
-        let microsoftTeamsAttendeesCollectionAtCreate: microsoftTeamsAttendeeAtCreate[] = [];
-        let microsoftTeamsAttendeesCollectionAtUpdate: microsoftTeamsAttendeeAtUpdate[] = [];
-        let webexMeetingsAttendeesCollection: webexMeetingsAttendee[] = [];
-        let arrayAttendees = [];
-        let arrayAttendeePks: string[] = [];
+        const microsoftTeamsAttendeesCollectionAtCreate: microsoftTeamsAttendeeAtCreate[] = [];
+        const microsoftTeamsAttendeesCollectionAtUpdate: microsoftTeamsAttendeeAtUpdate[] = [];
+        const webexMeetingsAttendeesCollection: webexMeetingsAttendee[] = [];
+        const arrayAttendees = [];
+        const arrayAttendeePks: string[] = [];
 
         let arrayCreateAttendeePks = [];
         let arrayDeleteAttendeePks = [];
-        let webexMeetingsCreateInvitees: webexMeetingsCreateInvitee[] = [];
-        let webexMeetingsDeleteInviteeIds: string[] = [];
+        const webexMeetingsCreateInvitees: webexMeetingsCreateInvitee[] = [];
+        const webexMeetingsDeleteInviteeIds: string[] = [];
 
         let attendeeNum = 0;
 
         const selectedAttendees = this.selectedAttendees;
 
-        if (this.webMeetingAppName === config.app_name_microsoft_teams) {
-
+        if (this.webMeetingAppName === config.appNameMicrosoftTeams) {
             attendeeNum = selectedAttendees.length;
-        }else if (this.webMeetingAppName === config.app_name_webex_meetings) {
-
+        } else if (this.webMeetingAppName === config.appNameWebexMeetings) {
             attendeeNum = selectedAttendees.length;
         }
         //validation check for input
-        if(!this.webMeetingvalidationCheck(webMeetingSubject, attendeeNum, this.webMeetingStartDate, webMeetingStartTime, this.webMeetingEndDate, webMeetingEndTime, strWebMeetingStartDatetime, strWebMeetingEndDatetime)){
+        if (!this.webMeetingvalidationCheck(webMeetingSubject, attendeeNum, this.webMeetingStartDate, webMeetingStartTime, this.webMeetingEndDate, webMeetingEndTime, strWebMeetingStartDatetime, strWebMeetingEndDatetime)) {
             return;
         }
         //make attendees format
-        if (appName === config.app_name_microsoft_teams) {
-
+        if (appName === config.appNameMicrosoftTeams) {
             workflowAction = 'updateMicrosoftTeamsMeeting';
 
-            for(let i = 0; i < selectedAttendees.length; i++){ 
-                microsoftTeamsAttendeesCollectionAtUpdate.push({'address': selectedAttendees[i].email, 'name': selectedAttendees[i].nameForApp ? selectedAttendees[i].nameForApp : 'Unregistered'});
+            for (let i = 0; i < selectedAttendees.length; i++) { 
+                microsoftTeamsAttendeesCollectionAtUpdate.push(
+                    {
+                        address: selectedAttendees[i].email,
+                        name: selectedAttendees[i].nameForApp ? selectedAttendees[i].nameForApp : 'Unregistered',
+                    },
+                );
                 arrayAttendees.push(selectedAttendees[i].email);
             }
-        }else if (appName === config.app_name_webex_meetings) {
-
+        } else if (appName === config.appNameWebexMeetings) {
             workflowAction = 'updateWebexMeetings';
 
-            for(let i = 0; i < selectedAttendees.length; i++){
+            for (let i = 0; i < selectedAttendees.length; i++) {
                 arrayAttendees.push(selectedAttendees[i].email);
 
-                for(let j = 0; j < nodeWebexMeetingsAttendees.length; j++){
-
-                    if(selectedAttendees[i].email === nodeWebexMeetingsAttendees[j].fields.webex_meetings_mail){
+                for (let j = 0; j < nodeWebexMeetingsAttendees.length; j++) {
+                    if (selectedAttendees[i].email === nodeWebexMeetingsAttendees[j].fields.webex_meetings_mail) {
                         arrayAttendeePks.push(nodeWebexMeetingsAttendees[j].pk);
                     }
                 }
             }
 
-            arrayCreateAttendeePks = arrayAttendeePks.filter(i => (this.webMeetingAttendees).indexOf(i) == -1)
-            arrayDeleteAttendeePks = (this.webMeetingAttendees).filter(i => arrayAttendeePks.indexOf(i) == -1)
+            arrayCreateAttendeePks = arrayAttendeePks.filter(i => (this.webMeetingAttendees).indexOf(i) === -1);
+            arrayDeleteAttendeePks = (this.webMeetingAttendees).filter(i => arrayAttendeePks.indexOf(i) === -1);
 
-            for(let i = 0; i < arrayCreateAttendeePks.length; i++){
-                for(let j = 0; j < nodeWebexMeetingsAttendees.length; j++){
-                    if(arrayCreateAttendeePks[i] === nodeWebexMeetingsAttendees[j].pk){
-                        webexMeetingsCreateInvitees.push({'email': nodeWebexMeetingsAttendees[j].fields.webex_meetings_mail, 'displayName': nodeWebexMeetingsAttendees[j].fields.webex_meetings_display_name});
+            for (let i = 0; i < arrayCreateAttendeePks.length; i++) {
+                for (let j = 0; j < nodeWebexMeetingsAttendees.length; j++) {
+                    if (arrayCreateAttendeePks[i] === nodeWebexMeetingsAttendees[j].pk) {
+                        webexMeetingsCreateInvitees.push(
+                            {
+                                email: nodeWebexMeetingsAttendees[j].fields.webex_meetings_mail,
+                                displayName: nodeWebexMeetingsAttendees[j].fields.webex_meetings_display_name,
+                            },
+                        );
                     }
                 }
             }
 
-            for(let i = 0; i < arrayDeleteAttendeePks.length; i++){
-                for(let j = 0; j < nodeWebMeetingAttendeesRelation.length; j++){
-                    if(this.webMeetingPk === nodeWebMeetingAttendeesRelation[j].fields.all_meeting_information){
-                        if(arrayDeleteAttendeePks[i] === nodeWebMeetingAttendeesRelation[j].fields.attendees){
-
-                            webexMeetingsDeleteInviteeIds.push(nodeWebMeetingAttendeesRelation[j].fields.webex_meetings_invitee_id);
+            for (let i = 0; i < arrayDeleteAttendeePks.length; i++) {
+                for (let j = 0; j < nodeWebMeetingAttendeesRelation.length; j++) {
+                    if (this.webMeetingPk === nodeWebMeetingAttendeesRelation[j].fields.all_meeting_information) {
+                        if (arrayDeleteAttendeePks[i] === nodeWebMeetingAttendeesRelation[j].fields.attendees) {
+                            webexMeetingsDeleteInviteeIds.push(
+                                nodeWebMeetingAttendeesRelation[j].fields.webex_meetings_invitee_id,
+                            );
                         }
                     }
                 }
@@ -940,44 +1028,44 @@ export default class GuidNodeGrdmapps extends Controller {
         const webMeetingEndDatetime = (new Date(strWebMeetingEndDatetime)).toISOString();
 
         const payload = {
-            'appName': appName,
-            'appNameDisp': appNameDisp,
-            'guid': guid,
-            'meetingId': webMeetingId,
-            'joinUrl': webMeetingJoinUrl,
-            'action': workflowAction,
-            'info': {
-                "grdmScenarioStarted": infoGrdmScenarioStarted,
-                'grdmScenarioCompleted': infoGrdmScenarioCompleted,
+            appName,
+            appNameDisp,
+            guid,
+            meetingId: webMeetingId,
+            joinUrl: webMeetingJoinUrl,
+            action: workflowAction,
+            info: {
+                grdmScenarioStarted: infoGrdmScenarioStarted,
+                grdmScenarioCompleted: infoGrdmScenarioCompleted,
             },
-            'error': {
-                'webappsCreateMeeting': errorWebappsCreateMeeting,
-                'grdmRegisterMeeting': errorGrdmRegisterMeeting,
-                'slackCreateMeeting': errorSlackCreateMeeting,
-                'webappsUpdateMeeting': errorWebappsUpdateMeeting,
-                'webappsUpdateAttendees': errorWebappsUpdateAttendees,
-                'webappsUpdateAttendeesGrdmMeetingReg' : errorWebappsUpdateAttendeesGrdmMeetingReg,
-                'grdmUpdateMeetingReg': errorGrdmUpdateMeetingReg,
-                'slackUpdateMeeting': errorSlackUpdateMeeting,
-                'webappsDeleteMeeting': errorWebappsDeleteMeeting,
-                'grdmDeleteMeetingReg': errorGrdmDeleteMeetingReg,
-                'slackDeleteMeeting': errorSlackDeleteMeeting,
-                'scenarioProcessing': errorScenarioProcessing,
+            error: {
+                webappsCreateMeeting: errorWebappsCreateMeeting,
+                grdmRegisterMeeting: errorGrdmRegisterMeeting,
+                slackCreateMeeting: errorSlackCreateMeeting,
+                webappsUpdateMeeting: errorWebappsUpdateMeeting,
+                webappsUpdateAttendees: errorWebappsUpdateAttendees,
+                webappsUpdateAttendeesGrdmMeetingReg : errorWebappsUpdateAttendeesGrdmMeetingReg,
+                grdmUpdateMeetingReg: errorGrdmUpdateMeetingReg,
+                slackUpdateMeeting: errorSlackUpdateMeeting,
+                webappsDeleteMeeting: errorWebappsDeleteMeeting,
+                grdmDeleteMeetingReg: errorGrdmDeleteMeetingReg,
+                slackDeleteMeeting: errorSlackDeleteMeeting,
+                scenarioProcessing: errorScenarioProcessing,
             },
-            'startDatetime': webMeetingStartDatetime,
-            'endDatetime': webMeetingEndDatetime,
-            'subject': webMeetingSubject,
-            'microsoftTeamsAttendeesCollectionAtCreate': microsoftTeamsAttendeesCollectionAtCreate,
-            'microsoftTeamsAttendeesCollectionAtUpdate': microsoftTeamsAttendeesCollectionAtUpdate,
-            'webexMeetingsAttendeesCollection': webexMeetingsAttendeesCollection,
-            'webexMeetingsCreateInvitees': webexMeetingsCreateInvitees,
-            'webexMeetingsDeleteInviteeIds': webexMeetingsDeleteInviteeIds,
-            'attendees': arrayAttendees,
-            'location': webMeetingLocation,
-            'content': webMeetingContent,
-            'password': webMeetingPassword,
-            'webhook_url': webhookUrl,
-            'timestamp': timestamp,
+            startDatetime: webMeetingStartDatetime,
+            endDatetime: webMeetingEndDatetime,
+            subject: webMeetingSubject,
+            microsoftTeamsAttendeesCollectionAtCreate,
+            microsoftTeamsAttendeesCollectionAtUpdate,
+            webexMeetingsAttendeesCollection,
+            webexMeetingsCreateInvitees,
+            webexMeetingsDeleteInviteeIds,
+            attendees: arrayAttendees,
+            location: webMeetingLocation,
+            content: webMeetingContent,
+            password: webMeetingPassword,
+            webhook_url: webhookUrl,
+            timestamp,
         };
 
         this.setWebMeetingApp('', '');
@@ -987,25 +1075,22 @@ export default class GuidNodeGrdmapps extends Controller {
 
     @action
     makeDeleteDialog(this: GuidNodeGrdmapps, meetingId: string, appId: string, subject: string, startDatetime: string, endDatetime: string) {
-
         if (!this.config) {
             throw new EmberError('Illegal config');
         }
 
         const config = this.config.content as GrdmappsConfigModel;
-        const webMeetingApps = JSON.parse(config.web_meeting_apps);
+        const webMeetingApps = JSON.parse(config.webMeetingApps);
         let appName = '';
 
-        for(let i=0; i < webMeetingApps.length; i++){
-
-            if(webMeetingApps[i].pk === appId){
-                appName = webMeetingApps[i].fields.app_name
+        for (let i = 0; i < webMeetingApps.length; i++) {
+            if (webMeetingApps[i].pk === appId) {
+                appName = webMeetingApps[i].fields.app_name;
                 break;
             }
         }
 
         this.setWebMeetingApp(appName, 'delete');
-
         this.set('showDeleteWebMeetingDialog', true);
         this.set('webMeetingDeleteMeetingId', meetingId);
         this.set('webMeetingDeleteSubject', subject);
@@ -1013,12 +1098,10 @@ export default class GuidNodeGrdmapps extends Controller {
         this.set('webMeetingDeleteStartTime', moment(startDatetime).format('HH:mm'));
         this.set('webMeetingDeleteEndDate', moment(endDatetime).format('YYYY/MM/DD'));
         this.set('webMeetingDeleteEndTime', moment(endDatetime).format('HH:mm'));
-
     }
 
     @action
     deleteWebMeeting(this: GuidNodeGrdmapps) {
-
         if (!this.config) {
             throw new EmberError('Illegal config');
         }
@@ -1039,62 +1122,58 @@ export default class GuidNodeGrdmapps extends Controller {
         const microsoftTeamsAttendeesCollectionAtUpdate: microsoftTeamsAttendeeAtUpdate[] = [];
         const webexMeetingsAttendeesCollection: webexMeetingsAttendee[] = [];
 
-        let webexMeetingsCreateInvitees : webexMeetingsCreateInvitee[] = [];
-        let webexMeetingsDeleteInviteeIds : string[] = [];
+        const webexMeetingsCreateInvitees : webexMeetingsCreateInvitee[] = [];
+        const webexMeetingsDeleteInviteeIds : string[] = [];
 
         let workflowAction = '';
 
-        if (this.webMeetingAppName === config.app_name_microsoft_teams) {
-
+        if (this.webMeetingAppName === config.appNameMicrosoftTeams) {
             workflowAction = 'deleteMicrosoftTeamsMeeting';
-
-        }else if (this.webMeetingAppName === config.app_name_webex_meetings) {
-
+        } else if (this.webMeetingAppName === config.appNameWebexMeetings) {
             workflowAction = 'deleteWebexMeetings';
-
         }
 
         const webMeetingStartDatetime = (new Date(strWebMeetingStartDatetime)).toISOString();
         const webMeetingEndDatetime = (new Date(strWebMeetingEndDatetime)).toISOString();
 
         const payload = {
-            'appName': appName,
-            'appNameDisp': appNameDisp,
-            'guid': guid,
-            'meetingId': this.webMeetingDeleteMeetingId,
-            'joinUrl': empty,
-            'action': workflowAction,
-            'info': {
-                "grdmScenarioStarted": infoGrdmScenarioStarted,
-                'grdmScenarioCompleted': infoGrdmScenarioCompleted,
+            appName,
+            appNameDisp,
+            guid,
+            meetingId: this.webMeetingDeleteMeetingId,
+            joinUrl: empty,
+            action: workflowAction,
+            info: {
+                grdmScenarioStarted: infoGrdmScenarioStarted,
+                grdmScenarioCompleted: infoGrdmScenarioCompleted,
             },
-            'error': {
-                'webappsCreateMeeting': errorWebappsCreateMeeting,
-                'grdmRegisterMeeting': errorGrdmRegisterMeeting,
-                'slackCreateMeeting': errorSlackCreateMeeting,
-                'webappsUpdateMeeting': errorWebappsUpdateMeeting,
-                'webappsUpdateAttendees': errorWebappsUpdateAttendees,
-                'webappsUpdateAttendeesGrdmMeetingReg' : errorWebappsUpdateAttendeesGrdmMeetingReg,
-                'grdmUpdateMeetingReg': errorGrdmUpdateMeetingReg,
-                'slackUpdateMeeting': errorSlackUpdateMeeting,
-                'webappsDeleteMeeting': errorWebappsDeleteMeeting,
-                'grdmDeleteMeetingReg': errorGrdmDeleteMeetingReg,
-                'slackDeleteMeeting': errorSlackDeleteMeeting,
-                'scenarioProcessing': errorScenarioProcessing,
+            error: {
+                webappsCreateMeeting: errorWebappsCreateMeeting,
+                grdmRegisterMeeting: errorGrdmRegisterMeeting,
+                slackCreateMeeting: errorSlackCreateMeeting,
+                webappsUpdateMeeting: errorWebappsUpdateMeeting,
+                webappsUpdateAttendees: errorWebappsUpdateAttendees,
+                webappsUpdateAttendeesGrdmMeetingReg : errorWebappsUpdateAttendeesGrdmMeetingReg,
+                grdmUpdateMeetingReg: errorGrdmUpdateMeetingReg,
+                slackUpdateMeeting: errorSlackUpdateMeeting,
+                webappsDeleteMeeting: errorWebappsDeleteMeeting,
+                grdmDeleteMeetingReg: errorGrdmDeleteMeetingReg,
+                slackDeleteMeeting: errorSlackDeleteMeeting,
+                scenarioProcessing: errorScenarioProcessing,
             },
-            'startDatetime': webMeetingStartDatetime,
-            'endDatetime': webMeetingEndDatetime,
-            'subject': webMeetingSubject,
-            'microsoftTeamsAttendeesCollectionAtCreate': microsoftTeamsAttendeesCollectionAtCreate,
-            'microsoftTeamsAttendeesCollectionAtUpdate': microsoftTeamsAttendeesCollectionAtUpdate,
-            'webexMeetingsAttendeesCollection': webexMeetingsAttendeesCollection,
-            'webexMeetingsCreateInvitees': webexMeetingsCreateInvitees,
-            'webexMeetingsDeleteInviteeIds': webexMeetingsDeleteInviteeIds,
-            'attendees': emptyList,
-            'location': empty,
-            'content': empty,
-            'webhook_url': webhookUrl,
-            'timestamp': timestamp,
+            startDatetime: webMeetingStartDatetime,
+            endDatetime: webMeetingEndDatetime,
+            subject: webMeetingSubject,
+            microsoftTeamsAttendeesCollectionAtCreate,
+            microsoftTeamsAttendeesCollectionAtUpdate,
+            webexMeetingsAttendeesCollection,
+            webexMeetingsCreateInvitees,
+            webexMeetingsDeleteInviteeIds,
+            attendees: emptyList,
+            location: empty,
+            content: empty,
+            webhook_url: webhookUrl,
+            timestamp,
         };
 
         this.setWebMeetingApp('', '');
@@ -1104,7 +1183,6 @@ export default class GuidNodeGrdmapps extends Controller {
 
     @action
     makeDetailMeetingDialog(this: GuidNodeGrdmapps, meetingPk: string, meetingId: string, joinUrl: string, appId: string, subject: string, organizer_fullname: string, attendees:string[], startDatetime: string, endDatetime: string, location: string, content: string) {
-
         this.set('showDetailWebMeetingDialog', true);
 
         if (!this.config) {
@@ -1112,7 +1190,7 @@ export default class GuidNodeGrdmapps extends Controller {
         }
 
         const config = this.config.content as GrdmappsConfigModel;
-        const webMeetingApps = JSON.parse(config.web_meeting_apps);
+        const webMeetingApps = JSON.parse(config.webMeetingApps);
 
         let appName = '';
 
@@ -1129,9 +1207,8 @@ export default class GuidNodeGrdmapps extends Controller {
         this.set('webMeetingUpdateMeetingId', meetingId);
         this.set('webMeetingJoinUrl', joinUrl);
 
-        for(let i=0; i < webMeetingApps.length; i++){
-
-            if(webMeetingApps[i].pk === appId){
+        for (let i = 0; i < webMeetingApps.length; i++) {
+            if (webMeetingApps[i].pk === appId) {
                 appName = webMeetingApps[i].fields.app_name;
                 break;
             }
@@ -1141,9 +1218,8 @@ export default class GuidNodeGrdmapps extends Controller {
         this.makeWebMeetingAttendee(appName, 'detail');
     }
 
-    reqLaunch(url: string, payload: payload, appName: string){
-
-        this.toast.info(this.intl.t('integromat.info.launch'))
+    reqLaunch(url: string, payload: payload, appName: string) {
+        this.toast.info(this.intl.t('integromat.info.launch'));
         const headers = this.currentUser.ajaxHeaders();
         url = startIntegromatScenarioUrl.replace('{}', String(this.model.guid));
 
@@ -1152,29 +1228,28 @@ export default class GuidNodeGrdmapps extends Controller {
             {
                 method: 'POST',
                 headers,
-                body: JSON.stringify(payload)
-        })
-        .then(res => {
-            if(!res.ok){
+                body: JSON.stringify(payload),
+            })
+            .then(res => {
+                if (!res.ok) {
+                    this.toast.error(this.intl.t('integromat.error.failedToRequest'));
+                    return;
+                }
+                return res.json();
+            })
+            .then(data => {
+                const reqBody = {
+                    count: 1,
+                    timestamp: data.timestamp,
+                };
+                this.reqMessage(reqestMessagesUrl, reqBody, appName);
+            })
+            .catch(() => {
                 this.toast.error(this.intl.t('integromat.error.failedToRequest'));
-                return;
-            }
-            return res.json()
-        })
-        .then(data => {
-            let reqBody = {
-                'count': 1,
-                'timestamp': data.timestamp,
-            }
-            this.reqMessage(reqestMessagesUrl, reqBody, appName)
-        })
-        .catch(() => {
-            this.toast.error(this.intl.t('integromat.error.failedToRequest'));
-        })
+            });
     }
 
     reqMessage(url: string, reqBody: reqBody, appName: string) {
-
         const headers = this.currentUser.ajaxHeaders();
         url = reqestMessagesUrl.replace('{}', String(this.model.guid));
 
@@ -1183,220 +1258,285 @@ export default class GuidNodeGrdmapps extends Controller {
             {
                 method: 'POST',
                 headers,
-                body: JSON.stringify(reqBody)
-        })
-        .then(res => {
-            if(!res.ok){
-                this.toast.error(this.intl.t('integromat.error.failedToGetMessage'));
-                return;
-            }
-            return res.json()
-        })
-        .then(data => {
-            if(data.integromatMsg === 'integromat.info.completed'){
-                this.toast.info(this.intl.t(data.integromatMsg));
-                this.save();
-            }else if(data.integromatMsg.match('.error.')){
-                this.toast.error(this.intl.t(data.integromatMsg, {appName: appName}));
-                this.save();
-            }else{
-                if(data.notify){
+                body: JSON.stringify(reqBody),
+            })
+            .then(res => {
+                if (!res.ok) {
+                    this.toast.error(this.intl.t('integromat.error.failedToGetMessage'));
+                    return;
+                }
+                return res.json();
+            })
+            .then(data => {
+                if (data.integromatMsg === 'integromat.info.completed') {
                     this.toast.info(this.intl.t(data.integromatMsg));
+                    this.save();
+                } else if (data.integromatMsg.match('.error.')) {
+                    this.toast.error(this.intl.t(data.integromatMsg, { appName: appName }));
+                    this.save();
+                } else {
+                    if (data.notify) {
+                        this.toast.info(this.intl.t(data.integromatMsg));
+                    }
+                    const reqBody = {
+                        count: data.count + 1,
+                        timestamp: data.timestamp,
+                    };
+                    if (reqBody.count < TIME_LIMIT_EXECUTION_SCENARIO + 1) {
+                        this.reqMessage(url, reqBody, appName);
+                    }
                 }
-                let reqBody = {
-                    'count': data.count + 1,
-                    'timestamp': data.timestamp
-                }
-                if(reqBody.count < TIME_LIMIT_EXECUTION_SCENARIO + 1){
-                    this.reqMessage(url, reqBody, appName)
-                }
-            }
-        })
-        .catch(() => {
-            this.toast.error(this.intl.t('integromat.error.failedToGetMessage'));
-        })
+            })
+            .catch(() => {
+                this.toast.error(this.intl.t('integromat.error.failedToGetMessage'));
+            });
     }
 
-    @computed('config.all_web_meetings')
-    get all_web_meetings() {
+    @computed('config.allWebMeetings')
+    get allWebMeetings() {
         if (!this.config) {
             return '';
         }
         const config = this.config.content as GrdmappsConfigModel;
-        const all_web_meetings = JSON.parse(config.all_web_meetings);
-        return all_web_meetings;
+        const allWebMeetings = JSON.parse(config.allWebMeetings);
+        return allWebMeetings;
     }
 
-    @computed('config.upcoming_web_meetings')
-    get upcoming_web_meetings() {
+    @computed('config.upcomingWebMeetings')
+    get upcomingWebMeetings() {
         if (!this.config) {
             return '';
         }
         const config = this.config.content as GrdmappsConfigModel;
-        let upcoming_web_meetings = JSON.parse(config.upcoming_web_meetings);
-        let web_meeting_apps = JSON.parse(config.web_meeting_apps);
+        const upcomingWebMeetings = JSON.parse(config.upcomingWebMeetings);
+        const webMeetingApps = JSON.parse(config.webMeetingApps);
 
         let previousDatetime;
+        let pYear, pMonth, pDate;
         let currentDatetime;
+        let cYear, cMonth, cDate;
         let previousDate = '';
         let currentDate = '';
 
-        for(let i = 0; i < upcoming_web_meetings.length; i++){
-
-            //for display App Name on meeting list
-            for(let j = 0; j < web_meeting_apps.length; j++){
-                if(upcoming_web_meetings[i].fields.app === web_meeting_apps[j].pk){
-                    upcoming_web_meetings[i]['app_name_disp'] = this.camel2space(web_meeting_apps[j].fields.app_name);
+        for (let i = 0; i < upcomingWebMeetings.length; i++) {
+            // for display App Name on meeting list
+            for (let j = 0; j < webMeetingApps.length; j++) {
+                if (upcomingWebMeetings[i].fields.app === webMeetingApps[j].pk) {
+                    upcomingWebMeetings[i]['app_name_disp'] = this.camel2space(webMeetingApps[j].fields.app_name);
                     break;
                 }
             }
 
             //for display Date Bar
-            if(i === 0){
-                upcoming_web_meetings[i]['date_bar'] = false;
-            }else if(i !== 0){
+            if (i === 0) {
+                upcomingWebMeetings[i]['date_bar'] = false;
+            } else if (i !== 0) {
+                previousDatetime = new Date(upcomingWebMeetings[i - 1].fields.start_datetime);
+                pYear = previousDatetime.getFullYear();
+                pMonth = previousDatetime.getMonth() + 1;
+                pDate = previousDatetime.getDate()
+                currentDatetime = new Date(upcomingWebMeetings[i].fields.start_datetime);
+                cYear = currentDatetime.getFullYear();
+                cMonth = currentDatetime.getMonth() + 1;
+                cDate = currentDatetime.getDate();
+                previousDate = pYear + '/' + pMonth + '/' + pDate;
+                currentDate = cYear + '/' + cMonth + '/' + cDate;
 
-                previousDatetime =new Date(upcoming_web_meetings[i-1].fields.start_datetime);
-                currentDatetime =new Date(upcoming_web_meetings[i].fields.start_datetime);
-
-                previousDate = previousDatetime.getFullYear() + '/' + (previousDatetime.getMonth() + 1) + '/' + previousDatetime.getDate();
-                currentDate = currentDatetime.getFullYear() + '/' + (currentDatetime.getMonth() + 1) + '/' + currentDatetime.getDate();
-
-                if(currentDate != previousDate){
-                    upcoming_web_meetings[i]['date_bar'] = true;
-                }else{
-                    upcoming_web_meetings[i]['date_bar'] = false;
+                if (currentDate !== previousDate) {
+                    upcomingWebMeetings[i]['date_bar'] = true;
+                } else {
+                    upcomingWebMeetings[i]['date_bar'] = false;
                 }
             }
         }
-        return upcoming_web_meetings;
+        return upcomingWebMeetings;
     }
 
-    @computed('config.previous_web_meetings')
-    get previous_web_meetings() {
+    @computed('config.previousWebMeetings')
+    get previousWebMeetings() {
         if (!this.config) {
             return '';
         }
         const config = this.config.content as GrdmappsConfigModel;
-        let previous_web_meetings = JSON.parse(config.previous_web_meetings);
-        let web_meeting_apps = JSON.parse(config.web_meeting_apps);
+        const previousWebMeetings = JSON.parse(config.previousWebMeetings);
+        const webMeetingApps = JSON.parse(config.webMeetingApps);
 
         let currentDatetime;
+        let cYear, cMonth, cDate;
         let nextDatetime;
+        let nYear, nMonth, nDate;
         let nextDate = '';
         let currentDate = '';
 
-        for(let i = 0; i < previous_web_meetings.length; i++){
-
-            //for display App Name on meeting list
-            for(let j = 0; j < web_meeting_apps.length; j++){
-                if(previous_web_meetings[i].fields.app === web_meeting_apps[j].pk){
-                    previous_web_meetings[i]['app_name_disp'] = this.camel2space(web_meeting_apps[j].fields.app_name);
+        for (let i = 0; i < previousWebMeetings.length; i++) {
+            // for display App Name on meeting list
+            for (let j = 0; j < webMeetingApps.length; j++) {
+                if (previousWebMeetings[i].fields.app === webMeetingApps[j].pk) {
+                    previousWebMeetings[i]['app_name_disp'] = this.camel2space(webMeetingApps[j].fields.app_name);
                     break;
                 }
             }
 
-            if(i === 0){
-                previous_web_meetings[i]['date_bar'] = false;
-            }else if(i !== 0){
+            if (i === 0) {
+                previousWebMeetings[i]['date_bar'] = false;
+            } else if (i !== 0) {
+                nextDatetime = new Date(previousWebMeetings[i - 1].fields.start_datetime);
+                nYear = nextDatetime.getFullYear();
+                nMonth = nextDatetime.getMonth() + 1;
+                nDate = nextDatetime.getDate();
+                currentDatetime = new Date(previousWebMeetings[i].fields.start_datetime);
+                cYear = currentDatetime.getFullYear();
+                cMonth = currentDatetime.getMonth() + 1;
+                cDate = currentDatetime.getDate();
+                nextDate = nYear + '/' + nMonth + '/' + nDate;
+                currentDate = cYear + '/' + cMonth + '/' + cDate;
 
-                nextDatetime = new Date(previous_web_meetings[i-1].fields.start_datetime);
-                currentDatetime = new Date(previous_web_meetings[i].fields.start_datetime);
-
-                nextDate = nextDatetime.getFullYear() + '/' + (nextDatetime.getMonth() + 1) + '/' + nextDatetime.getDate();
-                currentDate = currentDatetime.getFullYear() + '/' + (currentDatetime.getMonth() + 1) + '/' + currentDatetime.getDate();
-
-                if(currentDate != nextDate){
-                    previous_web_meetings[i]['date_bar'] = true;
-                }else{
-                    previous_web_meetings[i]['date_bar'] = false;
+                if (currentDate !== nextDate) {
+                    previousWebMeetings[i]['date_bar'] = true;
+                } else {
+                    previousWebMeetings[i]['date_bar'] = false;
                 }
             }
         }
 
-        return previous_web_meetings;
+        return previousWebMeetings;
     }
 
-    @computed('config.node_attendees_all')
-    get node_attendees_all() {
+    @computed('config.nodeAttendeesAll')
+    get nodeAttendeesAll() {
         if (!this.config) {
             return '';
         }
         const config = this.config.content as GrdmappsConfigModel;
-        const node_attendees_all = JSON.parse(config.node_attendees_all);
-        return node_attendees_all;
+        const nodeAttendeesAll = JSON.parse(config.nodeAttendeesAll);
+        return nodeAttendeesAll;
     }
 
-    @computed('config.node_microsoft_teams_attendees')
-    get node_microsoft_teams_attendees() {
+    @computed('config.nodeMicrosoftTeamsAttendees')
+    get nodeMicrosoftTeamsAttendees() {
         if (!this.config) {
             return '';
         }
         const config = this.config.content as GrdmappsConfigModel;
-        const node_microsoft_teams_attendees = JSON.parse(config.node_microsoft_teams_attendees);
-        return node_microsoft_teams_attendees;
+        const nodeMicrosoftTeamsAttendees = JSON.parse(config.nodeMicrosoftTeamsAttendees);
+        return nodeMicrosoftTeamsAttendees;
     }
 
-    @computed('config.node_webex_meetings_attendees')
-    get node_webex_meetings_attendees() {
+    @computed('config.nodeWebexMeetingsAttendees')
+    get nodeWebexMeetingsAttendees() {
         if (!this.config) {
             return '';
         }
         const config = this.config.content as GrdmappsConfigModel;
-        const node_webex_meetings_attendees = JSON.parse(config.node_webex_meetings_attendees);
-        return node_webex_meetings_attendees;
+        const nodeWebexMeetingsAttendees = JSON.parse(config.nodeWebexMeetingsAttendees);
+        return nodeWebexMeetingsAttendees;
     }
 
-    @computed('config.institution_users')
-    get institution_users() {
+    @computed('config.institutionUsers')
+    get institutionUsers() {
         if (!this.config) {
             return '';
         }
         const config = this.config.content as GrdmappsConfigModel;
-        const institution_users = JSON.parse(config.institution_users);
-        let attendeesInfo : attendeesInfo[] = [];
+        const institutionUsers = JSON.parse(config.institutionUsers);
+        const attendeesInfo : attendeesInfo[] = [];
 
-        for(let i = 0; i < institution_users.length; i++){
-
-            attendeesInfo.push({name: institution_users[i].fullname + '@' + institution_users[i].guid, email: '', nameForApp: '', profile: '', _id: '', is_guest: false, disabled: true});
+        for (let i = 0; i < institutionUsers.length; i++) {
+            attendeesInfo.push(
+                {
+                    name: institutionUsers[i].fullname + '@' + institutionUsers[i].guid, email: '',
+                    nameForApp: '',
+                    profile: '',
+                    _id: '',
+                    is_guest: false,
+                    disabled: true,
+                },
+            );
         }
 
-        return institution_users;
+        return institutionUsers;
     }
 
-    makeInstitutionUserList(this: GuidNodeGrdmapps, node_app_attendees: nodeAppAttendees[], institution_users: institutionUsers[], suggestion_disabled: boolean, appName: string) {
-
+    makeInstitutionUserList(this: GuidNodeGrdmapps, node_app_attendees: nodeAppAttendees[], institutionUsers: institutionUsers[], suggestion_disabled: boolean, appName: string) {
         if (!this.config) {
             return '';
         }
         const config = this.config.content as GrdmappsConfigModel;
 
         let institutionUserList : attendeesInfo[] = [];
-        let registeredIstitutionUsers : attendeesInfo[] = [];
-        let unregisteredIstitutionUsers : attendeesInfo[] = [];
-        let guestUsers : attendeesInfo[] = [];
+        const registeredIstitutionUsers : attendeesInfo[] = [];
+        const unregisteredIstitutionUsers : attendeesInfo[] = [];
+        const guestUsers : attendeesInfo[] = [];
 
-        for(let i = 0; i < institution_users.length; i++){
+        for (let i = 0; i < institutionUsers.length; i++) {
+            unregisteredIstitutionUsers.push(
+                {
+                    name: institutionUsers[i].fullname + '@' + institutionUsers[i].guid + this.intl.t('integromat.meetingDialog.unregisteredLabel'),
+                    email: '',
+                    nameForApp: '',
+                    profile: profileUrlBase + institutionUsers[i].guid,
+                    _id: '',
+                    is_guest: false,
+                    disabled: suggestion_disabled,
+                },
+            );
 
-            unregisteredIstitutionUsers.push({name: institution_users[i].fullname + '@' + institution_users[i].guid + this.intl.t('integromat.meetingDialog.unregisteredLabel'), email: '', nameForApp: '', profile: profileUrlBase + institution_users[i].guid, _id: '', is_guest: false, disabled: suggestion_disabled});
-
-            for(let j = 0; j < node_app_attendees.length; j++){
-
-                if(institution_users[i].guid === node_app_attendees[j].fields.user_guid){
-                    if(appName === config.app_name_microsoft_teams){
-                        registeredIstitutionUsers.push({name: node_app_attendees[j].fields.fullname + '@' + node_app_attendees[j].fields.user_guid, email: node_app_attendees[j].fields.microsoft_teams_mail, nameForApp: node_app_attendees[j].fields.microsoft_teams_user_name, profile: profileUrlBase + node_app_attendees[j].fields.user_guid, _id: node_app_attendees[j].fields._id, is_guest: false, disabled: false});
-                    }else if(appName === config.app_name_webex_meetings){
-                        registeredIstitutionUsers.push({name: node_app_attendees[j].fields.fullname + '@' + node_app_attendees[j].fields.user_guid, email: node_app_attendees[j].fields.webex_meetings_mail, nameForApp: node_app_attendees[j].fields.webex_meetings_display_name, profile: profileUrlBase + node_app_attendees[j].fields.user_guid, _id: node_app_attendees[j].fields._id, is_guest: false, disabled: false});
-                }
+            for (let j = 0; j < node_app_attendees.length; j++) {
+                if (institutionUsers[i].guid === node_app_attendees[j].fields.user_guid) {
+                    if (appName === config.appNameMicrosoftTeams) {
+                        registeredIstitutionUsers.push(
+                            {
+                                name: node_app_attendees[j].fields.fullname + '@' + node_app_attendees[j].fields.user_guid,
+                                email: node_app_attendees[j].fields.microsoft_teams_mail,
+                                nameForApp: node_app_attendees[j].fields.microsoft_teams_user_name,
+                                profile: profileUrlBase + node_app_attendees[j].fields.user_guid,
+                                _id: node_app_attendees[j].fields._id,
+                                is_guest: false,
+                                disabled: false,
+                            },
+                        );
+                    } else if (appName === config.appNameWebexMeetings) {
+                        registeredIstitutionUsers.push(
+                            {
+                                name: node_app_attendees[j].fields.fullname + '@' + node_app_attendees[j].fields.user_guid,
+                                email: node_app_attendees[j].fields.webex_meetings_mail,
+                                nameForApp: node_app_attendees[j].fields.webex_meetings_display_name,
+                                profile: profileUrlBase + node_app_attendees[j].fields.user_guid,
+                                _id: node_app_attendees[j].fields._id,
+                                is_guest: false,
+                                disabled: false,
+                            },
+                        );
+                    }
 
                     unregisteredIstitutionUsers.pop();
                 }
-                if(i === 0){
-                    if(node_app_attendees[j].fields.is_guest){
-                        if(appName === config.app_name_microsoft_teams){
-                            guestUsers.push({name: node_app_attendees[j].fields.fullname + '(' + node_app_attendees[j].fields.microsoft_teams_mail + ')', email: node_app_attendees[j].fields.microsoft_teams_mail, nameForApp: node_app_attendees[j].fields.microsoft_teams_user_name, profile: '', _id: node_app_attendees[j].fields._id, is_guest: true, disabled: false});
-                        }else if(appName === config.app_name_webex_meetings){
-                            guestUsers.push({name: node_app_attendees[j].fields.fullname + '(' + node_app_attendees[j].fields.webex_meetings_mail + ')', email: node_app_attendees[j].fields.webex_meetings_mail, nameForApp: node_app_attendees[j].fields.webex_meetings_display_name, profile: '', _id: node_app_attendees[j].fields._id, is_guest: true, disabled: false});
+                if (i === 0) {
+                    if (node_app_attendees[j].fields.is_guest) {
+                        if (appName === config.appNameMicrosoftTeams) {
+                            guestUsers.push(
+                                {
+                                    name: node_app_attendees[j].fields.fullname + '(' + node_app_attendees[j].fields.microsoft_teams_mail + ')',
+                                    email: node_app_attendees[j].fields.microsoft_teams_mail,
+                                    nameForApp: node_app_attendees[j].fields.microsoft_teams_user_name,
+                                    profile: '',
+                                    _id: node_app_attendees[j].fields._id,
+                                    is_guest: true,
+                                    disabled: false,
+                                 },
+                            );
+                        } else if (appName === config.appNameWebexMeetings) {
+                            guestUsers.push(
+                                {
+                                    name: node_app_attendees[j].fields.fullname + '(' + node_app_attendees[j].fields.webex_meetings_mail + ')',
+                                    email: node_app_attendees[j].fields.webex_meetings_mail,
+                                    nameForApp: node_app_attendees[j].fields.webex_meetings_display_name,
+                                    profile: '',
+                                    _id: node_app_attendees[j].fields._id,
+                                    is_guest: true,
+                                    disabled: false,
+                                },
+                            );
                         }
                     }
                 }
@@ -1408,65 +1548,84 @@ export default class GuidNodeGrdmapps extends Controller {
         institutionUserList = institutionUserList.concat(unregisteredIstitutionUsers);
 
         return institutionUserList;
-
     }
 
-    @computed('config.node_microsoft_teams_attendees')
-    get institution_users_microsoft_teams() {
+    @computed('config.nodeMicrosoftTeamsAttendees')
+    get institutionUsersMicrosoftTeams() {
         if (!this.config) {
             return '';
         }
         const config = this.config.content as GrdmappsConfigModel;
-        const node_microsoft_teams_attendees = JSON.parse(config.node_microsoft_teams_attendees);
-        const institution_users = JSON.parse(config.institution_users);
-        const app_name = config.app_name_microsoft_teams
+        const nodeMicrosoftTeamsAttendees = JSON.parse(config.nodeMicrosoftTeamsAttendees);
+        const institutionUsers = JSON.parse(config.institutionUsers);
+        const app_name = config.appNameMicrosoftTeams;
 
-        const institutionMicrosoftTeamsUsers = this.makeInstitutionUserList(node_microsoft_teams_attendees, institution_users, true, app_name)
+        const institutionMicrosoftTeamsUsers = this.makeInstitutionUserList(
+            nodeMicrosoftTeamsAttendees,
+            institutionUsers,
+            true,
+            app_name,
+        );
 
         return institutionMicrosoftTeamsUsers;
     }
 
-    @computed('config.node_microsoft_teams_attendees')
-    get institution_users_list_microsoft_teams() {
+    @computed('config.nodeMicrosoftTeamsAttendees')
+    get institutionUsersListMicrosoftTeams() {
         if (!this.config) {
             return '';
         }
         const config = this.config.content as GrdmappsConfigModel;
-        const node_microsoft_teams_attendees = JSON.parse(config.node_microsoft_teams_attendees);
-        const institution_users = JSON.parse(config.institution_users);
-        const app_name = config.app_name_microsoft_teams
+        const nodeMicrosoftTeamsAttendees = JSON.parse(config.nodeMicrosoftTeamsAttendees);
+        const institutionUsers = JSON.parse(config.institutionUsers);
+        const app_name = config.appNameMicrosoftTeams;
 
-        const institutionMicrosoftTeamsUsers = this.makeInstitutionUserList(node_microsoft_teams_attendees, institution_users, false, app_name)
+        const institutionMicrosoftTeamsUsers = this.makeInstitutionUserList(
+            nodeMicrosoftTeamsAttendees,
+            institutionUsers,
+            false,
+            app_name,
+        );
 
         return institutionMicrosoftTeamsUsers;
     }
 
-    @computed('config.node_webex_meetings_attendees')
-    get institution_users_webex_meetings() {
+    @computed('config.nodeWebexMeetingsAttendees')
+    get institutionUsersWebexMeetings() {
         if (!this.config) {
             return '';
         }
         const config = this.config.content as GrdmappsConfigModel;
-        const node_webex_meetings_attendees = JSON.parse(config.node_webex_meetings_attendees);
-        const institution_users = JSON.parse(config.institution_users);
-        const app_name = config.app_name_webex_meetings;
+        const nodeWebexMeetingsAttendees = JSON.parse(config.nodeWebexMeetingsAttendees);
+        const institutionUsers = JSON.parse(config.institutionUsers);
+        const app_name = config.appNameWebexMeetings;
 
-        const institutionWebexMeetingsUsers = this.makeInstitutionUserList(node_webex_meetings_attendees, institution_users, true, app_name)
+        const institutionWebexMeetingsUsers = this.makeInstitutionUserList(
+            nodeWebexMeetingsAttendees,
+            institutionUsers,
+            true,
+            app_name,
+        );
 
         return institutionWebexMeetingsUsers;
     }
 
-    @computed('config.node_webex_meetings_attendees')
-    get institution_users_list_webex_meetings() {
+    @computed('config.nodeWebexMeetingsAttendees')
+    get institutionUsersListWebexMeetings() {
         if (!this.config) {
             return '';
         }
         const config = this.config.content as GrdmappsConfigModel;
-        const node_webex_meetings_attendees = JSON.parse(config.node_webex_meetings_attendees);
-        const institution_users = JSON.parse(config.institution_users);
-        const app_name = config.app_name_webex_meetings;
+        const nodeWebexMeetingsAttendees = JSON.parse(config.nodeWebexMeetingsAttendees);
+        const institutionUsers = JSON.parse(config.institutionUsers);
+        const app_name = config.appNameWebexMeetings;
 
-        const institutionWebexMeetingsUsers = this.makeInstitutionUserList(node_webex_meetings_attendees, institution_users, false, app_name)
+        const institutionWebexMeetingsUsers = this.makeInstitutionUserList(
+            nodeWebexMeetingsAttendees,
+            institutionUsers,
+            false,
+            app_name,
+        );
 
         return institutionWebexMeetingsUsers;
     }
@@ -1481,42 +1640,41 @@ export default class GuidNodeGrdmapps extends Controller {
         return workflows;
     }
 
-    @computed('config.web_meeting_apps')
-    get web_meeting_apps() {
+    @computed('config.webMeetingApps')
+    get webMeetingApps() {
         if (!this.config) {
             return '';
         }
         const config = this.config.content as GrdmappsConfigModel;
-        const web_meeting_apps = JSON.parse(config.web_meeting_apps);
+        const webMeetingApps = JSON.parse(config.webMeetingApps);
 
-        for(let i = 0; i< web_meeting_apps.length; i++){
-
-            web_meeting_apps[i]['app_name_disp'] = this.camel2space(web_meeting_apps[i].fields.app_name)
+        for (let i = 0; i < webMeetingApps.length; i++) {
+            webMeetingApps[i]['app_name_disp'] = this.camel2space(webMeetingApps[i].fields.app_name);
         }
 
-        return web_meeting_apps;
+        return webMeetingApps;
     }
 
-    @computed('config.app_name_microsoft_teams')
-    get app_name_microsoft_teams() {
+    @computed('config.appNameMicrosoftTeams')
+    get appNameMicrosoftTeams() {
         if (!this.config) {
             return '';
         }
         const config = this.config.content as GrdmappsConfigModel;
-        const app_name_microsoft_teams = config.app_name_microsoft_teams;
+        const appNameMicrosoftTeams = config.appNameMicrosoftTeams;
 
-        return app_name_microsoft_teams;
+        return appNameMicrosoftTeams;
     }
 
-    @computed('config.app_name_webex_meetings')
-    get app_name_webex_meetings() {
+    @computed('config.appNameWebexMeetings')
+    get appNameWebexMeetings() {
         if (!this.config) {
             return '';
         }
         const config = this.config.content as GrdmappsConfigModel;
-        const app_name_webex_meetings = config.app_name_webex_meetings;
+        const appNameWebexMeetings = config.appNameWebexMeetings;
 
-        return app_name_webex_meetings;
+        return appNameWebexMeetings;
     }
 
     @computed('node')

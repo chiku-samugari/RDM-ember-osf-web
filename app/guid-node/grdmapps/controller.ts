@@ -37,7 +37,7 @@ interface institutionUsers {
     fullname: string;
     guid: string;
 }
-
+/* eslint-disable camelcase */
 interface attendees {
     fullname: string;
     user_guid: string;
@@ -135,13 +135,13 @@ const errorSlackDeleteMeeting = 'integromat.error.slackDeleteMeeting';
 const errorScenarioProcessing = 'integromat.error.scenarioProcessing';
 
 
-const nodeUrl = host + namespace + '/project/' + '{}';
+const nodeUrl = `${host}${namespace}/project/{}`;
 const integromatDir = '/integromat';
-const startIntegromatScenarioUrl = nodeUrl + integromatDir + '/start_scenario';
-const reqestMessagesUrl = nodeUrl + integromatDir + '/requestNextMessages';
-const registerAlternativeWebhookUrl = nodeUrl + integromatDir + '/register_alternative_webhook_url';
-const registerWebMeetingAppsEmailUrl = nodeUrl + integromatDir + '/register_web_meeting_apps_email';
-const profileUrlBase = host + '/profile/';
+const startIntegromatScenarioUrl = `${nodeUrl}${integromatDir}/start_scenario`;
+const reqestMessagesUrl = `${nodeUrl}${integromatDir}/requestNextMessages`;
+const registerAlternativeWebhookUrl = `${nodeUrl}${integromatDir}/register_alternative_webhook_url`;
+const registerWebMeetingAppsEmailUrl = `${nodeUrl}${integromatDir}/register_web_meeting_apps_email`;
+const profileUrlBase = `${host}/profile/`;
 
 const TIME_LIMIT_EXECUTION_SCENARIO = 60;
 
@@ -265,12 +265,8 @@ export default class GuidNodeGrdmapps extends Controller {
     camel2space(v: string) {
         const separator = ' ';
         return v
-            .replace(/[A-Z][a-z]/g, function(match) {
-                return separator + match;
-            })
-            .replace(/[A-Z]+$/g, function(match) {
-                return separator + match;
-            })
+            .replace(/[A-Z][a-z]/g, match => separator + match)
+            .replace(/[A-Z]+$/g, match => separator + match)
             .trim();
     }
 

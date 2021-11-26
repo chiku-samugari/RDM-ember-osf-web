@@ -15,8 +15,8 @@ import Toast from 'ember-toastr/services/toast';
 
 import config from 'ember-get-config';
 import CurrentUser from 'ember-osf-web/services/current-user';
-import moment from 'moment';
 import $ from 'jquery';
+import moment from 'moment';
 
 interface ReqBody {
     count: number;

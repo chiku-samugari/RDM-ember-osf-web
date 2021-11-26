@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import Controller from '@ember/controller';
 import EmberError from '@ember/error';
 import { action, computed } from '@ember/object';
@@ -17,6 +16,7 @@ import Toast from 'ember-toastr/services/toast';
 import config from 'ember-get-config';
 import CurrentUser from 'ember-osf-web/services/current-user';
 import moment from 'moment';
+import $ from 'jquery';
 
 interface reqBody {
     count: number;

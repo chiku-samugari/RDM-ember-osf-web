@@ -462,7 +462,7 @@ export default class GuidNodeGrdmapps extends Controller {
 
         this.resetValue('registerWebhook');
 
-        return fetch(
+        fetch(
             url,
             {
                 method: 'POST',
@@ -587,7 +587,7 @@ export default class GuidNodeGrdmapps extends Controller {
 
         this.resetValue('registerAppsEmail');
 
-        return fetch(
+        fetch(
             url,
             {
                 method: 'POST',
@@ -810,7 +810,7 @@ export default class GuidNodeGrdmapps extends Controller {
 
         this.setWebMeetingApp('', '');
 
-        return this.reqLaunch(payload, appNameDisp);
+        this.reqLaunch(payload, appNameDisp);
     }
 
     @action
@@ -1106,7 +1106,7 @@ export default class GuidNodeGrdmapps extends Controller {
 
         this.setWebMeetingApp('', '');
 
-        return this.reqLaunch(payload, appName);
+        this.reqLaunch(payload, appName);
     }
 
     @action
@@ -1221,7 +1221,7 @@ export default class GuidNodeGrdmapps extends Controller {
 
         this.setWebMeetingApp('', '');
 
-        return this.reqLaunch(payload, appNameDisp);
+        this.reqLaunch(payload, appNameDisp);
     }
 
     @action
@@ -1279,7 +1279,7 @@ export default class GuidNodeGrdmapps extends Controller {
         const headers = this.currentUser.ajaxHeaders();
         const url = startIntegromatScenarioUrl.replace('{}', String(this.model.guid));
 
-        return fetch(
+        fetch(
             url,
             {
                 method: 'POST',
@@ -1310,7 +1310,7 @@ export default class GuidNodeGrdmapps extends Controller {
         const headers = this.currentUser.ajaxHeaders();
         const url = reqestMessagesUrl.replace('{}', String(this.model.guid));
 
-        return fetch(
+        fetch(
             url,
             {
                 method: 'POST',

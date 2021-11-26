@@ -553,7 +553,7 @@ export default class GuidNodeGrdmapps extends Controller {
         const selectedUser = this.selectedUser as AttendeesInfo;
         const guestFullname = this.guestFullname as string;
         const userType = this.userType as string;
-        let _id = null;
+        let userNodeId = null;
         let guid = null;
         let fullname = '';
         let isGuest = false;
@@ -565,7 +565,7 @@ export default class GuidNodeGrdmapps extends Controller {
 
         if (userType === 'radio_grdmUserOrRegisteredGuest') {
             if (selectedUser._id) {
-                _id = selectedUser._id;
+                userNodeId = selectedUser._id;
             }
 
             if (selectedUser.is_guest) {
@@ -581,7 +581,7 @@ export default class GuidNodeGrdmapps extends Controller {
         }
 
         const payload = {
-            _id,
+            userNodeId,
             guid,
             fullname,
             appName: this.webMeetingAppName,
@@ -720,7 +720,7 @@ export default class GuidNodeGrdmapps extends Controller {
 
         let attendeeNum = 0;
 
-        let selectedAttendees : AttendeesInfo[] = [];
+        let selectedAttendees: AttendeesInfo[] = [];
 
         if (this.webMeetingAppName === appsConfig.appNameMicrosoftTeams) {
             selectedAttendees = this.selectedMicrosoftTeamsAttendees;
@@ -1165,13 +1165,13 @@ export default class GuidNodeGrdmapps extends Controller {
         const timestamp = new Date().getTime();
 
         const empty = '';
-        const emptyList : string[] = [];
+        const emptyList: string[] = [];
         const microsoftTeamsAttendeesCollectionAtCreate: MicrosoftTeamsAttendeeAtCreate[] = [];
         const microsoftTeamsAttendeesCollectionAtUpdate: MicrosoftTeamsAttendeeAtUpdate[] = [];
         const webexMeetingsAttendeesCollection: WebexMeetingsAttendee[] = [];
 
-        const webexMeetingsCreateInvitees : WebexMeetingsCreateInvitee[] = [];
-        const webexMeetingsDeleteInviteeIds : string[] = [];
+        const webexMeetingsCreateInvitees: WebexMeetingsCreateInvitee[] = [];
+        const webexMeetingsDeleteInviteeIds: string[] = [];
 
         let workflowAction = '';
 
@@ -1508,7 +1508,7 @@ export default class GuidNodeGrdmapps extends Controller {
         }
         const appsConfig = this.config.content as GrdmappsConfigModel;
         const institutionUsers = JSON.parse(appsConfig.institutionUsers);
-        const attendeesInfo : AttendeesInfo[] = [];
+        const attendeesInfo: AttendeesInfo[] = [];
 
         for (let i = 0; i < institutionUsers.length; i++) {
             attendeesInfo.push(
@@ -1539,10 +1539,10 @@ export default class GuidNodeGrdmapps extends Controller {
         }
         const appsConfig = this.config.content as GrdmappsConfigModel;
 
-        let institutionUserList : AttendeesInfo[] = [];
-        const registeredIstitutionUsers : AttendeesInfo[] = [];
-        const unregisteredIstitutionUsers : AttendeesInfo[] = [];
-        const guestUsers : AttendeesInfo[] = [];
+        let institutionUserList: AttendeesInfo[] = [];
+        const registeredIstitutionUsers: AttendeesInfo[] = [];
+        const unregisteredIstitutionUsers: AttendeesInfo[] = [];
+        const guestUsers: AttendeesInfo[] = [];
         let unregisteredUserName = '';
         let unregisteredUserInfo = '';
         const unregisteredLabel = this.intl.t('integromat.meetingDialog.unregisteredLabel');

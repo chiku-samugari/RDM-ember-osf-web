@@ -1,19 +1,22 @@
-import { action, computed } from '@ember/object';
-import { inject as service } from '@ember/service';
-import { reads } from '@ember/object/computed';
 import $ from 'jquery';
-import Analytics from 'ember-osf-web/services/analytics';
-import config from 'ember-get-config';
 import Controller from '@ember/controller';
-import CurrentUser from 'ember-osf-web/services/current-user';
-import DS from 'ember-data';
 import EmberError from '@ember/error';
-import GrdmappsConfigModel from 'ember-osf-web/models/grdmapps-config';
+import { action, computed } from '@ember/object';
+import { reads } from '@ember/object/computed';
+import { inject as service } from '@ember/service';
+
+import DS from 'ember-data';
+
 import Intl from 'ember-intl/services/intl';
-import moment from 'moment';
+import GrdmappsConfigModel from 'ember-osf-web/models/grdmapps-config';
 import Node from 'ember-osf-web/models/node';
+import Analytics from 'ember-osf-web/services/analytics';
 import StatusMessages from 'ember-osf-web/services/status-messages';
 import Toast from 'ember-toastr/services/toast';
+
+import config from 'ember-get-config';
+import CurrentUser from 'ember-osf-web/services/current-user';
+import moment from 'moment';
 
 interface reqBody {
     count: number;

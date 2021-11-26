@@ -700,7 +700,7 @@ export default class GuidNodeGrdmapps extends Controller {
         const strWebMeetingStartDatetime = `${webMeetingStartDate} ${webMeetingStartTime}`;
         const webMeetingEndDate = moment(this.webMeetingEndDate).format('YYYY-MM-DD');
         const webMeetingEndTimeElement = document.querySelectorAll('select[id=create_teams_end_time]') as any;
-        const webMeetingEndTime = webMeetingEndTimeElement[0].value
+        const webMeetingEndTime = webMeetingEndTimeElement[0].value;
         const strWebMeetingEndDatetime = `${webMeetingEndDate} ${webMeetingEndTime}`;
         const webMeetingLocation = this.webMeetingLocation as string;
         const webMeetingContent = this.webMeetingContent as string;

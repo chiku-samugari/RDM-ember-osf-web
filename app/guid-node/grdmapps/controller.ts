@@ -695,14 +695,12 @@ export default class GuidNodeGrdmapps extends Controller {
         const guid = String(this.model.guid);
         const webMeetingSubject = this.webMeetingSubject as string;
         const webMeetingStartDate = moment(this.webMeetingStartDate).format('YYYY-MM-DD');
-        const webMeetingEndDate = moment(this.webMeetingEndDate).format('YYYY-MM-DD');
-        /* eslint-disable max-len */
-        const webMeetingsStartTimeElement = document.querySelectorAll('select[id=create_teams_start_time]') as any as HTMLInputElement;
-        const webMeetingEndTimeElement = document.querySelectorAll('select[id=create_teams_end_time]') as any as HTMLInputElement;
-        /* eslint-enable max-len */
+        const webMeetingsStartTimeElement = document.querySelectorAll('select[id=create_teams_start_time]') as any;
         const webMeetingStartTime = webMeetingsStartTimeElement[0].value;
-        const webMeetingEndTime = webMeetingEndTimeElement[0].value;
         const strWebMeetingStartDatetime = `${webMeetingStartDate} ${webMeetingStartTime}`;
+        const webMeetingEndDate = moment(this.webMeetingEndDate).format('YYYY-MM-DD');
+        const webMeetingEndTimeElement = document.querySelectorAll('select[id=create_teams_end_time]') as any;
+        const webMeetingEndTime = webMeetingEndTimeElement[0].value
         const strWebMeetingEndDatetime = `${webMeetingEndDate} ${webMeetingEndTime}`;
         const webMeetingLocation = this.webMeetingLocation as string;
         const webMeetingContent = this.webMeetingContent as string;

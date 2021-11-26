@@ -1296,7 +1296,6 @@ export default class GuidNodeGrdmapps extends Controller {
             .then(res => {
                 if (!res.ok) {
                     this.toast.error(this.intl.t('integromat.error.failedToRequest'));
-                    return {};
                 }
                 return res.json();
             })
@@ -1327,7 +1326,6 @@ export default class GuidNodeGrdmapps extends Controller {
             .then(res => {
                 if (!res.ok) {
                     this.toast.error(this.intl.t('integromat.error.failedToGetMessage'));
-                    return {};
                 }
                 return res.json();
             })

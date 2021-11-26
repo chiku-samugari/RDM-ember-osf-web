@@ -275,9 +275,8 @@ export default class GuidNodeGrdmapps extends Controller {
     checkLength(text: string, select: any) {
         if (select.searchText.length >= 3 && text.length < 3) {
             return '';
-        } else {
-            return text.length >= 3;
         }
+        return text.length >= 3;
     }
 
     @action
@@ -1384,14 +1383,14 @@ export default class GuidNodeGrdmapps extends Controller {
             // for display App Name on meeting list
             for (let j = 0; j < webMeetingApps.length; j++) {
                 if (upcomingWebMeetings[i].fields.app === webMeetingApps[j].pk) {
-                    upcomingWebMeetings[i]['app_name_disp'] = this.camel2space(webMeetingApps[j].fields.app_name);
+                    upcomingWebMeetings[i].app_name_disp = this.camel2space(webMeetingApps[j].fields.app_name);
                     break;
                 }
             }
 
             // for display Date Bar
             if (i === 0) {
-                upcomingWebMeetings[i]['date_bar'] = false;
+                upcomingWebMeetings[i].date_bar = false;
             } else if (i !== 0) {
                 previousDatetime = new Date(upcomingWebMeetings[i - 1].fields.start_datetime);
                 pYear = previousDatetime.getFullYear();
@@ -1405,9 +1404,9 @@ export default class GuidNodeGrdmapps extends Controller {
                 currentDate = `${cYear}/${cMonth}/${cDate}`;
 
                 if (currentDate !== previousDate) {
-                    upcomingWebMeetings[i]['date_bar'] = true;
+                    upcomingWebMeetings[i].date_bar = true;
                 } else {
-                    upcomingWebMeetings[i]['date_bar'] = false;
+                    upcomingWebMeetings[i].date_bar = false;
                 }
             }
         }
@@ -1438,13 +1437,13 @@ export default class GuidNodeGrdmapps extends Controller {
             // for display App Name on meeting list
             for (let j = 0; j < webMeetingApps.length; j++) {
                 if (previousWebMeetings[i].fields.app === webMeetingApps[j].pk) {
-                    previousWebMeetings[i]['app_name_disp'] = this.camel2space(webMeetingApps[j].fields.app_name);
+                    previousWebMeetings[i].app_name_disp = this.camel2space(webMeetingApps[j].fields.app_name);
                     break;
                 }
             }
 
             if (i === 0) {
-                previousWebMeetings[i]['date_bar'] = false;
+                previousWebMeetings[i].date_bar = false;
             } else if (i !== 0) {
                 nextDatetime = new Date(previousWebMeetings[i - 1].fields.start_datetime);
                 nYear = nextDatetime.getFullYear();
@@ -1458,9 +1457,9 @@ export default class GuidNodeGrdmapps extends Controller {
                 currentDate = `${cYear}/${cMonth}/${cDate}`;
 
                 if (currentDate !== nextDate) {
-                    previousWebMeetings[i]['date_bar'] = true;
+                    previousWebMeetings[i].date_bar = true;
                 } else {
-                    previousWebMeetings[i]['date_bar'] = false;
+                    previousWebMeetings[i].date_bar = false;
                 }
             }
         }
@@ -1736,7 +1735,7 @@ export default class GuidNodeGrdmapps extends Controller {
         const webMeetingApps = JSON.parse(appsConfig.webMeetingApps);
 
         for (let i = 0; i < webMeetingApps.length; i++) {
-            webMeetingApps[i]['app_name_disp'] = this.camel2space(webMeetingApps[i].fields.app_name);
+            webMeetingApps[i].app_name_disp = this.camel2space(webMeetingApps[i].fields.app_name);
         }
 
         return webMeetingApps;

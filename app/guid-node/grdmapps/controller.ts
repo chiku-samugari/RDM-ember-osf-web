@@ -527,11 +527,18 @@ export default class GuidNodeGrdmapps extends Controller {
                 ));
             validFlag = false;
         }
-        // else if(!(reg.test(email))){
-        // this.set('msgInvalidEmail', this.intl.t('integromat.meetingDialog.invalid.invalid', {item: this.intl.t('integromat.signInAdress')}));
-        // validFlag = false;
-        // }
-
+        /*
+        else if(!(reg.test(email))){
+        this.set(
+                'msgInvalidEmail',
+                this.intl.t(
+                    'integromat.meetingDialog.invalid.invalid',
+                    { item: this.intl.t('integromat.signInAdress') },
+                ),
+            );
+        validFlag = false;
+        }
+        */
         return validFlag;
     }
 

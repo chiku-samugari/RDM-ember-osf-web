@@ -695,14 +695,14 @@ export default class GuidNodeGrdmapps extends Controller {
         const guid = String(this.model.guid);
         const webMeetingSubject = this.webMeetingSubject as string;
         const webMeetingStartDate = moment(this.webMeetingStartDate).format('YYYY-MM-DD');
-        const webMeetingStartTime = (
-            document.querySelectorAll('select[id=create_teams_start_time]')[0]
-        ).value as HTMLInputElement;
-        const strWebMeetingStartDatetime = `${webMeetingStartDate} ${webMeetingStartTime}`;
         const webMeetingEndDate = moment(this.webMeetingEndDate).format('YYYY-MM-DD');
-        const webMeetingEndTime = (
-            document.querySelectorAll('select[id=create_teams_end_time]')[0]
-        ).value as HTMLInputElement;
+        /* eslint-disable max-len */
+        const webMeetingsStartTimeElement = document.querySelectorAll('select[id=create_teams_start_time]') as HTMLInputElement;
+        const webMeetingEndTimeElement = document.querySelectorAll('select[id=create_teams_end_time]') as HTMLInputElement;
+        /* eslint-enable max-len */
+        const webMeetingStartTime = webMeetingsStartTimeElement[0].value;
+        const webMeetingEndTime = webMeetingEndTimeElement[0].value
+        const strWebMeetingStartDatetime = `${webMeetingStartDate} ${webMeetingStartTime}`;
         const strWebMeetingEndDatetime = `${webMeetingEndDate} ${webMeetingEndTime}`;
         const webMeetingLocation = this.webMeetingLocation as string;
         const webMeetingContent = this.webMeetingContent as string;
@@ -941,8 +941,8 @@ export default class GuidNodeGrdmapps extends Controller {
 
     @action
     setDefaultDate(this: GuidNodeGrdmapps) {
-        ( $('#update_start_date')[0]).value = this.webMeetingStartDate as any;
-        ( $('#update_end_date')[0]).value = this.webMeetingEndDate as any;
+        (<any> $('#update_start_date')[0]).value = this.webMeetingStartDate;
+        (<any> $('#update_end_date')[0]).value = this.webMeetingEndDate;
     }
 
     @action
@@ -958,13 +958,13 @@ export default class GuidNodeGrdmapps extends Controller {
         const webMeetingSubject = this.webMeetingSubject as string;
         const webMeetingStartDate = moment(this.webMeetingStartDate).format('YYYY-MM-DD');
         const webMeetingStartTime = (
-            document.querySelectorAll('select[id=update_start_time]')[0]
-        ).value as HTMLInputElement;
+            <HTMLInputElement> document.querySelectorAll('select[id=update_start_time]')[0]
+        ).value;
         const strWebMeetingStartDatetime = `${webMeetingStartDate} ${webMeetingStartTime}`;
         const webMeetingEndDate = moment(this.webMeetingEndDate).format('YYYY-MM-DD');
         const webMeetingEndTime = (
-            document.querySelectorAll('select[id=update_end_time]')[0]
-        ).value as HTMLInputElement;
+            <HTMLInputElement> document.querySelectorAll('select[id=update_end_time]')[0]
+        ).value;
         const strWebMeetingEndDatetime = `${webMeetingEndDate} ${webMeetingEndTime}`;
         const webMeetingLocation = this.webMeetingLocation as string;
         const webMeetingContent = this.webMeetingContent as string;

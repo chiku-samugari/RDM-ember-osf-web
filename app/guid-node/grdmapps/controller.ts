@@ -18,17 +18,17 @@ import CurrentUser from 'ember-osf-web/services/current-user';
 import moment from 'moment';
 import $ from 'jquery';
 
-interface reqBody {
+interface ReqBody {
     count: number;
     timestamp: string;
 }
 
-interface institutionUsers {
+interface InstitutionUsers {
     fullname: string;
     guid: string;
 }
 /* eslint-disable camelcase */
-interface attendeesInfo {
+interface AttendeesInfo {
     name: string;
     email: string;
     nameForApp: string;
@@ -38,7 +38,7 @@ interface attendeesInfo {
     disabled: boolean;
 }
 
-interface attendees {
+interface Attendees {
     fullname: string;
     user_guid: string;
     microsoft_teams_mail: string;
@@ -50,30 +50,30 @@ interface attendees {
 }
 /* eslint-enable camelcase */
 
-interface nodeAppAttendees {
-    [fields: string]: attendees;
+interface NodeAppAttendees {
+    [fields: string]: Attendees;
 }
 
-interface microsoftTeamsAttendeeAtCreate {
-    emailAddress: { address: string; name: string;};
+interface MicrosoftTeamsAttendeeAtCreate {
+    emailAddress: { address: string; name: string; };
 }
 
-interface microsoftTeamsAttendeeAtUpdate {
+interface MicrosoftTeamsAttendeeAtUpdate {
     address: string;
     name: string;
 }
 
-interface webexMeetingsAttendee {
+interface WebexMeetingsAttendee {
     email: string;
     displayName: string;
 }
 
-interface webexMeetingsCreateInvitee {
+interface WebexMeetingsCreateInvitee {
     email: string;
     displayName: string;
 }
 
-interface payload {
+interface Payload {
     appName: string;
     appNameDisp: string;
     guid: string;
@@ -101,11 +101,11 @@ interface payload {
     startDatetime: string;
     endDatetime: string;
     subject: string;
-    microsoftTeamsAttendeesCollectionAtCreate: microsoftTeamsAttendeeAtCreate[];
-    microsoftTeamsAttendeesCollectionAtUpdate: microsoftTeamsAttendeeAtUpdate[];
-    webexMeetingsAttendeesCollection: webexMeetingsAttendee[];
-    webexMeetingsCreateInvitees: webexMeetingsCreateInvitee[],
-    webexMeetingsDeleteInviteeIds: string[],
+    microsoftTeamsAttendeesCollectionAtCreate: MicrosoftTeamsAttendeeAtCreate[];
+    microsoftTeamsAttendeesCollectionAtUpdate: MicrosoftTeamsAttendeeAtUpdate[];
+    webexMeetingsAttendeesCollection: WebexMeetingsAttendee[];
+    webexMeetingsCreateInvitees: WebexMeetingsCreateInvitee[];
+    webexMeetingsDeleteInviteeIds: string[];
     attendees: string[];
     location: string;
     content: string;
@@ -134,7 +134,6 @@ const errorWebappsDeleteMeeting = 'integromat.error.webappsDeleteMeeting';
 const errorGrdmDeleteMeetingReg = 'integromat.error.grdmDeleteMeeting';
 const errorSlackDeleteMeeting = 'integromat.error.slackDeleteMeeting';
 const errorScenarioProcessing = 'integromat.error.scenarioProcessing';
-
 
 const nodeUrl = `${host}${namespace}/project/{}`;
 const integromatDir = '/integromat';
@@ -192,7 +191,7 @@ export default class GuidNodeGrdmapps extends Controller {
     webMeetingPk = '';
     webMeetingSubject = '';
     webMeetingOrganizerFullname = '';
-    webMeetingAttendees : string[] = [];
+    webMeetingAttendees: string[] = [];
     webMeetingStartDate = '';
     webMeetingStartTime = '';
     webMeetingEndDate = '';
@@ -215,7 +214,7 @@ export default class GuidNodeGrdmapps extends Controller {
     msgInvalidDatetime = '';
     msgInvalidWebhookUrl = '';
 
-    msgInvalidSelectedUser ='';
+    msgInvalidSelectedUser = '';
     msgInvalidGuestUser = '';
     msgErrorEmailVal = '';
     msgInvalidEmail = '';
@@ -225,16 +224,16 @@ export default class GuidNodeGrdmapps extends Controller {
     usernameOfApp = '';
     userType = '';
 
-    selectedUser : attendeesInfo = {} as attendeesInfo;
-    selectedAttendees : attendeesInfo[] = [];
-    selectedMicrosoftTeamsAttendees : attendeesInfo[] = [];
-    selectedWebexMeetingsAttendees : attendeesInfo[] = [];
+    selectedUser: AttendeesInfo = {} as AttendeesInfo;
+    selectedAttendees: AttendeesInfo[] = [];
+    selectedMicrosoftTeamsAttendees: AttendeesInfo[] = [];
+    selectedWebexMeetingsAttendees: AttendeesInfo[] = [];
 
     workflowDescription = '';
     alternativeWebhookUrl = '';
 
-    teamsMeetingAttendees : string[] = [];
-    notTeamsMeetingAttendees : string[] = [];
+    teamsMeetingAttendees: string[] = [];
+    notTeamsMeetingAttendees: string[] = [];
 
     @computed('config.isFulfilled')
     get loading(): boolean {
@@ -485,7 +484,7 @@ export default class GuidNodeGrdmapps extends Controller {
     webMeetingAppsEmailValidationCheck(
         this: GuidNodeGrdmapps,
         userType: string,
-        selectedUser: attendeesInfo,
+        selectedUser: AttendeesInfo,
         guestFullname: string,
         email: string,
     ) {
@@ -551,7 +550,7 @@ export default class GuidNodeGrdmapps extends Controller {
     registerWebMeetingAppsEmail(this: GuidNodeGrdmapps) {
         const headers = this.currentUser.ajaxHeaders();
         const url = registerWebMeetingAppsEmailUrl.replace('{}', String(this.model.guid));
-        const selectedUser = this.selectedUser as attendeesInfo;
+        const selectedUser = this.selectedUser as AttendeesInfo;
         const guestFullname = this.guestFullname as string;
         const userType = this.userType as string;
         let _id = null;
@@ -697,12 +696,12 @@ export default class GuidNodeGrdmapps extends Controller {
         const webMeetingSubject = this.webMeetingSubject as string;
         const webMeetingStartDate = moment(this.webMeetingStartDate).format('YYYY-MM-DD');
         const webMeetingStartTime = (
-            <HTMLInputElement>document.querySelectorAll('select[id=create_teams_start_time]')[0]
+            <HTMLInputElement> document.querySelectorAll('select[id=create_teams_start_time]')[0]
         ).value;
         const strWebMeetingStartDatetime = `${webMeetingStartDate} ${webMeetingStartTime}`;
         const webMeetingEndDate = moment(this.webMeetingEndDate).format('YYYY-MM-DD');
         const webMeetingEndTime = (
-            <HTMLInputElement>document.querySelectorAll('select[id=create_teams_end_time]')[0]
+            <HTMLInputElement> document.querySelectorAll('select[id=create_teams_end_time]')[0]
         ).value;
         const strWebMeetingEndDatetime = `${webMeetingEndDate} ${webMeetingEndTime}`;
         const webMeetingLocation = this.webMeetingLocation as string;
@@ -711,17 +710,17 @@ export default class GuidNodeGrdmapps extends Controller {
         const timestamp = new Date().getTime();
 
         let workflowAction = '';
-        const microsoftTeamsAttendeesCollectionAtCreate: microsoftTeamsAttendeeAtCreate[] = [];
-        const microsoftTeamsAttendeesCollectionAtUpdate: microsoftTeamsAttendeeAtUpdate[] = [];
-        const webexMeetingsAttendeesCollection: webexMeetingsAttendee[] = [];
+        const microsoftTeamsAttendeesCollectionAtCreate: MicrosoftTeamsAttendeeAtCreate[] = [];
+        const microsoftTeamsAttendeesCollectionAtUpdate: MicrosoftTeamsAttendeeAtUpdate[] = [];
+        const webexMeetingsAttendeesCollection: WebexMeetingsAttendee[] = [];
         const arrayAttendees = [];
 
-        const webexMeetingsCreateInvitees: webexMeetingsCreateInvitee[] = [];
+        const webexMeetingsCreateInvitees: WebexMeetingsCreateInvitee[] = [];
         const webexMeetingsDeleteInviteeIds: string[] = [];
 
         let attendeeNum = 0;
 
-        let selectedAttendees : attendeesInfo[] = [];
+        let selectedAttendees : AttendeesInfo[] = [];
 
         if (this.webMeetingAppName === appsConfig.appNameMicrosoftTeams) {
             selectedAttendees = this.selectedMicrosoftTeamsAttendees;
@@ -828,7 +827,7 @@ export default class GuidNodeGrdmapps extends Controller {
         meetingPassword: string,
         appId: string,
         subject: string,
-        attendees:string[],
+        attendees: string[],
         startDatetime: string,
         endDatetime: string,
         location: string,
@@ -942,8 +941,8 @@ export default class GuidNodeGrdmapps extends Controller {
 
     @action
     setDefaultDate(this: GuidNodeGrdmapps) {
-        (<any>$('#update_start_date')[0]).value = this.webMeetingStartDate;
-        (<any>$('#update_end_date')[0]).value = this.webMeetingEndDate;
+        (<any> $('#update_start_date')[0]).value = this.webMeetingStartDate;
+        (<any> $('#update_end_date')[0]).value = this.webMeetingEndDate;
     }
 
     @action
@@ -959,12 +958,12 @@ export default class GuidNodeGrdmapps extends Controller {
         const webMeetingSubject = this.webMeetingSubject as string;
         const webMeetingStartDate = moment(this.webMeetingStartDate).format('YYYY-MM-DD');
         const webMeetingStartTime = (
-            <HTMLInputElement>document.querySelectorAll('select[id=update_start_time]')[0]
+            <HTMLInputElement> document.querySelectorAll('select[id=update_start_time]')[0]
         ).value;
         const strWebMeetingStartDatetime = `${webMeetingStartDate} ${webMeetingStartTime}`;
         const webMeetingEndDate = moment(this.webMeetingEndDate).format('YYYY-MM-DD');
         const webMeetingEndTime = (
-            <HTMLInputElement>document.querySelectorAll('select[id=update_end_time]')[0]
+            <HTMLInputElement> document.querySelectorAll('select[id=update_end_time]')[0]
         ).value;
         const strWebMeetingEndDatetime = `${webMeetingEndDate} ${webMeetingEndTime}`;
         const webMeetingLocation = this.webMeetingLocation as string;
@@ -978,20 +977,20 @@ export default class GuidNodeGrdmapps extends Controller {
         const nodeWebexMeetingsAttendees = JSON.parse(appsConfig.nodeWebexMeetingsAttendees);
 
         let workflowAction = '';
-        const microsoftTeamsAttendeesCollectionAtCreate: microsoftTeamsAttendeeAtCreate[] = [];
-        const microsoftTeamsAttendeesCollectionAtUpdate: microsoftTeamsAttendeeAtUpdate[] = [];
-        const webexMeetingsAttendeesCollection: webexMeetingsAttendee[] = [];
+        const microsoftTeamsAttendeesCollectionAtCreate: MicrosoftTeamsAttendeeAtCreate[] = [];
+        const microsoftTeamsAttendeesCollectionAtUpdate: MicrosoftTeamsAttendeeAtUpdate[] = [];
+        const webexMeetingsAttendeesCollection: WebexMeetingsAttendee[] = [];
         const arrayAttendees = [];
         const arrayAttendeePks: string[] = [];
 
         let arrayCreateAttendeePks = [];
         let arrayDeleteAttendeePks = [];
-        const webexMeetingsCreateInvitees: webexMeetingsCreateInvitee[] = [];
+        const webexMeetingsCreateInvitees: WebexMeetingsCreateInvitee[] = [];
         const webexMeetingsDeleteInviteeIds: string[] = [];
 
         let attendeeNum = 0;
 
-        const selectedAttendees = this.selectedAttendees as attendeesInfo[];
+        const selectedAttendees = this.selectedAttendees as AttendeesInfo[];
 
         if (this.webMeetingAppName === appsConfig.appNameMicrosoftTeams) {
             attendeeNum = selectedAttendees.length;
@@ -1167,11 +1166,11 @@ export default class GuidNodeGrdmapps extends Controller {
 
         const empty = '';
         const emptyList : string[] = [];
-        const microsoftTeamsAttendeesCollectionAtCreate: microsoftTeamsAttendeeAtCreate[] = [];
-        const microsoftTeamsAttendeesCollectionAtUpdate: microsoftTeamsAttendeeAtUpdate[] = [];
-        const webexMeetingsAttendeesCollection: webexMeetingsAttendee[] = [];
+        const microsoftTeamsAttendeesCollectionAtCreate: MicrosoftTeamsAttendeeAtCreate[] = [];
+        const microsoftTeamsAttendeesCollectionAtUpdate: MicrosoftTeamsAttendeeAtUpdate[] = [];
+        const webexMeetingsAttendeesCollection: WebexMeetingsAttendee[] = [];
 
-        const webexMeetingsCreateInvitees : webexMeetingsCreateInvitee[] = [];
+        const webexMeetingsCreateInvitees : WebexMeetingsCreateInvitee[] = [];
         const webexMeetingsDeleteInviteeIds : string[] = [];
 
         let workflowAction = '';
@@ -1239,7 +1238,7 @@ export default class GuidNodeGrdmapps extends Controller {
         appId: string,
         subject: string,
         organizerFullname: string,
-        attendees:string[],
+        attendees: string[],
         startDatetime: string,
         endDatetime: string,
         location: string,
@@ -1280,7 +1279,7 @@ export default class GuidNodeGrdmapps extends Controller {
         this.makeWebMeetingAttendee(appName, 'detail');
     }
 
-    reqLaunch(payload: payload, appName: string) {
+    reqLaunch(payload: Payload, appName: string) {
         this.toast.info(this.intl.t('integromat.info.launch'));
         const headers = this.currentUser.ajaxHeaders();
         const url = startIntegromatScenarioUrl.replace('{}', String(this.model.guid));
@@ -1311,7 +1310,7 @@ export default class GuidNodeGrdmapps extends Controller {
             });
     }
 
-    reqMessage(body: reqBody, appName: string) {
+    reqMessage(body: ReqBody, appName: string) {
         const headers = this.currentUser.ajaxHeaders();
         const url = reqestMessagesUrl.replace('{}', String(this.model.guid));
 
@@ -1509,7 +1508,7 @@ export default class GuidNodeGrdmapps extends Controller {
         }
         const appsConfig = this.config.content as GrdmappsConfigModel;
         const institutionUsers = JSON.parse(appsConfig.institutionUsers);
-        const attendeesInfo : attendeesInfo[] = [];
+        const attendeesInfo : AttendeesInfo[] = [];
 
         for (let i = 0; i < institutionUsers.length; i++) {
             attendeesInfo.push(
@@ -1530,8 +1529,8 @@ export default class GuidNodeGrdmapps extends Controller {
 
     makeInstitutionUserList(
         this: GuidNodeGrdmapps,
-        nodeAppAttendees: nodeAppAttendees[],
-        institutionUsers: institutionUsers[],
+        nodeAppAttendees: NodeAppAttendees[],
+        institutionUsers: InstitutionUsers[],
         suggestionDisabled: boolean,
         appName: string,
     ) {
@@ -1540,10 +1539,10 @@ export default class GuidNodeGrdmapps extends Controller {
         }
         const appsConfig = this.config.content as GrdmappsConfigModel;
 
-        let institutionUserList : attendeesInfo[] = [];
-        const registeredIstitutionUsers : attendeesInfo[] = [];
-        const unregisteredIstitutionUsers : attendeesInfo[] = [];
-        const guestUsers : attendeesInfo[] = [];
+        let institutionUserList : AttendeesInfo[] = [];
+        const registeredIstitutionUsers : AttendeesInfo[] = [];
+        const unregisteredIstitutionUsers : AttendeesInfo[] = [];
+        const guestUsers : AttendeesInfo[] = [];
         let unregisteredUserName = '';
         let unregisteredUserInfo = '';
         const unregisteredLabel = this.intl.t('integromat.meetingDialog.unregisteredLabel');

@@ -872,7 +872,7 @@ export default class GuidNodeGrdmapps extends Controller {
         }
         const appsConfig = this.config.content as GrdmappsConfigModel;
         const nodeAttendeesAll = JSON.parse(appsConfig.nodeAttendeesAll);
-
+        const webMeetingAttendees = this.webMeetingAttendees;
         let guidOrEmail = '';
         let profileUrl = '';
         let isGuest = false;
@@ -881,59 +881,59 @@ export default class GuidNodeGrdmapps extends Controller {
         let userGuid = '';
 
         if (appName === appsConfig.appNameMicrosoftTeams) {
-            for (let i = 0; i < this.webMeetingAttendees.length; i++) {
-                for (let j = 0; j < nodeAttendeesAll.length; j++) {
-                    if (type === 'update' && !(nodeAttendeesAll[j].fields.microsoft_teams_mail)) {
+            webMeetingAttendees.forEach((webMeetingAttendee: any) => {
+                nodeAttendeesAll.forEach((nodeAttendee: any) => {
+                    if (type === 'update' && !(nodeAttendee.fields.microsoft_teams_mail)) {
                         continue;
                     }
-                    if (this.webMeetingAttendees[i] === nodeAttendeesAll[j].pk) {
-                        isGuest = nodeAttendeesAll[j].fields.is_guest;
-                        microsoftTeamsMail = nodeAttendeesAll[j].fields.microsoft_teams_mail;
-                        userGuid = nodeAttendeesAll[j].fields.user_guid;
+                    if (webMeetingAttendee === nodeAttendee.pk) {
+                        isGuest = nodeAttendee.fields.is_guest;
+                        microsoftTeamsMail = nodeAttendee.fields.microsoft_teams_mail;
+                        userGuid = nodeAttendee.fields.user_guid;
 
                         guidOrEmail = isGuest ? `(${microsoftTeamsMail})` : `@${userGuid}`;
                         profileUrl = isGuest ? '' : profileUrlBase + userGuid;
                         this.selectedAttendees.push(
                             {
-                                name: nodeAttendeesAll[j].fields.fullname + guidOrEmail,
-                                email: nodeAttendeesAll[j].fields.microsoft_teams_mail,
-                                nameForApp: nodeAttendeesAll[j].fields.microsoft_teams_user_name,
+                                name: nodeAttendee.fields.fullname + guidOrEmail,
+                                email: nodeAttendee.fields.microsoft_teams_mail,
+                                nameForApp: nodeAttendee.fields.microsoft_teams_user_name,
                                 profile: profileUrl,
-                                _id: nodeAttendeesAll[j].fields._id,
-                                is_guest: nodeAttendeesAll[j].fields.is_guest,
+                                _id: nodeAttendee.fields._id,
+                                is_guest: nodeAttendee.fields.is_guest,
                                 disabled: false,
                             },
                         );
                     }
-                }
-            }
+                });
+            });
         } else if (appName === appsConfig.appNameWebexMeetings) {
-            for (let i = 0; i < this.webMeetingAttendees.length; i++) {
-                for (let j = 0; j < nodeAttendeesAll.length; j++) {
-                    if (type === 'update' && !(nodeAttendeesAll[j].fields.webex_meetings_mail)) {
+            webMeetingAttendees.forEach((webMeetingAttendee: any) => {
+                nodeAttendeesAll.forEach((nodeAttendee: any) => {
+                    if (type === 'update' && !(nodeAttendee.fields.webex_meetings_mail)) {
                         continue;
                     }
-                    if (this.webMeetingAttendees[i] === nodeAttendeesAll[j].pk) {
-                        isGuest = nodeAttendeesAll[j].fields.is_guest;
-                        webexMeetingsMail = nodeAttendeesAll[j].fields.webex_meetings_mail;
-                        userGuid = nodeAttendeesAll[j].fields.user_guid;
+                    if (webMeetingAttendee === nodeAttendee.pk) {
+                        isGuest = nodeAttendee.fields.is_guest;
+                        webexMeetingsMail = nodeAttendee.fields.webex_meetings_mail;
+                        userGuid = nodeAttendee.fields.user_guid;
 
                         guidOrEmail = isGuest ? `(${webexMeetingsMail})` : `@${userGuid}`;
                         profileUrl = isGuest ? '' : profileUrlBase + userGuid;
                         this.selectedAttendees.push(
                             {
-                                name: nodeAttendeesAll[j].fields.fullname + guidOrEmail,
-                                email: nodeAttendeesAll[j].fields.webex_meetings_mail,
-                                nameForApp: nodeAttendeesAll[j].fields.webex_meetings_display_name,
+                                name: nodeAttendee.fields.fullname + guidOrEmail,
+                                email: nodeAttendee.fields.webex_meetings_mail,
+                                nameForApp: nodeAttendee.fields.webex_meetings_display_name,
                                 profile: profileUrl,
-                                _id: nodeAttendeesAll[j].fields._id,
-                                is_guest: nodeAttendeesAll[j].fields.is_guest,
+                                _id: nodeAttendee.fields._id,
+                                is_guest: nodeAttendee.fields.is_guest,
                                 disabled: false,
                             },
                         );
                     }
-                }
-            }
+                });
+            });
         }
     }
 

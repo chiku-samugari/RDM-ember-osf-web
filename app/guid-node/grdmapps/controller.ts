@@ -1012,55 +1012,55 @@ export default class GuidNodeGrdmapps extends Controller {
         if (appName === appsConfig.appNameMicrosoftTeams) {
             workflowAction = 'updateMicrosoftTeamsMeeting';
 
-            for (let i = 0; i < selectedAttendees.length; i++) {
+            selectedAttendees.forEach((selectedAttendee: any) => {
                 microsoftTeamsAttendeesCollectionAtUpdate.push(
                     {
-                        address: selectedAttendees[i].email,
-                        name: selectedAttendees[i].nameForApp ? selectedAttendees[i].nameForApp : 'Unregistered',
+                        address: selectedAttendee.email,
+                        name: selectedAttendee.nameForApp ? selectedAttendee.nameForApp : 'Unregistered',
                     },
                 );
-                arrayAttendees.push(selectedAttendees[i].email);
-            }
+                arrayAttendees.push(selectedAttendee.email);
+            })
         } else if (appName === appsConfig.appNameWebexMeetings) {
             workflowAction = 'updateWebexMeetings';
 
-            for (let i = 0; i < selectedAttendees.length; i++) {
-                arrayAttendees.push(selectedAttendees[i].email);
+            selectedAttendees.forEach((selectedAttendee: any) => {
+                arrayAttendees.push(selectedAttendee.email);
 
-                for (let j = 0; j < nodeWebexMeetingsAttendees.length; j++) {
-                    if (selectedAttendees[i].email === nodeWebexMeetingsAttendees[j].fields.webex_meetings_mail) {
-                        arrayAttendeePks.push(nodeWebexMeetingsAttendees[j].pk);
+                nodeWebexMeetingsAttendees.forEach((nodeWebexMeetingsAttendee: any) => {
+                    if (selectedAttendee.email === nodeWebexMeetingsAttendee.fields.webex_meetings_mail) {
+                        arrayAttendeePks.push(nodeWebexMeetingsAttendee.pk);
                     }
-                }
-            }
+                });
+            });
 
             arrayCreateAttendeePks = arrayAttendeePks.filter(i => (this.webMeetingAttendees).indexOf(i) === -1);
             arrayDeleteAttendeePks = (this.webMeetingAttendees).filter(i => arrayAttendeePks.indexOf(i) === -1);
 
-            for (let i = 0; i < arrayCreateAttendeePks.length; i++) {
-                for (let j = 0; j < nodeWebexMeetingsAttendees.length; j++) {
-                    if (arrayCreateAttendeePks[i] === nodeWebexMeetingsAttendees[j].pk) {
+            arrayCreateAttendeePks.forEach((arrayCreateAttendeePk: any) => {
+                nodeWebexMeetingsAttendees.forEach((nodeWebexMeetingsAttendee: any) => {
+                    if (arrayCreateAttendeePk === nodeWebexMeetingsAttendee.pk) {
                         webexMeetingsCreateInvitees.push(
                             {
-                                email: nodeWebexMeetingsAttendees[j].fields.webex_meetings_mail,
-                                displayName: nodeWebexMeetingsAttendees[j].fields.webex_meetings_display_name,
+                                email: nodeWebexMeetingsAttendee.fields.webex_meetings_mail,
+                                displayName: nodeWebexMeetingsAttendee.fields.webex_meetings_display_name,
                             },
                         );
                     }
-                }
-            }
+                });
+            });
 
-            for (let i = 0; i < arrayDeleteAttendeePks.length; i++) {
-                for (let j = 0; j < nodeWebMeetingAttendeesRelation.length; j++) {
-                    if (this.webMeetingPk === nodeWebMeetingAttendeesRelation[j].fields.all_meeting_information) {
-                        if (arrayDeleteAttendeePks[i] === nodeWebMeetingAttendeesRelation[j].fields.attendees) {
+            arrayDeleteAttendeePks.forEach((arrayDeleteAttendeePk: any) => {
+                nodeWebMeetingAttendeesRelation.forEach((nodeWebMeetingAttendeesRelation: any) => {
+                    if (this.webMeetingPk === nodeWebMeetingAttendeesRelation.fields.all_meeting_information) {
+                        if (arrayDeleteAttendeePk === nodeWebMeetingAttendeesRelation.fields.attendees) {
                             webexMeetingsDeleteInviteeIds.push(
-                                nodeWebMeetingAttendeesRelation[j].fields.webex_meetings_invitee_id,
+                                nodeWebMeetingAttendeesRelation.fields.webex_meetings_invitee_id,
                             );
                         }
                     }
-                }
-            }
+                });
+            });
         }
 
         const webMeetingStartDatetime = (new Date(strWebMeetingStartDatetime)).toISOString();

@@ -315,9 +315,9 @@ export default class GuidNodeGrdmapps extends Controller {
                             url = nodeWorkflow.fields.alternative_webhook_url;
                         }
                     }
-                })
+                });
             }
-        })
+        });
 
         this.set('webhookUrl', url);
 

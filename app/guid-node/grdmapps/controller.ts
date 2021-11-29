@@ -853,12 +853,12 @@ export default class GuidNodeGrdmapps extends Controller {
         this.set('webMeetingJoinUrl', joinUrl);
         this.set('webMeetingPassword', meetingPassword);
 
-        webMeetingApps.forEach((webMeetingApp: any) => {
+        for (let webMeetingApp of webMeetingApps) {
             if (webMeetingApp.pk === appId) {
                 appName = webMeetingApp.fields.app_name;
                 break;
             }
-        });
+        }
 
         this.setWebMeetingApp(appName, 'update');
         this.makeWebMeetingAttendee(appName, 'update');
@@ -882,7 +882,7 @@ export default class GuidNodeGrdmapps extends Controller {
 
         if (appName === appsConfig.appNameMicrosoftTeams) {
             webMeetingAttendees.forEach((webMeetingAttendee: any) => {
-                nodeAttendeesAll.forEach((nodeAttendee: any) => {
+                for (let nodeAttendee of nodeAttendeesAll) {
                     if (type === 'update' && !(nodeAttendee.fields.microsoft_teams_mail)) {
                         continue;
                     }
@@ -905,11 +905,11 @@ export default class GuidNodeGrdmapps extends Controller {
                             },
                         );
                     }
-                });
+                }
             });
         } else if (appName === appsConfig.appNameWebexMeetings) {
             webMeetingAttendees.forEach((webMeetingAttendee: any) => {
-                nodeAttendeesAll.forEach((nodeAttendee: any) => {
+                for (let nodeAttendee of nodeAttendeesAll) {
                     if (type === 'update' && !(nodeAttendee.fields.webex_meetings_mail)) {
                         continue;
                     }
@@ -932,7 +932,7 @@ export default class GuidNodeGrdmapps extends Controller {
                             },
                         );
                     }
-                });
+                }
             });
         }
     }
@@ -1129,12 +1129,12 @@ export default class GuidNodeGrdmapps extends Controller {
         const webMeetingApps = JSON.parse(appsConfig.webMeetingApps);
         let appName = '';
 
-        webMeetingApps.forEach((webMeetingApp: any) => {
+        for (webMeetingApp val of webMeetingApps) {
             if (webMeetingApp.pk === appId) {
                 appName = webMeetingApp.fields.app_name;
                 break;
             }
-        });
+        }
 
         this.setWebMeetingApp(appName, 'delete');
         this.set('showDeleteWebMeetingDialog', true);
@@ -1266,12 +1266,12 @@ export default class GuidNodeGrdmapps extends Controller {
         this.set('webMeetingUpdateMeetingId', meetingId);
         this.set('webMeetingJoinUrl', joinUrl);
 
-        webMeetingApps.forEach((webMeetingApp: any) => {
+        for (let webMeetingApp of webMeetingApps) {
             if (webMeetingApp.pk === appId) {
                 appName = webMeetingApp.fields.app_name;
                 break;
             }
-        })
+        }
 
         this.setWebMeetingApp(appName, 'detail');
         this.makeWebMeetingAttendee(appName, 'detail');
@@ -1383,12 +1383,12 @@ export default class GuidNodeGrdmapps extends Controller {
 
         for (let i = 0; i < upcomingWebMeetings.length; i++) {
             // for display App Name on meeting list
-            webMeetingApps.forEach((webMeetingApp: any) => {
+            for (let webMeetingApp of webMeetingApps) {
                 if (upcomingWebMeetings[i].fields.app === webMeetingApp.pk) {
                     upcomingWebMeetings[i].app_name_disp = this.camel2space(webMeetingApp.fields.app_name);
                     break;
                 }
-            })
+            }
 
             // for display Date Bar
             if (i === 0) {
@@ -1437,12 +1437,12 @@ export default class GuidNodeGrdmapps extends Controller {
 
         for (let i = 0; i < previousWebMeetings.length; i++) {
             // for display App Name on meeting list
-            webMeetingApps.forEach((webMeetingApp: any) => {
+            for (let webMeetingApp of webMeetingApps) {
                 if (previousWebMeetings[i].fields.app === webMeetingApp.pk) {
                     previousWebMeetings[i].app_name_disp = this.camel2space(webMeetingApp.fields.app_name);
                     break;
                 }
-            });
+            }
 
             if (i === 0) {
                 previousWebMeetings[i].date_bar = false;

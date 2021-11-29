@@ -743,29 +743,29 @@ export default class GuidNodeGrdmapps extends Controller {
         // make attendees format
         if (this.webMeetingAppName === appsConfig.appNameMicrosoftTeams) {
             workflowAction = 'createMicrosoftTeamsMeeting';
-            for (let i = 0; i < selectedAttendees.length; i++) {
+            selectedAttendees.forEach((selectedAttendee: any) => {
                 microsoftTeamsAttendeesCollectionAtCreate.push(
                     {
                         emailAddress: {
-                            address: selectedAttendees[i].email,
-                            name: selectedAttendees[i].nameForApp ? selectedAttendees[i].nameForApp : 'Unregistered',
+                            address: selectedAttendee.email,
+                            name: selectedAttendee.nameForApp ? selectedAttendee.nameForApp : 'Unregistered',
                         },
                     },
                 );
-                arrayAttendees.push(selectedAttendees[i].email);
-            }
+                arrayAttendees.push(selectedAttendee.email);
+            });
         } else if (this.webMeetingAppName === appsConfig.appNameWebexMeetings) {
             workflowAction = 'createWebexMeetings';
 
-            for (let i = 0; i < selectedAttendees.length; i++) {
+            selectedAttendees.forEach((selectedAttendee: any) => {
                 webexMeetingsAttendeesCollection.push(
                     {
-                        email: selectedAttendees[i].email,
-                        displayName: selectedAttendees[i].nameForApp,
+                        email: selectedAttendees.email,
+                        displayName: selectedAttendees.nameForApp,
                     },
                 );
-                arrayAttendees.push(selectedAttendees[i].email);
-            }
+                arrayAttendees.push(selectedAttendees.email);
+            });
         }
 
         const webMeetingStartDatetime = (new Date(strWebMeetingStartDatetime)).toISOString();
@@ -853,12 +853,12 @@ export default class GuidNodeGrdmapps extends Controller {
         this.set('webMeetingJoinUrl', joinUrl);
         this.set('webMeetingPassword', meetingPassword);
 
-        for (let i = 0; i < webMeetingApps.length; i++) {
-            if (webMeetingApps[i].pk === appId) {
-                appName = webMeetingApps[i].fields.app_name;
+        webMeetingApps.forEach((webMeetingApp: any) => {
+            if (webMeetingApp.pk === appId) {
+                appName = webMeetingApp.fields.app_name;
                 break;
             }
-        }
+        });
 
         this.setWebMeetingApp(appName, 'update');
         this.makeWebMeetingAttendee(appName, 'update');

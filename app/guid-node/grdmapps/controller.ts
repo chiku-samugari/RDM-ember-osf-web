@@ -711,7 +711,7 @@ export default class GuidNodeGrdmapps extends Controller {
         const microsoftTeamsAttendeesCollectionAtCreate: MicrosoftTeamsAttendeeAtCreate[] = [];
         const microsoftTeamsAttendeesCollectionAtUpdate: MicrosoftTeamsAttendeeAtUpdate[] = [];
         const webexMeetingsAttendeesCollection: WebexMeetingsAttendee[] = [];
-        const arrayAttendees = [];
+        const arrayAttendees: string[] = [];
 
         const webexMeetingsCreateInvitees: WebexMeetingsCreateInvitee[] = [];
         const webexMeetingsDeleteInviteeIds: string[] = [];
@@ -760,11 +760,11 @@ export default class GuidNodeGrdmapps extends Controller {
             selectedAttendees.forEach((selectedAttendee: any) => {
                 webexMeetingsAttendeesCollection.push(
                     {
-                        email: selectedAttendees.email,
-                        displayName: selectedAttendees.nameForApp,
+                        email: selectedAttendee.email,
+                        displayName: selectedAttendee.nameForApp,
                     },
                 );
-                arrayAttendees.push(selectedAttendees.email);
+                arrayAttendees.push(selectedAttendee.email);
             });
         }
 
@@ -978,7 +978,7 @@ export default class GuidNodeGrdmapps extends Controller {
         const microsoftTeamsAttendeesCollectionAtCreate: MicrosoftTeamsAttendeeAtCreate[] = [];
         const microsoftTeamsAttendeesCollectionAtUpdate: MicrosoftTeamsAttendeeAtUpdate[] = [];
         const webexMeetingsAttendeesCollection: WebexMeetingsAttendee[] = [];
-        const arrayAttendees = [];
+        const arrayAttendees: string[] = [];
         const arrayAttendeePks: string[] = [];
 
         let arrayCreateAttendeePks = [];
@@ -1266,7 +1266,7 @@ export default class GuidNodeGrdmapps extends Controller {
         this.set('webMeetingUpdateMeetingId', meetingId);
         this.set('webMeetingJoinUrl', joinUrl);
 
-        webMeetingApps.forEach((webMeetingApp, index) => {
+        webMeetingApps.forEach((webMeetingApp: any) => {
             if (webMeetingApp.pk === appId) {
                 appName = webMeetingApp.fields.app_name;
                 break;

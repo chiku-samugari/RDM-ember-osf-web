@@ -306,10 +306,10 @@ export default class GuidNodeGrdmapps extends Controller {
         let workflowId = '';
         let url = '';
 
-        workflows.forEach(workflow => {
+        workflows.forEach((workflow: any) => {
             if (workflow.fields.workflow_description === workflowDesc) {
                 workflowId = workflow.pk;
-                nodeWorkflows.forEach(nodeWorkflow => {
+                nodeWorkflows.forEach((nodeWorkflow: any) => {
                     if (nodeWorkflow.fields.workflow === workflowId) {
                         if (!nodeWorkflow.fields.scenarios) {
                             url = nodeWorkflow.fields.alternative_webhook_url;

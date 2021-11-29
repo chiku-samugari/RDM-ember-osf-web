@@ -1129,12 +1129,12 @@ export default class GuidNodeGrdmapps extends Controller {
         const webMeetingApps = JSON.parse(appsConfig.webMeetingApps);
         let appName = '';
 
-        for (let i = 0; i < webMeetingApps.length; i++) {
-            if (webMeetingApps[i].pk === appId) {
-                appName = webMeetingApps[i].fields.app_name;
+        webMeetingApps.forEach((webMeetingApp: any) => {
+            if (webMeetingApp.pk === appId) {
+                appName = webMeetingApp.fields.app_name;
                 break;
             }
-        }
+        });
 
         this.setWebMeetingApp(appName, 'delete');
         this.set('showDeleteWebMeetingDialog', true);
@@ -1266,12 +1266,12 @@ export default class GuidNodeGrdmapps extends Controller {
         this.set('webMeetingUpdateMeetingId', meetingId);
         this.set('webMeetingJoinUrl', joinUrl);
 
-        for (let i = 0; i < webMeetingApps.length; i++) {
-            if (webMeetingApps[i].pk === appId) {
-                appName = webMeetingApps[i].fields.app_name;
+        webMeetingApps.forEach((webMeetingApp, index) => {
+            if (webMeetingApp.pk === appId) {
+                appName = webMeetingApp.fields.app_name;
                 break;
             }
-        }
+        })
 
         this.setWebMeetingApp(appName, 'detail');
         this.makeWebMeetingAttendee(appName, 'detail');
@@ -1383,12 +1383,12 @@ export default class GuidNodeGrdmapps extends Controller {
 
         for (let i = 0; i < upcomingWebMeetings.length; i++) {
             // for display App Name on meeting list
-            for (let j = 0; j < webMeetingApps.length; j++) {
-                if (upcomingWebMeetings[i].fields.app === webMeetingApps[j].pk) {
-                    upcomingWebMeetings[i].app_name_disp = this.camel2space(webMeetingApps[j].fields.app_name);
+            webMeetingApps.forEach((webMeetingApp: any) => {
+                if (upcomingWebMeetings[i].fields.app === webMeetingApp.pk) {
+                    upcomingWebMeetings[i].app_name_disp = this.camel2space(webMeetingApp.fields.app_name);
                     break;
                 }
-            }
+            })
 
             // for display Date Bar
             if (i === 0) {
@@ -1437,12 +1437,12 @@ export default class GuidNodeGrdmapps extends Controller {
 
         for (let i = 0; i < previousWebMeetings.length; i++) {
             // for display App Name on meeting list
-            for (let j = 0; j < webMeetingApps.length; j++) {
-                if (previousWebMeetings[i].fields.app === webMeetingApps[j].pk) {
-                    previousWebMeetings[i].app_name_disp = this.camel2space(webMeetingApps[j].fields.app_name);
+            webMeetingApps.forEach((webMeetingApp: any) => {
+                if (previousWebMeetings[i].fields.app === webMeetingApp.pk) {
+                    previousWebMeetings[i].app_name_disp = this.camel2space(webMeetingApp.fields.app_name);
                     break;
                 }
-            }
+            });
 
             if (i === 0) {
                 previousWebMeetings[i].date_bar = false;
@@ -1508,10 +1508,10 @@ export default class GuidNodeGrdmapps extends Controller {
         const institutionUsers = JSON.parse(appsConfig.institutionUsers);
         const attendeesInfo: AttendeesInfo[] = [];
 
-        for (let i = 0; i < institutionUsers.length; i++) {
+        institutionUsers.forEach((institutionUser: any) => {
             attendeesInfo.push(
                 {
-                    name: `${institutionUsers[i].fullname}@${institutionUsers[i].guid}`,
+                    name: `${institutionUser.fullname}@${institutionUser.guid}`,
                     email: '',
                     nameForApp: '',
                     profile: '',
@@ -1520,7 +1520,7 @@ export default class GuidNodeGrdmapps extends Controller {
                     disabled: true,
                 },
             );
-        }
+        });
 
         return institutionUsers;
     }
@@ -1736,9 +1736,9 @@ export default class GuidNodeGrdmapps extends Controller {
         const appsConfig = this.config.content as GrdmappsConfigModel;
         const webMeetingApps = JSON.parse(appsConfig.webMeetingApps);
 
-        for (let i = 0; i < webMeetingApps.length; i++) {
-            webMeetingApps[i].app_name_disp = this.camel2space(webMeetingApps[i].fields.app_name);
-        }
+        webMeetingApps.forEach((webMeetingApp: any) => {
+            webMeetingApp.app_name_disp = this.camel2space(webMeetingApp.fields.app_name);
+        })
 
         return webMeetingApps;
     }

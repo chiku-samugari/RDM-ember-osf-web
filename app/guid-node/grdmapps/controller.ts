@@ -292,8 +292,8 @@ export default class GuidNodeGrdmapps extends Controller {
     }
 
     @action
-    setWorkflow(this: GuidNodeGrdmapps, workflowDesp: string) {
-        const workflowType = workflowDesp.split('.')[2];
+    setWorkflow(this: GuidNodeGrdmapps, workflowDesc: string) {
+        const workflowType = workflowDesc.split('.')[2];
 
         if (!this.config) {
             throw new EmberError('Illegal config');
@@ -306,18 +306,18 @@ export default class GuidNodeGrdmapps extends Controller {
         let workflowId = '';
         let url = '';
 
-        for (let i = 0; i < workflows.length; i++) {
-            if (workflows[i].fields.workflow_description === workflowDesp) {
-                workflowId = workflows[i].pk;
-                for (let j = 0; j < nodeWorkflows.length; j++) {
-                    if (nodeWorkflows[j].fields.workflow === workflowId) {
-                        if (!nodeWorkflows[j].fields.scenarios) {
-                            url = nodeWorkflows[j].fields.alternative_webhook_url;
+        workflows.forEach(workflow => {
+            if (workflow.fields.workflow_description === workflowDesc) {
+                workflowId = workflow.pk;
+                nodeWorkflows.forEach(nodeWorkflow => {
+                    if (nodeWorkflow.fields.workflow === workflowId) {
+                        if (!nodeWorkflow.fields.scenarios) {
+                            url = nodeWorkflow.fields.alternative_webhook_url;
                         }
                     }
-                }
+                })
             }
-        }
+        })
 
         this.set('webhookUrl', url);
 

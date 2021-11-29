@@ -581,7 +581,7 @@ export default class GuidNodeGrdmapps extends Controller {
         }
 
         const payload = {
-            userNodeId,
+            _id: userNodeId,
             guid,
             fullname,
             appName: this.webMeetingAppName,

@@ -1,16 +1,16 @@
-    <CopyButton
-        @clipboardText={{this.text}}
-        @success={{action this._success}}
-        @error={{action this._error}}
-        @disabled={{this.disabled}}
-        @class='fa fa-copy'
-        title={{t 'integromat.copyUrlLabel'}}
-        aria-label={{t 'osf-components.copyable-text.copyToClipboard'}}
+<CopyButton
+    @clipboardText={{this.text}}
+    @success={{action this._success}}
+    @error={{action this._error}}
+    @disabled={{this.disabled}}
+    @class='fa fa-copy'
+    title={{t 'integromat.copyUrlLabel'}}
+    aria-label={{t 'osf-components.copyable-text.copyToClipboard'}}
+>
+    <BsTooltip
+        @triggerEvents=''
+        @visible={{this.showTooltip}}
     >
-        <BsTooltip
-            @triggerEvents=''
-            @visible={{this.showTooltip}}
-        >
-            {{t 'osf-components.copyable-text.copied'}}
-        </BsTooltip>
-    </CopyButton>
+        {{t 'osf-components.copyable-text.copied'}}
+    </BsTooltip>
+</CopyButton>

@@ -1736,7 +1736,7 @@ export default class GuidNodeGrdmapps extends Controller {
         const appsConfig = this.config.content as GrdmappsConfigModel;
         const webMeetingApps = JSON.parse(appsConfig.webMeetingApps);
 
-        for (const webMeetingApp in webMeetingApps) {
+        for (const webMeetingApp of webMeetingApps) {
             webMeetingApp.app_name_disp = this.camel2space(webMeetingApp.fields.app_name);
         }
 

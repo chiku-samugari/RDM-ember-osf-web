@@ -1564,7 +1564,7 @@ export default class GuidNodeGrdmapps extends Controller {
                 },
             );
 
-            nodeAppAttendees.forEach((nodeAppAttendee: any) => {
+            for (const nodeAppAttendee of nodeAppAttendees) {
                 if (institutionUsers[i].guid === nodeAppAttendee.fields.user_guid) {
                     registeredUserName = nodeAppAttendee.fields.fullname;
                     registeredUserInfo = `@${nodeAppAttendee.fields.user_guid}`;
@@ -1628,7 +1628,7 @@ export default class GuidNodeGrdmapps extends Controller {
                         }
                     }
                 }
-            });
+            }
         }
 
         institutionUserList = institutionUserList.concat(registeredIstitutionUsers);

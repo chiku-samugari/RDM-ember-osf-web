@@ -853,7 +853,7 @@ export default class GuidNodeGrdmapps extends Controller {
         this.set('webMeetingJoinUrl', joinUrl);
         this.set('webMeetingPassword', meetingPassword);
 
-        for (let webMeetingApp of webMeetingApps) {
+        for (const webMeetingApp of webMeetingApps) {
             if (webMeetingApp.pk === appId) {
                 appName = webMeetingApp.fields.app_name;
                 break;
@@ -872,7 +872,7 @@ export default class GuidNodeGrdmapps extends Controller {
         }
         const appsConfig = this.config.content as GrdmappsConfigModel;
         const nodeAttendeesAll = JSON.parse(appsConfig.nodeAttendeesAll);
-        const webMeetingAttendees = this.webMeetingAttendees;
+        const webMeetingAttendees = this.webMeetingAttendees as string[];
         let guidOrEmail = '';
         let profileUrl = '';
         let isGuest = false;
@@ -882,7 +882,7 @@ export default class GuidNodeGrdmapps extends Controller {
 
         if (appName === appsConfig.appNameMicrosoftTeams) {
             webMeetingAttendees.forEach((webMeetingAttendee: any) => {
-                for (let nodeAttendee of nodeAttendeesAll) {
+                for (const nodeAttendee of nodeAttendeesAll) {
                     if (type === 'update' && !(nodeAttendee.fields.microsoft_teams_mail)) {
                         continue;
                     }
@@ -909,7 +909,7 @@ export default class GuidNodeGrdmapps extends Controller {
             });
         } else if (appName === appsConfig.appNameWebexMeetings) {
             webMeetingAttendees.forEach((webMeetingAttendee: any) => {
-                for (let nodeAttendee of nodeAttendeesAll) {
+                for (const nodeAttendee of nodeAttendeesAll) {
                     if (type === 'update' && !(nodeAttendee.fields.webex_meetings_mail)) {
                         continue;
                     }
@@ -1020,7 +1020,7 @@ export default class GuidNodeGrdmapps extends Controller {
                     },
                 );
                 arrayAttendees.push(selectedAttendee.email);
-            })
+            });
         } else if (appName === appsConfig.appNameWebexMeetings) {
             workflowAction = 'updateWebexMeetings';
 
@@ -1051,11 +1051,11 @@ export default class GuidNodeGrdmapps extends Controller {
             });
 
             arrayDeleteAttendeePks.forEach((arrayDeleteAttendeePk: any) => {
-                nodeWebMeetingAttendeesRelation.forEach((nodeWebMeetingAttendeesRelation: any) => {
-                    if (this.webMeetingPk === nodeWebMeetingAttendeesRelation.fields.all_meeting_information) {
-                        if (arrayDeleteAttendeePk === nodeWebMeetingAttendeesRelation.fields.attendees) {
+                nodeWebMeetingAttendeesRelation.forEach((relation: any) => {
+                    if (this.webMeetingPk === relation.fields.all_meeting_information) {
+                        if (arrayDeleteAttendeePk === relation.fields.attendees) {
                             webexMeetingsDeleteInviteeIds.push(
-                                nodeWebMeetingAttendeesRelation.fields.webex_meetings_invitee_id,
+                                relation.fields.webex_meetings_invitee_id,
                             );
                         }
                     }
@@ -1129,7 +1129,7 @@ export default class GuidNodeGrdmapps extends Controller {
         const webMeetingApps = JSON.parse(appsConfig.webMeetingApps);
         let appName = '';
 
-        for (let webMeetingApp of webMeetingApps) {
+        for (const webMeetingApp of webMeetingApps) {
             if (webMeetingApp.pk === appId) {
                 appName = webMeetingApp.fields.app_name;
                 break;
@@ -1266,7 +1266,7 @@ export default class GuidNodeGrdmapps extends Controller {
         this.set('webMeetingUpdateMeetingId', meetingId);
         this.set('webMeetingJoinUrl', joinUrl);
 
-        for (let webMeetingApp of webMeetingApps) {
+        for (const webMeetingApp of webMeetingApps) {
             if (webMeetingApp.pk === appId) {
                 appName = webMeetingApp.fields.app_name;
                 break;
@@ -1383,7 +1383,7 @@ export default class GuidNodeGrdmapps extends Controller {
 
         for (let i = 0; i < upcomingWebMeetings.length; i++) {
             // for display App Name on meeting list
-            for (let webMeetingApp of webMeetingApps) {
+            for (const webMeetingApp of webMeetingApps) {
                 if (upcomingWebMeetings[i].fields.app === webMeetingApp.pk) {
                     upcomingWebMeetings[i].app_name_disp = this.camel2space(webMeetingApp.fields.app_name);
                     break;
@@ -1437,7 +1437,7 @@ export default class GuidNodeGrdmapps extends Controller {
 
         for (let i = 0; i < previousWebMeetings.length; i++) {
             // for display App Name on meeting list
-            for (let webMeetingApp of webMeetingApps) {
+            for (const webMeetingApp of webMeetingApps) {
                 if (previousWebMeetings[i].fields.app === webMeetingApp.pk) {
                     previousWebMeetings[i].app_name_disp = this.camel2space(webMeetingApp.fields.app_name);
                     break;
@@ -1736,9 +1736,9 @@ export default class GuidNodeGrdmapps extends Controller {
         const appsConfig = this.config.content as GrdmappsConfigModel;
         const webMeetingApps = JSON.parse(appsConfig.webMeetingApps);
 
-        webMeetingApps.forEach((webMeetingApp: any) => {
+        for (const webMeetingApp in webMeetingApps) {
             webMeetingApp.app_name_disp = this.camel2space(webMeetingApp.fields.app_name);
-        })
+        }
 
         return webMeetingApps;
     }

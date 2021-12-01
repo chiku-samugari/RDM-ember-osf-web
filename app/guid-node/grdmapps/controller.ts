@@ -553,7 +553,7 @@ export default class GuidNodeGrdmapps extends Controller {
         const selectedUser = this.selectedUser as AttendeesInfo;
         const guestFullname = this.guestFullname as string;
         const userType = this.userType as string;
-        let userNodeId = null;
+        let attendeeNodeId = null;
         let guid = null;
         let fullname = '';
         let isGuest = false;
@@ -565,7 +565,7 @@ export default class GuidNodeGrdmapps extends Controller {
 
         if (userType === 'radio_grdmUserOrRegisteredGuest') {
             if (selectedUser._id) {
-                userNodeId = selectedUser._id;
+                attendeeNodeId = selectedUser._id;
             }
 
             if (selectedUser.is_guest) {
@@ -581,7 +581,7 @@ export default class GuidNodeGrdmapps extends Controller {
         }
 
         const payload = {
-            _id: userNodeId,
+            _id: attendeeNodeId,
             guid,
             fullname,
             appName: this.webMeetingAppName,

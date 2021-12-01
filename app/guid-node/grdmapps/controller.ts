@@ -492,7 +492,7 @@ export default class GuidNodeGrdmapps extends Controller {
         // let reg = new RegExp();
 
         if (userType === 'radio_grdmUserOrRegisteredGuest') {
-            if (!selectedUser) {
+            if (Object.keys(this.selectedUser).length === 0) {
                 this.set(
                     'msgInvalidSelectedUser',
                     this.intl.t(

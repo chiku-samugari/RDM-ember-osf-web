@@ -143,6 +143,7 @@ Router.map(function() {
         this.route('forks');
         this.route('iqbrims');
         this.route('binderhub');
+        this.route('grdmapps');
         this.route('registrations');
         this.route('drafts', { path: '/drafts/:draftId' }, function() {
             this.route('register');

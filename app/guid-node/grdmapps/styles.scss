@@ -1,0 +1,112 @@
+@media screen and (max-width: 768px) {
+    .Integromat {
+        margin: 0;
+        padding: 0;
+    }
+}
+
+.Integromat__header {
+    background: #ecf0f1;
+    margin-top: 40px;
+}
+
+.Integromat__sidebar {
+    width: 20%;
+    float: left;
+    height: 575px;
+    border-right-style: inset;
+    margin-left: 15px;
+}
+
+.Integromat__menu {
+    list-style: none;
+}
+
+.Integromat__workflows {
+    width: 80%;
+    float: right;
+    margin-right: -15px;
+}
+
+.Integromat__webApp_screen {
+    width: 80%;
+    float: right;
+    margin-right: -15px;
+}
+
+.Integromat__statement {
+    margin-left: 20px;
+    margin-top: 20px;
+}
+
+.Integromat__web_meeting_tab {
+    margin-top: 30px;
+}
+
+.Integromat__tr {
+    border-bottom: 1px solid #ddd;
+}
+
+.Integromat__tr:hover {
+    background-color: #fffff0;
+}
+
+.Integromat__th {
+    font-size: small;
+}
+
+.Integromat__td {
+    vertical-align: middle;
+}
+
+.Integromat__div_inline_block {
+    display: inline-block;
+}
+
+.Integromat__td_overflow {
+    vertical-align: middle;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    max-width: 200px;
+}
+
+.Integromat__div_overflow {
+    vertical-align: middle;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    max-width: 94%;
+}
+
+.Integromat__microsoftTeamsMeetings {
+    margin-top: 30px;
+    height: 575px;
+}
+
+.Integromat__web_meeting_navbar {
+    background: #efefef;
+    margin-top: 30px;
+    height: 40px;
+}
+
+.Integromat__cell {
+    vertical-align: middle;
+}
+
+.Integromat__input_items {
+    padding: 5px;
+}
+
+.Integromat__label_normal {
+    font-weight: normal;
+}
+
+.Integromat__buttons {
+    border: 1px solid #ddd;
+}
+
+.Integromat__link:hover {
+    color: #fff;
+    background-color: #4169e1;
+}

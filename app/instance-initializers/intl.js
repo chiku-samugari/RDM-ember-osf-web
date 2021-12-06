@@ -12,7 +12,7 @@ export default {
         const intl = app.lookup('service:intl');
         const moment = app.lookup('service:moment');
 
-        moment.locale(calculateLocale(intl.get('locales')));
+        moment.setLocale(calculateLocale(intl.get('locales')));
         intl.set('locale', calculateLocale(intl.get('locales')));
     },
 };

@@ -145,14 +145,9 @@ export default class ProjectEditor extends Component {
 
     mranVersionSettingError = false;
 
-    @requiredAction renewToken!: () => void;
-
     @requiredAction onError!: (exception: any, message: string) => void;
 
     didReceiveAttrs() {
-        if (!this.validateToken()) {
-            return;
-        }
         if (!this.configFolder || this.configFolder.get('path') === this.loadingPath) {
             return;
         }
@@ -892,21 +887,6 @@ export default class ProjectEditor extends Component {
             return 'postInstall';
         }
         return 'postBuild';
-    }
-
-    validateToken() {
-        if (!this.binderHubConfig || !this.binderHubConfig.get('isFulfilled')) {
-            return true;
-        }
-        const binderhub = this.binderHubConfig.get('binderhub');
-        if (binderhub.token && (!binderhub.token.expires_at || binderhub.token.expires_at * 1000 > Date.now())) {
-            return true;
-        }
-        if (!this.renewToken) {
-            return true;
-        }
-        this.renewToken();
-        return false;
     }
 
     parseImageURL(url: string | null): ImageURL {

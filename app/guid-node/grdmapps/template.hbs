@@ -49,15 +49,15 @@
                             {{#each this.workflows as |row|}}
                                 <tr>
                                     <td style='border-right: 1px solid transparent;'>
-                                        <a {{action this.setWorkflow row.fields.workflow_description}}>
-                                            {{t row.fields.workflow_description}}
+                                        <a {{action this.setWorkflow row.workflow_description}}>
+                                            {{t row.workflow_description}}
                                         </a>
                                     </td>
                                     <td style='border-right: 1px solid transparent;'>
-                                        {{t row.fields.workflow_apps}}
+                                        {{t row.workflow_apps}}
                                     </td>
                                     <td>
-                                        <button onClick={{action makeRegisterAlternativeWebhookUrl row.fields.workflow_description}} style='font-size: x-small; white-space: nowrap;'>{{t 'integromat.workflows.alternative_webhook_url.registerLabel'}}</button>
+                                        <button onClick={{action makeRegisterAlternativeWebhookUrl row.workflow_description}} style='font-size: x-small; white-space: nowrap;'>{{t 'integromat.workflows.alternative_webhook_url.registerLabel'}}</button>
                                     </td>
                                 </tr>
                             {{/each}}
@@ -272,8 +272,8 @@
     <modal.body>
         <div class='form-group'>
             {{#each this.webMeetingApps as |appName|}}
-                <input type='radio' name='webMeetingAppName' id='radio_{{appName.fields.app_name}}' onClick={{action this.setWebMeetingApp appName.fields.app_name 'create'}}>
-                <label for='radio_{{appName.fields.app_name}}'>
+                <input type='radio' name='webMeetingAppName' id='radio_{{appName.app_name}}' onClick={{action this.setWebMeetingApp appName.app_name 'create'}}>
+                <label for='radio_{{appName.app_name}}'>
                     {{appName.app_name_disp}}
                 </label>
             {{/each}}

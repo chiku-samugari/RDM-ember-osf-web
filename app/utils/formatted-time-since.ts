@@ -5,7 +5,7 @@ import moment from 'moment';
  * @param dateTime: reference time used to calculate relative time. Should be in the past.
  */
 export default function formattedTimeSince(dateTime: Date) {
-    moment.locale();
+    const moment.locale();
     const now = moment.utc();
     let then = moment.utc(dateTime);
     then = then > now ? now : then;

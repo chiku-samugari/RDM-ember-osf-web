@@ -310,7 +310,7 @@ export default class GuidNodeGrdmapps extends Controller {
             if (workflow.workflow_description === workflowDesc) {
                 workflowId = workflow.id;
                 nodeWorkflows.forEach((nodeWorkflow: any) => {
-                    if (nodeWorkflow.fields.workflow === workflowId) {
+                    if (nodeWorkflow.fields.workflowid === workflowId) {
                         if (!nodeWorkflow.fields.scenarios) {
                             url = nodeWorkflow.fields.alternative_webhook_url;
                         }
@@ -1384,7 +1384,7 @@ export default class GuidNodeGrdmapps extends Controller {
         for (let i = 0; i < upcomingWebMeetings.length; i++) {
             // for display App Name on meeting list
             for (const webMeetingApp of webMeetingApps) {
-                if (upcomingWebMeetings[i].fields.app === webMeetingApp.id) {
+                if (upcomingWebMeetings[i].fields.appid === webMeetingApp.id) {
                     upcomingWebMeetings[i].app_name_disp = this.camel2space(webMeetingApp.app_name);
                     break;
                 }
@@ -1438,7 +1438,7 @@ export default class GuidNodeGrdmapps extends Controller {
         for (let i = 0; i < previousWebMeetings.length; i++) {
             // for display App Name on meeting list
             for (const webMeetingApp of webMeetingApps) {
-                if (previousWebMeetings[i].fields.app === webMeetingApp.id) {
+                if (previousWebMeetings[i].fields.appid === webMeetingApp.id) {
                     previousWebMeetings[i].app_name_disp = this.camel2space(webMeetingApp.app_name);
                     break;
                 }

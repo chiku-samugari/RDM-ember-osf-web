@@ -1808,7 +1808,7 @@ integromat:
     integratedAppsLabel: 'Integrated Apps'
     copyUrlLabel: 'Copy URL'
     momentFormat:
-        ll: '{dateMMonth}-{dateDay}-{dateYear}'
+        ll: '{month}-{day}-{year}'
     meetingDialog:
         createLabel: 'Create Meeting'
         updateLabel: 'Update Meeting'

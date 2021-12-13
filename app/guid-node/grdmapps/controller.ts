@@ -854,7 +854,7 @@ export default class GuidNodeGrdmapps extends Controller {
         this.set('webMeetingPassword', meetingPassword);
 
         for (const webMeetingApp of webMeetingApps) {
-            if (webMeetingApp.id === appId) {
+            if (parseInt(webMeetingApp.id, 10) === appId) {
                 appName = webMeetingApp.app_name;
                 break;
             }
@@ -1130,7 +1130,7 @@ export default class GuidNodeGrdmapps extends Controller {
         let appName = '';
 
         for (const webMeetingApp of webMeetingApps) {
-            if (webMeetingApp.id === appId) {
+            if (parseInt(webMeetingApp.id, 10) === appId)
                 appName = webMeetingApp.app_name;
                 break;
             }
@@ -1267,7 +1267,7 @@ export default class GuidNodeGrdmapps extends Controller {
         this.set('webMeetingJoinUrl', joinUrl);
 
         for (const webMeetingApp of webMeetingApps) {
-            if (webMeetingApp.id === appId) {
+            if (parseInt(webMeetingApp.id, 10) === appId) {
                 appName = webMeetingApp.app_name;
                 break;
             }

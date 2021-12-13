@@ -1807,6 +1807,8 @@ integromat:
     workflowLabel: 'Workflow'
     integratedAppsLabel: 'Integrated Apps'
     copyUrlLabel: 'Copy URL'
+    momentFormat:
+        ll: '{month}-{day}-{year}'
     meetingDialog:
         createLabel: 'Create Meeting'
         updateLabel: 'Update Meeting'

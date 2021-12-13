@@ -837,7 +837,7 @@ export default class GuidNodeGrdmapps extends Controller {
 
         const appsConfig = this.config.content as GrdmappsConfigModel;
         const webMeetingApps = JSON.parse(appsConfig.webMeetingApps);
-
+        let webMeetingAppId = 0;
         let appName = '';
 
         this.set('webMeetingPk', meetingPk);
@@ -854,7 +854,8 @@ export default class GuidNodeGrdmapps extends Controller {
         this.set('webMeetingPassword', meetingPassword);
 
         for (const webMeetingApp of webMeetingApps) {
-            if (parseInt(webMeetingApp.id, 10) === appId) {
+            webMeetingAppId = parseInt(webMeetingApp.id, 10);
+            if (webMeetingAppId === appId) {
                 appName = webMeetingApp.app_name;
                 break;
             }
@@ -1127,10 +1128,12 @@ export default class GuidNodeGrdmapps extends Controller {
 
         const appsConfig = this.config.content as GrdmappsConfigModel;
         const webMeetingApps = JSON.parse(appsConfig.webMeetingApps);
+        let webMeetingAppId = 0;
         let appName = '';
 
         for (const webMeetingApp of webMeetingApps) {
-            if (parseInt(webMeetingApp.id, 10) === appId) {
+            webMeetingAppId = parseInt(webMeetingApp.id, 10);
+            if (webMeetingAppId === appId) {
                 appName = webMeetingApp.app_name;
                 break;
             }
@@ -1250,7 +1253,7 @@ export default class GuidNodeGrdmapps extends Controller {
 
         const appsConfig = this.config.content as GrdmappsConfigModel;
         const webMeetingApps = JSON.parse(appsConfig.webMeetingApps);
-
+        let webMeetingAppId = 0;
         let appName = '';
 
         this.set('webMeetingPk', meetingPk);
@@ -1267,7 +1270,8 @@ export default class GuidNodeGrdmapps extends Controller {
         this.set('webMeetingJoinUrl', joinUrl);
 
         for (const webMeetingApp of webMeetingApps) {
-            if (parseInt(webMeetingApp.id, 10) === appId) {
+            webMeetingAppId = parseInt(webMeetingApp.id, 10);
+            if (webMeetingAppId === appId) {
                 appName = webMeetingApp.app_name;
                 break;
             }

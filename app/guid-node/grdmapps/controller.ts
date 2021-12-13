@@ -1130,7 +1130,7 @@ export default class GuidNodeGrdmapps extends Controller {
         let appName = '';
 
         for (const webMeetingApp of webMeetingApps) {
-            if (parseInt(webMeetingApp.id, 10) === appId)
+            if (parseInt(webMeetingApp.id, 10) === appId) {
                 appName = webMeetingApp.app_name;
                 break;
             }

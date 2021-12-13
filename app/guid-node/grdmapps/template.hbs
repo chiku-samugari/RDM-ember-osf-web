@@ -110,7 +110,7 @@
                                                 {{#each this.upcomingWebMeetings as |row index|}}
                                                    {{#if (eq index 0)}}
                                                         <tr style='background-color: #efefef;'>
-                                                            <th local-class='Integromat__th' style='padding: 3px; padding-left: 10px;'>{{moment-format row.fields.start_datetime 'LL'}}</th>
+                                                            <th local-class='Integromat__th' style='padding: 3px; padding-left: 10px;'>{{t 'integromat.momentFormat.ll' YYYY=moment-format row.fields.start_datetime 'YYYY' MM=moment-format row.fields.start_datetime 'MM' DD=moment-format row.fields.start_datetime 'DD'}}</th>
                                                             <th></th>
                                                             <th></th>
                                                             <th></th>
@@ -121,7 +121,7 @@
                                                    {{else}}
                                                        {{#if row.date_bar}}
                                                             <tr style='background-color: #efefef; padding: 3px; padding-left: 10px;'>
-                                                                <th local-class='Integromat__th' style='padding: 3px; padding-left: 10px;'>{{moment-format row.fields.start_datetime 'LL'}}</th>
+                                                                <th local-class='Integromat__th' style='padding: 3px; padding-left: 10px;'>{{t 'integromat.momentFormat.ll'}}</th>
                                                                 <th></th>
                                                                 <th></th>
                                                                 <th></th>
@@ -192,7 +192,7 @@
                                                 {{#each this.previousWebMeetings as |row index|}}
                                                    {{#if (eq index 0)}}
                                                         <tr style='background-color: #efefef;'>
-                                                            <th local-class='Integromat__th' style='padding: 3px; padding-left: 10px;'>{{moment-format row.fields.start_datetime 'LL'}}</th>
+                                                            <th local-class='Integromat__th' style='padding: 3px; padding-left: 10px;'>{{t 'integromat.momentFormat.ll'}}</th>
                                                             <th></th>
                                                             <th></th>
                                                             <th></th>
@@ -203,7 +203,7 @@
                                                    {{else}}
                                                        {{#if row.date_bar}}
                                                             <tr style='background-color: #efefef; padding: 3px; padding-left: 10px;'>
-                                                                <th local-class='Integromat__th' style='padding: 3px; padding-left: 10px;'>{{moment-format row.fields.start_datetime 'LL'}}</th>
+                                                                <th local-class='Integromat__th' style='padding: 3px; padding-left: 10px;'>{{t 'integromat.momentFormat.ll'}}</th>
                                                                 <th></th>
                                                                 <th></th>
                                                                 <th></th>

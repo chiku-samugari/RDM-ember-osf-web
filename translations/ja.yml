@@ -1806,7 +1806,7 @@ integromat:
     integratedAppsLabel: 'ワークフローを構成するアプリ'
     copyUrlLabel: 'URLコピー'
     momentFormat:
-        ll: '{YYYY}年{MM}月{DD}日'
+        ll: '{year}年{month}月{day}日'
     meetingDialog:
         createLabel: '会議作成'
         updateLabel: '会議更新'

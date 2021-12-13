@@ -303,7 +303,7 @@ export default class GuidNodeGrdmapps extends Controller {
         const workflows = JSON.parse(appsConfig.workflows);
         const nodeWorkflows = JSON.parse(appsConfig.nodeWorkflows);
 
-        let workflowId = '';
+        let workflowId = 0;
         let url = '';
 
         workflows.forEach((workflow: any) => {

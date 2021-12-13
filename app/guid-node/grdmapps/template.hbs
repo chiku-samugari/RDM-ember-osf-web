@@ -110,6 +110,7 @@
                                                 {{#each this.upcomingWebMeetings as |row index|}}
                                                    {{#if (eq index 0)}}
                                                         <tr style='background-color: #efefef;'>
+                                                            {{log 'dateLog' format-date row.fields.start_datetime year='numeric' format-date row.fields.start_datetime month='numeric' format-date row.fields.start_datetime day='numeric'}
                                                             <th local-class='Integromat__th' style='padding: 3px; padding-left: 10px;'>{{t 'integromat.momentFormat.ll' year=(format-date row.fields.start_datetime year='numeric') month=(format-date row.fields.start_datetime month='numeric') day=(format-date row.fields.start_datetime day='numeric')}}</th>
                                                             <th></th>
                                                             <th></th>

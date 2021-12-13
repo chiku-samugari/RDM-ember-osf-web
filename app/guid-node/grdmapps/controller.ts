@@ -308,7 +308,7 @@ export default class GuidNodeGrdmapps extends Controller {
 
         workflows.forEach((workflow: any) => {
             if (workflow.workflow_description === workflowDesc) {
-                workflowId = workflow.id;
+                workflowId = parseInt(workflow.id, 10);
                 nodeWorkflows.forEach((nodeWorkflow: any) => {
                     if (nodeWorkflow.fields.workflowid === workflowId) {
                         if (!nodeWorkflow.fields.scenarios) {

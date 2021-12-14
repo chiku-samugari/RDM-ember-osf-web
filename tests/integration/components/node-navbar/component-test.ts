@@ -313,7 +313,7 @@ module('Integration | Component | node-navbar', () => {
                 this.set('iqbrimsEnabled', iqbrimsEnabled.length > 0);
                 const binderhubEnabled = testCase.conditions.filter(c => c === NavCondition.BinderHubEnabled);
                 this.set('binderhubEnabled', binderhubEnabled.length > 0);
-                const grdmappsEnabled = testCase.conditions.filter((c) => c === NavCondition.GrdmappsEnabled);
+                const grdmappsEnabled = testCase.conditions.filter(c => c === NavCondition.GrdmappsEnabled);
                 this.set('grdmappsEnabled', grdmappsEnabled.length > 0);
 
                 await render(

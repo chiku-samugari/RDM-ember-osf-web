@@ -20,6 +20,7 @@ import { guidDetail } from './views/guid';
 import { identifierCreate } from './views/identifier';
 import { summaryMetrics } from './views/institution';
 import { iqbrimsStatus } from './views/iqbrims-status';
+import { grdmappsConfig } from './views/grdmapps-config';
 import { createNode } from './views/node';
 import { osfNestedResource, osfResource, osfToManyRelationship } from './views/osf-resource';
 import { getProviderSubjects } from './views/provider-subjects';
@@ -255,6 +256,7 @@ export default function(this: Server) {
 
     this.get('/project/:id/iqbrims/status', iqbrimsStatus);
     this.get('/project/:id/binderhub/config', binderhubConfig);
+    this.get('/project/:id/grdmapps/config', grdmappsConfig);
 
     this.urlPrefix = apiUrl;
     this.namespace = apiNamespace;

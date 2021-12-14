@@ -318,7 +318,7 @@ module('Integration | Component | node-navbar', () => {
 
                 await render(
                     hbs`{{node-navbar node=this.node iqbrimsEnabled=this.iqbrimsEnabled
-                        binderhubEnabled=this.binderhubEnabled 
+                        binderhubEnabled=this.binderhubEnabled
                         grdmappsEnabled=this.grdmappsEnabled renderInPlace=true}}`,
                 );
 

@@ -20,5 +20,12 @@ module('Acceptance | guid-node/grdmapps', hooks => {
         await percySnapshot(assert);
         assert.dom('[data-test-workflows-table]').exists();
         assert.dom('[data-test-microsoft-teams-screen]').doesNotExist();
+        assert.dom('[data-test-web-meeting-screen]').doesNotExist();
+        assert.dom('[data-test-create-meeting-modal]').doesNotExist();
+        assert.dom('[data-test-update-meeting-modal]').doesNotExist();
+        assert.dom('[data-test-delete-meeting-modal]').doesNotExist();
+        assert.dom('[data-test-detail-meeting-modal]').doesNotExist();
+        assert.dom('[data-test-register-alternative-webhookurl-modal]').doesNotExist();
+        assert.dom('[data-test-register-meeting-attendee-modal]').doesNotExist();
     });
 });

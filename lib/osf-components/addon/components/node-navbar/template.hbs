@@ -44,12 +44,6 @@
                         {{#if this.binderhubEnabled }}
                             {{node-navbar/link node=@node useLinkTo=false destination='binderhub'}}
                         {{/if}}
-                        {{#if (or @node.public @node.currentUserIsContributor)}}
-                            {{node-navbar/link node=@node useLinkTo=true destination='analytics'}}
-                        {{/if}}
-                        {{#unless @node.isRegistration}}
-                            {{node-navbar/link node=@node useLinkTo=true destination='registrations'}}
-                        {{/unless}}
                         {{#if @node.currentUserIsContributor}}
                             {{node-navbar/link node=@node useLinkTo=false destination='contributors'}}
                         {{/if}}

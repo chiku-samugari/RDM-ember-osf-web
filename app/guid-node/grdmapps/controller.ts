@@ -489,7 +489,7 @@ export default class GuidNodeGrdmapps extends Controller {
         email: string,
     ) {
         let validFlag = true;
-        // let reg = new RegExp();
+        const regex = /^[A-Za-z0-9]{1}[A-Za-z0-9_.-]*@{1}[A-Za-z0-9_.-]{1,}.[A-Za-z0-9]{1,}$/;
 
         if (userType === 'radio_grdmUserOrRegisteredGuest') {
             if (Object.keys(selectedUser).length === 0) {
@@ -525,10 +525,8 @@ export default class GuidNodeGrdmapps extends Controller {
                     { item: this.intl.t('integromat.signInAdress') },
                 ));
             validFlag = false;
-        }
-        /*
-        else if(!(reg.test(email))){
-        this.set(
+        } else if (!(regex.test(email))) {
+            this.set(
                 'msgInvalidEmail',
                 this.intl.t(
                     'integromat.meetingDialog.invalid.invalid',
@@ -537,7 +535,6 @@ export default class GuidNodeGrdmapps extends Controller {
             );
         validFlag = false;
         }
-        */
         return validFlag;
     }
 

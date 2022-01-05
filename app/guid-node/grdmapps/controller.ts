@@ -542,6 +542,12 @@ export default class GuidNodeGrdmapps extends Controller {
     }
 
     @action
+    makeRegisterWebMeetingAppsEmailDialog(this: GuidNodeGrdmapps) {
+        this.set('showRegisterWebMeetingAppsEmailDialog', true);
+        this.set('userType', 'radio_grdmUserOrRegisteredGuest');
+    }
+
+    @action
     setUserType(this: GuidNodeGrdmapps, userType: string) {
         this.set('userType', userType);
     }

@@ -303,7 +303,7 @@
                             </PowerSelectMultiple>
                         </div>
                         <div style='display: table-cell; vertical-align: top;'>
-                            <button onClick={{action (mut this.showRegisterWebMeetingAppsEmailDialog) true}} style='font-size: x-small; white-space: nowrap;'>{{t 'integromat.meetingDialog.registerBtn'}}</button>
+                            <button onClick={{action makeRegisterWebMeetingAppsEmailDialog}} style='font-size: x-small; white-space: nowrap;'>{{t 'integromat.meetingDialog.registerBtn'}}</button>
                         </div>
                     </div>
                 </div>
@@ -412,7 +412,7 @@
                             </PowerSelectMultiple>
                         </div>
                         <div style='display: table-cell; vertical-align: top;'>
-                            <button onClick={{action (mut this.showRegisterWebMeetingAppsEmailDialog) true}} style='font-size: x-small; white-space: nowrap;'>{{t 'integromat.meetingDialog.registerBtn'}}</button>
+                            <button onClick={{action makeRegisterWebMeetingAppsEmailDialog}} style='font-size: x-small; white-space: nowrap;'>{{t 'integromat.meetingDialog.registerBtn'}}</button>
                         </div>
                     </div>
                 </div>
@@ -545,7 +545,7 @@
                             </PowerSelectMultiple>
                         </div>
                         <div style='display: table-cell; vertical-align: top;'>
-                            <button onClick={{action (mut this.showRegisterWebMeetingAppsEmailDialog) true}} style='font-size: x-small; white-space: nowrap;'>{{t 'integromat.meetingDialog.registerBtn'}}</button>
+                            <button onClick={{action makeRegisterWebMeetingAppsEmailDialog}} style='font-size: x-small; white-space: nowrap;'>{{t 'integromat.meetingDialog.registerBtn'}}</button>
                         </div>
                     </div>
                 </div>
@@ -652,7 +652,7 @@
                             </PowerSelectMultiple>
                         </div>
                         <div style='display: table-cell; vertical-align: top;'>
-                            <button onClick={{action (mut this.showRegisterWebMeetingAppsEmailDialog) true}} style='font-size: x-small; white-space: nowrap;'>{{t 'integromat.meetingDialog.registerBtn'}}</button>
+                            <button onClick={{action makeRegisterWebMeetingAppsEmailDialog}} style='font-size: x-small; white-space: nowrap;'>{{t 'integromat.meetingDialog.registerBtn'}}</button>
                         </div>
                     </div>
                 </div>
@@ -928,7 +928,7 @@
     <modal.body>
         <div class='form-group'>
                 <div local-class='Integromat__input_items'>
-                    <input type='radio' name='userType' id='radio_grdmUserOrRegisteredGuest' onClick={{action this.setUserType value='target.id'}}>
+                    <input type='radio' name='userType' id='radio_grdmUserOrRegisteredGuest' checked='checked' onClick={{action this.setUserType value='target.id'}}>
                     <label for='radio_grdmUserOrRegisteredGuest'>{{t 'integromat.grdmUser'}}</label>
                     <div style='margin-left: 10px;'>
                     {{#if (eq this.webMeetingAppName this.appNameMicrosoftTeams)}}

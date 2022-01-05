@@ -533,7 +533,7 @@ export default class GuidNodeGrdmapps extends Controller {
                     { item: this.intl.t('integromat.signInAdress') },
                 ),
             );
-        validFlag = false;
+            validFlag = false;
         }
         return validFlag;
     }

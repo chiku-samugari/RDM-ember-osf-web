@@ -142,6 +142,7 @@ const reqestMessagesUrl = `${nodeUrl}${integromatDir}/requestNextMessages`;
 const registerAlternativeWebhookUrl = `${nodeUrl}${integromatDir}/register_alternative_webhook_url`;
 const registerWebMeetingAppsEmailUrl = `${nodeUrl}${integromatDir}/register_web_meeting_apps_email`;
 const profileUrlBase = `${host}/profile/`;
+const integromatWebhookUrlBase = 'https://hook.integromat.com/'
 
 const TIME_LIMIT_EXECUTION_SCENARIO = 60;
 
@@ -426,6 +427,15 @@ export default class GuidNodeGrdmapps extends Controller {
                 'msgInvalidWebhookUrl',
                 this.intl.t(
                     'integromat.meetingDialog.invalid.empty',
+                    { item: this.intl.t('integromat.workflows.alternative_webhook_url.label') },
+                ),
+            );
+            validFlag = false;
+        } else if (!(webhookUrl.startsWith(integromatWebhookUrlBase))) {
+            this.set(
+                'msgInvalidWebhookUrl',
+                this.intl.t(
+                    'integromat.meetingDialog.invalid.invalid',
                     { item: this.intl.t('integromat.workflows.alternative_webhook_url.label') },
                 ),
             );

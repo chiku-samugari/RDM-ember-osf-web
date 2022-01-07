@@ -1397,11 +1397,13 @@ export default class GuidNodeGrdmapps extends Controller {
         let cDate;
         let previousDate = '';
         let currentDate = '';
+        let webMeetingAppId = 0;
 
         for (let i = 0; i < upcomingWebMeetings.length; i++) {
             // for display App Name on meeting list
             for (const webMeetingApp of webMeetingApps) {
-                if (upcomingWebMeetings[i].fields.appid === webMeetingApp.id) {
+                webMeetingAppId = parseInt(webMeetingApp.id, 10);
+                if (upcomingWebMeetings[i].fields.appid === webMeetingAppId) {
                     upcomingWebMeetings[i].app_name_disp = this.camel2space(webMeetingApp.app_name);
                     break;
                 }
@@ -1451,11 +1453,13 @@ export default class GuidNodeGrdmapps extends Controller {
         let nDate;
         let nextDate = '';
         let currentDate = '';
+        let webMeetingAppId = 0;
 
         for (let i = 0; i < previousWebMeetings.length; i++) {
             // for display App Name on meeting list
             for (const webMeetingApp of webMeetingApps) {
-                if (previousWebMeetings[i].fields.appid === webMeetingApp.id) {
+                webMeetingAppId = parseInt(webMeetingApp.id, 10);
+                if (previousWebMeetings[i].fields.appid === webMeetingAppId) {
                     previousWebMeetings[i].app_name_disp = this.camel2space(webMeetingApp.app_name);
                     break;
                 }

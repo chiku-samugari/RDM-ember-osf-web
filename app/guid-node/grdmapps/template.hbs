@@ -929,7 +929,7 @@
         <div class='form-group'>
                 <div local-class='Integromat__input_items'>
                     <input type='radio' name='userType' id='radio_grdmUserOrRegisteredGuest' checked='checked' onClick={{action this.setUserType value='target.id'}}>
-                    <label for='radio_grdmUserOrRegisteredGuest'>{{t 'integromat.grdmUser'}}</label>
+                    <label for='radio_grdmUserOrRegisteredGuest'>{{t 'integromat.grdmUserOrGuest'}}</label>
                     <div style='margin-left: 10px;'>
                     {{#if (eq this.webMeetingAppName this.appNameMicrosoftTeams)}}
                         <PowerSelect
@@ -955,7 +955,7 @@
                     {{/if}}
                     </div>
                     <input type='radio' name='userType' id='radio_newGuest' onClick={{action this.setUserType value='target.id'}}>
-                    <label for='radio_newGuest'>{{t 'integromat.guest'}}</label>
+                    <label for='radio_newGuest'>{{t 'integromat.newGuest'}}</label>
                     <div style='margin-left: 10px;'>
                         {{input
                             name='guestFullname'

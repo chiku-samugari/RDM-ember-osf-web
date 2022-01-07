@@ -142,7 +142,7 @@ const reqestMessagesUrl = `${nodeUrl}${integromatDir}/requestNextMessages`;
 const registerAlternativeWebhookUrl = `${nodeUrl}${integromatDir}/register_alternative_webhook_url`;
 const registerWebMeetingAppsEmailUrl = `${nodeUrl}${integromatDir}/register_web_meeting_apps_email`;
 const profileUrlBase = `${host}/profile/`;
-const integromatWebhookUrlBase = 'https://hook.integromat.com/'
+const integromatWebhookUrlBase = 'https://hook.integromat.com/';
 
 const TIME_LIMIT_EXECUTION_SCENARIO = 60;
 

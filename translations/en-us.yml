@@ -543,14 +543,14 @@ node_navbar:
     project_nav: 'Project Navigation'
     iqbrims: 'IQB-RIMS'
     wiki: Wiki
-    analytics: Analytics
+    analytics: Statistics
     registrations: Registrations
     files: Files
     contributors: Contributors
     addons: Add-ons
     settings: Settings
     comments: Comments
-    binderhub: BinderHub
+    binderhub: Computation
 status:
     welcome_message: '<h1>Welcome to GakuNin RDM!</h1><p>Visit our <a href="https://openscience.zendesk.com/hc/en-us" target="_blank" rel="noreferrer">Guides</a> to learn about creating a project, or get inspiration from <a href="https://osf.io/explore/activity/#popularPublicProjects">popular public projects</a>.</p>'
     alternate_email_error: 'The email address has <b>NOT</b> been added to your account. Please log out and revisit the link in your email. Thank you.'
@@ -1769,16 +1769,21 @@ binderhub:
         select_environment: 'Select'
         change_environment: 'Change'
         add_package: 'Add'
-        view_dockerfile: 'View Dockerfile'
-        reset_dockerfile: 'Reset Dockerfile'
-        unavailable: 'This Editor is disabled because its Dockerfile was customized manually.'
+        view_dockerfile: 'View: '
+        reset_dockerfile: 'Reset: '
+        unavailable: 'The configuration file has been manually changed.'
+        no_environment: 'This environment is not configured by the editor.'
         has_post_install: 'Using the postInstall script.'
         no_post_install: 'You can define a postInstall script in the default storage to perform optional operations during image build.'
+        has_post_build: 'Using the postBuild script.'
+        no_post_build: 'You can define a postBuild script in the default storage to perform optional operations during image build.'
         open_post_install: 'Open File'
         open_node_files: 'Open Files'
         refresh_post_install: 'Refresh'
         refreshing_post_install: 'Refreshing...'
         mran_version_setting_error: 'The version number cannot be specified for MRAN.'
+        reset_dockerfile_confirm_dialog_title: 'Reset: '
+        reset_dockerfile_confirm_dialog_body: 'You cannot undo the files you have reset. Do you wish to continue?'
         placeholders:
             package_name: 'Name'
             package_version: 'Version'
@@ -1791,3 +1796,5 @@ binderhub:
         jupyterhub_auth_error: 'An error occurred while connecting to the JupyterHub. Please reauthenticate.'
         jupyterhub_api_error: 'An error occurred while connecting to the JupyterHub. Please reload this page.'
         reconnect_jupyterhub: 'Authorize'
+        modify_files_error: 'Failed to update the files. Please check your network connection.'
+        load_files_error: 'Failed to load the files. Please check your network connection.'

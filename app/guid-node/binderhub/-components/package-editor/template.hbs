@@ -3,7 +3,7 @@
         {{this.label}}
     </div>
     {{#each this.packages as |pkg index|}}
-        {{#if (eq index this.editingIndex)}}
+        {{#if (and (eq this.editing 'editing') (eq index this.editingIndex))}}
             <GuidNode::Binderhub::-Components::PackageItemEditor
                 @name={{this.editingName}}
                 @version={{this.editingVersion}}
@@ -29,7 +29,7 @@
             </div>
         {{/if}}
     {{/each}}
-    {{#if this.newPackage}}
+    {{#if (and (eq this.editing 'editing') (eq this.editingIndex -1))}}
         <GuidNode::Binderhub::-Components::PackageItemEditor
             @name={{this.editingName}}
             @version={{this.editingVersion}}
@@ -37,7 +37,7 @@
             @onCancel={{action this.cancelAdd}}
         />
     {{else}}
-        {{#if (and this.node.userHasWritePermission (eq this.editingIndex -1))}}
+        {{#if (and this.node.userHasWritePermission (not (eq this.editing 'editing')))}}
             <div local-class='package_add'>
                 <button
                     data-test-package-add

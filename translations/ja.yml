@@ -543,13 +543,14 @@ node_navbar:
     project_nav: プロジェクトナビゲーション
     iqbrims: IQB-RIMS
     wiki: Wiki
-    analytics: 分析
+    analytics: 統計
     registrations: 登録
     files: ファイル
     contributors: メンバー
     addons: アドオン
     settings: 設定
     comments: コメント
+    binderhub: 解析
 status:
     welcome_message: '<h1>GakuNin RDMへようこそ!</h1><p><a href="https://openscience.zendesk.com/hc/en-us" target="_blank" rel="noreferrer">プロジェクトの作成方法について学ぶ</a>か、<a href="https://osf.io/explore/activity/#popularPublicProjects">一般的な公開プロジェクトからインスピレーションを得ます</a>。</p>'
     alternate_email_error: '<b>メールアドレスがアカウントに追加されていません</ b>。 ログアウトして、メールのリンクを再確認してください。 ありがとうございました。'
@@ -1768,16 +1769,21 @@ binderhub:
         select_environment: '選択'
         change_environment: '変更'
         add_package: '追加'
-        view_dockerfile: 'Dockerfileの参照'
-        reset_dockerfile: 'Dockerfileのリセット'
-        unavailable: 'Dockerfileがエディタ以外で変更されました。'
+        view_dockerfile: '参照: '
+        reset_dockerfile: 'リセット: '
+        unavailable: '設定ファイルがエディタ以外で変更されました。'
+        no_environment: 'エディタにより設定された環境ではありません。'
         has_post_install: 'postInstallスクリプトを使用します。'
         no_post_install: 'デフォルトストレージ内にpostInstallスクリプトを定義すると、イメージビルド時に任意の処理を実行できます。'
+        has_post_build: 'postBuildスクリプトを使用します。'
+        no_post_build: 'デフォルトストレージ内にpostBuildスクリプトを定義すると、イメージビルド時に任意の処理を実行できます。'
         open_post_install: 'ファイルを開く'
         open_node_files: 'ファイル一覧を開く'
         refresh_post_install: '更新'
         refreshing_post_install: '更新中...'
         mran_version_setting_error: 'MRANにバージョン番号を指定することはできません。'
+        reset_dockerfile_confirm_dialog_title: 'リセット: '
+        reset_dockerfile_confirm_dialog_body: 'リセットしたファイルは元に戻すことはできません。続行しますか？'
         placeholders:
             package_name: '名前'
             package_version: 'バージョン'
@@ -1790,3 +1796,5 @@ binderhub:
         jupyterhub_auth_error: 'JupyterHubとの接続時にエラーが発生しました。再認証してください。'
         jupyterhub_api_error: 'JupyterHubとの接続時にエラーが発生しました。ページを再読み込みしてください。'
         reconnect_jupyterhub: '再認証'
+        modify_files_error: 'ファイルの更新に失敗しました。ネットワーク接続を確認してください。'
+        load_files_error: 'ファイルの読み込みに失敗しました。ネットワーク接続を確認してください。'

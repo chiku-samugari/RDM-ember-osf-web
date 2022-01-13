@@ -9,9 +9,10 @@
                     data-test-view-dockerfile
                     type='button'
                     class='btn btn-default'
-                    {{action this.viewDockerfile target=this}}
+                    {{action this.viewDirtyFiles target=this}}
                 >
                     {{t 'binderhub.deployment.view_dockerfile'}}
+                    {{this.dirtyConfigurationFilenames}}
                 </button>
                 <button
                     data-test-reset-dockerfile
@@ -20,49 +21,54 @@
                     {{action (mut this.showResetDockerfileConfirmDialog) true}}
                 >
                     {{t 'binderhub.deployment.reset_dockerfile'}}
+                    {{this.dirtyConfigurationFilenames}}
                 </button>
             {{/if}}
         {{else}}
             <h3>{{t 'binderhub.deployment.environment'}}<//h3>
-            {{#each this.selectableImages as |image|}}
-                <div local-class='environment_candidate'>
-                    <div local-class='environment_info'>
-                        <div local-class='environment_name'>
-                            {{image.name}}
-                            {{#if (eq this.selectedImageUrl image.url)}}
-                                <i
-                                    data-test-image-selected={{image.url}}
-                                    class='fa fa-check'
-                                />
+            {{#if (or this.node.userHasWritePermission this.selectedImageUrl)}}
+                {{#each this.selectableImages as |image|}}
+                    <div local-class='environment_candidate'>
+                        <div local-class='environment_info'>
+                            <div local-class='environment_name'>
+                                {{image.name}}
+                                {{#if (eq this.selectedImageUrl image.url)}}
+                                    <i
+                                        data-test-image-selected={{image.url}}
+                                        class='fa fa-check'
+                                    />
+                                {{/if}}
+                            </div>
+                            <div local-class='environment_description'>{{image.description}}</div>
+                        </div>
+                        <div local-class='environment_select'>
+                            {{#if this.node.userHasWritePermission}}
+                                {{#if (or (not this.selectedImageUrl) this.imageSelectable)}}
+                                    <button
+                                        data-test-image-selection={{image.url}}
+                                        type='button'
+                                        class='btn btn-default'
+                                        {{action this.selectImage image.url target=this}}
+                                    >
+                                        {{t 'binderhub.deployment.select_environment'}}
+                                    </button>
+                                {{else}}
+                                    <button
+                                        data-test-image-change={{image.url}}
+                                        type='button'
+                                        class='btn btn-default'
+                                        {{action (mut this.imageSelectable) true}}
+                                    >
+                                        {{t 'binderhub.deployment.change_environment'}}
+                                    </button>
+                                {{/if}}
                             {{/if}}
                         </div>
-                        <div local-class='environment_description'>{{image.description}}</div>
                     </div>
-                    <div local-class='environment_select'>
-                        {{#if this.node.userHasWritePermission}}
-                            {{#if (or (not this.selectedImageUrl) this.imageSelectable)}}
-                                <button
-                                    data-test-image-selection={{image.url}}
-                                    type='button'
-                                    class='btn btn-default'
-                                    {{action this.selectImage image.url target=this}}
-                                >
-                                    {{t 'binderhub.deployment.select_environment'}}
-                                </button>
-                            {{else}}
-                                <button
-                                    data-test-image-change={{image.url}}
-                                    type='button'
-                                    class='btn btn-default'
-                                    {{action (mut this.imageSelectable) true}}
-                                >
-                                    {{t 'binderhub.deployment.change_environment'}}
-                                </button>
-                            {{/if}}
-                        {{/if}}
-                    </div>
-                </div>
-            {{/each}}
+                {{/each}}
+            {{else}}
+                {{t 'binderhub.deployment.no_environment'}}
+            {{/if}}
             {{#if this.selectedImageUrl}}
                 <h3>{{t 'binderhub.deployment.additionalpackages'}}</h3>
                 <div local-class='packages'>
@@ -72,6 +78,9 @@
                         @label='apt-get'
                         @packages={{this.aptPackages}}
                         @onUpdate={{action this.aptUpdated}}
+                        @editing={{if (eq this.editingPackage 'apt') 'editing'}}
+                        @onEditingStart={{action (mut this.editingPackage) 'apt'}}
+                        @onEditingEnd={{action (mut this.editingPackage) ''}}
                     />
                     {{#if this.condaSupported}}
                         <GuidNode::Binderhub::-Components::PackageEditor
@@ -80,6 +89,9 @@
                             @label='conda'
                             @packages={{this.condaPackages}}
                             @onUpdate={{action this.condaUpdated}}
+                            @editing={{if (eq this.editingPackage 'conda') 'editing'}}
+                            @onEditingStart={{action (mut this.editingPackage) 'conda'}}
+                            @onEditingEnd={{action (mut this.editingPackage) ''}}
                         />
                     {{/if}}
                     {{#if this.pipSupported}}
@@ -89,6 +101,9 @@
                             @label='pip'
                             @packages={{this.pipPackages}}
                             @onUpdate={{action this.pipUpdated}}
+                            @editing={{if (eq this.editingPackage 'pip') 'editing'}}
+                            @onEditingStart={{action (mut this.editingPackage) 'pip'}}
+                            @onEditingEnd={{action (mut this.editingPackage) ''}}
                         />
                     {{/if}}
                     {{#if this.rCranSupported}}
@@ -98,6 +113,9 @@
                             @label='R (CRAN)'
                             @packages={{this.rCranPackages}}
                             @onUpdate={{action this.rCranUpdated}}
+                            @editing={{if (eq this.editingPackage 'rcran') 'editing'}}
+                            @onEditingStart={{action (mut this.editingPackage) 'rcran'}}
+                            @onEditingEnd={{action (mut this.editingPackage) ''}}
                         />
                     {{/if}}
                     {{#if this.rGitHubSupported}}
@@ -107,6 +125,9 @@
                             @label='R (GitHub)'
                             @packages={{this.rGitHubPackages}}
                             @onUpdate={{action this.rGitHubUpdated}}
+                            @editing={{if (eq this.editingPackage 'rgithub') 'editing'}}
+                            @onEditingStart={{action (mut this.editingPackage) 'rgithub'}}
+                            @onEditingEnd={{action (mut this.editingPackage) ''}}
                         />
                     {{/if}}
                     {{#if this.rMranSupported}}
@@ -116,6 +137,9 @@
                             @label='R (MRAN)'
                             @packages={{this.rMranPackages}}
                             @onUpdate={{action this.rMranUpdated}}
+                            @editing={{if (eq this.editingPackage 'rmran') 'editing'}}
+                            @onEditingStart={{action (mut this.editingPackage) 'rmran'}}
+                            @onEditingEnd={{action (mut this.editingPackage) ''}}
                         />
                         {{#if this.mranVersionSettingError}}
                             <div local-class='environment_setting_error'>
@@ -128,7 +152,11 @@
                 <div local-class='postscript_view'>
                     <div local-class='postscript_status'>
                         {{#if this.postInstallScriptModel}}
-                            {{t 'binderhub.deployment.has_post_install'}}
+                            {{#if this.environmentModel}}
+                                {{t 'binderhub.deployment.has_post_build'}}
+                            {{else}}
+                                {{t 'binderhub.deployment.has_post_install'}}
+                            {{/if}}
                             <a
                                 href={{this.postInstallScriptModel.links.html}}
                                 target='_blank'
@@ -137,7 +165,11 @@
                                 {{t 'binderhub.deployment.open_post_install'}}
                             </a>
                         {{else}}
-                            {{t 'binderhub.deployment.no_post_install'}}
+                            {{#if this.environmentModel}}
+                                {{t 'binderhub.deployment.no_post_build'}}
+                            {{else}}
+                                {{t 'binderhub.deployment.no_post_install'}}
+                            {{/if}}
                             <a
                                 href={{this.nodeFilesLink}}
                                 target='_blank'
@@ -178,6 +210,7 @@
     <modal.header>
         <h4>
             {{t 'binderhub.deployment.reset_dockerfile_confirm_dialog_title'}}
+            {{this.dirtyConfigurationFilenames}}
         </h4>
     </modal.header>
     <modal.body>
@@ -190,8 +223,8 @@
             {{t 'general.cancel'}}
         </BsButton>
         <BsButton
-            @onClick={{action this.resetDockerfile}}
-            @type='success'
+            @onClick={{action this.resetDirtyFiles}}
+            @type='danger'
         >
             {{t 'general.ok'}}
         </BsButton>

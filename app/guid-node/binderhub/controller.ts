@@ -259,6 +259,15 @@ export default class GuidNodeBinderHub extends Controller {
     }
 
     @action
+    projectError(this: GuidNodeBinderHub, exception: any, message: string) {
+        if (!exception.message) {
+            this.toast.error(message);
+            return;
+        }
+        this.toast.error(`${message}: ${exception.message}`);
+    }
+
+    @action
     build(this: GuidNodeBinderHub, path: BootstrapPath | null, callback: (result: BuildMessage) => void) {
         this.set('buildLog', []);
         later(async () => {

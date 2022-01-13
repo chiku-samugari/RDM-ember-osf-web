@@ -1820,7 +1820,7 @@ integromat:
         deleteHeader: 'Delete {appName} Meeting'
         detailHeader: '{appName} Meeting Detail'
         startHeader: 'Start {appName} Meeting'
-        registerAppsEmailHeader: 'Register {appName} Email'
+        registerAppsEmailHeader: 'Register/Update {appName} Email'
         deleteBody: 'Are you sure want to delete this meeting?'
         noAttendees: 'No attendees are registered.'
         createBtn: 'Create'

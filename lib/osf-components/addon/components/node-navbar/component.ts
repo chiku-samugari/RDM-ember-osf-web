@@ -47,7 +47,7 @@ export default class NodeNavbar extends Component {
         this.getAddons()
             .then(addons => {
                 result = addons
-                    .filter(addon => addon.id === 'iqbrims' && addon.configured)
+                    .filter(addon => addon.id === 'iqbrims')
                     .length > 0;
                 this.set('iqbrimsEnabled', result);
             });

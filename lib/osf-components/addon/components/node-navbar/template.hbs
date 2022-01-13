@@ -38,18 +38,12 @@
                         {{#if this.iqbrimsEnabled }}
                             {{node-navbar/link node=@node useLinkTo=false destination='iqbrims'}}
                         {{/if}}
-                        {{#if this.binderhubEnabled }}
-                            {{node-navbar/link node=@node useLinkTo=false destination='binderhub'}}
-                        {{/if}}
                         {{#if @node.wikiEnabled}}
                             {{node-navbar/link node=@node useLinkTo=false destination='wiki'}}
                         {{/if}}
-                        {{#if (or @node.public @node.currentUserIsContributor)}}
-                            {{node-navbar/link node=@node useLinkTo=true destination='analytics'}}
+                        {{#if this.binderhubEnabled }}
+                            {{node-navbar/link node=@node useLinkTo=false destination='binderhub'}}
                         {{/if}}
-                        {{#unless @node.isRegistration}}
-                            {{node-navbar/link node=@node useLinkTo=true destination='registrations'}}
-                        {{/unless}}
                         {{#if @node.currentUserIsContributor}}
                             {{node-navbar/link node=@node useLinkTo=false destination='contributors'}}
                         {{/if}}

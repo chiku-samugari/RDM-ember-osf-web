@@ -121,7 +121,6 @@ module('Integration | Component | node-navbar', () => {
                 links: [
                     NavLink.ThisNode,
                     NavLink.Files,
-                    NavLink.Registrations,
                 ],
             },
             {
@@ -137,7 +136,6 @@ module('Integration | Component | node-navbar', () => {
                     NavLink.ParentNode,
                     NavLink.ThisNode,
                     NavLink.Files,
-                    NavLink.Registrations,
                 ],
             },
             {
@@ -145,8 +143,6 @@ module('Integration | Component | node-navbar', () => {
                 links: [
                     NavLink.ThisNode,
                     NavLink.Files,
-                    NavLink.Analytics,
-                    NavLink.Registrations,
                 ],
             },
             {
@@ -158,8 +154,6 @@ module('Integration | Component | node-navbar', () => {
                     NavLink.ParentNode,
                     NavLink.ThisNode,
                     NavLink.Files,
-                    NavLink.Analytics,
-                    NavLink.Registrations,
                 ],
             },
             {
@@ -171,8 +165,6 @@ module('Integration | Component | node-navbar', () => {
                 links: [
                     NavLink.ThisNode,
                     NavLink.Files,
-                    NavLink.Analytics,
-                    NavLink.Registrations,
                     NavLink.Contributors,
                     NavLink.Addons,
                     NavLink.Settings,
@@ -186,8 +178,6 @@ module('Integration | Component | node-navbar', () => {
                 links: [
                     NavLink.ThisNode,
                     NavLink.Files,
-                    NavLink.Analytics,
-                    NavLink.Registrations,
                     NavLink.Contributors,
                     NavLink.Settings,
                 ],
@@ -205,8 +195,6 @@ module('Integration | Component | node-navbar', () => {
                     NavLink.ThisNode,
                     NavLink.Files,
                     NavLink.Wiki,
-                    NavLink.Analytics,
-                    NavLink.Registrations,
                     NavLink.Contributors,
                     NavLink.Addons,
                     NavLink.Settings,
@@ -223,7 +211,6 @@ module('Integration | Component | node-navbar', () => {
                     NavLink.ThisNode,
                     NavLink.Files,
                     NavLink.Wiki,
-                    NavLink.Analytics,
                     NavLink.Contributors,
                 ],
             },
@@ -239,7 +226,6 @@ module('Integration | Component | node-navbar', () => {
                     NavLink.ThisNode,
                     NavLink.Files,
                     NavLink.Wiki,
-                    NavLink.Analytics,
                     NavLink.Contributors,
                     NavLink.Settings,
                 ],
@@ -255,7 +241,6 @@ module('Integration | Component | node-navbar', () => {
                     NavLink.ThisNode,
                     NavLink.Files,
                     NavLink.Wiki,
-                    NavLink.Registrations,
                     NavLink.Settings,
                 ],
             },
@@ -271,7 +256,6 @@ module('Integration | Component | node-navbar', () => {
                     NavLink.ThisNode,
                     NavLink.Files,
                     NavLink.Wiki,
-                    NavLink.Analytics,
                 ],
             },
             {
@@ -282,7 +266,6 @@ module('Integration | Component | node-navbar', () => {
                     NavLink.ThisNode,
                     NavLink.Files,
                     NavLink.IQBRIMS,
-                    NavLink.Registrations,
                 ],
             },
             {
@@ -293,7 +276,6 @@ module('Integration | Component | node-navbar', () => {
                     NavLink.ThisNode,
                     NavLink.Files,
                     NavLink.BinderHub,
-                    NavLink.Registrations,
                 ],
             },
         ];

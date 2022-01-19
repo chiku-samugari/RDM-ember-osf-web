@@ -280,13 +280,11 @@ module('Integration | Component | node-navbar', () => {
             {
                 conditions: [
                     NavCondition.IQBRIMSEnabled,
-                    NavCondition.GrdmappsEnabled,
                 ],
                 links: [
                     NavLink.ThisNode,
                     NavLink.Files,
                     NavLink.IQBRIMS,
-                    NavLink.Grdmapps,
                     NavLink.Registrations,
                 ],
             },
@@ -298,6 +296,17 @@ module('Integration | Component | node-navbar', () => {
                     NavLink.ThisNode,
                     NavLink.Files,
                     NavLink.BinderHub,
+                    NavLink.Registrations,
+                ],
+            },
+            {
+                conditions: [
+                    NavCondition.GrdmappsEnabled,
+                ],
+                links: [
+                    NavLink.ThisNode,
+                    NavLink.Files,
+                    NavLink.Grdmapps,
                     NavLink.Registrations,
                 ],
             },

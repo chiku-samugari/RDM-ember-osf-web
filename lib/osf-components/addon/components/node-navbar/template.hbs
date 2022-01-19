@@ -53,6 +53,9 @@
                         {{#if (and @node.userHasWritePermission (not @node.isRegistration))}}
                             {{node-navbar/link node=@node useLinkTo=false destination='addons'}}
                         {{/if}}
+                        {{#if this.grdmappsEnabled }}
+                            {{node-navbar/link node=@node useLinkTo=false destination='grdmapps'}}
+                        {{/if}}
                         {{#if (if @node.isRegistration @node.userHasWritePermission @node.userHasReadPermission)}}
                             {{node-navbar/link node=@node useLinkTo=false destination='settings'}}
                         {{/if}}

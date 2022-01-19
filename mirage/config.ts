@@ -16,6 +16,7 @@ import {
     uploadToRoot,
 } from './views/file';
 import { createFork, createRegistrationFork } from './views/fork';
+import { grdmappsConfig } from './views/grdmapps-config';
 import { guidDetail } from './views/guid';
 import { identifierCreate } from './views/identifier';
 import { summaryMetrics } from './views/institution';
@@ -259,6 +260,7 @@ export default function(this: Server) {
     this.get('/project/:id/binderhub/config', binderhubConfig);
     this.get('/project/:id/metadata/erad/candidates', metadataNodeErad);
     this.get('/project/:id/metadata/project', metadataNodeProject);
+    this.get('/project/:id/grdmapps/config', grdmappsConfig);
 
     this.urlPrefix = apiUrl;
     this.namespace = apiNamespace;

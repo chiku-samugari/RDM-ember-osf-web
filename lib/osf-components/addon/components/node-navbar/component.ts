@@ -86,6 +86,22 @@ export default class NodeNavbar extends Component {
         return result;
     }
 
+    @computed('node.addons')
+    get grdmappsEnabled(): boolean | null {
+        if (!this.node) {
+            return null;
+        }
+        let result = null;
+        this.getAddons()
+            .then(addons => {
+                result = addons
+                    .filter(addon => addon.id === 'grdmapps')
+                    .length > 0;
+                this.set('grdmappsEnabled', result);
+            });
+        return result;
+    }
+
     @action
     toggleNav() {
         this.toggleProperty('collapsedNav');

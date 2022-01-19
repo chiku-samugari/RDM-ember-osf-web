@@ -10,6 +10,7 @@ enum NavCondition {
     HasParent,
     IQBRIMSEnabled,
     BinderHubEnabled,
+    GrdmappsEnabled,
     IsRegistration = 'isRegistration',
     IsPublic = 'public',
     UserCanRead = 'userHasReadPermission',
@@ -24,6 +25,7 @@ enum NavLink {
     Files = 'files',
     IQBRIMS = 'iqbrims',
     BinderHub = 'binderhub',
+    Grdmapps = 'grdmapps',
     Wiki = 'wiki',
     Analytics = 'analytics',
     Registrations = 'registrations',
@@ -56,7 +58,8 @@ export class FakeNode {
             if (condition === NavCondition.HasParent) {
                 this.parentId = faker.random.uuid();
             } else if (condition !== NavCondition.IQBRIMSEnabled
-                && condition !== NavCondition.BinderHubEnabled) {
+                && condition !== NavCondition.BinderHubEnabled
+                && condition !== NavCondition.GrdmappsEnabled) {
                 this[condition] = true;
             }
         }
@@ -278,6 +281,16 @@ module('Integration | Component | node-navbar', () => {
                     NavLink.BinderHub,
                 ],
             },
+            {
+                conditions: [
+                    NavCondition.GrdmappsEnabled,
+                ],
+                links: [
+                    NavLink.ThisNode,
+                    NavLink.Files,
+                    NavLink.Grdmapps,
+                ],
+            },
         ];
 
         testCases.forEach((testCase, i) => {
@@ -290,10 +303,13 @@ module('Integration | Component | node-navbar', () => {
                 this.set('iqbrimsEnabled', iqbrimsEnabled.length > 0);
                 const binderhubEnabled = testCase.conditions.filter(c => c === NavCondition.BinderHubEnabled);
                 this.set('binderhubEnabled', binderhubEnabled.length > 0);
+                const grdmappsEnabled = testCase.conditions.filter(c => c === NavCondition.GrdmappsEnabled);
+                this.set('grdmappsEnabled', grdmappsEnabled.length > 0);
 
                 await render(
                     hbs`{{node-navbar node=this.node iqbrimsEnabled=this.iqbrimsEnabled
-                        binderhubEnabled=this.binderhubEnabled renderInPlace=true}}`,
+                        binderhubEnabled=this.binderhubEnabled renderInPlace=true
+                        grdmappsEnabled=this.grdmappsEnabled renderInPlace=true}}`,
                 );
 
                 assert.dom('[data-test-node-navbar-link]').exists({ count: testCase.links.length });

@@ -144,6 +144,7 @@ Router.map(function() {
         this.route('iqbrims');
         this.route('binderhub');
         this.route('metadata');
+        this.route('grdmapps');
         this.route('registrations');
         this.route('drafts', { path: '/drafts/:draftId' }, function() {
             this.route('register');

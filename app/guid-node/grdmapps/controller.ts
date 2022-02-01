@@ -1652,7 +1652,7 @@ export default class GuidNodeGrdmapps extends Controller {
 
         for (let i = 0; i < institutionUsers.length; i++) {
             userName = institutionUsers[i].fullname;
-            userInfo = `@${institutionUsers[i].guid}`
+            userInfo = `@${institutionUsers[i].guid}`;
             unregisteredUserInfo = `@${institutionUsers[i].guid}${unregisteredLabel}`;
             if (appName === appsConfig.appNameZoomMeetings && suggestionDisabled) {
                 userEmail = institutionUsers[i].username;

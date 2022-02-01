@@ -1845,6 +1845,7 @@ integromat:
         guestname: 'Enter the Guest Name'
         signInAdress: 'Enter the Sign-in Address'
         username: 'Enter the Username or Display name'
+        email: 'Enter the Email'
     workflows:
         web_meeting:
             description: 'Meeting action(regster, update,delete etc...) for web meeting apps, then notify slack messages.'

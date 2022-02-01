@@ -1843,6 +1843,7 @@ integromat:
         guestname: 'ゲスト名を入力してください'
         signInAdress: 'サインインアドレスを入力してください'
         username: 'ユーザ名(または表示名)を入力してください'
+        email: 'メールアドレスを入力して下さい'
     workflows:
         web_meeting:
             description: 'ウェブ会議登録などをしてSlackにメッセージを通知する'

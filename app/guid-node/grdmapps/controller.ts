@@ -1637,8 +1637,8 @@ export default class GuidNodeGrdmapps extends Controller {
         const appsConfig = this.config.content as GrdmappsConfigModel;
 
         let institutionUserList: AttendeesInfo[] = [];
-        const registeredIstitutionUsers: AttendeesInfo[] = [];
-        const unregisteredIstitutionUsers: AttendeesInfo[] = [];
+        const registeredInstitutionUsers: AttendeesInfo[] = [];
+        const unregisteredInstitutionUsers: AttendeesInfo[] = [];
         const guestUsers: AttendeesInfo[] = [];
         let userName = '';
         let userInfo = '';
@@ -1657,7 +1657,7 @@ export default class GuidNodeGrdmapps extends Controller {
             if (appName === appsConfig.appNameZoomMeetings) {
                 if (suggestionDisabled) {
                     userEmail = institutionUsers[i].username;
-                    registeredIstitutionUsers.push(
+                    registeredInstitutionUsers.push(
                         {
                             name: userName + userInfo,
                             email: userEmail,
@@ -1670,7 +1670,7 @@ export default class GuidNodeGrdmapps extends Controller {
                     );
                 }
             } else {
-                unregisteredIstitutionUsers.push(
+                unregisteredInstitutionUsers.push(
                     {
                         name: userName + unregisteredUserInfo,
                         email: '',
@@ -1688,7 +1688,7 @@ export default class GuidNodeGrdmapps extends Controller {
                         registeredUserName = nodeAppAttendee.fields.fullname;
                         registeredUserInfo = `@${nodeAppAttendee.fields.user_guid}`;
                         if (appName === appsConfig.appNameMicrosoftTeams) {
-                            registeredIstitutionUsers.push(
+                            registeredInstitutionUsers.push(
                                 {
                                     name: registeredUserName + registeredUserInfo,
                                     email: nodeAppAttendee.fields.microsoft_teams_mail,
@@ -1700,7 +1700,7 @@ export default class GuidNodeGrdmapps extends Controller {
                                 },
                             );
                         } else if (appName === appsConfig.appNameWebexMeetings) {
-                            registeredIstitutionUsers.push(
+                            registeredInstitutionUsers.push(
                                 {
                                     name: registeredUserName + registeredUserInfo,
                                     email: nodeAppAttendee.fields.webex_meetings_mail,
@@ -1713,7 +1713,7 @@ export default class GuidNodeGrdmapps extends Controller {
                             );
                         }
 
-                        unregisteredIstitutionUsers.pop();
+                        unregisteredInstitutionUsers.pop();
                     }
                 }
                 if (i === 0) {
@@ -1764,9 +1764,9 @@ export default class GuidNodeGrdmapps extends Controller {
             }
         }
 
-        institutionUserList = institutionUserList.concat(registeredIstitutionUsers);
+        institutionUserList = institutionUserList.concat(registeredInstitutionUsers);
         institutionUserList = institutionUserList.concat(guestUsers);
-        institutionUserList = institutionUserList.concat(unregisteredIstitutionUsers);
+        institutionUserList = institutionUserList.concat(unregisteredInstitutionUsers);
 
         return institutionUserList;
     }

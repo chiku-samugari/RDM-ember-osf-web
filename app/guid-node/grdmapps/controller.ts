@@ -1654,19 +1654,21 @@ export default class GuidNodeGrdmapps extends Controller {
             userName = institutionUsers[i].fullname;
             userInfo = `@${institutionUsers[i].guid}`;
             unregisteredUserInfo = `@${institutionUsers[i].guid}${unregisteredLabel}`;
-            if (appName === appsConfig.appNameZoomMeetings && suggestionDisabled) {
-                userEmail = institutionUsers[i].username;
-                registeredIstitutionUsers.push(
-                    {
-                        name: userName + userInfo,
-                        email: userEmail,
-                        nameForApp: '',
-                        profile: profileUrlBase + institutionUsers[i].guid,
-                        _id: '',
-                        is_guest: false,
-                        disabled: false,
-                    },
-                );
+            if (appName === appsConfig.appNameZoomMeetings) {
+                if (suggestionDisabled) {
+                    userEmail = institutionUsers[i].username;
+                    registeredIstitutionUsers.push(
+                        {
+                            name: userName + userInfo,
+                            email: userEmail,
+                            nameForApp: '',
+                            profile: profileUrlBase + institutionUsers[i].guid,
+                            _id: '',
+                            is_guest: false,
+                            disabled: false,
+                        },
+                    );
+                }
             } else {
                 unregisteredIstitutionUsers.push(
                     {

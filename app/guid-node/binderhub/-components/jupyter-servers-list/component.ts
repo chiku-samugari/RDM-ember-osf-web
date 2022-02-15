@@ -81,11 +81,14 @@ export function validateJupyterHubToken(jupyterhub: JupyterHub) {
 }
 
 export function updateContext(key: string, value: string) {
-    localStorage.setItem(key, value);
+    const params = new URLSearchParams(window.location.search);
+    params.set(key, value);
+    window.history.pushState('', '', `?${params.toString()}`);
 }
 
 export function getContext(key: string) {
-    return localStorage.getItem(key);
+    const params = new URLSearchParams(window.location.search);
+    return params.get(key);
 }
 
 export default class JupyterServersList extends Component {
@@ -245,14 +248,17 @@ export default class JupyterServersList extends Component {
         if (!this.binderHubConfig || !this.binderHubConfig.get('isFulfilled')) {
             return false;
         }
-        const binderhub = this.binderHubConfig.get('defaultBinderhub');
+        const config = this.binderHubConfig.content as BinderHubConfigModel;
+        const binderhub = config.findBinderHubByURL(this.get('defaultBinderhubUrl'));
+        if (!binderhub) {
+            return false;
+        }
         if (!validateBinderHubToken(binderhub)) {
             return false;
         }
         if (!binderhub.jupyterhub_url) {
             return false;
         }
-        const config = this.binderHubConfig.content as BinderHubConfigModel;
         const jupyterhub = config.findJupyterHubByURL(binderhub.jupyterhub_url);
         if (!jupyterhub) {
             return false;

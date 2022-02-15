@@ -9,6 +9,7 @@ import DS from 'ember-data';
 
 import Intl from 'ember-intl/services/intl';
 import { BuildFormValues } from 'ember-osf-web/guid-node/binderhub/-components/external-repository/component';
+import { getContext } from 'ember-osf-web/guid-node/binderhub/-components/jupyter-servers-list/component';
 import BinderHubConfigModel from 'ember-osf-web/models/binderhub-config';
 import FileModel from 'ember-osf-web/models/file';
 import FileProviderModel from 'ember-osf-web/models/file-provider';
@@ -34,6 +35,8 @@ export interface BootstrapPath {
 }
 
 export default class GuidNodeBinderHub extends Controller {
+    queryParams = ['bh', 'jh'];
+
     @service toast!: Toast;
     @service intl!: Intl;
     @service statusMessages!: StatusMessages;
@@ -57,6 +60,10 @@ export default class GuidNodeBinderHub extends Controller {
     binderHubBuildError = false;
 
     buildPhase: string | null = null;
+
+    bh: string | null = null;
+
+    jh: string | null = null;
 
     @computed('config.isFulfilled')
     get loading(): boolean {
@@ -84,7 +91,7 @@ export default class GuidNodeBinderHub extends Controller {
         if (!binderhub) {
             throw new EmberError('Illegal config');
         }
-        window.location.href = binderhub.authorize_url;
+        window.location.href = this.getURLWithContext(binderhub.authorize_url);
     }
 
     @action
@@ -95,7 +102,7 @@ export default class GuidNodeBinderHub extends Controller {
         const config = this.config.content as BinderHubConfigModel;
         const jupyterhub = config.findJupyterHubByURL(jupyterhubUrl);
         if (jupyterhub) {
-            window.location.href = jupyterhub.authorize_url;
+            window.location.href = this.getURLWithContext(jupyterhub.authorize_url);
             return;
         }
         // Maybe BinderHub not authorized
@@ -285,6 +292,21 @@ export default class GuidNodeBinderHub extends Controller {
         later(async () => {
             await this.performBuild(binderhubUrl, false, path, callback);
         }, 0);
+    }
+
+    getURLWithContext(url: string) {
+        const bh = getContext('bh');
+        const jh = getContext('jh');
+        const ourl = new URL(url);
+        const osearch = new URLSearchParams(ourl.search);
+        if (bh) {
+            osearch.set('bh', bh);
+        }
+        if (jh) {
+            osearch.set('jh', jh);
+        }
+        ourl.search = `?${osearch.toString()}`;
+        return ourl.href;
     }
 }
 

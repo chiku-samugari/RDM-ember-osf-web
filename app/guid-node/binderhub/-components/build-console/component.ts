@@ -26,6 +26,8 @@ export default class BuildConsole extends Component {
 
     selectedBinderhubUrl: string | null = null;
 
+    selectedBinderhubUrlForJupyterHub: string | null = null;
+
     notAuthorized: boolean = false;
 
     @requiredAction renewToken!: (binderhubUrl: string) => void;
@@ -40,7 +42,11 @@ export default class BuildConsole extends Component {
         if (!this.selectedBinderhubUrl && url) {
             this.selectedBinderhubUrl = url;
         }
-        if (!this.validateToken()) {
+        const urlForJhub = getContext('jh');
+        if (!this.selectedBinderhubUrlForJupyterHub && urlForJhub) {
+            this.selectedBinderhubUrlForJupyterHub = urlForJhub;
+        }
+        if (!this.validateTokens()) {
             return;
         }
         if (!this.buildLog) {
@@ -57,6 +63,18 @@ export default class BuildConsole extends Component {
     get defaultBinderhubUrl() {
         if (this.selectedBinderhubUrl && this.checkSelectable(this.selectedBinderhubUrl)) {
             return this.selectedBinderhubUrl;
+        }
+        if (!this.binderHubConfig || !this.binderHubConfig.get('isFulfilled')) {
+            throw new EmberError('Illegal state');
+        }
+        const binderhub = this.binderHubConfig.get('defaultBinderhub');
+        return binderhub.url;
+    }
+
+    @computed('binderHubConfig', 'selectedBinderhubUrlForJupyterHub')
+    get defaultBinderhubUrlForJupyterHub() {
+        if (this.selectedBinderhubUrlForJupyterHub && this.checkSelectable(this.selectedBinderhubUrlForJupyterHub)) {
+            return this.selectedBinderhubUrlForJupyterHub;
         }
         if (!this.binderHubConfig || !this.binderHubConfig.get('isFulfilled')) {
             throw new EmberError('Illegal state');
@@ -190,12 +208,25 @@ export default class BuildConsole extends Component {
         terminal.scrollTop(height);
     }
 
-    validateToken() {
+    validateTokens() {
+        if (!this.binderHubConfig || !this.binderHubConfig.get('isFulfilled')) {
+            return true;
+        }
+        if (!this.validateToken(this.get('defaultBinderhubUrl'))) {
+            return false;
+        }
+        if (!this.validateToken(this.get('defaultBinderhubUrlForJupyterHub'))) {
+            return false;
+        }
+        return true;
+    }
+
+    validateToken(binderhubUrl: string) {
         if (!this.binderHubConfig || !this.binderHubConfig.get('isFulfilled')) {
             return true;
         }
         const config = this.binderHubConfig.content as BinderHubConfigModel;
-        const binderhub = config.findBinderHubByURL(this.get('defaultBinderhubUrl'));
+        const binderhub = config.findBinderHubByURL(binderhubUrl);
         if (!binderhub || validateBinderHubToken(binderhub)) {
             return true;
         }

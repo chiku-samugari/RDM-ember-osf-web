@@ -528,7 +528,7 @@ export default class GuidNodeGrdmapps extends Controller {
                     'msgInvalidSelectedUser',
                     this.intl.t(
                         'integromat.meetingDialog.invalid.empty',
-                        { item: this.intl.t('integromat.grdmUser') },
+                        { item: this.intl.t('integromat.grdmUserOrGuest') },
                     ),
                 );
                 validFlag = false;
@@ -539,7 +539,7 @@ export default class GuidNodeGrdmapps extends Controller {
                     'msgInvalidGuestUser',
                     this.intl.t(
                         'integromat.meetingDialog.invalid.empty',
-                        { item: this.intl.t('integromat.guest') },
+                        { item: this.intl.t('integromat.registeredGuest') },
                     ),
                 );
                 validFlag = false;

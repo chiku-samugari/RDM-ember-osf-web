@@ -1792,7 +1792,7 @@ export default class GuidNodeGrdmapps extends Controller {
     }
 
     @computed('config.nodeMicrosoftTeamsAttendees')
-    get institutionUsersListMicrosoftTeams() {
+    get institutionUsersToUpdateMicrosoftTeams() {
         if (!this.config) {
             return '';
         }
@@ -1832,7 +1832,7 @@ export default class GuidNodeGrdmapps extends Controller {
     }
 
     @computed('config.nodeWebexMeetingsAttendees')
-    get institutionUsersListWebexMeetings() {
+    get institutionUsersToUpdateWebexMeetings() {
         if (!this.config) {
             return '';
         }
@@ -1872,7 +1872,7 @@ export default class GuidNodeGrdmapps extends Controller {
     }
 
     @computed('config.nodeZoomMeetingsAttendees')
-    get institutionUsersListZoomMeetings() {
+    get institutionUsersToUpdateZoomMeetings() {
         if (!this.config) {
             return '';
         }

@@ -1130,7 +1130,7 @@
                         <PowerSelect
                             @searchField='name'
                             @selected={{this.selectedUser}}
-                            @options={{this.institutionUsersListMicrosoftTeams}}
+                            @options={{this.institutionUsersToUpdateMicrosoftTeams}}
                             @renderInPlace={{true}}
                             @onchange={{fn (mut this.selectedUser)}}
                             @onInput={{this.checkLength}} as |name|>
@@ -1141,7 +1141,7 @@
                         <PowerSelect
                             @searchField='name'
                             @selected={{this.selectedUser}}
-                            @options={{this.institutionUsersListWebexMeetings}}
+                            @options={{this.institutionUsersToUpdateWebexMeetings}}
                             @renderInPlace={{true}}
                             @onchange={{fn (mut this.selectedUser)}}
                             @onInput={{this.checkLength}} as |name|>
@@ -1152,7 +1152,7 @@
                         <PowerSelect
                             @searchField='name'
                             @selected={{this.selectedUser}}
-                            @options={{this.institutionUsersListZoomMeetings}}
+                            @options={{this.institutionUsersToUpdateZoomMeetings}}
                             @renderInPlace={{true}}
                             @onchange={{fn (mut this.selectedUser)}}
                             @onInput={{this.checkLength}} as |name|>

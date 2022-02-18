@@ -1,0 +1,46 @@
+.MetadataContainer {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.ReportsPane {
+    min-height: 150px;
+}
+
+.NewReportButton {
+    margin: 15px;
+}
+
+h4:global(.NewReportModal__header) {
+    font-size: 24px;
+    font-weight: normal;
+}
+
+:global(.NewReportModal__info) {
+    strong {
+        font-weight: 600;
+    }
+}
+
+:global(.NewReportModal__schema-list) {
+    ul {
+        list-style: none;
+    }
+
+    li {
+        position: relative;
+
+        input {
+            position: absolute;
+            left: -1.4em;
+            top: -0.1em;
+        }
+
+        &:global(.ember-content-placeholders-list__item)::before {
+            content: '\25EF';
+            position: absolute;
+            left: -1.45em;
+            color: #555;
+        }
+    }
+}

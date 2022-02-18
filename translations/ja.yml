@@ -632,6 +632,19 @@ node:
         new: 新規登録
         registrations: 登録
         draft_registrations: ドラフト登録
+    metadata:
+      new_report_modal:
+        title: 報告
+        info: '報告により、プロジェクトの凍結バージョンが作成されます。 元のプロジェクトは編集可能なままで、報告がリンクされます。 報告について知っておくべきこと：<ul> <li> <strong>報告を編集または削除することはできません。</ strong> </ li> <li>報告を取り消すと、そのコンテンツは削除されますが、タイトル、投稿者、 報告日、撤回日、正当化（提供されている場合）。</ li> <li>報告は、最大4年間公開または停止できます。 停止の報告は、禁輸の有効期限が切れると自動的に公開されます。</ li> </ ul>報告フォームを選択して報告を続行します。'
+        create: 報告書を作成
+      page_title: '{nodeTitle} 報告書'
+      only_admins_can_initiate: プロジェクト管理者のみが報告を開始できます。
+      no_reports: このプロジェクトの報告書はありません。
+      start_new: '「新規登録」ボタンをクリックして、新規報告を開始します。 作成した報告書は、編集または削除できません。'
+      register_entire_project: '代わりにプロジェクト"{rootNodeTitle}"全体を登録するには、クリックします。'
+      here: こちら
+      new: 新規報告
+      reports: 報告書
 delete_modal:
     title: 'この{nodeType}を削除してもよろしいですか？'
     body: '{nodeType}の他の投稿者は利用できなくなります。'

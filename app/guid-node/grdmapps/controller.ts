@@ -522,6 +522,10 @@ export default class GuidNodeGrdmapps extends Controller {
         let messageKey = '';
         let validFlag = true;
         const regex = /^[A-Za-z0-9]{1}[A-Za-z0-9_.-]*@{1}[A-Za-z0-9_.-]{1,}.[A-Za-z0-9]{1,}$/;
+
+        if (!this.config) {
+            throw new EmberError('Illegal config');
+        }
         const appsConfig = this.config.content as GrdmappsConfigModel;
 
         if (this.webMeetingAppName === appsConfig.appNameZoomMeetings) {

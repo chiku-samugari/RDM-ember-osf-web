@@ -9,6 +9,7 @@ import { TaskInstance } from 'ember-concurrency';
 import requireAuth from 'ember-osf-web/decorators/require-auth';
 import DraftRegistration from 'ember-osf-web/models/draft-registration';
 import MetadataNodeEradModel from 'ember-osf-web/models/metadata-node-erad';
+import MetadataNodeProjectModel from 'ember-osf-web/models/metadata-node-project';
 import NodeModel from 'ember-osf-web/models/node';
 import Analytics from 'ember-osf-web/services/analytics';
 import DraftRegistrationManager from 'registries/drafts/draft/draft-registration-manager';
@@ -44,22 +45,26 @@ export default class DraftRegistrationRoute extends Route {
     });
 
     @task
-    loadMetadataNodeErad = task(function *(
+    loadMetadataNode = task(function *(
         this: DraftRegistrationRoute,
         draftRegistrationAndNodeTask: TaskInstance<{draftRegistration: DraftRegistration, node: NodeModel}>,
     ) {
         const { node } = yield draftRegistrationAndNodeTask;
         const metadataNodeErad: MetadataNodeEradModel = yield this.store.findRecord('metadata-node-erad', node.id);
-        return metadataNodeErad;
+        const metadataNodeProject: MetadataNodeProjectModel = yield this.store.findRecord(
+            'metadata-node-project',
+            node.id,
+        );
+        return { metadataNodeErad, metadataNodeProject };
     });
 
     model(params: { id: string }): DraftRouteModel {
         const { id: draftId } = params;
         const draftRegistrationAndNodeTask = this.loadDraftRegistrationAndNode.perform(draftId);
-        const metadataNodeEradTask = this.loadMetadataNodeErad.perform(draftRegistrationAndNodeTask);
+        const metadataNodeTask = this.loadMetadataNode.perform(draftRegistrationAndNodeTask);
         const draftRegistrationManager = new DraftRegistrationManager(
             draftRegistrationAndNodeTask,
-            metadataNodeEradTask,
+            metadataNodeTask,
         );
         const navigationManager = new NavigationManager(draftRegistrationManager);
         return {

@@ -1024,6 +1024,9 @@ registries:
                 toggle_dropdown: 'Toggle navigation dropdown'
             register: Register
             submit_error: 'Unable to create a registration.'
+    registration_data_list:
+        title: '登録データ一覧'
+        show_detail: 詳細を確認する
     index:
         lead: '<span class="f-w-lg">オープン</span> レジストリネットワーク'
         see_example: 例を見る

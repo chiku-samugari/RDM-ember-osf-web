@@ -14,6 +14,7 @@ import SchemaBlock from 'ember-osf-web/models/schema-block';
 import captureException, { getApiErrorMessage } from 'ember-osf-web/utils/capture-exception';
 
 import MetadataNodeEradModel from 'ember-osf-web/models/metadata-node-erad';
+import MetadataNodeProjectModel from 'ember-osf-web/models/metadata-node-project';
 import {
     getPages,
     PageManager,
@@ -24,7 +25,10 @@ import buildChangeset from 'ember-osf-web/utils/build-changeset';
 export default class DraftRegistrationManager {
     // Required
     draftRegistrationAndNodeTask!: TaskInstance<{draftRegistration: DraftRegistration, node: NodeModel}>;
-    metadataNodeEradTask!: TaskInstance<MetadataNodeEradModel>;
+    metadataNodeTask!: TaskInstance<{
+        metadataNodeErad: MetadataNodeEradModel,
+        metadataNodeProject: MetadataNodeProjectModel,
+    }>;
     initializePageManagersTask!: TaskInstance<void>;
 
     // Private
@@ -43,7 +47,7 @@ export default class DraftRegistrationManager {
     @or(
         'initializePageManagers.isRunning',
         'initializeMetadataChangeset.isRunning',
-        'initializeMetadataNodeErad.isRunning',
+        'initializeMetadataNode.isRunning',
     ) initializing!: boolean;
     @not('registrationResponsesIsValid') hasInvalidResponses!: boolean;
     @filterBy('pageManagers', 'isVisited', true) visitedPages!: PageManager[];
@@ -53,6 +57,7 @@ export default class DraftRegistrationManager {
     node!: NodeModel;
 
     metadataNodeErad!: MetadataNodeEradModel;
+    metadataNodeProject!: MetadataNodeProjectModel;
 
     @computed('pageManagers.{[],@each.pageIsValid}')
     get registrationResponsesIsValid() {
@@ -104,9 +109,10 @@ export default class DraftRegistrationManager {
     });
 
     @task
-    initializeMetadataNodeErad = task(function *(this: DraftRegistrationManager) {
-        const metadataNodeErad = yield this.metadataNodeEradTask;
+    initializeMetadataNode = task(function *(this: DraftRegistrationManager) {
+        const { metadataNodeErad, metadataNodeProject } = yield this.metadataNodeTask;
         set(this, 'metadataNodeErad', metadataNodeErad);
+        set(this, 'metadataNodeProject', metadataNodeProject);
     });
 
     @task({ restartable: true })
@@ -168,13 +174,16 @@ export default class DraftRegistrationManager {
 
     constructor(
         draftRegistrationAndNodeTask: TaskInstance<{draftRegistration: DraftRegistration, node: NodeModel}>,
-        metadataNodeEradTask: TaskInstance<MetadataNodeEradModel>,
+        metadataNodeTask: TaskInstance<{
+            metadataNodeErad: MetadataNodeEradModel,
+            metadataNodeProject: MetadataNodeProjectModel,
+        }>,
     ) {
         set(this, 'draftRegistrationAndNodeTask', draftRegistrationAndNodeTask);
-        set(this, 'metadataNodeEradTask', metadataNodeEradTask);
+        set(this, 'metadataNodeTask', metadataNodeTask);
         this.initializePageManagersTask = this.initializePageManagers.perform();
         this.initializeMetadataChangeset.perform();
-        this.initializeMetadataNodeErad.perform();
+        this.initializeMetadataNode.perform();
     }
 
     @action

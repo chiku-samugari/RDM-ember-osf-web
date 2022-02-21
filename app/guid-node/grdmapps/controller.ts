@@ -519,8 +519,16 @@ export default class GuidNodeGrdmapps extends Controller {
         guestFullname: string,
         email: string,
     ) {
+        let messageKey = '';
         let validFlag = true;
         const regex = /^[A-Za-z0-9]{1}[A-Za-z0-9_.-]*@{1}[A-Za-z0-9_.-]{1,}.[A-Za-z0-9]{1,}$/;
+        const appsConfig = this.config.content as GrdmappsConfigModel;
+
+        if (this.webMeetingAppName === appsConfig.appNameZoomMeetings) {
+            messageKey = 'integromat.registeredGuest';
+        } else {
+            messageKey = 'integromat.grdmUserOrGuest';
+        }
 
         if (userType === 'radio_grdmUserOrRegisteredGuest') {
             if (Object.keys(selectedUser).length === 0) {
@@ -528,7 +536,7 @@ export default class GuidNodeGrdmapps extends Controller {
                     'msgInvalidSelectedUser',
                     this.intl.t(
                         'integromat.meetingDialog.invalid.empty',
-                        { item: this.intl.t('integromat.grdmUserOrGuest') },
+                        { item: this.intl.t(messageKey) },
                     ),
                 );
                 validFlag = false;
@@ -539,7 +547,7 @@ export default class GuidNodeGrdmapps extends Controller {
                     'msgInvalidGuestUser',
                     this.intl.t(
                         'integromat.meetingDialog.invalid.empty',
-                        { item: this.intl.t('integromat.registeredGuest') },
+                        { item: this.intl.t('integromat.newGuest') },
                     ),
                 );
                 validFlag = false;

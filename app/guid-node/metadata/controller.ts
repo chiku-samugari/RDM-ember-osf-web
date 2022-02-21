@@ -27,11 +27,21 @@ export default class GuidNodeMetadata extends Controller {
 
     @task
     getRegistrationSchemas = task(function *(this: GuidNodeMetadata) {
-        let schemas = yield this.store.query('registration-schema',
-            {
-                'filter[active]': true,
-            });
-        schemas = schemas.toArray();
+        const allSchemas: RegistrationSchema[] = [];
+        let page = 1;
+        while (true) {
+            const result = yield this.store.query('registration-schema',
+                {
+                    filter: {
+                        active: true,
+                    },
+                    page,
+                });
+            Array.prototype.push.apply(allSchemas, result.toArray());
+            if (!result.links.next) { break; }
+            page += 1;
+        }
+        const schemas = allSchemas.filter((a: RegistrationSchema) => ['公的資金による研究データのメタデータ登録'].includes(a.name));
         schemas.sort((a: RegistrationSchema, b: RegistrationSchema) => a.name.length - b.name.length);
         this.set('defaultSchema', schemas.firstObject);
         this.set('selectedSchema', this.defaultSchema);

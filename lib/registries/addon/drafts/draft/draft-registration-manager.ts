@@ -13,8 +13,8 @@ import NodeModel from 'ember-osf-web/models/node';
 import SchemaBlock from 'ember-osf-web/models/schema-block';
 import captureException, { getApiErrorMessage } from 'ember-osf-web/utils/capture-exception';
 
+import MetadataNodeEradModel from 'ember-osf-web/models/metadata-node-erad';
 import {
-    buildMetadataValidations,
     getPages,
     PageManager,
     RegistrationResponse,
@@ -24,6 +24,8 @@ import buildChangeset from 'ember-osf-web/utils/build-changeset';
 export default class DraftRegistrationManager {
     // Required
     draftRegistrationAndNodeTask!: TaskInstance<{draftRegistration: DraftRegistration, node: NodeModel}>;
+    metadataNodeEradTask!: TaskInstance<MetadataNodeEradModel>;
+    initializePageManagersTask!: TaskInstance<void>;
 
     // Private
     @service intl!: Intl;
@@ -38,13 +40,19 @@ export default class DraftRegistrationManager {
 
     @alias('draftRegistration.id') draftId!: string;
     @or('onPageInput.isRunning', 'onMetadataInput.isRunning') autoSaving!: boolean;
-    @or('initializePageManagers.isRunning', 'initializeMetadataChangeset.isRunning') initializing!: boolean;
+    @or(
+        'initializePageManagers.isRunning',
+        'initializeMetadataChangeset.isRunning',
+        'initializeMetadataNodeErad.isRunning',
+    ) initializing!: boolean;
     @not('registrationResponsesIsValid') hasInvalidResponses!: boolean;
     @filterBy('pageManagers', 'isVisited', true) visitedPages!: PageManager[];
     @notEmpty('visitedPages') hasVisitedPages!: boolean;
 
     draftRegistration!: DraftRegistration;
     node!: NodeModel;
+
+    metadataNodeErad!: MetadataNodeEradModel;
 
     @computed('pageManagers.{[],@each.pageIsValid}')
     get registrationResponsesIsValid() {
@@ -91,9 +99,14 @@ export default class DraftRegistrationManager {
     @task
     initializeMetadataChangeset = task(function *(this: DraftRegistrationManager) {
         const { draftRegistration } = yield this.draftRegistrationAndNodeTask;
-        const metadataValidations = buildMetadataValidations();
-        const metadataChangeset = buildChangeset(draftRegistration, metadataValidations);
+        const metadataChangeset = buildChangeset(draftRegistration, {});
         set(this, 'metadataChangeset', metadataChangeset);
+    });
+
+    @task
+    initializeMetadataNodeErad = task(function *(this: DraftRegistrationManager) {
+        const metadataNodeErad = yield this.metadataNodeEradTask;
+        set(this, 'metadataNodeErad', metadataNodeErad);
     });
 
     @task({ restartable: true })
@@ -153,10 +166,15 @@ export default class DraftRegistrationManager {
         }
     });
 
-    constructor(draftRegistrationAndNodeTask: TaskInstance<{draftRegistration: DraftRegistration, node: NodeModel}>) {
+    constructor(
+        draftRegistrationAndNodeTask: TaskInstance<{draftRegistration: DraftRegistration, node: NodeModel}>,
+        metadataNodeEradTask: TaskInstance<MetadataNodeEradModel>,
+    ) {
         set(this, 'draftRegistrationAndNodeTask', draftRegistrationAndNodeTask);
-        this.initializePageManagers.perform();
+        set(this, 'metadataNodeEradTask', metadataNodeEradTask);
+        this.initializePageManagersTask = this.initializePageManagers.perform();
         this.initializeMetadataChangeset.perform();
+        this.initializeMetadataNodeErad.perform();
     }
 
     @action

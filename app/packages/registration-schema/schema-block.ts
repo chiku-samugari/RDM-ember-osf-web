@@ -11,7 +11,11 @@ export type SchemaBlockType =
     'multi-select-input' |
     'single-select-input' |
     'select-input-option' |
-    'select-other-option';
+    'select-other-option' |
+    'e-rad-award-funder-input' |
+    'e-rad-award-number-input' |
+    'e-rad-award-title-ja-input' |
+    'e-rad-award-title-en-input';
 
 export interface SchemaBlock {
     id?: string;

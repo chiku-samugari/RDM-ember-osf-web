@@ -10,12 +10,14 @@ export default class GrdmappsConfigModel extends OsfModel {
     @attr('string') nodeAttendeesAll!: string;
     @attr('string') nodeMicrosoftTeamsAttendees!: string;
     @attr('string') nodeWebexMeetingsAttendees!: string;
+    @attr('string') nodeZoomMeetingsAttendees!: string;
     @attr('string') nodeWebMeetingsAttendeesRelation!: string;
     @attr('string') workflows!: string;
     @attr('string') nodeWorkflows!: string;
     @attr('string') webMeetingApps!: string;
     @attr('string') appNameMicrosoftTeams!: string;
     @attr('string') appNameWebexMeetings!: string;
+    @attr('string') appNameZoomMeetings!: string;
     @attr('string') institutionUsers!: string;
 }
 

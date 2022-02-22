@@ -1839,6 +1839,7 @@ integromat:
         startBtn: 'Start'
         closeBtn: 'Close'
         registerBtn: 'Register'
+        registerGuestBtn: 'Register Guest'
         registerOrUpdateBtn: 'Register/Update'
         invalid:
             empty: 'Please Enter {item}'
@@ -1854,6 +1855,7 @@ integromat:
         guestname: 'Enter the Guest Name'
         signInAdress: 'Enter the Sign-in Address'
         username: 'Enter the Username or Display name'
+        email: 'Enter the Email'
     workflows:
         web_meeting:
             description: 'Meeting action(regster, update,delete etc...) for web meeting apps, then notify slack messages.'
@@ -1872,9 +1874,11 @@ integromat:
     joinUrl: 'Join URL'
     datetime: 'datetime'
     grdmUserOrGuest: 'GakuNin RDM User / Registered Guest'
+    registeredGuest: 'Regustered Guest'
     newGuest: 'New Guest'
     signInAdress: 'Sign-in Adress'
     username: 'Username'
+    email: 'Email'
     from_tilde: ' ～ '
     from_hyphen: ' - '
     colon: ':'

@@ -26,6 +26,7 @@ interface ReqBody {
 interface InstitutionUsers {
     fullname: string;
     guid: string;
+    username: string;
 }
 /* eslint-disable camelcase */
 interface AttendeesInfo {
@@ -45,6 +46,7 @@ interface Attendees {
     microsoft_teams_user_name: string;
     webex_meetings_mail: string;
     webex_meetings_display_name: string;
+    zoom_meetings_mail: string;
     _id: string;
     is_guest: boolean;
 }
@@ -164,8 +166,10 @@ export default class GuidNodeGrdmapps extends Controller {
     showUpdateWebMeetingDialog = false;
     showCreateMicrosoftTeamsMeetingDialog = false;
     showCreateWebexMeetingDialog = false;
+    showCreateZoomMeetingsDialog = false;
     showUpdateMicrosoftTeamsMeetingDialog = false;
     showUpdateWebexMeetingsDialog = false;
+    showUpdateZoomMeetingsDialog = false;
     showDeleteWebMeetingDialog = false;
     showDetailWebMeetingDialog = false;
     showWorkflows = true;
@@ -229,6 +233,7 @@ export default class GuidNodeGrdmapps extends Controller {
     selectedAttendees: AttendeesInfo[] = [];
     selectedMicrosoftTeamsAttendees: AttendeesInfo[] = [];
     selectedWebexMeetingsAttendees: AttendeesInfo[] = [];
+    selectedZoomMeetingsAttendees: AttendeesInfo[] = [];
 
     workflowDescription = '';
     alternativeWebhookUrl = '';
@@ -329,7 +334,7 @@ export default class GuidNodeGrdmapps extends Controller {
     }
 
     @action
-    setWebMeetingApp(this: GuidNodeGrdmapps, v: string, actionType: string) {
+    setWebMeetingApp(this: GuidNodeGrdmapps, appName: string, actionType: string) {
         if (!this.config) {
             throw new EmberError('Illegal config');
         }
@@ -337,36 +342,51 @@ export default class GuidNodeGrdmapps extends Controller {
         const appsConfig = this.config.content as GrdmappsConfigModel;
         let appNameDisp = '';
 
-        if (v === appsConfig.appNameMicrosoftTeams) {
-            if (actionType === 'create') {
-                this.set('showCreateMicrosoftTeamsMeetingDialog', true);
-                this.set('showCreateWebexMeetingDialog', false);
-            } else if (actionType === 'update') {
-                this.set('showUpdateMicrosoftTeamsMeetingDialog', true);
-                this.set('showUpdateWebexMeetingsDialog', false);
+        if (appName) {
+            if (appName === appsConfig.appNameMicrosoftTeams) {
+                if (actionType === 'create') {
+                    this.set('showCreateMicrosoftTeamsMeetingDialog', true);
+                    this.set('showCreateWebexMeetingDialog', false);
+                    this.set('showCreateZoomMeetingsDialog', false);
+                } else if (actionType === 'update') {
+                    this.set('showUpdateMicrosoftTeamsMeetingDialog', true);
+                    this.set('showUpdateWebexMeetingsDialog', false);
+                    this.set('showUpdateZoomMeetingsDialog', false);
+                }
+            } else if (appName === appsConfig.appNameWebexMeetings) {
+                if (actionType === 'create') {
+                    this.set('showCreateMicrosoftTeamsMeetingDialog', false);
+                    this.set('showCreateWebexMeetingDialog', true);
+                    this.set('showCreateZoomMeetingsDialog', false);
+                } else if (actionType === 'update') {
+                    this.set('showUpdateMicrosoftTeamsMeetingDialog', false);
+                    this.set('showUpdateWebexMeetingsDialog', true);
+                    this.set('showUpdateZoomMeetingsDialog', false);
+                }
+            } else if (appName === appsConfig.appNameZoomMeetings) {
+                if (actionType === 'create') {
+                    this.set('showCreateMicrosoftTeamsMeetingDialog', false);
+                    this.set('showCreateWebexMeetingDialog', false);
+                    this.set('showCreateZoomMeetingsDialog', true);
+                } else if (actionType === 'update') {
+                    this.set('showUpdateMicrosoftTeamsMeetingDialog', false);
+                    this.set('showUpdateWebexMeetingsDialog', false);
+                    this.set('showUpdateZoomMeetingsDialog', true);
+                }
             }
-            appNameDisp = this.camel2space(v);
-            this.set('webMeetingAppName', v);
+            appNameDisp = this.camel2space(appName);
+            this.set('webMeetingAppName', appName);
             this.set('webMeetingAppNameDisp', appNameDisp);
-        } else if (v === appsConfig.appNameWebexMeetings) {
-            if (actionType === 'create') {
-                this.set('showCreateMicrosoftTeamsMeetingDialog', false);
-                this.set('showCreateWebexMeetingDialog', true);
-            } else if (actionType === 'update') {
-                this.set('showUpdateMicrosoftTeamsMeetingDialog', false);
-                this.set('showUpdateWebexMeetingsDialog', true);
-            }
-            appNameDisp = this.camel2space(v);
-            this.set('webMeetingAppName', v);
-            this.set('webMeetingAppNameDisp', appNameDisp);
-        } else if (!v && !actionType) {
+        } else if (!appName && !actionType) {
             this.set('showCreateWebMeetingDialog', false);
             this.set('showUpdateWebMeetingDialog', false);
             this.set('showDeleteWebMeetingDialog', false);
             this.set('showCreateMicrosoftTeamsMeetingDialog', false);
             this.set('showCreateWebexMeetingDialog', false);
+            this.set('showCreateZoomMeetingsDialog', false);
             this.set('showUpdateMicrosoftTeamsMeetingDialog', false);
             this.set('showUpdateWebexMeetingsDialog', false);
+            this.set('showUpdateZoomMeetingsDialog', false);
             this.set('showDeleteWebMeetingDialog', false);
             this.set('showDetailWebMeetingDialog', false);
 
@@ -379,6 +399,7 @@ export default class GuidNodeGrdmapps extends Controller {
             this.set('selectedAttendees', []);
             this.set('selectedMicrosoftTeamsAttendees', []);
             this.set('selectedWebexMeetingsAttendees', []);
+            this.set('selectedZoomMeetingsAttendees', []);
             this.set('webMeetingStartDate', '');
             this.set('webMeetingStartTime', '');
             this.set('webMeetingEndDate', '');
@@ -498,8 +519,20 @@ export default class GuidNodeGrdmapps extends Controller {
         guestFullname: string,
         email: string,
     ) {
+        let messageKey = '';
         let validFlag = true;
         const regex = /^[A-Za-z0-9]{1}[A-Za-z0-9_.-]*@{1}[A-Za-z0-9_.-]{1,}.[A-Za-z0-9]{1,}$/;
+
+        if (!this.config) {
+            throw new EmberError('Illegal config');
+        }
+        const appsConfig = this.config.content as GrdmappsConfigModel;
+
+        if (this.webMeetingAppName === appsConfig.appNameZoomMeetings) {
+            messageKey = 'integromat.registeredGuest';
+        } else {
+            messageKey = 'integromat.grdmUserOrGuest';
+        }
 
         if (userType === 'radio_grdmUserOrRegisteredGuest') {
             if (Object.keys(selectedUser).length === 0) {
@@ -507,7 +540,7 @@ export default class GuidNodeGrdmapps extends Controller {
                     'msgInvalidSelectedUser',
                     this.intl.t(
                         'integromat.meetingDialog.invalid.empty',
-                        { item: this.intl.t('integromat.grdmUser') },
+                        { item: this.intl.t(messageKey) },
                     ),
                 );
                 validFlag = false;
@@ -518,7 +551,7 @@ export default class GuidNodeGrdmapps extends Controller {
                     'msgInvalidGuestUser',
                     this.intl.t(
                         'integromat.meetingDialog.invalid.empty',
-                        { item: this.intl.t('integromat.guest') },
+                        { item: this.intl.t('integromat.newGuest') },
                     ),
                 );
                 validFlag = false;
@@ -739,6 +772,9 @@ export default class GuidNodeGrdmapps extends Controller {
         } else if (this.webMeetingAppName === appsConfig.appNameWebexMeetings) {
             selectedAttendees = this.selectedWebexMeetingsAttendees;
             attendeeNum = selectedAttendees.length;
+        } else if (this.webMeetingAppName === appsConfig.appNameZoomMeetings) {
+            selectedAttendees = this.selectedZoomMeetingsAttendees;
+            attendeeNum = selectedAttendees.length;
         }
         // validation check for input
         if (!this.webMeetingvalidationCheck(
@@ -777,6 +813,12 @@ export default class GuidNodeGrdmapps extends Controller {
                         displayName: selectedAttendee.nameForApp,
                     },
                 );
+                arrayAttendees.push(selectedAttendee.email);
+            });
+        } else if (this.webMeetingAppName === appsConfig.appNameZoomMeetings) {
+            workflowAction = 'createZoomMeetings';
+
+            selectedAttendees.forEach((selectedAttendee: any) => {
                 arrayAttendees.push(selectedAttendee.email);
             });
         }
@@ -892,6 +934,7 @@ export default class GuidNodeGrdmapps extends Controller {
         let isGuest = false;
         let microsoftTeamsMail;
         let webexMeetingsMail;
+        let zoomMeetingsMail;
         let userGuid = '';
 
         if (appName === appsConfig.appNameMicrosoftTeams) {
@@ -939,6 +982,33 @@ export default class GuidNodeGrdmapps extends Controller {
                                 name: nodeAttendee.fields.fullname + guidOrEmail,
                                 email: nodeAttendee.fields.webex_meetings_mail,
                                 nameForApp: nodeAttendee.fields.webex_meetings_display_name,
+                                profile: profileUrl,
+                                _id: nodeAttendee.fields._id,
+                                is_guest: nodeAttendee.fields.is_guest,
+                                disabled: false,
+                            },
+                        );
+                    }
+                }
+            });
+        } else if (appName === appsConfig.appNameZoomMeetings) {
+            webMeetingAttendees.forEach((webMeetingAttendee: any) => {
+                for (const nodeAttendee of nodeAttendeesAll) {
+                    if (type === 'update' && !(nodeAttendee.fields.zoom_meetings_mail)) {
+                        continue;
+                    }
+                    if (webMeetingAttendee === nodeAttendee.pk) {
+                        isGuest = nodeAttendee.fields.is_guest;
+                        zoomMeetingsMail = nodeAttendee.fields.zoom_meetings_mail;
+                        userGuid = nodeAttendee.fields.user_guid;
+
+                        guidOrEmail = isGuest ? `(${zoomMeetingsMail})` : `@${userGuid}`;
+                        profileUrl = isGuest ? '' : profileUrlBase + userGuid;
+                        this.selectedAttendees.push(
+                            {
+                                name: nodeAttendee.fields.fullname + guidOrEmail,
+                                email: nodeAttendee.fields.zoom_meetings_mail,
+                                nameForApp: '',
                                 profile: profileUrl,
                                 _id: nodeAttendee.fields._id,
                                 is_guest: nodeAttendee.fields.is_guest,
@@ -1008,6 +1078,8 @@ export default class GuidNodeGrdmapps extends Controller {
             attendeeNum = selectedAttendees.length;
         } else if (this.webMeetingAppName === appsConfig.appNameWebexMeetings) {
             attendeeNum = selectedAttendees.length;
+        } else if (this.webMeetingAppName === appsConfig.appNameZoomMeetings) {
+            attendeeNum = selectedAttendees.length;
         }
         // validation check for input
         if (!this.webMeetingvalidationCheck(
@@ -1074,6 +1146,12 @@ export default class GuidNodeGrdmapps extends Controller {
                         }
                     }
                 });
+            });
+        } else if (appName === appsConfig.appNameZoomMeetings) {
+            workflowAction = 'updateZoomMeetings';
+
+            selectedAttendees.forEach((selectedAttendee: any) => {
+                arrayAttendees.push(selectedAttendee.email);
             });
         }
 
@@ -1193,6 +1271,8 @@ export default class GuidNodeGrdmapps extends Controller {
             workflowAction = 'deleteMicrosoftTeamsMeeting';
         } else if (this.webMeetingAppName === appsConfig.appNameWebexMeetings) {
             workflowAction = 'deleteWebexMeetings';
+        } else if (this.webMeetingAppName === appsConfig.appNameZoomMeetings) {
+            workflowAction = 'deleteZoomMeetings';
         }
 
         const webMeetingStartDatetime = (new Date(strWebMeetingStartDatetime)).toISOString();
@@ -1520,6 +1600,16 @@ export default class GuidNodeGrdmapps extends Controller {
         return nodeWebexMeetingsAttendees;
     }
 
+    @computed('config.nodeZoomMeetingsAttendees')
+    get nodeZoomMeetingsAttendees() {
+        if (!this.config) {
+            return '';
+        }
+        const appsConfig = this.config.content as GrdmappsConfigModel;
+        const nodeZoomMeetingsAttendees = JSON.parse(appsConfig.nodeZoomMeetingsAttendees);
+        return nodeZoomMeetingsAttendees;
+    }
+
     @computed('config.institutionUsers')
     get institutionUsers() {
         if (!this.config) {
@@ -1559,10 +1649,12 @@ export default class GuidNodeGrdmapps extends Controller {
         const appsConfig = this.config.content as GrdmappsConfigModel;
 
         let institutionUserList: AttendeesInfo[] = [];
-        const registeredIstitutionUsers: AttendeesInfo[] = [];
-        const unregisteredIstitutionUsers: AttendeesInfo[] = [];
+        const registeredInstitutionUsers: AttendeesInfo[] = [];
+        const unregisteredInstitutionUsers: AttendeesInfo[] = [];
         const guestUsers: AttendeesInfo[] = [];
-        let unregisteredUserName = '';
+        let userName = '';
+        let userInfo = '';
+        let userEmail = '';
         let unregisteredUserInfo = '';
         const unregisteredLabel = this.intl.t('integromat.meetingDialog.unregisteredLabel');
         let registeredUserName = '';
@@ -1571,51 +1663,70 @@ export default class GuidNodeGrdmapps extends Controller {
         let guestUserInfo = '';
 
         for (let i = 0; i < institutionUsers.length; i++) {
-            unregisteredUserName = institutionUsers[i].fullname;
+            userName = institutionUsers[i].fullname;
+            userInfo = `@${institutionUsers[i].guid}`;
             unregisteredUserInfo = `@${institutionUsers[i].guid}${unregisteredLabel}`;
-            unregisteredIstitutionUsers.push(
-                {
-                    name: unregisteredUserName + unregisteredUserInfo,
-                    email: '',
-                    nameForApp: '',
-                    profile: profileUrlBase + institutionUsers[i].guid,
-                    _id: '',
-                    is_guest: false,
-                    disabled: suggestionDisabled,
-                },
-            );
-
+            if (appName === appsConfig.appNameZoomMeetings) {
+                if (suggestionDisabled) {
+                    userEmail = institutionUsers[i].username;
+                    registeredInstitutionUsers.push(
+                        {
+                            name: userName + userInfo,
+                            email: userEmail,
+                            nameForApp: '',
+                            profile: profileUrlBase + institutionUsers[i].guid,
+                            _id: '',
+                            is_guest: false,
+                            disabled: false,
+                        },
+                    );
+                }
+            } else {
+                unregisteredInstitutionUsers.push(
+                    {
+                        name: userName + unregisteredUserInfo,
+                        email: '',
+                        nameForApp: '',
+                        profile: profileUrlBase + institutionUsers[i].guid,
+                        _id: '',
+                        is_guest: false,
+                        disabled: suggestionDisabled,
+                    },
+                );
+            }
             for (const nodeAppAttendee of nodeAppAttendees) {
-                if (institutionUsers[i].guid === nodeAppAttendee.fields.user_guid) {
-                    registeredUserName = nodeAppAttendee.fields.fullname;
-                    registeredUserInfo = `@${nodeAppAttendee.fields.user_guid}`;
-                    if (appName === appsConfig.appNameMicrosoftTeams) {
-                        registeredIstitutionUsers.push(
-                            {
-                                name: registeredUserName + registeredUserInfo,
-                                email: nodeAppAttendee.fields.microsoft_teams_mail,
-                                nameForApp: nodeAppAttendee.fields.microsoft_teams_user_name,
-                                profile: profileUrlBase + nodeAppAttendee.fields.user_guid,
-                                _id: nodeAppAttendee.fields._id,
-                                is_guest: false,
-                                disabled: false,
-                            },
-                        );
-                    } else if (appName === appsConfig.appNameWebexMeetings) {
-                        registeredIstitutionUsers.push(
-                            {
-                                name: registeredUserName + registeredUserInfo,
-                                email: nodeAppAttendee.fields.webex_meetings_mail,
-                                nameForApp: nodeAppAttendee.fields.webex_meetings_display_name,
-                                profile: profileUrlBase + nodeAppAttendee.fields.user_guid,
-                                _id: nodeAppAttendee.fields._id,
-                                is_guest: false,
-                                disabled: false,
-                            },
-                        );
-                    }
+                if (appName !== appsConfig.appNameZoomMeetings) {
+                    if (institutionUsers[i].guid === nodeAppAttendee.fields.user_guid) {
+                        registeredUserName = nodeAppAttendee.fields.fullname;
+                        registeredUserInfo = `@${nodeAppAttendee.fields.user_guid}`;
+                        if (appName === appsConfig.appNameMicrosoftTeams) {
+                            registeredInstitutionUsers.push(
+                                {
+                                    name: registeredUserName + registeredUserInfo,
+                                    email: nodeAppAttendee.fields.microsoft_teams_mail,
+                                    nameForApp: nodeAppAttendee.fields.microsoft_teams_user_name,
+                                    profile: profileUrlBase + nodeAppAttendee.fields.user_guid,
+                                    _id: nodeAppAttendee.fields._id,
+                                    is_guest: false,
+                                    disabled: false,
+                                },
+                            );
+                        } else if (appName === appsConfig.appNameWebexMeetings) {
+                            registeredInstitutionUsers.push(
+                                {
+                                    name: registeredUserName + registeredUserInfo,
+                                    email: nodeAppAttendee.fields.webex_meetings_mail,
+                                    nameForApp: nodeAppAttendee.fields.webex_meetings_display_name,
+                                    profile: profileUrlBase + nodeAppAttendee.fields.user_guid,
+                                    _id: nodeAppAttendee.fields._id,
+                                    is_guest: false,
+                                    disabled: false,
+                                },
+                            );
+                        }
 
-                    unregisteredIstitutionUsers.pop();
+                        unregisteredInstitutionUsers.pop();
+                    }
                 }
                 if (i === 0) {
                     if (nodeAppAttendee.fields.is_guest) {
@@ -1646,15 +1757,28 @@ export default class GuidNodeGrdmapps extends Controller {
                                     disabled: false,
                                 },
                             );
+                        } else if (appName === appsConfig.appNameZoomMeetings) {
+                            guestUserInfo = `(${nodeAppAttendee.fields.zoom_meetings_mail})`;
+                            guestUsers.push(
+                                {
+                                    name: guestUserName + guestUserInfo,
+                                    email: nodeAppAttendee.fields.zoom_meetings_mail,
+                                    nameForApp: '',
+                                    profile: '',
+                                    _id: nodeAppAttendee.fields._id,
+                                    is_guest: true,
+                                    disabled: false,
+                                },
+                            );
                         }
                     }
                 }
             }
         }
 
-        institutionUserList = institutionUserList.concat(registeredIstitutionUsers);
+        institutionUserList = institutionUserList.concat(registeredInstitutionUsers);
         institutionUserList = institutionUserList.concat(guestUsers);
-        institutionUserList = institutionUserList.concat(unregisteredIstitutionUsers);
+        institutionUserList = institutionUserList.concat(unregisteredInstitutionUsers);
 
         return institutionUserList;
     }
@@ -1680,7 +1804,7 @@ export default class GuidNodeGrdmapps extends Controller {
     }
 
     @computed('config.nodeMicrosoftTeamsAttendees')
-    get institutionUsersListMicrosoftTeams() {
+    get institutionUsersToUpdateMicrosoftTeams() {
         if (!this.config) {
             return '';
         }
@@ -1720,7 +1844,7 @@ export default class GuidNodeGrdmapps extends Controller {
     }
 
     @computed('config.nodeWebexMeetingsAttendees')
-    get institutionUsersListWebexMeetings() {
+    get institutionUsersToUpdateWebexMeetings() {
         if (!this.config) {
             return '';
         }
@@ -1737,6 +1861,46 @@ export default class GuidNodeGrdmapps extends Controller {
         );
 
         return institutionWebexMeetingsUsers;
+    }
+
+    @computed('config.nodeZoomMeetingsAttendees')
+    get institutionUsersZoomMeetings() {
+        if (!this.config) {
+            return '';
+        }
+        const appsConfig = this.config.content as GrdmappsConfigModel;
+        const nodeZoomMeetingsAttendees = JSON.parse(appsConfig.nodeZoomMeetingsAttendees);
+        const institutionUsers = JSON.parse(appsConfig.institutionUsers);
+        const appName = appsConfig.appNameZoomMeetings;
+
+        const institutionZoomMeetingsUsers = this.makeInstitutionUserList(
+            nodeZoomMeetingsAttendees,
+            institutionUsers,
+            true,
+            appName,
+        );
+
+        return institutionZoomMeetingsUsers;
+    }
+
+    @computed('config.nodeZoomMeetingsAttendees')
+    get institutionUsersToUpdateZoomMeetings() {
+        if (!this.config) {
+            return '';
+        }
+        const appsConfig = this.config.content as GrdmappsConfigModel;
+        const nodeZoomMeetingsAttendees = JSON.parse(appsConfig.nodeZoomMeetingsAttendees);
+        const institutionUsers = JSON.parse(appsConfig.institutionUsers);
+        const appName = appsConfig.appNameZoomMeetings;
+
+        const institutionZoomMeetingsUsers = this.makeInstitutionUserList(
+            nodeZoomMeetingsAttendees,
+            institutionUsers,
+            false,
+            appName,
+        );
+
+        return institutionZoomMeetingsUsers;
     }
 
     @computed('config.workflows')
@@ -1784,6 +1948,17 @@ export default class GuidNodeGrdmapps extends Controller {
         const appNameWebexMeetings = appsConfig.appNameWebexMeetings as string;
 
         return appNameWebexMeetings;
+    }
+
+    @computed('config.appNameZoomMeetings')
+    get appNameZoomMeetings() {
+        if (!this.config) {
+            return '';
+        }
+        const appsConfig = this.config.content as GrdmappsConfigModel;
+        const appNameZoomMeetings = appsConfig.appNameZoomMeetings as string;
+
+        return appNameZoomMeetings;
     }
 
     @computed('node')

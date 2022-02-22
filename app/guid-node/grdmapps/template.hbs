@@ -477,6 +477,105 @@
                     }}
                 </div>
             {{/if}}
+
+            {{#if showCreateZoomMeetingsDialog}}
+                <div local-class='Integromat__input_items'>
+                    <label>{{t 'integromat.subject'}}</label>
+                    {{input
+                        name='webMeetingSubject'
+                        placeholder=(t 'integromat.placeholders.subject')
+                        class='form-control'
+                        type='text'
+                        value=this.webMeetingSubject
+                    }}
+                </div>
+                <div style='padding-left: 5px;' class='text-danger'>{{this.msgInvalidSubject}}</div>
+                <div local-class='Integromat__input_items'>
+                    <label>{{t 'integromat.attendees'}}</label>
+                    <div>
+                        <div style='display: table-cell; width: 100%'>
+                            <PowerSelectMultiple
+                                @searchField='name'
+                                @selected={{this.selectedZoomMeetingsAttendees}}
+                                @options={{this.institutionUsersZoomMeetings}}
+                                @renderInPlace={{true}}
+                                @onchange={{fn (mut this.selectedZoomMeetingsAttendees)}}
+                                @onInput={{this.checkLength}} as |name|>
+                                {{name.name}}
+                            </PowerSelectMultiple>
+                        </div>
+                        <div style='display: table-cell; vertical-align: top;'>
+                            <button onClick={{action makeRegisterWebMeetingAppsEmailDialog}} style='font-size: x-small; white-space: nowrap;'>{{t 'integromat.meetingDialog.registerGuestBtn'}}</button>
+                        </div>
+                    </div>
+                </div>
+                <div style='padding-left: 5px;' class='text-danger'>{{this.msgInvalidAttendees}}</div>
+                <div local-class='Integromat__input_items'>
+                    <table>
+                        <tr>
+                            <td><label>{{t 'integromat.start_datetime'}}</label></td><td></td><td></td>
+                            <td><label>{{t 'integromat.end_datetime'}}</label></td><td></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                {{bootstrap-datepicker
+                                    name='teams_start_date'
+                                    placeholder=(t 'integromat.placeholders.date_form')
+                                    class='form-control'
+                                    type='text'
+                                    value=this.webMeetingStartDate
+                                    format='yyyy/mm/dd'
+                                    todayHighlight=true
+                                }}
+                            </td>
+                            <td>
+                                <select id='create_teams_start_time' class='form-control'>
+                                    {{#each this.times as |times|}}
+                                        {{#if (eq times this.defaultStartTime)}}
+                                            <option value={{times}} selected>{{times}}</option>
+                                        {{else}}
+                                            <option value={{times}}>{{times}}</option>
+                                        {{/if}}
+                                    {{/each}}
+                                </select>
+                            </td>
+                            <td><label local-class='Integromat__input_items'>{{t 'integromat.from_tilde'}}</label></td>
+                            <td>
+                                {{bootstrap-datepicker
+                                    name='teams_end_date'
+                                    placeholder=(t 'integromat.placeholders.date_form')
+                                    class='form-control'
+                                    type='text'
+                                    value=this.webMeetingEndDate
+                                    format='yyyy/mm/dd'
+                                    todayHighlight=true
+                                }}
+                            </td>
+                            <td>
+                                <select id='create_teams_end_time' class='form-control'>
+                                    {{#each this.times as |times|}}
+                                        {{#if (eq times this.defaultEndTime)}}
+                                            <option value={{times}} selected>{{times}}</option>
+                                        {{else}}
+                                            <option value={{times}}>{{times}}</option>
+                                        {{/if}}
+                                    {{/each}}
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div style='padding-left: 5px;' class='text-danger'>{{this.msgInvalidDatetime}}</div>
+                <div local-class='Integromat__input_items'>
+                    <label>{{t 'integromat.content'}}</label>
+                    {{textarea
+                        name='webMeetingContent'
+                        class='form-control'
+                        value=this.webMeetingContent
+                        placeholder=(t 'integromat.placeholders.content')
+                    }}
+                </div>
+            {{/if}}
         </div>
     </modal.body>
     <modal.footer>
@@ -485,7 +584,7 @@
             >
                 {{t 'integromat.meetingDialog.cancelBtn'}}
             </BsButton>
-            {{#if (or showCreateMicrosoftTeamsMeetingDialog showCreateWebexMeetingDialog)}}
+            {{#if (or showCreateMicrosoftTeamsMeetingDialog showCreateWebexMeetingDialog showCreateZoomMeetingsDialog)}}
                 <OsfButton
                         @type='success'
                         @onClick={{action modal.submit}}>
@@ -715,6 +814,104 @@
                     }}
                 </div>
             {{/if}}
+
+            {{#if showUpdateZoomMeetingsDialog}}
+                <div local-class='Integromat__input_items'>
+                    <label>{{t 'integromat.subject'}}</label>
+                    {{input
+                        name='webMeetingSubject'
+                        placeholder=(t 'integromat.placeholders.subject')
+                        class='form-control'
+                        type='text'
+                        value=this.webMeetingSubject
+                    }}
+                </div>
+                <div style='padding-left: 5px;' class='text-danger'>{{this.msgInvalidSubject}}</div>
+                <div local-class='Integromat__input_items'>
+                    <label>{{t 'integromat.attendees'}}</label>
+                    <div>
+                        <div style='display: table-cell; width: 100%'>
+                            <PowerSelectMultiple
+                                @searchField='name'
+                                @selected={{this.selectedAttendees}}
+                                @options={{this.institutionUsersZoomMeetings}}
+                                @renderInPlace={{true}}
+                                @onchange={{fn (mut this.selectedAttendees)}}
+                                @onInput={{this.checkLength}} as |name|>
+                                {{name.name}}
+                            </PowerSelectMultiple>
+                        </div>
+                        <div style='display: table-cell; vertical-align: top;'>
+                            <button onClick={{action makeRegisterWebMeetingAppsEmailDialog}} style='font-size: x-small; white-space: nowrap;'>{{t 'integromat.meetingDialog.registerGuestBtn'}}</button>
+                        </div>
+                    </div>
+                </div>
+                <div style='padding-left: 5px;' class='text-danger'>{{this.msgInvalidAttendees}}</div>
+                <div local-class='Integromat__input_items'>
+                    <table>
+                        <tr>
+                            <td><label>{{t 'integromat.start_datetime'}}</label></td><td></td><td></td>
+                            <td><label>{{t 'integromat.end_datetime'}}</label></td><td></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                {{bootstrap-datepicker
+                                    id='update_start_date'
+                                    class='form-control'
+                                    type='text'
+                                    value=this.webMeetingStartDate
+                                    format='yyyy/mm/dd'
+                                    todayHighlight=true
+                                }}
+                            </td>
+                            <td>
+                                <select id='update_start_time' class='form-control'>
+                                    {{#each this.times as |times|}}
+                                        {{#if (eq times this.webMeetingStartTime)}}
+                                            <option value={{times}} selected>{{times}}</option>
+                                        {{else}}
+                                            <option value={{times}}>{{times}}</option>
+                                        {{/if}}
+                                    {{/each}}
+                                </select>
+                            </td>
+                            <td><label local-class='Integromat__input_items'>{{t 'integromat.from_tilde'}}</label></td>
+                            <td>
+                                {{bootstrap-datepicker
+                                id='update_end_date'
+                                class='form-control'
+                                type='text'
+                                value=this.webMeetingEndDate
+                                format='yyyy/mm/dd'
+                                todayHighlight=true
+                                }}
+                            </td>
+                            <td>
+                                <select id='update_end_time' class='form-control'>
+                                    {{#each this.times as |times|}}
+                                        {{#if (eq times this.webMeetingEndTime)}}
+                                            <option value={{times}} selected>{{times}}</option>
+                                        {{else}}
+                                            <option value={{times}}>{{times}}</option>
+                                        {{/if}}
+                                    {{/each}}
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div style='padding-left: 5px;' class='text-danger'>{{this.msgInvalidDatetime}}</div>
+                <div local-class='Integromat__input_items'>
+                    <label>{{t 'integromat.content'}}</label>
+                    {{textarea
+                        name='webMeetingContent'
+                        class='form-control'
+                        value=this.webMeetingContent
+                        placeholder=(t 'integromat.placeholders.content')
+                    }}
+                </div>
+            {{/if}}
+
         </div>
     </modal.body>
     <modal.footer>
@@ -923,13 +1120,17 @@
         <div class='form-group'>
                 <div local-class='Integromat__input_items'>
                     <input type='radio' name='userType' id='radio_grdmUserOrRegisteredGuest' checked='checked' onClick={{action this.setUserType value='target.id'}}>
-                    <label for='radio_grdmUserOrRegisteredGuest'>{{t 'integromat.grdmUserOrGuest'}}</label>
+                    {{#if (eq this.webMeetingAppName this.appNameZoomMeetings)}}
+                        <label for='radio_grdmUserOrRegisteredGuest'>{{t 'integromat.registeredGuest'}}</label>
+                    {{else}}
+                        <label for='radio_grdmUserOrRegisteredGuest'>{{t 'integromat.grdmUserOrGuest'}}</label>
+                    {{/if}}
                     <div style='margin-left: 10px;'>
                     {{#if (eq this.webMeetingAppName this.appNameMicrosoftTeams)}}
                         <PowerSelect
                             @searchField='name'
                             @selected={{this.selectedUser}}
-                            @options={{this.institutionUsersListMicrosoftTeams}}
+                            @options={{this.institutionUsersToUpdateMicrosoftTeams}}
                             @renderInPlace={{true}}
                             @onchange={{fn (mut this.selectedUser)}}
                             @onInput={{this.checkLength}} as |name|>
@@ -940,7 +1141,18 @@
                         <PowerSelect
                             @searchField='name'
                             @selected={{this.selectedUser}}
-                            @options={{this.institutionUsersListWebexMeetings}}
+                            @options={{this.institutionUsersToUpdateWebexMeetings}}
+                            @renderInPlace={{true}}
+                            @onchange={{fn (mut this.selectedUser)}}
+                            @onInput={{this.checkLength}} as |name|>
+                            {{name.name}}
+                        </PowerSelect>
+                    {{/if}}
+                    {{#if (eq this.webMeetingAppName this.appNameZoomMeetings)}}
+                        <PowerSelect
+                            @searchField='name'
+                            @selected={{this.selectedUser}}
+                            @options={{this.institutionUsersToUpdateZoomMeetings}}
                             @renderInPlace={{true}}
                             @onchange={{fn (mut this.selectedUser)}}
                             @onInput={{this.checkLength}} as |name|>
@@ -965,28 +1177,42 @@
                     <div style='padding-left: 5px;' class='text-danger'>{{this.msgErrorEmailVal}}</div>
                 </div>
                 <br>
-                <div local-class='Integromat__input_items'>
-                <label>{{this.webMeetingAppNameDisp}}</label>
+                {{#if (eq this.webMeetingAppName this.appNameZoomMeetings)}}
                     <div style='margin-left: 10px;'>
-                    <label>{{t 'integromat.signInAdress'}}</label>
+                    <label>{{t 'integromat.email'}}</label>
                         {{input
-                            name='signInAddressOfApp'
-                            placeholder=(t 'integromat.placeholders.signInAdress')
+                            name='attendeeEmail'
+                            placeholder=(t 'integromat.placeholders.email')
                             class='form-control'
                             type='text'
                             value=this.signInAddressOfApp
                         }}
                         <div style='padding-left: 5px;' class='text-danger'>{{this.msgInvalidEmail}}</div>
-                        <label>{{t 'integromat.username'}}</label>
-                        {{input
-                            name='usernameOfApp'
-                            placeholder=(t 'integromat.placeholders.username')
-                            class='form-control'
-                            type='text'
-                            value=this.usernameOfApp
-                        }}
                     </div>
-                </div>
+                {{else}}
+                    <div local-class='Integromat__input_items'>
+                    <label>{{this.webMeetingAppNameDisp}}</label>
+                        <div style='margin-left: 10px;'>
+                        <label>{{t 'integromat.signInAdress'}}</label>
+                            {{input
+                                name='signInAddressOfApp'
+                                placeholder=(t 'integromat.placeholders.signInAdress')
+                                class='form-control'
+                                type='text'
+                                value=this.signInAddressOfApp
+                            }}
+                            <div style='padding-left: 5px;' class='text-danger'>{{this.msgInvalidEmail}}</div>
+                            <label>{{t 'integromat.username'}}</label>
+                            {{input
+                                name='usernameOfApp'
+                                placeholder=(t 'integromat.placeholders.username')
+                                class='form-control'
+                                type='text'
+                                value=this.usernameOfApp
+                            }}
+                        </div>
+                    </div>
+                {{/if}}
         </div>
     </modal.body>
     <modal.footer>

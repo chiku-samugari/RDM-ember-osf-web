@@ -1814,3 +1814,8 @@ binderhub:
         reconnect_jupyterhub: 'Authorize'
         modify_files_error: 'Failed to update the files. Please check your network connection.'
         load_files_error: 'Failed to load the files. Please check your network connection.'
+metadata:
+    file-metadata-input:
+        no_metadata: 'No files'
+    draft-registration-card:
+        export: 'Export'

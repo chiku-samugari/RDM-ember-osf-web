@@ -26,7 +26,7 @@ export default class ERadAwardNumberInput extends Component {
     anotherOption?: string;
 
     didReceiveAttrs() {
-        this.candidates = this.metadataNodeErad.records.map(rc => rc.KADAI_ID);
+        this.candidates = this.metadataNodeErad.records.map(rc => rc.kadai_id);
         const current = this.changeset.get(this.valuePath);
         if (!this.candidates.includes(current)) {
             this.anotherOption = current;
@@ -44,11 +44,11 @@ export default class ERadAwardNumberInput extends Component {
 
     @action
     onChange(option: string) {
-        const eradRecord = this.metadataNodeErad.records.find(rc => rc.KADAI_ID === option);
+        const eradRecord = this.metadataNodeErad.records.find(rc => rc.kadai_id === option);
         if (eradRecord) {
-            const funder = eradRecord.HAIBUNKIKAN_CD;
-            const ja = eradRecord.KADAI_MEI;
-            const en = eradRecord.KADAI_MEI;
+            const funder = eradRecord.haibunkikan_cd;
+            const ja = eradRecord.kadai_mei;
+            const en = eradRecord.kadai_mei;
             this.changeset.set('__responseKey_e-rad-award-funder', funder);
             this.changeset.set('__responseKey_e-rad-award-title-ja', ja);
             this.changeset.set('__responseKey_e-rad-award-title-en', en);

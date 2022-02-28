@@ -1814,3 +1814,8 @@ binderhub:
         reconnect_jupyterhub: '再認証'
         modify_files_error: 'ファイルの更新に失敗しました。ネットワーク接続を確認してください。'
         load_files_error: 'ファイルの読み込みに失敗しました。ネットワーク接続を確認してください。'
+metadata:
+    file-metadata-input:
+        no_metadata: 'ファイルはありません'
+    draft-registration-card:
+        export: 'エクスポート'

@@ -41,6 +41,11 @@ export default class SchemaBlockGroupRenderer extends Component {
 
     @computed('schemaBlockGroup.blocks')
     get nonOptionBlocks(): SchemaBlock[] | undefined {
+        if (this.schemaBlockGroup.registrationResponseKey
+            && this.schemaBlockGroup.registrationResponseKey
+                .match(/^__responseKey_grdm-file:.+$/)) {
+            return [];
+        }
         return !this.schemaBlockGroup.blocks
             ? undefined
             : this.schemaBlockGroup.blocks.filter(

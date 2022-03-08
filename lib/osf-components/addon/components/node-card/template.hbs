@@ -120,6 +120,17 @@
                     />
                 </div>
             {{/if}}
+            {{#if (and this.showExportCsvLink this.exportCsvUrl)}}
+                <div local-class='NodeCard__exportCsvLink'>
+                    <OsfLink
+                        data-analytics-name='Export'
+                        class='btn btn-success'
+                        @href={{this.exportCsvUrl}}
+                    >
+                        {{t 'metadata.registration-card.export'}}
+                    </OsfLink>
+                </div>
+            {{/if}}
         {{else}}
             <ContentPlaceholders as |placeholder|>
                 <placeholder.text @lines={{2}} />

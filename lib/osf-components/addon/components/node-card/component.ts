@@ -27,9 +27,20 @@ export default class NodeCard extends Component {
     delete?: (node: Node) => void;
     showTags: boolean = defaultTo(this.showTags, false);
     readOnly: boolean = defaultTo(this.readOnly, false);
+    showExportCsvLink: boolean = defaultTo(this.showExportCsvLink, false);
 
     // Private properties
     searchUrl = pathJoin(baseURL, 'search');
+
+    @computed('node')
+    get exportCsvUrl() {
+        const node = this.get('node');
+        return node ? pathJoin(
+            baseURL,
+            node.get('id'),
+            `metadata/registrations/${node.get('id')}/csv`,
+        ) : null;
+    }
 
     @computed('node', 'node.{isRegistration,registrationSchema,registeredMeta.@each}')
     get registrationTitle(): string | undefined {

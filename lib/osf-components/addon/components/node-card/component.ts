@@ -28,6 +28,7 @@ export default class NodeCard extends Component {
     showTags: boolean = defaultTo(this.showTags, false);
     readOnly: boolean = defaultTo(this.readOnly, false);
     showExportCsvLink: boolean = defaultTo(this.showExportCsvLink, false);
+    showStatus: boolean = defaultTo(this.showStatus, true);
 
     // Private properties
     searchUrl = pathJoin(baseURL, 'search');

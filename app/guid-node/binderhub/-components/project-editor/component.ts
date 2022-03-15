@@ -26,6 +26,7 @@ enum DockerfileProperty {
     RCran,
     RGitHub,
     PostInstall,
+    NoChanges,
 }
 
 function getAptPackageId(pkg: string[]) {
@@ -156,6 +157,7 @@ export default class ProjectEditor extends Component {
             try {
                 await this.loadCurrentConfig();
                 await this.performRefreshPostInstall();
+                await this.mergeConfigurations();
             } catch (exception) {
                 this.onError(exception, this.intl.t('binderhub.error.load_files_error'));
             }
@@ -418,12 +420,7 @@ export default class ProjectEditor extends Component {
             // Skip updating
             return;
         }
-        const props: { [key: string]: string; } = {};
-        props.dockerfile = this.getUpdatedDockerfile(key, value);
-        props.environment = this.getUpdatedEnvironment(key, value);
-        props.requirements = this.getUpdatedRequirements(key, value);
-        props.apt = this.getUpdatedApt(key, value);
-        props.installR = this.getUpdatedInstallR(key, value);
+        const props = this.getUpdatedProperties(key, value);
 
         later(async () => {
             try {
@@ -1096,6 +1093,32 @@ export default class ProjectEditor extends Component {
         });
         this.set(configFile.modelProperty, null);
         this.set(configFile.property, '');
+    }
+
+    async mergeConfigurations() {
+        if (!this.selectedImageUrl) {
+            return;
+        }
+        if (this.manuallyChanged) {
+            return;
+        }
+        const props = this.getUpdatedProperties(DockerfileProperty.NoChanges, '');
+        const changed = this.configurationFiles
+            .some(configFile => this.get(configFile.property) !== props[configFile.property]);
+        if (!changed) {
+            return;
+        }
+        await this.saveCurrentConfig(props);
+    }
+
+    getUpdatedProperties(key: DockerfileProperty, value: string) {
+        const props: { [key: string]: string; } = {};
+        props.dockerfile = this.getUpdatedDockerfile(key, value);
+        props.environment = this.getUpdatedEnvironment(key, value);
+        props.requirements = this.getUpdatedRequirements(key, value);
+        props.apt = this.getUpdatedApt(key, value);
+        props.installR = this.getUpdatedInstallR(key, value);
+        return props;
     }
 
     @action

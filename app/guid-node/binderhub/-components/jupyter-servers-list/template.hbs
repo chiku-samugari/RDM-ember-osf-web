@@ -1,7 +1,48 @@
 <div local-class='jupyter_servers'>
+    <BsAlert
+        @type='danger'
+        @dismissible={{false}}
+        @visible={{this.notAuthorized}}
+        local-class='BinderHub__connection_alert'
+    >
+        {{t 'binderhub.error.jupyterhub_auth_error'}}
+        <button
+            data-test-authorize-jupyterhub
+            type='button'
+            class='btn btn-danger'
+            {{action this.authorize}}
+        >
+            {{t 'binderhub.error.reconnect_jupyterhub'}}
+        </button>
+    </BsAlert>
     {{#if this.loading}}
         {{t 'binderhub.loading'}}
     {{else}}
+        <div local-class='jupyterhub-server-menu'>
+            {{#if this.defaultJupyterhubUser}}
+                <div local-class='jupyterhub-user'>
+                    {{t 'binderhub.servers.username'}}
+                    <span data-test-jupyterhub-user>
+                        {{this.defaultJupyterhubUser}}
+                    </span>
+                </div>
+            {{/if}}
+            <div local-class='jupyterhub-selector'>
+                <select
+                    data-test-jupyterhub-selection
+                    onchange={{action this.binderhubChanged value='target.value'}}
+                >
+                    {{#each this.selectableBinderhubs as |item|}}
+                        <option
+                            data-test-jupyterhub-selection-option
+                            selected={{if (eq this.defaultBinderhubUrl item.binderhub_url) 'selected'}}
+                            value='{{item.binderhub_url}}'>
+                            {{item.name}}
+                        </option>
+                    {{/each}}
+                </select>
+            </div>
+        </div>
         <div local-class='toolbar-button'>
             <button
                 data-test-server-refresh-button

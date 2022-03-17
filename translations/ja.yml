@@ -1755,6 +1755,7 @@ binderhub:
         tab_externalrepo: '外部リポジトリから作成'
     loading: 'BinderHub設定を読み込んでいます...'
     servers:
+        username: 'ログイン中: '
         name: '解析環境名'
         url: 'URL'
         last_activity: '最終更新'
@@ -1791,9 +1792,10 @@ binderhub:
         launch: '起動'
         status: 'ビルド状況'
     error:
-        binderhub_build_error: 'BinderHubとの接続時にエラーが発生しました。再認証してください。'
+        binderhub_auth_error: 'BinderHubと接続する必要があります。再認証してください。'
+        binderhub_build_error: 'BinderHubとの接続時にエラーが発生しました。'
         reconnect_binderhub: '再認証'
-        jupyterhub_auth_error: 'JupyterHubとの接続時にエラーが発生しました。再認証してください。'
+        jupyterhub_auth_error: 'JupyterHubと接続する必要があります。再認証してください。'
         jupyterhub_api_error: 'JupyterHubとの接続時にエラーが発生しました。ページを再読み込みしてください。'
         reconnect_jupyterhub: '再認証'
         modify_files_error: 'ファイルの更新に失敗しました。ネットワーク接続を確認してください。'

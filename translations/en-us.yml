@@ -1755,6 +1755,7 @@ binderhub:
         tab_externalrepo: 'From External Repository'
     loading: 'Loading BinderHub config...'
     servers:
+        username: 'Logged in as: '
         name: 'Server name'
         url: 'URL'
         last_activity: 'Last activity'
@@ -1791,9 +1792,10 @@ binderhub:
         launch: 'Launch'
         status: 'Build status'
     error:
-        binderhub_build_error: 'An error occurred while connecting to the BinderHub. Please reauthenticate.'
+        binderhub_auth_error: 'You need to connect it to the BinderHub. Please reauthenticate.'
+        binderhub_build_error: 'An error occurred while connecting to the BinderHub.'
         reconnect_binderhub: 'Authorize'
-        jupyterhub_auth_error: 'An error occurred while connecting to the JupyterHub. Please reauthenticate.'
+        jupyterhub_auth_error: 'You need to connect it to the JupyterHub. Please reauthenticate.'
         jupyterhub_api_error: 'An error occurred while connecting to the JupyterHub. Please reload this page.'
         reconnect_jupyterhub: 'Authorize'
         modify_files_error: 'Failed to update the files. Please check your network connection.'

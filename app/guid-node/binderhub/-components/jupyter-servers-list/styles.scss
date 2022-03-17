@@ -2,6 +2,14 @@
     padding: 0;
 }
 
+.jupyterhub-server-menu {
+    display: flex;
+}
+
+.jupyterhub-selector {
+    margin-left: auto;
+}
+
 .toolbar-button {
     display: flex;
     margin-bottom: -2.5em;

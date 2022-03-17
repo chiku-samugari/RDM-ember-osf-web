@@ -20,7 +20,8 @@ module('Acceptance | guid-node/binderhub', hooks => {
         });
         server.create('binderhub-config', {
             id: node.id,
-            binderhub: {
+            binderhubs: [{
+                default: true,
                 url: 'http://localhost:8585/',
                 authorize_url: 'http://localhost/authorize',
                 token: {
@@ -28,8 +29,9 @@ module('Acceptance | guid-node/binderhub', hooks => {
                     token_type: 'Bearer',
                     expires_at: null,
                 },
-            },
-            jupyterhub: {
+                jupyterhub_url: 'http://localhost:30123/',
+            }],
+            jupyterhubs: [{
                 url: 'http://localhost:30123/',
                 api_url: 'http://localhost:30123/hub/api/',
                 authorize_url: 'http://localhost/authorize',
@@ -39,7 +41,14 @@ module('Acceptance | guid-node/binderhub', hooks => {
                     token_type: 'Bearer',
                     expires_at: null,
                 },
-            },
+            }],
+            node_binderhubs: [
+                {
+                    binderhub_url: 'http://localhost:8585/',
+                    jupyterhub_url: 'http://localhost:30123/',
+                },
+            ],
+            user_binderhubs: [],
             deployment: {
                 images: [
                     {
@@ -84,6 +93,9 @@ module('Acceptance | guid-node/binderhub', hooks => {
         await percySnapshot(assert);
         assert.dom('[data-test-servers-header]').exists();
         assert.dom('[data-test-binderhub-header]').exists();
+        assert.dom('[data-test-binderhub-selection-option]').exists({ count: 1 });
+        assert.dom('[data-test-jupyterhub-selection-option]').exists({ count: 1 });
+        assert.dom('[data-test-jupyterhub-user]').hasText('testuser');
         assert.dom('[data-test-launch]').exists();
         assert.dom('[data-test-image-selection="jupyter/test-image"]').exists();
         assert.dom('[data-test-image-selected]').doesNotExist();
@@ -92,7 +104,7 @@ module('Acceptance | guid-node/binderhub', hooks => {
         assert.dom('[data-test-package-editor="pip"]').doesNotExist();
 
         assert.ok(
-            ajaxStub.calledOnceWithExactly('users/testuser', null),
+            ajaxStub.calledOnceWithExactly('http://localhost:30123/', 'users/testuser', null),
             'BinderHub calls JupyterHub REST API',
         );
 
@@ -106,7 +118,8 @@ module('Acceptance | guid-node/binderhub', hooks => {
         });
         server.create('binderhub-config', {
             id: node.id,
-            binderhub: {
+            binderhubs: [{
+                default: true,
                 url: 'http://localhost:8585/',
                 authorize_url: 'http://localhost/authorize',
                 token: {
@@ -114,8 +127,9 @@ module('Acceptance | guid-node/binderhub', hooks => {
                     token_type: 'Bearer',
                     expires_at: null,
                 },
-            },
-            jupyterhub: {
+                jupyterhub_url: 'http://localhost:30123/',
+            }],
+            jupyterhubs: [{
                 url: 'http://localhost:30123/',
                 api_url: 'http://localhost:30123/hub/api/',
                 authorize_url: 'http://localhost/authorize',
@@ -125,7 +139,18 @@ module('Acceptance | guid-node/binderhub', hooks => {
                     token_type: 'Bearer',
                     expires_at: null,
                 },
-            },
+            }],
+            node_binderhubs: [
+                {
+                    binderhub_url: 'http://localhost:8585/',
+                    jupyterhub_url: 'http://localhost:30123/',
+                },
+                {
+                    binderhub_url: 'http://192.168.168.167:8585/',
+                    jupyterhub_url: 'http://192.168.168.167:30123/',
+                },
+            ],
+            user_binderhubs: [],
             deployment: {
                 images: [
                     {
@@ -174,6 +199,8 @@ module('Acceptance | guid-node/binderhub', hooks => {
         await percySnapshot(assert);
         assert.dom('[data-test-servers-header]').exists();
         assert.dom('[data-test-binderhub-header]').exists();
+        assert.dom('[data-test-binderhub-selection-option]').exists({ count: 2 });
+        assert.dom('[data-test-jupyterhub-selection-option]').exists({ count: 2 });
         assert.dom('[data-test-launch]').exists();
         assert.dom('[data-test-image-change="jupyter/scipy-notebook"]').exists();
         assert.dom('[data-test-image-selected="jupyter/scipy-notebook"]').exists();
@@ -188,7 +215,7 @@ module('Acceptance | guid-node/binderhub', hooks => {
             'BinderHub retrieves Dockerfile data',
         );
         assert.ok(
-            ajaxStub.calledOnceWithExactly('users/testuser', null),
+            ajaxStub.calledOnceWithExactly('http://localhost:30123/', 'users/testuser', null),
             'BinderHub calls JupyterHub REST API',
         );
 
@@ -202,7 +229,8 @@ module('Acceptance | guid-node/binderhub', hooks => {
         });
         server.create('binderhub-config', {
             id: node.id,
-            binderhub: {
+            binderhubs: [{
+                default: true,
                 url: 'http://localhost:8585/',
                 authorize_url: 'http://localhost/authorize',
                 token: {
@@ -210,8 +238,9 @@ module('Acceptance | guid-node/binderhub', hooks => {
                     token_type: 'Bearer',
                     expires_at: null,
                 },
-            },
-            jupyterhub: {
+                jupyterhub_url: 'http://localhost:30123/',
+            }],
+            jupyterhubs: [{
                 url: 'http://localhost:30123/',
                 api_url: 'http://localhost:30123/hub/api/',
                 authorize_url: 'http://localhost/authorize',
@@ -221,7 +250,14 @@ module('Acceptance | guid-node/binderhub', hooks => {
                     token_type: 'Bearer',
                     expires_at: null,
                 },
-            },
+            }],
+            node_binderhubs: [
+                {
+                    binderhub_url: 'http://localhost:8585/',
+                    jupyterhub_url: 'http://localhost:30123/',
+                },
+            ],
+            user_binderhubs: [],
             deployment: {
                 images: [
                     {
@@ -271,6 +307,8 @@ module('Acceptance | guid-node/binderhub', hooks => {
         await percySnapshot(assert);
         assert.dom('[data-test-servers-header]').exists();
         assert.dom('[data-test-binderhub-header]').exists();
+        assert.dom('[data-test-binderhub-selection-option]').exists({ count: 1 });
+        assert.dom('[data-test-jupyterhub-selection-option]').exists({ count: 1 });
         assert.dom('[data-test-launch]').exists();
         assert.dom('[data-test-image-change="#repo2docker#r-base"]').exists();
         assert.dom('[data-test-image-selected="#repo2docker#r-base"]').exists();
@@ -285,7 +323,7 @@ module('Acceptance | guid-node/binderhub', hooks => {
             'BinderHub retrieves Dockerfile data',
         );
         assert.ok(
-            ajaxStub.calledOnceWithExactly('users/testuser', null),
+            ajaxStub.calledOnceWithExactly('http://localhost:30123/', 'users/testuser', null),
             'BinderHub calls JupyterHub REST API',
         );
 

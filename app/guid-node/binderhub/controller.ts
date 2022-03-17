@@ -9,6 +9,7 @@ import DS from 'ember-data';
 
 import Intl from 'ember-intl/services/intl';
 import { BuildFormValues } from 'ember-osf-web/guid-node/binderhub/-components/external-repository/component';
+import { getContext } from 'ember-osf-web/guid-node/binderhub/-components/jupyter-servers-list/component';
 import BinderHubConfigModel from 'ember-osf-web/models/binderhub-config';
 import FileModel from 'ember-osf-web/models/file';
 import FileProviderModel from 'ember-osf-web/models/file-provider';
@@ -34,6 +35,8 @@ export interface BootstrapPath {
 }
 
 export default class GuidNodeBinderHub extends Controller {
+    queryParams = ['bh', 'jh'];
+
     @service toast!: Toast;
     @service intl!: Intl;
     @service statusMessages!: StatusMessages;
@@ -54,11 +57,13 @@ export default class GuidNodeBinderHub extends Controller {
 
     jupyterHubAPIError = false;
 
-    jupyterHubAuthError = false;
-
     binderHubBuildError = false;
 
     buildPhase: string | null = null;
+
+    bh: string | null = null;
+
+    jh: string | null = null;
 
     @computed('config.isFulfilled')
     get loading(): boolean {
@@ -77,24 +82,35 @@ export default class GuidNodeBinderHub extends Controller {
     }
 
     @action
-    renewBinderHubToken(this: GuidNodeBinderHub) {
+    renewBinderHubToken(this: GuidNodeBinderHub, binderhubUrl: string) {
         if (!this.config) {
             throw new EmberError('Illegal config');
         }
         const config = this.config.content as BinderHubConfigModel;
-        window.location.href = config.binderhub.authorize_url;
+        const binderhub = config.findBinderHubByURL(binderhubUrl);
+        if (!binderhub) {
+            throw new EmberError('Illegal config');
+        }
+        window.location.href = this.getURLWithContext(binderhub.authorize_url);
     }
 
     @action
-    renewJupyterHubToken(this: GuidNodeBinderHub) {
+    renewJupyterHubToken(this: GuidNodeBinderHub, jupyterhubUrl: string) {
         if (!this.config) {
             throw new EmberError('Illegal config');
         }
         const config = this.config.content as BinderHubConfigModel;
-        if (!config.jupyterhub) {
+        const jupyterhub = config.findJupyterHubByURL(jupyterhubUrl);
+        if (jupyterhub) {
+            window.location.href = this.getURLWithContext(jupyterhub.authorize_url);
+            return;
+        }
+        // Maybe BinderHub not authorized
+        const binderhubCand = config.findBinderHubCandidateByJupyterHubURL(jupyterhubUrl);
+        if (!binderhubCand) {
             throw new EmberError('Illegal config');
         }
-        window.location.href = config.jupyterhub.authorize_url;
+        this.renewBinderHubToken(binderhubCand.binderhub_url);
     }
 
     @computed('node.files.[]')
@@ -119,6 +135,7 @@ export default class GuidNodeBinderHub extends Controller {
     }
 
     async performBuild(
+        binderhubUrl: string,
         needsPersonalToken: boolean,
         path: BootstrapPath | null,
         callback: (result: BuildMessage) => void,
@@ -135,7 +152,7 @@ export default class GuidNodeBinderHub extends Controller {
             throw new EmberError('Illegal state');
         }
         const config = this.config.content as BinderHubConfigModel;
-        const { binderhub } = config;
+        const binderhub = config.findBinderHubByURL(binderhubUrl);
         if (!binderhub || !binderhub.token) {
             throw new EmberError('Illegal config');
         }
@@ -159,7 +176,7 @@ export default class GuidNodeBinderHub extends Controller {
             if (data.phase === 'auth' && data.authorization_url && !needsPersonalToken) {
                 source.close();
                 later(async () => {
-                    await this.performBuild(true, path, callback);
+                    await this.performBuild(binderhubUrl, true, path, callback);
                 }, 0);
                 return;
             }
@@ -253,9 +270,8 @@ export default class GuidNodeBinderHub extends Controller {
     }
 
     @action
-    requestError(this: GuidNodeBinderHub, exception: any) {
+    requestError(this: GuidNodeBinderHub, _: any) {
         this.set('jupyterHubAPIError', true);
-        this.set('jupyterHubAuthError', exception.status === 403);
     }
 
     @action
@@ -268,11 +284,29 @@ export default class GuidNodeBinderHub extends Controller {
     }
 
     @action
-    build(this: GuidNodeBinderHub, path: BootstrapPath | null, callback: (result: BuildMessage) => void) {
+    build(
+        this: GuidNodeBinderHub, binderhubUrl: string,
+        path: BootstrapPath | null, callback: (result: BuildMessage) => void,
+    ) {
         this.set('buildLog', []);
         later(async () => {
-            await this.performBuild(false, path, callback);
+            await this.performBuild(binderhubUrl, false, path, callback);
         }, 0);
+    }
+
+    getURLWithContext(url: string) {
+        const bh = getContext('bh');
+        const jh = getContext('jh');
+        const ourl = new URL(url);
+        const osearch = new URLSearchParams(ourl.search);
+        if (bh) {
+            osearch.set('bh', bh);
+        }
+        if (jh) {
+            osearch.set('jh', jh);
+        }
+        ourl.search = `?${osearch.toString()}`;
+        return ourl.href;
     }
 }
 

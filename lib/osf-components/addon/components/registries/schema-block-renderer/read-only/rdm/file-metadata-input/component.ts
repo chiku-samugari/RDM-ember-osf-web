@@ -39,17 +39,17 @@ interface FileEntry {
 @tagName('')
 export default class FileMetadataInput extends Component {
     // Required param
-    changeset!: ChangesetDef;
+    metadataChangeset!: ChangesetDef;
+
     node!: NodeModel;
+
+    changeset?: ChangesetDef;
 
     @alias('schemaBlock.registrationResponseKey')
     valuePath!: string;
+    onInput!: () => void;
 
     didReceiveAttrs() {
-        assert(
-            'Registries::SchemaBlockRenderer::Editable::Rdm::FileMetadataInput requires a changeset to render',
-            Boolean(this.changeset),
-        );
         assert(
             'Registries::SchemaBlockRenderer::Editable::Rdm::FileMetadataInput requires a node to render',
             Boolean(this.node),
@@ -67,6 +67,9 @@ export default class FileMetadataInput extends Component {
 
     @computed('changeset', 'valuePath')
     get fileMetadatas(): FileMetadata[] {
+        if (!this.changeset) {
+            return [];
+        }
         const value = this.changeset.get(this.valuePath);
         if (!value) {
             return [];

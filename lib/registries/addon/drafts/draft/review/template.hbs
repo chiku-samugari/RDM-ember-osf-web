@@ -24,33 +24,6 @@
                 @draftManager={{draftManager}}
                 @node={{this.node}}
             />
-            <label
-              data-test-metadata-file-list-label
-              local-class='MetadataFileList_Label'
-              ...attributes
-            >
-                <p
-                  ...attributes
-                  local-class='MetadataFileList_Label_DisplayText'>
-                    {{t 'registries.registration_data_list.title'}}
-                </p>
-            </label>
-            <ul
-              data-test-metadata-file-list
-            >
-                {{#each draftManager.metadataNodeProject.files as |file|}}
-                    <li>
-                        <span local-class='MetadataFileList_ItemName'>{{file.path}}</span>
-                        <OsfLink
-                          local-class='MetadataFileList_ItemLink'
-                          data-analytics-name='Registration Data List | Show detail'
-                          target='_blank'
-                          @href='/{{draftManager.node.id}}/files{{file.path}}'>
-                            {{t 'registries.registration_data_list.show_detail'}}
-                        </OsfLink>
-                    </li>
-                {{/each}}
-            </ul>
         </main>
     {{/if}}
 {{/let}}

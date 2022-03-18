@@ -246,4 +246,12 @@ export default class DraftRegistrationManager {
                 });
         }
     }
+
+    getResponseKeyByBlockType(blockType: string) {
+        const block = this.schemaBlocks.find(b => b.blockType === blockType);
+        if (block == null || block.registrationResponseKey == null) {
+            throw new Error(`Not found blockType: ${blockType}`);
+        }
+        return block.registrationResponseKey;
+    }
 }

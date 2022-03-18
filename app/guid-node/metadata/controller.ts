@@ -50,9 +50,20 @@ export default class GuidNodeMetadata extends Controller {
 
     @alias('model.taskInstance.value') node!: Node | null;
 
+    @computed('tab')
+    get activeTab() {
+        return this.tab ? this.tab : 'reports';
+    }
+
     @computed('node.{id,root.id,root.userHasAdminPermission}')
     get isComponentRootAdmin() {
         return this.node && this.node.id !== this.node.root.get('id') && this.node.root.get('userHasAdminPermission');
+    }
+
+    @action
+    changeTab(activeId: string) {
+        this.set('tab', activeId === 'reports' ? undefined : activeId);
+        this.analytics.click('tab', `Reports tab - Change tab to: ${activeId}`);
     }
 
     @action
@@ -68,7 +79,7 @@ export default class GuidNodeMetadata extends Controller {
     }
 
     @action
-    async createReport() {
+    async createDraft() {
         const branchedFrom = this.node!;
         assert('Check that the node exists', Boolean(branchedFrom));
 

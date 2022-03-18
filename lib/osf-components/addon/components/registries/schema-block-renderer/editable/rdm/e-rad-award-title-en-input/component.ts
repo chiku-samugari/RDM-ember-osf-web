@@ -5,6 +5,7 @@ import { action } from '@ember/object';
 import { alias } from '@ember/object/computed';
 import { ChangesetDef } from 'ember-changeset/types';
 import { layout } from 'ember-osf-web/decorators/component';
+import DraftRegistrationManager from 'registries/drafts/draft/draft-registration-manager';
 import styles from './styles';
 import template from './template';
 
@@ -14,6 +15,7 @@ export default class ERadAwardTitleEnInput extends Component {
     // Required param
     changeset!: ChangesetDef;
     metadataChangeset!: ChangesetDef;
+    draftManager!: DraftRegistrationManager;
 
     @alias('schemaBlock.registrationResponseKey')
     valuePath!: string;
@@ -22,7 +24,9 @@ export default class ERadAwardTitleEnInput extends Component {
 
     @action
     onInput2() {
-        const ja = this.changeset.get('__responseKey_e-rad-award-title-ja');
+        const ja = this.changeset.get(
+            this.draftManager.getResponseKeyByBlockType('e-rad-award-title-ja-input'),
+        );
         const en = this.changeset.get(this.valuePath);
         this.metadataChangeset.set('title', `${ja} (${en})`);
         this.onMetadataInput();

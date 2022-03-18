@@ -26,18 +26,6 @@
             </div>
         </nav.bordered-section>
         <nav.bordered-section>
-            {{#if @navManager.isFirstPage}}
-                <nav.links.default
-                    data-test-goto-metadata
-                    data-analytics-name='Sidenav back to metadata'
-                    aria-label={{t 'osf-components.registries-top-nav.metadata'}}
-                    local-class='MetadataButton'
-                    @route='registries.drafts.draft.metadata'
-                    @models={{array @draftManager.draftId }}
-                >
-                    {{t 'registries.drafts.draft.metadata.page_label'}}
-                </nav.links.default>
-            {{/if}}
             {{#if @navManager.prevPageParam}}
                 <nav.links.default
                     data-test-goto-previous-page

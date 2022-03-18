@@ -38,6 +38,9 @@
                         {{#if this.iqbrimsEnabled }}
                             {{node-navbar/link node=@node useLinkTo=false destination='iqbrims'}}
                         {{/if}}
+                        {{#if this.metadataEnabled }}
+                            {{node-navbar/link node=@node useLinkTo=false destination='metadata'}}
+                        {{/if}}
                         {{#if @node.wikiEnabled}}
                             {{node-navbar/link node=@node useLinkTo=false destination='wiki'}}
                         {{/if}}

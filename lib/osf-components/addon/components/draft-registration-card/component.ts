@@ -6,6 +6,7 @@ import { inject as service } from '@ember/service';
 import config from 'ember-get-config';
 import { layout } from 'ember-osf-web/decorators/component';
 import DraftRegistration from 'ember-osf-web/models/draft-registration';
+import MetadataNodeSchemaModel from 'ember-osf-web/models/metadata-node-schema';
 import Analytics from 'ember-osf-web/services/analytics';
 import pathJoin from 'ember-osf-web/utils/path-join';
 
@@ -25,6 +26,9 @@ export default class DraftRegistrationCard extends Component {
     // Optional arguments
     onDelete?: (draftRegistration?: DraftRegistration) => void;
 
+    // Optional arguments
+    metadataSchema?: MetadataNodeSchemaModel;
+
     // Private properties
     deleteModalOpen = false;
 
@@ -37,6 +41,12 @@ export default class DraftRegistrationCard extends Component {
             node.get('id'),
             `metadata/draft_registrations/${draftRegistration.get('id')}/csv`,
         );
+    }
+
+    @computed('node')
+    get registrationSchemaId(): string | null {
+        const draftRegistration = this.get('draftRegistration');
+        return draftRegistration.registrationSchema.get('id');
     }
 
     @action

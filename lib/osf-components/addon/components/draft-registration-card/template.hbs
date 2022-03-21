@@ -90,13 +90,11 @@
                     </BsModal>
                 </div>
                 <div class='col-md-2'>
-                    <OsfLink
-                        data-analytics-name='Export'
-                        class='btn btn-success'
-                        @href={{this.exportCsvUrl}}
-                    >
-                        {{t 'metadata.draft-registration-card.export'}}
-                    </OsfLink>
+                    <RegistrationReportExportButton
+                        @metadataSchema={{@metadataSchema}}
+                        @registrationSchemaId={{this.registrationSchemaId}}
+                        @exportCsvUrl={{this.exportCsvUrl}}
+                    />
                 </div>
             </div>
         {{else}}

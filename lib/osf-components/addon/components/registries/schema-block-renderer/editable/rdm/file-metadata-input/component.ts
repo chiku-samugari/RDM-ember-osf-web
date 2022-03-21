@@ -23,6 +23,7 @@ interface FileMetadataEntity {
 
 interface FileMetadata {
     path: string;
+    urlpath: string;
     metadata: {
         [key: string]: FileMetadataEntity,
     };
@@ -33,6 +34,7 @@ interface FileEntry {
     folder: boolean;
     title: string | null;
     url: string | null;
+    fileUrl: string | null;
 }
 
 @layout(template, styles)
@@ -81,6 +83,7 @@ export default class FileMetadataInput extends Component {
             folder: metadata.path.match(/.+\/$/) !== null,
             title: this.extractTitleFromMetadata(metadata),
             url: this.extractUrlFromMetadata(metadata),
+            fileUrl: `${pathJoin(baseURL, metadata.urlpath)}#edit-metadata`,
         }) as FileEntry);
     }
 

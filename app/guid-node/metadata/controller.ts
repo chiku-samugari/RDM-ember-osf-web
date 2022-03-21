@@ -6,9 +6,16 @@ import { inject as service } from '@ember/service';
 import { task } from 'ember-concurrency-decorators';
 import DS from 'ember-data';
 
+import MetadataNodeSchemaModel from 'ember-osf-web/models/metadata-node-schema';
 import Node from 'ember-osf-web/models/node';
 import RegistrationSchema from 'ember-osf-web/models/registration-schema';
 import Analytics from 'ember-osf-web/services/analytics';
+
+function checkGRDMSchema(schema: RegistrationSchema) {
+    return schema.schema.pages
+        .some(page => page.questions
+            .some(question => question.qid === 'grdm-files'));
+}
 
 export default class GuidNodeMetadata extends Controller {
     @service analytics!: Analytics;
@@ -22,6 +29,7 @@ export default class GuidNodeMetadata extends Controller {
     selectedSchema!: RegistrationSchema;
     schemas: RegistrationSchema[] = [];
     newModalOpen = false;
+    metadataSchema: MetadataNodeSchemaModel | null = null;
 
     reloadDrafts?: (page?: number) => void; // bound by paginated-list
 
@@ -41,8 +49,15 @@ export default class GuidNodeMetadata extends Controller {
             if (!result.links.next) { break; }
             page += 1;
         }
-        const schemas = allSchemas.filter((a: RegistrationSchema) => ['公的資金による研究データのメタデータ登録'].includes(a.name));
+        const schemas = allSchemas.filter((a: RegistrationSchema) => checkGRDMSchema(a));
         schemas.sort((a: RegistrationSchema, b: RegistrationSchema) => a.name.length - b.name.length);
+
+        if (this.node) {
+            const metadataSchema: MetadataNodeSchemaModel = yield this.store
+                .findRecord('metadata-node-schema', this.node.id);
+            this.set('metadataSchema', metadataSchema);
+        }
+
         this.set('defaultSchema', schemas.firstObject);
         this.set('selectedSchema', this.defaultSchema);
         this.set('schemas', schemas);

@@ -1822,3 +1822,5 @@ metadata:
         export: 'Export'
     registration-card:
         export: 'Export'
+        export-dialog:
+            title: 'Select a report format'

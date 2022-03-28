@@ -11,21 +11,23 @@
                         <BsTooltip>{{t (concat 'node_card.' @node.nodeType '.private_tooltip')}}</BsTooltip>
                     </span> |
                 {{/unless}}
-                {{#if @node.pendingRegistrationApproval}}
-                    <span class='label label-info'>{{t 'node_card.registration.statuses.pending'}}</span> |
-                {{else if @node.withdrawn}}
-                    <span class='label label-danger'>{{t 'node_card.registration.statuses.withdrawn'}}</span> |
-                {{else if @node.pendingWithdrawal}}
-                    <span class='label label-info'>{{t 'node_card.registration.statuses.pending_withdrawl'}}</span> |
-                {{else if @node.pendingEmbargoTerminationApproval}}
-                    <span class='label label-info'>{{t 'node_card.registration.statuses.pending_embargo_termination'}}</span> |
-                {{else if @node.embargoed}}
-                    <span class='label label-info'>{{t 'node_card.registration.statuses.embargoed'}}</span> |
-                {{else if @node.pendingEmbargoApproval}}
-                    <span class='label label-info'>{{t 'node_card.registration.statuses.pending_embargo'}}</span> |
-                {{/if}}
-                {{#if @node.archiving}}
-                    <span class='label label-primary'>{{t 'node_card.registration.statuses.archiving'}}</span> |
+                {{#if @showStatus}}
+                    {{#if @node.pendingRegistrationApproval}}
+                        <span class='label label-info'>{{t 'node_card.registration.statuses.pending'}}</span> |
+                    {{else if @node.withdrawn}}
+                        <span class='label label-danger'>{{t 'node_card.registration.statuses.withdrawn'}}</span> |
+                    {{else if @node.pendingWithdrawal}}
+                        <span class='label label-info'>{{t 'node_card.registration.statuses.pending_withdrawl'}}</span> |
+                    {{else if @node.pendingEmbargoTerminationApproval}}
+                        <span class='label label-info'>{{t 'node_card.registration.statuses.pending_embargo_termination'}}</span> |
+                    {{else if @node.embargoed}}
+                        <span class='label label-info'>{{t 'node_card.registration.statuses.embargoed'}}</span> |
+                    {{else if @node.pendingEmbargoApproval}}
+                        <span class='label label-info'>{{t 'node_card.registration.statuses.pending_embargo'}}</span> |
+                    {{/if}}
+                    {{#if @node.archiving}}
+                        <span class='label label-primary'>{{t 'node_card.registration.statuses.archiving'}}</span> |
+                    {{/if}}
                 {{/if}}
                 {{node-card/node-icon category=@node.category}}
                 <OsfLink
@@ -117,6 +119,15 @@
                     <TagsWidget
                         @taggable={{@node}}
                         @inline={{true}}
+                    />
+                </div>
+            {{/if}}
+            {{#if (and this.showExportCsvLink this.exportCsvUrl)}}
+                <div local-class='NodeCard__exportCsvLink'>
+                    <RegistrationReportExportButton
+                        @metadataSchema={{@metadataSchema}}
+                        @registrationSchemaId={{this.registrationSchemaId}}
+                        @exportCsvUrl={{this.exportCsvUrl}}
                     />
                 </div>
             {{/if}}

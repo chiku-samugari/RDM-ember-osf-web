@@ -70,6 +70,22 @@ export default class NodeNavbar extends Component {
         return result;
     }
 
+    @computed('node.addons')
+    get metadataEnabled(): boolean | null {
+        if (!this.node) {
+            return null;
+        }
+        let result = null;
+        this.getAddons()
+            .then(addons => {
+                result = addons
+                    .filter(addon => addon.id === 'metadata')
+                    .length > 0;
+                this.set('metadataEnabled', result);
+            });
+        return result;
+    }
+
     @action
     toggleNav() {
         this.toggleProperty('collapsedNav');

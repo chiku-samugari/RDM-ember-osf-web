@@ -1,7 +1,7 @@
 import { tagName } from '@ember-decorators/component';
 import Component from '@ember/component';
 import { assert } from '@ember/debug';
-import { action, computed } from '@ember/object';
+import { computed } from '@ember/object';
 import config from 'ember-get-config';
 import moment from 'moment';
 
@@ -20,22 +20,16 @@ export default class FinalizeRegisrationModalComponent extends Component {
     manager!: FinalizeRegistrationModalManager;
 
     // Private properties
-    makePublicOption: string = '';
+    makePublicOption: string = 'embargo';
     embargoRangeStartDate: Date = moment().add(3, 'days').toDate();
     embargoRangeEndDate: Date = moment().add(1460, 'days').toDate();
     learnMoreLink = config.helpLinks.linkToAProject;
 
     didReceiveAttrs() {
         assert('finalize-registration-modal requires @manager!', Boolean(this.manager));
-    }
-
-    @action
-    onChoiceChange() {
-        if (this.makePublicOption === 'immediate') {
-            this.manager.setEmbargoEndDate(null);
-        } else {
-            this.manager.setCreateDoi(false);
-        }
+        setTimeout(() => {
+            this.manager.setEmbargoEndDate(moment().add(3, 'days').toDate());
+        }, 100);
     }
 
     @computed('manager.{hasEmbargoEndDate,submittingRegistration}', 'makePublicOption')

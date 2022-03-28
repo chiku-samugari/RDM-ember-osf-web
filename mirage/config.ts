@@ -20,6 +20,8 @@ import { guidDetail } from './views/guid';
 import { identifierCreate } from './views/identifier';
 import { summaryMetrics } from './views/institution';
 import { iqbrimsStatus } from './views/iqbrims-status';
+import { metadataNodeErad } from './views/metadata-node-erad';
+import { metadataNodeProject } from './views/metadata-node-project';
 import { createNode } from './views/node';
 import { osfNestedResource, osfResource, osfToManyRelationship } from './views/osf-resource';
 import { getProviderSubjects } from './views/provider-subjects';
@@ -255,6 +257,8 @@ export default function(this: Server) {
 
     this.get('/project/:id/iqbrims/status', iqbrimsStatus);
     this.get('/project/:id/binderhub/config', binderhubConfig);
+    this.get('/project/:id/metadata/erad/candidates', metadataNodeErad);
+    this.get('/project/:id/metadata/project', metadataNodeProject);
 
     this.urlPrefix = apiUrl;
     this.namespace = apiNamespace;

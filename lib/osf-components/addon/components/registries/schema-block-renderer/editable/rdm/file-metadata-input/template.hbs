@@ -1,0 +1,32 @@
+<Registries::SchemaBlockRenderer::Editable::Base @helpText={{this.schemaBlock.helpText}}>
+    <div local-class='file-metadata-input-container'>
+        <div local-class='file-metadata-input-header'>
+            <h5>{{this.node.title}}</h5>
+            <a href='{{this.nodeUrl}}' target='_blank' rel='noopener'>
+                {{this.nodeUrl}}
+            </a>
+        </div>
+        {{#if this.fileEntries}}
+            <ul>
+                {{#each this.fileEntries as |fileEntry|}}
+                    <li>
+                        <span local-class='file-metadata-item-title'>
+                            {{fileEntry.title}}
+                        </span>
+                        {{#if fileEntry.url}}
+                            <a href='{{fileEntry.url}}' target='_blank' rel='noopener'>
+                                {{fileEntry.url}}
+                            </a>
+                        {{else}}
+                            <a href='{{fileEntry.fileUrl}}' target='_blank' rel='noopener'>
+                                {{fileEntry.path}}
+                            </a>
+                        {{/if}}
+                    </li>
+                {{/each}}
+            </ul>
+        {{else}}
+            {{t 'metadata.file-metadata-input.no_metadata'}}
+        {{/if}}
+    </div>
+</Registries::SchemaBlockRenderer::Editable::Base>

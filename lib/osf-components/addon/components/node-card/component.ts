@@ -5,6 +5,7 @@ import { inject as service } from '@ember/service';
 import config from 'ember-get-config';
 
 import { layout } from 'ember-osf-web/decorators/component';
+import MetadataNodeSchemaModel from 'ember-osf-web/models/metadata-node-schema';
 import Node, { NodeType } from 'ember-osf-web/models/node';
 import Registration from 'ember-osf-web/models/registration';
 import { Question } from 'ember-osf-web/models/registration-schema';
@@ -27,9 +28,33 @@ export default class NodeCard extends Component {
     delete?: (node: Node) => void;
     showTags: boolean = defaultTo(this.showTags, false);
     readOnly: boolean = defaultTo(this.readOnly, false);
+    showExportCsvLink: boolean = defaultTo(this.showExportCsvLink, false);
+    showStatus: boolean = defaultTo(this.showStatus, true);
+
+    // Optional arguments
+    metadataSchema?: MetadataNodeSchemaModel;
 
     // Private properties
     searchUrl = pathJoin(baseURL, 'search');
+
+    @computed('node')
+    get exportCsvUrl() {
+        const node = this.get('node');
+        return node ? pathJoin(
+            baseURL,
+            node.get('id'),
+            `metadata/registrations/${node.get('id')}/csv`,
+        ) : null;
+    }
+
+    @computed('node')
+    get registrationSchemaId(): string | null {
+        if (!this.node || !this.node.isRegistration) {
+            return null;
+        }
+        const registration = this.node as Registration;
+        return registration.registrationSchema.get('id');
+    }
 
     @computed('node', 'node.{isRegistration,registrationSchema,registeredMeta.@each}')
     get registrationTitle(): string | undefined {

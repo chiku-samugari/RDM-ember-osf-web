@@ -11,7 +11,22 @@ export type SchemaBlockType =
     'multi-select-input' |
     'single-select-input' |
     'select-input-option' |
-    'select-other-option';
+    'select-other-option' |
+    'e-rad-award-funder-input' |
+    'e-rad-award-number-input' |
+    'e-rad-award-title-ja-input' |
+    'e-rad-award-title-en-input' |
+    'e-rad-researcher-number-input' |
+    'e-rad-researcher-name-ja-input' |
+    'e-rad-researcher-name-en-input' |
+    'e-rad-bunnya-input' |
+    'file-metadata-input' |
+    'date-input' |
+    'file-capacity-input' |
+    'file-creators-input' |
+    'file-url-input' |
+    'file-institution-ja-input' |
+    'file-institution-en-input';
 
 export interface SchemaBlock {
     id?: string;

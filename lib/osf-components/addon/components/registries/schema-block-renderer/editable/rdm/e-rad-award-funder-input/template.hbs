@@ -1,0 +1,20 @@
+<Registries::SchemaBlockRenderer::Editable::Base @helpText={{this.schemaBlock.helpText}}>
+    <FormControls
+        @changeset={{@changeset}}
+        @disabled={{@disabled}}
+        @shouldShowMessages={{@shouldShowMessages}}
+        ...attributes as |form|
+    >
+        <form.radioGroup
+            data-test-e-rad-award-funder-input
+            @id={{@uniqueID}}
+            @valuePath={{@schemaBlock.registrationResponseKey}}
+            @options={{this.optionBlockValues}}
+            @onchange={{@onInput}}
+            @helpTextMapping={{this.helpTextMapping}}
+            as |radioGroup|
+        >
+            {{radioGroup}}
+        </form.radioGroup>
+    </FormControls>
+</Registries::SchemaBlockRenderer::Editable::Base>

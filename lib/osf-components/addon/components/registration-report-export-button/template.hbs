@@ -1,0 +1,47 @@
+<BsModal
+    data-test-registration-report-modal
+    local-class='Modal'
+    @open={{this.dialogOpen}}
+    @onSubmit={{action this.submit}}
+    @onHidden={{action this.hideDialog}}
+    as |modal|
+>
+    <modal.body data-analytics-scope='RegistrationReport modal'>
+        <div class='text-center'>
+            <h2 local-class='Modal__title'>{{ t 'metadata.registration-card.export-dialog.title' }}</h2>
+        </div>
+        <div class='form-group'>
+            <select id='registration-report-format-selection'>
+                {{#each this.metadataFormats as |format|}}
+                    <option
+                        value='{{format.name}}'>
+                        {{format.name}}
+                    </option>
+                {{/each}}
+            </select>
+        </div>
+    </modal.body>
+    <modal.footer data-analytics-scope='RegistrationReport modal footer'>
+        <OsfButton
+            data-analytics-name='Cancel'
+            @onClick={{action modal.close}}
+        >
+            {{t 'general.cancel'}}
+        </OsfButton>
+        <OsfButton
+            data-analytics-name='Submit'
+            @type='success'
+            @onClick={{action modal.submit}}
+        >
+            {{t 'feedback.confirm_button_text'}}
+        </OsfButton>
+    </modal.footer>
+</BsModal>
+
+<OsfButton
+    data-analytics-name='Export'
+    @type='success'
+    @onClick={{action this.export}}
+>
+    {{t 'metadata.registration-card.export'}}
+</OsfButton>

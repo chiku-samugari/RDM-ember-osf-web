@@ -39,6 +39,11 @@ function getErrorType(groupType?: string) {
 export function buildValidation(groups: SchemaBlockGroup[], node?: NodeModel) {
     const ret: ValidationObject<RegistrationResponse> = {};
     groups.forEach((group: SchemaBlockGroup) => {
+        // ignore GRDM file specific fields
+        if (group.registrationResponseKey
+            && group.registrationResponseKey.match(/^__responseKey_grdm-file:.+$/)) {
+            return;
+        }
         // only validating groups with actual inputs and not groups that are headings/labels only
         if (group.inputBlock) {
             const validationForResponse: ValidatorFunction[] = [];

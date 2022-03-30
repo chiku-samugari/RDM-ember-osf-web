@@ -454,9 +454,8 @@ export default class GuidNodeGrdmapps extends Controller {
                 ),
             );
             validFlag = false;
-        } else if (!(webhookUrl.startsWith(integromatWebhookUrlBase)) &&
-                   !(webhookUrl.startsWith(makeWebhookUrlBaseUS)) &&
-                   !(webhookUrl.startsWith(makeWebhookUrlBaseEU))) {
+        } else if (!(webhookUrl.startsWith(integromatWebhookUrlBase)) && !(webhookUrl.startsWith(makeWebhookUrlBaseUS))
+                    && !(webhookUrl.startsWith(makeWebhookUrlBaseEU))) {
             this.set(
                 'msgInvalidWebhookUrl',
                 this.intl.t(

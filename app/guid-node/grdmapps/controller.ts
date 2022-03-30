@@ -145,8 +145,8 @@ const registerAlternativeWebhookUrl = `${nodeUrl}${integromatDir}/register_alter
 const registerWebMeetingAppsEmailUrl = `${nodeUrl}${integromatDir}/register_web_meeting_apps_email`;
 const profileUrlBase = `${host}/profile/`;
 const integromatWebhookUrlBase = 'https://hook.integromat.com/';
-const makeWebhookUrlBaseUS = 'https://hook.us1.make.com/'
-const makeWebhookUrlBaseEU = 'https://hook.eu1.make.com/'
+const makeWebhookUrlBaseUS = 'https://hook.us1.make.com/';
+const makeWebhookUrlBaseEU = 'https://hook.eu1.make.com/';
 
 const TIME_LIMIT_EXECUTION_SCENARIO = 60;
 
@@ -454,7 +454,9 @@ export default class GuidNodeGrdmapps extends Controller {
                 ),
             );
             validFlag = false;
-        } else if (!(webhookUrl.startsWith(integromatWebhookUrlBase)) && !(webhookUrl.startsWith(makeWebhookUrlBaseUS)) && !(webhookUrl.startsWith(makeWebhookUrlBaseEU))) {
+        } else if (!(webhookUrl.startsWith(integromatWebhookUrlBase)) &&
+                   !(webhookUrl.startsWith(makeWebhookUrlBaseUS)) &&
+                   !(webhookUrl.startsWith(makeWebhookUrlBaseEU))) {
             this.set(
                 'msgInvalidWebhookUrl',
                 this.intl.t(

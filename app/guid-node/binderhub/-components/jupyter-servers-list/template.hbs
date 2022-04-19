@@ -68,21 +68,21 @@
                 {{#if this.servers.length}}
                     {{#each this.servers as |server|}}
                         <tr>
-                            <td class='col-md-2'>{{server.name}}</td>
+                            <td class='col-md-2'>{{server.entry.name}}</td>
                             <td class='col-md-3'>
-                                <button
-                                    data-test-server-link
-                                    type='button'
-                                    class='btn btn-link'
-                                    local-class='jupyter-link'
-                                    {{action this.openServer server target=this}}
-                                >
-                                    {{#if server.ready}}
-                                        {{server.url}}
-                                    {{/if}}
-                                </button>
+                                {{#if server.entry.ready}}
+                                    <button
+                                        data-test-server-link
+                                        type='button'
+                                        class='btn btn-link'
+                                        local-class='jupyter-link'
+                                        {{action this.openServer server target=this}}
+                                    >
+                                        {{server.entry.url}}
+                                    </button>
+                                {{/if}}
                             </td>
-                            <td class='col-md-3'> {{moment-format server.last_activity 'YYYY-MM-DD hh:mm A'}}</td>
+                            <td class='col-md-3'> {{moment-format server.entry.last_activity 'YYYY-MM-DD hh:mm A'}}</td>
                             <td class='col-md-2'>
                                 <GuidNode::Binderhub::-Components::LaunchButtons
                                     @binderHubConfig={{this.binderHubConfig}}

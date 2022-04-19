@@ -34,7 +34,7 @@ export default class FinalizeRegistrationModalManagerComponent extends Component
             yield this.registration.save();
 
             if (this.onSubmitRegistration) {
-                this.onSubmitRegistration(this.registration.id);
+                this.onSubmitRegistration(this.draftManager.node.id);
             }
         } catch (e) {
             const errorMessage = this.intl.t('registries.drafts.draft.submit_error');
@@ -53,7 +53,7 @@ export default class FinalizeRegistrationModalManagerComponent extends Component
     draftManager!: DraftRegistrationManager;
 
     // Optional parameters
-    onSubmitRegistration?: (registrationId: string) => void;
+    onSubmitRegistration?: (nodeId: string) => void;
 
     @alias('submitRegistration.isRunning') submittingRegistration!: boolean;
 

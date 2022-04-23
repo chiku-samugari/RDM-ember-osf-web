@@ -18,7 +18,7 @@ export interface Token {
 export interface BinderHub {
     default: boolean;
     url: string;
-    authorize_url: string;
+    authorize_url: string | null;
     token?: Token;
     api_url?: string;
     jupyterhub_url?: string;
@@ -26,7 +26,7 @@ export interface BinderHub {
 
 export interface JupyterHub {
     url: string;
-    authorize_url: string;
+    authorize_url: string | null;
     token?: Token;
     api_url?: string;
 }

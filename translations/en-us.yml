@@ -1762,6 +1762,7 @@ binderhub:
     page_title: '{nodeTitle} BidnerHub'
     jupyter_servers_list:
         header: 'My environments for this project'
+        servers_link: 'Check at JupyterHub'
         delete_confirm_dialog_title: 'Delete confirmation'
         delete_confirm_dialog_body: 'Do you want to delete the server?'
     project_editor:

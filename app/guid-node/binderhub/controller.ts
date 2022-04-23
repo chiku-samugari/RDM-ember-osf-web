@@ -93,6 +93,9 @@ export default class GuidNodeBinderHub extends Controller {
         if (!binderhub) {
             throw new EmberError('Illegal config');
         }
+        if (!binderhub.authorize_url) {
+            throw new EmberError('Illegal config');
+        }
         window.location.href = this.getURLWithContext(binderhub.authorize_url);
     }
 
@@ -104,6 +107,9 @@ export default class GuidNodeBinderHub extends Controller {
         const config = this.config.content as BinderHubConfigModel;
         const jupyterhub = config.findJupyterHubByURL(jupyterhubUrl);
         if (jupyterhub) {
+            if (!jupyterhub.authorize_url) {
+                throw new EmberError('Illegal config');
+            }
             window.location.href = this.getURLWithContext(jupyterhub.authorize_url);
             return;
         }
@@ -136,6 +142,17 @@ export default class GuidNodeBinderHub extends Controller {
         return provider.get('rootFolder');
     }
 
+    async generatePersonalToken() {
+        const scopeIds = ['osf.full_read', 'osf.full_write'];
+        const scopes = await Promise.all(scopeIds.map(scopeId => this.store.findRecord('scope', scopeId)));
+        const token = await this.store.createRecord('token', {
+            name: `BinderHub addon ${new Date().toISOString()}`,
+            scopes,
+        });
+        await token.save();
+        return token;
+    }
+
     async performBuild(
         binderhubUrl: string,
         needsPersonalToken: boolean,
@@ -155,24 +172,28 @@ export default class GuidNodeBinderHub extends Controller {
         }
         const config = this.config.content as BinderHubConfigModel;
         const binderhub = config.findBinderHubByURL(binderhubUrl);
-        if (!binderhub || !binderhub.token) {
-            throw new EmberError('Illegal config');
-        }
         let additional = '';
         if (this.currentUser && this.currentUser.currentUserId) {
             additional += `&userctx=${this.currentUser.currentUserId}`;
         }
+        additional += `&${this.getUserOptions()}`;
+        if (binderhub && !binderhub.authorize_url) {
+            const token = await this.generatePersonalToken();
+            additional += `&repo_token=${token.tokenValue}`;
+            const hubUrl = addPathSegment(binderhub.url, 'hub');
+            const hubBuildUrl = addPathSegment(hubUrl, buildPath);
+            const hubUrlSep = hubBuildUrl.includes('?') ? '&' : '?';
+            const url = `${hubBuildUrl}${hubUrlSep}${additional.substring(1)}`;
+            window.open(url, '_blank');
+            return;
+        }
+        if (!binderhub || !binderhub.token) {
+            throw new EmberError('Illegal config');
+        }
         if (needsPersonalToken) {
-            const scopeIds = ['osf.full_read', 'osf.full_write'];
-            const scopes = await Promise.all(scopeIds.map(scopeId => this.store.findRecord('scope', scopeId)));
-            const token = await this.store.createRecord('token', {
-                name: `BinderHub addon ${new Date().toISOString()}`,
-                scopes,
-            });
-            await token.save();
+            const token = await this.generatePersonalToken();
             additional += `&repo_token=${token.tokenValue}`;
         }
-        additional += `&${this.getUserOptions()}`;
         const buildUrl = addPathSegment(binderhub.url, buildPath);
         const urlSep = buildUrl.includes('?') ? '&' : '?';
         const source = new EventSource(`${buildUrl}${urlSep}token=${binderhub.token.access_token}${additional}`);

@@ -128,6 +128,9 @@ export default class BuildConsole extends Component {
         if (!this.buildLog) {
             return false;
         }
+        if (this.buildLog.length === 0) {
+            return false;
+        }
         return true;
     }
 

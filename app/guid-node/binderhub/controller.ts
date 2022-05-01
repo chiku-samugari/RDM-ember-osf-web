@@ -15,6 +15,7 @@ import FileModel from 'ember-osf-web/models/file';
 import FileProviderModel from 'ember-osf-web/models/file-provider';
 import Node from 'ember-osf-web/models/node';
 import Analytics from 'ember-osf-web/services/analytics';
+import CurrentUser from 'ember-osf-web/services/current-user';
 import StatusMessages from 'ember-osf-web/services/status-messages';
 import { addPathSegment } from 'ember-osf-web/utils/url-parts';
 import Toast from 'ember-toastr/services/toast';
@@ -41,6 +42,7 @@ export default class GuidNodeBinderHub extends Controller {
     @service intl!: Intl;
     @service statusMessages!: StatusMessages;
     @service analytics!: Analytics;
+    @service currentUser!: CurrentUser;
 
     tab?: string;
 
@@ -157,6 +159,9 @@ export default class GuidNodeBinderHub extends Controller {
             throw new EmberError('Illegal config');
         }
         let additional = '';
+        if (this.currentUser && this.currentUser.currentUserId) {
+            additional += `&userctx=${this.currentUser.currentUserId}`;
+        }
         if (needsPersonalToken) {
             const scopeIds = ['osf.full_read', 'osf.full_write'];
             const scopes = await Promise.all(scopeIds.map(scopeId => this.store.findRecord('scope', scopeId)));
@@ -165,7 +170,7 @@ export default class GuidNodeBinderHub extends Controller {
                 scopes,
             });
             await token.save();
-            additional = `&repo_token=${token.tokenValue}`;
+            additional += `&repo_token=${token.tokenValue}`;
         }
         additional += `&${this.getUserOptions()}`;
         const buildUrl = addPathSegment(binderhub.url, buildPath);

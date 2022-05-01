@@ -389,7 +389,9 @@ export default class JupyterServersList extends Component {
             || !this.binderHubConfig.get('isFulfilled')) {
             throw new EmberError('Illegal state');
         }
-        const jupyterhub = this.binderHubConfig.findJupyterHubByURL(this.showDeleteConfirmDialogTarget.ownerUrl);
+        const binderHubConfig = this.get('binderHubConfig');
+        const config = binderHubConfig.content as BinderHubConfigModel;
+        const jupyterhub = config.findJupyterHubByURL(this.showDeleteConfirmDialogTarget.ownerUrl);
         if (!jupyterhub || !jupyterhub.token || !validateJupyterHubToken(jupyterhub)) {
             this.set('notAuthorized', true);
             throw new EmberError('Insufficient parameters');

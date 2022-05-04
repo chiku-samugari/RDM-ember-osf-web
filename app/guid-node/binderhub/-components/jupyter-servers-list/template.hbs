@@ -19,15 +19,8 @@
         {{t 'binderhub.loading'}}
     {{else}}
         <div local-class='jupyterhub-server-menu'>
-            {{#if this.defaultJupyterhubUser}}
-                <div local-class='jupyterhub-user'>
-                    {{t 'binderhub.servers.username'}}
-                    <span data-test-jupyterhub-user>
-                        {{this.defaultJupyterhubUser}}
-                    </span>
-                </div>
-            {{/if}}
             <div local-class='jupyterhub-selector'>
+                {{t 'binderhub.servers.host'}}
                 <select
                     data-test-jupyterhub-selection
                     onchange={{action this.binderhubChanged value='target.value'}}
@@ -43,11 +36,47 @@
                 </select>
             </div>
         </div>
-        {{#if this.serversLink}}
+        {{#if (not this.apiLoaded)}}
             <a href={{this.serversLink}} target='_blank' rel='noopener'>
-                {{t 'binderhub.jupyter_servers_list.servers_link'}}
+                {{t 'binderhub.servers.server_hub_home'}}
             </a>
         {{else}}
+            <div local-class='jupyterhub-server-submenu'>
+                <div local-class='jupyterhub-servers'>
+                    {{#if (eq this.servers.length 0)}}
+                        {{t 'binderhub.servers.server_not_exists'}}
+                    {{else}}
+                        {{t
+                            'binderhub.servers.server_exists'
+                            servers=this.servers.length
+                        }}
+                    {{/if}}
+                    {{#if this.maxServersExceeded}}
+                        <strong local-class='max-servers-exceeded'>
+                            {{t 'binderhub.servers.max_servers_exceeded'}}
+                        </strong>
+                    {{/if}}
+                    <a href={{this.serversLink}} target='_blank' rel='noopener'>
+                        {{t 'binderhub.servers.server_hub_home'}}
+                    </a>
+                </div>
+                {{#if this.defaultJupyterhubUser}}
+                    <div local-class='jupyterhub-user'>
+                        {{t 'binderhub.servers.username'}}
+                        <span data-test-jupyterhub-user>
+                            {{this.defaultJupyterhubUser}}
+                        </span>
+                        {{#if this.canLogout}}
+                            <OsfButton
+                                @type='link'
+                                @onClick={{action this.performLogout}}
+                            >
+                                {{t 'binderhub.servers.logout'}}
+                            </OsfButton>
+                        {{/if}}
+                    </div>
+                {{/if}}
+            </div>
             <div local-class='toolbar-button'>
                 <button
                     data-test-server-refresh-button

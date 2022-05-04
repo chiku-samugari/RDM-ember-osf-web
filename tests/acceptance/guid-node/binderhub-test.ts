@@ -75,8 +75,14 @@ module('Acceptance | guid-node/binderhub', hooks => {
             { target: node, name: 'a', dateModified: new Date(2019, 3, 3) });
         const fileTwo = server.create('file',
             { target: node, name: 'b', dateModified: new Date(2019, 2, 2) });
+        const binderFolder = server.create('file',
+            {
+                target: node,
+                name: '.binder',
+                files: [],
+            });
         osfstorage.rootFolder.update({
-            files: [fileOne, fileTwo],
+            files: [fileOne, fileTwo, binderFolder],
         });
         const sandbox = sinon.createSandbox();
         const ajaxStub = sandbox.stub(BinderHubConfigModel.prototype, 'jupyterhubAPIAJAX');
@@ -93,10 +99,9 @@ module('Acceptance | guid-node/binderhub', hooks => {
         await percySnapshot(assert);
         assert.dom('[data-test-servers-header]').exists();
         assert.dom('[data-test-binderhub-header]').exists();
-        assert.dom('[data-test-binderhub-selection-option]').exists({ count: 1 });
         assert.dom('[data-test-jupyterhub-selection-option]').exists({ count: 1 });
         assert.dom('[data-test-jupyterhub-user]').hasText('testuser');
-        assert.dom('[data-test-launch]').exists();
+        assert.dom('[data-test-binderhub-launch]').exists();
         assert.dom('[data-test-image-selection="jupyter/test-image"]').exists();
         assert.dom('[data-test-image-selected]').doesNotExist();
         assert.dom('[data-test-package-editor="apt"]').doesNotExist();
@@ -173,12 +178,26 @@ module('Acceptance | guid-node/binderhub', hooks => {
         });
         const osfstorage = server.create('file-provider',
             { node, name: 'osfstorage' });
-        const fileOne = server.create('file',
-            { target: node, name: 'a', dateModified: new Date(2019, 3, 3) });
-        const dockerfile = server.create('file',
-            { target: node, name: 'Dockerfile', dateModified: new Date(2019, 2, 2) });
+        const binderFolder = server.create('file', { target: node }, 'asFolder');
+        binderFolder.update({
+            name: '.binder',
+        });
+        server.create('file',
+            {
+                target: node,
+                name: 'a',
+                dateModified: new Date(2019, 3, 3),
+                parentFolder: binderFolder,
+            });
+        server.create('file',
+            {
+                target: node,
+                name: 'Dockerfile',
+                dateModified: new Date(2019, 2, 2),
+                parentFolder: binderFolder,
+            });
         osfstorage.rootFolder.update({
-            files: [fileOne, dockerfile],
+            files: [binderFolder],
         });
         const sandbox = sinon.createSandbox();
         const ajaxStub = sandbox.stub(BinderHubConfigModel.prototype, 'jupyterhubAPIAJAX');
@@ -199,9 +218,8 @@ module('Acceptance | guid-node/binderhub', hooks => {
         await percySnapshot(assert);
         assert.dom('[data-test-servers-header]').exists();
         assert.dom('[data-test-binderhub-header]').exists();
-        assert.dom('[data-test-binderhub-selection-option]').exists({ count: 2 });
         assert.dom('[data-test-jupyterhub-selection-option]').exists({ count: 2 });
-        assert.dom('[data-test-launch]').exists();
+        assert.dom('[data-test-binderhub-launch]').exists();
         assert.dom('[data-test-image-change="jupyter/scipy-notebook"]').exists();
         assert.dom('[data-test-image-selected="jupyter/scipy-notebook"]').exists();
         assert.dom('[data-test-image-selection]').doesNotExist();
@@ -280,12 +298,26 @@ module('Acceptance | guid-node/binderhub', hooks => {
         });
         const osfstorage = server.create('file-provider',
             { node, name: 'osfstorage' });
-        const fileOne = server.create('file',
-            { target: node, name: 'a', dateModified: new Date(2019, 3, 3) });
-        const dockerfile = server.create('file',
-            { target: node, name: 'environment.yml', dateModified: new Date(2019, 2, 2) });
+        const binderFolder = server.create('file', { target: node }, 'asFolder');
+        binderFolder.update({
+            name: '.binder',
+        });
+        server.create('file',
+            {
+                target: node,
+                name: 'a',
+                dateModified: new Date(2019, 3, 3),
+                parentFolder: binderFolder,
+            });
+        server.create('file',
+            {
+                target: node,
+                name: 'environment.yml',
+                dateModified: new Date(2019, 2, 2),
+                parentFolder: binderFolder,
+            });
         osfstorage.rootFolder.update({
-            files: [fileOne, dockerfile],
+            files: [binderFolder],
         });
         const sandbox = sinon.createSandbox();
         const ajaxStub = sandbox.stub(BinderHubConfigModel.prototype, 'jupyterhubAPIAJAX');
@@ -307,9 +339,8 @@ module('Acceptance | guid-node/binderhub', hooks => {
         await percySnapshot(assert);
         assert.dom('[data-test-servers-header]').exists();
         assert.dom('[data-test-binderhub-header]').exists();
-        assert.dom('[data-test-binderhub-selection-option]').exists({ count: 1 });
         assert.dom('[data-test-jupyterhub-selection-option]').exists({ count: 1 });
-        assert.dom('[data-test-launch]').exists();
+        assert.dom('[data-test-binderhub-launch]').exists();
         assert.dom('[data-test-image-change="#repo2docker#r-base"]').exists();
         assert.dom('[data-test-image-selected="#repo2docker#r-base"]').exists();
         assert.dom('[data-test-image-selection]').doesNotExist();

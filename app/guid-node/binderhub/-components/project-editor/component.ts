@@ -7,9 +7,8 @@ import { inject as service } from '@ember/service';
 import DS from 'ember-data';
 import Intl from 'ember-intl/services/intl';
 import { requiredAction } from 'ember-osf-web/decorators/component';
-import BinderHubConfigModel from 'ember-osf-web/models/binderhub-config';
+import BinderHubConfigModel, { Image } from 'ember-osf-web/models/binderhub-config';
 import FileModel from 'ember-osf-web/models/file';
-import FileProviderModel from 'ember-osf-web/models/file-provider';
 import Node from 'ember-osf-web/models/node';
 import CurrentUser from 'ember-osf-web/services/current-user';
 import getHref from 'ember-osf-web/utils/get-href';
@@ -25,7 +24,7 @@ enum DockerfileProperty {
     RMran,
     RCran,
     RGitHub,
-    PostInstall,
+    PostBuild,
     NoChanges,
 }
 
@@ -87,10 +86,12 @@ function removeQuotes(item: string) {
 
 interface ConfigurationFile {
     name: string;
-    property: 'dockerfile' | 'environment' | 'requirements' | 'apt' | 'installR';
-    modelProperty: 'dockerfileModel' | 'environmentModel' | 'requirementsModel' | 'aptModel' | 'installRModel';
+    property: 'dockerfile' | 'environment' | 'requirements' | 'apt' | 'installR' | 'postBuild';
+    modelProperty: 'dockerfileModel' | 'environmentModel' | 'requirementsModel' | 'aptModel' | 'installRModel' |
+        'postBuildModel';
     changedProperty: 'dockerfileManuallyChanged' | 'environmentManuallyChanged' |
-        'requirementsManuallyChanged' | 'aptManuallyChanged' | 'installRManuallyChanged';
+        'requirementsManuallyChanged' | 'aptManuallyChanged' | 'installRManuallyChanged' |
+        'postBuildManuallyChanged';
 }
 
 interface ImageURL {
@@ -120,17 +121,15 @@ export default class ProjectEditor extends Component {
 
     installRModel: FileModel | null = this.installRModel;
 
-    postInstallScriptModel: FileModel | null = this.postInstallScriptModel;
-
-    configStorageProvider: FileProviderModel = this.configStorageProvider;
+    postBuildModel: FileModel | null = this.postBuildModel;
 
     showResetDockerfileConfirmDialog = false;
 
     imageSelectable = false;
 
-    loadingPath?: string;
+    postBuildOpen = false;
 
-    refreshingPostInstallScript = false;
+    loadingPath?: string;
 
     dockerfile: string | undefined = undefined;
 
@@ -141,6 +140,10 @@ export default class ProjectEditor extends Component {
     apt: string | undefined = undefined;
 
     installR: string | undefined = undefined;
+
+    postBuild: string | undefined = undefined;
+
+    editingPostBuild: string | undefined = undefined;
 
     editingPackage: string | undefined = undefined;
 
@@ -156,7 +159,6 @@ export default class ProjectEditor extends Component {
         later(async () => {
             try {
                 await this.loadCurrentConfig();
-                await this.performRefreshPostInstall();
                 await this.mergeConfigurations();
             } catch (exception) {
                 this.onError(exception, this.intl.t('binderhub.error.load_files_error'));
@@ -235,6 +237,10 @@ export default class ProjectEditor extends Component {
         return this.verifyHashHeader(content);
     }
 
+    get postBuildManuallyChanged() {
+        return false;
+    }
+
     verifyHashHeader(content: string | undefined) {
         if (content === undefined) {
             return false;
@@ -249,6 +255,13 @@ export default class ProjectEditor extends Component {
         }
         const body = content.substring(line[0].length + 1);
         return md5(body.trim()) !== line[1];
+    }
+
+    checkEmptyScript(script: string | undefined): boolean {
+        if (!script) {
+            return true;
+        }
+        return script.trim().length === 0;
     }
 
     getUpdatedDockerfile(key: DockerfileProperty, value: string) {
@@ -278,11 +291,12 @@ export default class ProjectEditor extends Component {
             ? value.split(/\s/).filter(item => item.length > 0)
                 .map(item => parseCondaPackageId(item))
             : (this.rGitHubPackages || []);
-        const hasPostInstall = key === DockerfileProperty.PostInstall
-            ? value === 'true'
-            : this.hasPostInstall;
+        const postBuild = key === DockerfileProperty.PostBuild
+            ? value
+            : this.postBuild;
+        const hasPostBuild = !this.checkEmptyScript(postBuild);
         const superuser = aptPackages.length > 0
-            || hasPostInstall
+            || hasPostBuild
             || (condaPackages.length > 0 && this.condaSupported)
             || (pipPackages.length > 0 && this.pipSupported)
             || (rCranPackages.length > 0 && this.rCranSupported)
@@ -315,13 +329,13 @@ export default class ProjectEditor extends Component {
             content += rGitHubPackages.map(pid => getRGitHubScript(pid)).join(' \\\n\t&& ');
             content += '\n\n';
         }
-        if (hasPostInstall === true) {
-            content += 'COPY postInstall /\n';
-            content += 'RUN chmod +x /postInstall && /postInstall\n';
-            content += '\n';
-        }
         if (superuser) {
             content += 'USER $NB_USER\n';
+        }
+        if (hasPostBuild === true) {
+            content += 'COPY postBuild /\n';
+            content += 'RUN chmod +x /postBuild && /postBuild\n';
+            content += '\n';
         }
         content += 'COPY * ./\n';
         const checksum = md5(content.trim());
@@ -341,7 +355,10 @@ export default class ProjectEditor extends Component {
             ? value.split(/\s/).filter(item => item.length > 0)
             : baseCondaPackages.map(pkg => getCondaPackageId(pkg));
         if (imageURL.params) {
-            condaPackages = condaPackages.concat(imageURL.params.map(pkg => getCondaPackageId(pkg)));
+            const baseParams = imageURL.params;
+            const userPackageNames = condaPackages.map(pkg => parseCondaPackageId(pkg)[0]);
+            const params = baseParams.filter(pkgName => !userPackageNames.includes(pkgName[0]));
+            condaPackages = condaPackages.concat(params.map(pkg => getCondaPackageId(pkg)));
         }
         let content = `name: "${imageURL.fullurl}"\n`;
         if (condaPackages.length > 0) {
@@ -415,6 +432,13 @@ export default class ProjectEditor extends Component {
         return `# rdm-binderhub:hash:${checksum}\n${content}`;
     }
 
+    getUpdatedPostBuild(key: DockerfileProperty, value: string): string {
+        if (key === DockerfileProperty.PostBuild) {
+            return value;
+        }
+        return this.postBuild || '';
+    }
+
     updateFiles(key: DockerfileProperty, value: string) {
         if (this.manuallyChanged) {
             // Skip updating
@@ -462,14 +486,14 @@ export default class ProjectEditor extends Component {
         if (!deployment) {
             return [];
         }
-        const image = this.get('selectedImage');
+        const image: Image | null = this.get('selectedImage');
         if (image === null) {
-            return deployment.images;
+            return this.modifyImagesForLocale(deployment.images);
         }
         if (this.get('imageSelectable')) {
-            return deployment.images;
+            return this.modifyImagesForLocale(deployment.images);
         }
-        return [image];
+        return [this.modifyImageForLocale(image)];
     }
 
     @computed('selectedImageUrl', 'deployment')
@@ -579,8 +603,8 @@ export default class ProjectEditor extends Component {
             if (!imageURL.params) {
                 return packages;
             }
-            const packageNames = imageURL.params.map(param => param[0]);
-            return packages.filter(pkg => !packageNames.includes(pkg[0]));
+            const systemPackages = imageURL.params.map(param => getCondaPackageId(param));
+            return packages.filter(pkg => !systemPackages.includes(getCondaPackageId(pkg)));
         }
         const dockerfileStatements = this.get('dockerfileStatements');
         if (dockerfileStatements === null) {
@@ -727,20 +751,6 @@ export default class ProjectEditor extends Component {
         return packages;
     }
 
-    @computed('dockerfileStatements')
-    get hasPostInstall() {
-        const dockerfileStatements = this.get('dockerfileStatements');
-        if (dockerfileStatements === null) {
-            return null;
-        }
-        if (dockerfileStatements.some(
-            line => line.match(/^COPY\s+postInstall.*$/) !== null,
-        )) {
-            return true;
-        }
-        return false;
-    }
-
     @computed('dockerfile')
     get dockerfileStatements() {
         if (this.dockerfileManuallyChanged) {
@@ -878,14 +888,6 @@ export default class ProjectEditor extends Component {
         return `${this.node.links.html}files`;
     }
 
-    @computed('environmentModel')
-    get postScriptName() {
-        if (this.get('environmentModel') === null) {
-            return 'postInstall';
-        }
-        return 'postBuild';
-    }
-
     parseImageURL(url: string | null): ImageURL {
         if (url === null) {
             return { fullurl: url, url, params: null };
@@ -935,13 +937,19 @@ export default class ProjectEditor extends Component {
                 modelProperty: 'installRModel',
                 changedProperty: 'installRManuallyChanged',
             },
+            {
+                name: 'postBuild',
+                property: 'postBuild',
+                modelProperty: 'postBuildModel',
+                changedProperty: 'postBuildManuallyChanged',
+            },
         ];
     }
 
     @computed(
         'dockerfileManuallyChanged', 'environmentManuallyChanged',
         'requirementsManuallyChanged', 'aptManuallyChanged',
-        'installRManuallyChanged',
+        'installRManuallyChanged', 'postBuildManuallyChanged',
     )
     get dirtyConfigurationFiles(): ConfigurationFile[] {
         return this.get('configurationFiles').filter(file => this.get(file.changedProperty));
@@ -974,35 +982,6 @@ export default class ProjectEditor extends Component {
         return envFile;
     }
 
-    async performRefreshPostInstall(reload: boolean = false) {
-        if (this.hasPostInstall === null) {
-            return;
-        }
-        if (!this.configFolder) {
-            return;
-        }
-        let { configFolder } = this;
-        if (reload) {
-            configFolder = await configFolder.reload();
-        }
-        const files = await configFolder.get('files');
-        if (!files) {
-            return;
-        }
-        const scriptFiles = files.filter(file => file.name === this.get('postScriptName'));
-        this.set('postInstallScriptModel', scriptFiles.length > 0 ? scriptFiles[0] : null);
-        if (scriptFiles.length === 0 && this.hasPostInstall === false) {
-            return;
-        }
-        if (scriptFiles.length > 0 && this.hasPostInstall === true) {
-            return;
-        }
-        this.updateFiles(
-            DockerfileProperty.PostInstall,
-            scriptFiles.length > 0 ? 'true' : 'false',
-        );
-    }
-
     async loadCurrentFile(file: ConfigurationFile, files: ArrayProxy<FileModel> | null) {
         const envFile = await this.getFile(file.name, files);
         if (!envFile) {
@@ -1031,7 +1010,7 @@ export default class ProjectEditor extends Component {
             throw new EmberError('Illegal config');
         }
         const envFile = await this.getFile(file.name, files);
-        if (content.length === 0) {
+        if (this.checkEmptyScript(content)) {
             this.set(file.modelProperty, null);
             this.set(file.property, '');
             if (!envFile) {
@@ -1046,13 +1025,7 @@ export default class ProjectEditor extends Component {
         }
         if (!envFile) {
             this.set(file.property, content);
-            const links = this.configStorageProvider.get('links');
-            await this.currentUser.authenticatedAJAX({
-                url: `${getHref(links.upload)}?name=${file.name}`,
-                type: 'PUT',
-                xhrFields: { withCredentials: true },
-                data: content,
-            });
+            await this.configFolder.createFile(file.name, content);
             return true;
         }
         this.set(file.property, content);
@@ -1118,6 +1091,7 @@ export default class ProjectEditor extends Component {
         props.requirements = this.getUpdatedRequirements(key, value);
         props.apt = this.getUpdatedApt(key, value);
         props.installR = this.getUpdatedInstallR(key, value);
+        props.postBuild = this.getUpdatedPostBuild(key, value);
         return props;
     }
 
@@ -1180,6 +1154,28 @@ export default class ProjectEditor extends Component {
         );
     }
 
+    @computed('editingPostBuild')
+    get editedPostBuild() {
+        return this.editingPostBuild !== undefined;
+    }
+
+    @action
+    editPostBuild(this: ProjectEditor, value: string) {
+        this.set('editingPostBuild', value);
+    }
+
+    @action
+    savePostBuild(this: ProjectEditor) {
+        if (this.editingPostBuild === undefined) {
+            return;
+        }
+        this.updateFiles(
+            DockerfileProperty.PostBuild,
+            this.editingPostBuild,
+        );
+        this.set('editingPostBuild', undefined);
+    }
+
     @action
     viewDirtyFiles(this: ProjectEditor) {
         const files = this.get('dirtyConfigurationFiles');
@@ -1213,16 +1209,20 @@ export default class ProjectEditor extends Component {
         }, 0);
     }
 
-    @action
-    refreshPostInstall(this: ProjectEditor) {
-        this.set('refreshingPostInstallScript', true);
-        later(async () => {
-            try {
-                await this.performRefreshPostInstall(true);
-            } catch (exception) {
-                this.onError(exception, this.intl.t('binderhub.error.modify_files_error'));
-            }
-            this.set('refreshingPostInstallScript', false);
-        }, 0);
+    modifyImagesForLocale(images: Image[]) {
+        return images.map(image => this.modifyImageForLocale(image));
+    }
+
+    modifyImageForLocale(baseImage: Image) {
+        if (!baseImage.description_en && !baseImage.description_ja) {
+            return baseImage;
+        }
+        const image: Image = { ...baseImage };
+        if (this.intl.locale.includes('ja')) {
+            image.description = image.description_ja;
+        } else {
+            image.description = image.description_en;
+        }
+        return image;
     }
 }

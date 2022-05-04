@@ -21,6 +21,9 @@ export default class GuidNodeBinderHubRoute extends Route.extend(ConfirmationMix
         await taskInstance;
         const node = taskInstance.value;
 
+        const controller = this.controller as GuidNodeBinderHub;
+        await controller.ensureConfigFolder();
+
         this.analytics.trackPage(node ? node.public : undefined, 'nodes');
     }
 

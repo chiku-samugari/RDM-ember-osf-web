@@ -29,12 +29,16 @@ export interface JupyterHub {
     authorize_url: string | null;
     token?: Token;
     api_url?: string;
+    logout_url?: string | null;
+    max_servers?: number | null;
 }
 
 export interface Image {
     url: string;
     name: string;
-    description: string;
+    description?: string;
+    description_en?: string;
+    description_ja?: string;
     packages?: string[];
 }
 

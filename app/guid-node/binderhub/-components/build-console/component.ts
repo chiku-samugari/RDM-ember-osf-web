@@ -16,6 +16,8 @@ import $ from 'jquery';
 export default class BuildConsole extends Component {
     binderHubConfig: DS.PromiseObject<BinderHubConfigModel> & BinderHubConfigModel = this.binderHubConfig;
 
+    initialized: boolean = false;
+
     buildLog: BuildMessage[] | null = this.buildLog;
 
     buildLogLineCount = 0;
@@ -46,9 +48,10 @@ export default class BuildConsole extends Component {
         if (!this.selectedBinderhubUrlForJupyterHub && urlForJhub) {
             this.selectedBinderhubUrlForJupyterHub = urlForJhub;
         }
-        if (!this.validateTokens()) {
+        if (!this.initialized && !this.validateTokens()) {
             return;
         }
+        this.initialized = true;
         if (!this.buildLog) {
             return;
         }
@@ -152,7 +155,11 @@ export default class BuildConsole extends Component {
             throw new EmberError('Insufficient parameters');
         }
         this.set('notAuthorized', false);
-        this.performBuild(path);
+        const defaultPath = {
+            path: 'lab/',
+            pathType: 'url',
+        } as BootstrapPath;
+        this.performBuild(path || defaultPath);
     }
 
     @action

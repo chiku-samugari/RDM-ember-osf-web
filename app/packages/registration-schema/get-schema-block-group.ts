@@ -42,6 +42,7 @@ export function getSchemaBlockGroups(blocks: SchemaBlock[] | undefined) {
             case 'e-rad-award-number-input':
             case 'e-rad-award-title-ja-input':
             case 'e-rad-award-title-en-input':
+            case 'e-rad-award-field-input':
             case 'e-rad-researcher-number-input':
             case 'e-rad-researcher-name-ja-input':
             case 'e-rad-researcher-name-en-input':

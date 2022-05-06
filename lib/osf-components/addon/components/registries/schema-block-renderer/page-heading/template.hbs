@@ -4,8 +4,8 @@
     id={{@schemaBlock.elementId}}
     ...attributes
 >
-    {{@schemaBlock.displayText}}
+    {{this.localizedDisplayText}}
 </h2>
 {{#if this.isEditableForm}}
-    <p local-class='PageHeading_helper'>{{this.schemaBlock.helpText}}</p>
+    <p local-class='PageHeading_helper'>{{this.localizedHelpText}}</p>
 {{/if}}

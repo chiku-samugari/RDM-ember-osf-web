@@ -15,7 +15,7 @@ import template from './template';
 
 @layout(template)
 @tagName('')
-export default class ERadAwardFunderInput extends Component {
+export default class ERadAwardFieldInput extends Component {
     @service intl!: Intl;
     // Required param
     optionBlocks!: SchemaBlock[];
@@ -28,7 +28,7 @@ export default class ERadAwardFunderInput extends Component {
 
     didReceiveAttrs() {
         assert(
-            'SchemaBlockRenderer::Editable::ERadAwardFunderInput requires optionBlocks to render',
+            'SchemaBlockRenderer::Editable::ERadAwardFieldInput requires optionBlocks to render',
             Boolean(this.optionBlocks),
         );
     }

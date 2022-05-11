@@ -330,7 +330,7 @@ export default class ProjectEditor extends Component {
             content += '\n\n';
         }
         if (hasPostBuild === true) {
-            content += 'COPY postBuild /\n';
+            content += 'COPY ./.binder/postBuild /\n';
             content += 'RUN chmod +x /postBuild\n';
             content += '\n';
         }

@@ -329,12 +329,16 @@ export default class ProjectEditor extends Component {
             content += rGitHubPackages.map(pid => getRGitHubScript(pid)).join(' \\\n\t&& ');
             content += '\n\n';
         }
-        if (superuser) {
-            content += 'USER $NB_USER\n';
-        }
         if (hasPostBuild === true) {
             content += 'COPY postBuild /\n';
-            content += 'RUN chmod +x /postBuild && /postBuild\n';
+            content += 'RUN chmod +x /postBuild\n';
+            content += '\n';
+        }
+        if (superuser) {
+            content += 'USER $NB_USER\n\n';
+        }
+        if (hasPostBuild === true) {
+            content += 'RUN /postBuild\n';
             content += '\n';
         }
         content += 'COPY * ./\n';
@@ -1156,7 +1160,7 @@ export default class ProjectEditor extends Component {
 
     @computed('editingPostBuild')
     get editedPostBuild() {
-        return this.editingPostBuild !== undefined;
+        return this.editingPostBuild !== undefined && this.editingPostBuild !== this.postBuild;
     }
 
     @action

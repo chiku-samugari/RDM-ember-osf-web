@@ -171,6 +171,7 @@
                             rows='4'
                             placeholder={{t 'binderhub.deployment.post_build_placeholder'}}
                             value={{this.postBuild}}
+                            onkeyup={{action this.editPostBuild value='target.value'}}
                             onchange={{action this.editPostBuild value='target.value'}}
                         />
 

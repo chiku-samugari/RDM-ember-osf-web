@@ -551,6 +551,7 @@ node_navbar:
     settings: Settings
     comments: Comments
     binderhub: Computation
+    metadata: Metadata
 status:
     welcome_message: '<h1>Welcome to GakuNin RDM!</h1><p>Visit our <a href="https://openscience.zendesk.com/hc/en-us" target="_blank" rel="noreferrer">Guides</a> to learn about creating a project, or get inspiration from <a href="https://osf.io/explore/activity/#popularPublicProjects">popular public projects</a>.</p>'
     alternate_email_error: 'The email address has <b>NOT</b> been added to your account. Please log out and revisit the link in your email. Thank you.'
@@ -634,19 +635,19 @@ node:
         draft_registrations: 'Draft Registrations'
     metadata:
         new_report_modal:
-            title: Report
-            info: 'Registration creates a frozen version of the project. Your original project remains editable and will have the registration linked. Things to know about registration:<ul><li><strong>Registrations cannot be edited or deleted.</strong></li><li>Withdrawing a registration removes its contents, but leaves behind basic metadata: title, contributors, date registered, date withdrawn, and justification (if provided).</li><li>Registrations can be public or embargoed for up to four years. Embargoed registrations will be made public automatically when the embargo expires.</li></ul>Continue your registration by selecting a registration form:'
-            create: 'Create report'
-        page_title: '{nodeTitle} Reports'
-        only_admins_can_initiate: 'Only project administrators can initiate reports.'
-        no_reports: 'There are no reports of this project.'
-        no_drafts: 'There are no draft reports of this project.'
-        start_new: 'Start a new report by clicking the “New report” button. Once created, reports cannot be edited or deleted.'
+            title: Metadata
+            info: 'Select the schema of the metadata you wish to create from the following:<ul><li>Metadata can be filled in with items defined in the schema.</li><li>You can register metadata for files included in this project in the metadata.</li><li>Files compliant with the report format can be downloaded from the metadata and used for the application.</li></ul>'
+            create: 'Create Metadata'
+        page_title: '{nodeTitle} Metadata'
+        only_admins_can_initiate: 'Only project administrators can initiate metadata.'
+        no_reports: 'There are no metadata of this project.'
+        no_drafts: 'There are no draft metadata of this project.'
+        start_new: 'Start to edit a new metadata by clicking the “New metadata” button. Once created, metadata cannot be edited or deleted.'
         register_entire_project: 'To register the entire project "{rootNodeTitle}" instead, click'
         here: here
-        new: 'New report'
-        reports: Reports
-        draft_reports: 'Draft Reports'
+        new: 'New metadata'
+        reports: Metadata
+        draft_reports: 'Draft Metadata'
 delete_modal:
     title: 'Are you sure you want to delete this {nodeType}?'
     body: 'It will no longer be available to other contributors on the {nodeType}.'
@@ -1244,7 +1245,7 @@ registries:
         clearAll: 'Clear All'
     finalizeRegistrationModal:
         title: 'Almost done...'
-        notice: "Please keep in mind that:\n                <ul>\n                    <li>\n                        Registrations cannot be modified or deleted once completed.\n                    </li>\n                    <li>\n                        The content and version history of Wiki and GakuNin RDM Storage will be copied to the registration.\n                    </li>\n                    <li>\n                        This project contains links to other projects. These links will be copied into your registration, but the\n                        projects that they link to will not be registered. If you wish to register the linked projects, they must be\n                        registered separately. <a href='{learnMoreLink}' target='_blank' rel='noopener noreferrer'>Learn more about links</a>.\n                    </li>\n                </ul>"
+        notice: "Please keep in mind that:\n                <ul>\n                    <li>\n                        Registrations cannot be modified or deleted once completed.\n                    </li>\n</ul>"
         immediateOption: 'Make registration public immediately'
         embargoOption: 'Enter registration into embargo'
         createDoi: 'Create DOI'
@@ -1818,6 +1819,7 @@ binderhub:
 metadata:
     file-metadata-input:
         no_metadata: 'No files'
+        no_metadata_editable: 'File metadata is not registered. You can edit the file metadata on the project page and register it in this draft:'
     draft-registration-card:
         export: 'Export'
     registration-card:

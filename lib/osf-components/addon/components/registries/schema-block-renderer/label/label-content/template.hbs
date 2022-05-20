@@ -2,7 +2,7 @@
 <p
     ...attributes
     local-class='DisplayText'>
-    {{~@schemaBlock.displayText~}}
+    {{~this.localizedDisplayText~}}
     {{~#if (and @isRequired (not @readonly))~}}
         <span local-class='Required'>*</span>
     {{~/if~}}

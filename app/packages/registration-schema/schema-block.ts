@@ -16,6 +16,7 @@ export type SchemaBlockType =
     'e-rad-award-number-input' |
     'e-rad-award-title-ja-input' |
     'e-rad-award-title-en-input' |
+    'e-rad-award-field-input' |
     'e-rad-researcher-number-input' |
     'e-rad-researcher-name-ja-input' |
     'e-rad-researcher-name-en-input' |

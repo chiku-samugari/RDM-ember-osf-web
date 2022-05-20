@@ -30,14 +30,24 @@
                     {{/if}}
                 {{/if}}
                 {{node-card/node-icon category=@node.category}}
-                <OsfLink
-                    data-analytics-name='Title'
-                    data-test-node-title='{{@node.id}}'
-                    @route='resolve-guid'
-                    @models={{array @node.id}}
-                >
-                    {{@node.title}}
-                </OsfLink>
+                {{#if this.schemaUrl}}
+                    <OsfLink
+                        data-analytics-name='Title'
+                        data-test-node-title='{{@node.id}}'
+                        @href={{this.schemaUrl}}
+                    >
+                        {{@node.title}}
+                    </OsfLink>
+                {{else}}
+                    <OsfLink
+                      data-analytics-name='Title'
+                      data-test-node-title='{{@node.id}}'
+                      @route='resolve-guid'
+                      @models={{array @node.id}}
+                    >
+                        {{@node.title}}
+                    </OsfLink>
+                {{/if}}
             {{else}}
                 <ContentPlaceholders as |placeholder|>
                     <placeholder.heading @subtitle={{false}} />

@@ -79,6 +79,19 @@ export default class NodeCard extends Component {
         return undefined;
     }
 
+    @computed('node', 'node.{isRegistration,registrationSchema}')
+    get schemaUrl(): string | undefined {
+        if (this.node && this.node.isRegistration) {
+            const registration = this.node as Registration;
+            const registrationId = registration.get('id');
+            const schemaId = registration.registrationSchema.get('id');
+            if (registrationId && schemaId) {
+                return `/${registrationId}/register/${schemaId}`;
+            }
+        }
+        return undefined;
+    }
+
     @computed('readOnly', 'node', 'node.{nodeType,userHasWritePermission}')
     get showDropdown() {
         return !this.readOnly && this.node && this.node.nodeType === NodeType.Fork && this.node.userHasWritePermission;

@@ -79,7 +79,7 @@ export default class NodeNavbar extends Component {
         this.getAddons()
             .then(addons => {
                 result = addons
-                    .filter(addon => addon.id === 'metadata')
+                    .filter(addon => addon.id === 'metadata' && addon.configured)
                     .length > 0;
                 this.set('metadataEnabled', result);
             });

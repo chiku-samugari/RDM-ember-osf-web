@@ -551,6 +551,7 @@ node_navbar:
     settings: 設定
     comments: コメント
     binderhub: 解析
+    metadata: メタデータ
 status:
     welcome_message: '<h1>GakuNin RDMへようこそ!</h1><p><a href="https://openscience.zendesk.com/hc/en-us" target="_blank" rel="noreferrer">プロジェクトの作成方法について学ぶ</a>か、<a href="https://osf.io/explore/activity/#popularPublicProjects">一般的な公開プロジェクトからインスピレーションを得ます</a>。</p>'
     alternate_email_error: '<b>メールアドレスがアカウントに追加されていません</ b>。 ログアウトして、メールのリンクを再確認してください。 ありがとうございました。'
@@ -581,7 +582,7 @@ node_card:
         manage_contributors: メンバーを管理する
     registration:
         private_tooltip: この登録は非公開です
-        timestamp_label: '登録済み:'
+        timestamp_label: '登録日:'
         statuses:
             pending: 登録待ち
             withdrawn: 脱退している
@@ -634,19 +635,19 @@ node:
         draft_registrations: ドラフト登録
     metadata:
         new_report_modal:
-            title: 報告
-            info: '報告により、プロジェクトの凍結バージョンが作成されます。 元のプロジェクトは編集可能なままで、報告がリンクされます。 報告について知っておくべきこと：<ul> <li> <strong>報告を編集または削除することはできません。</ strong> </ li> <li>報告を取り消すと、そのコンテンツは削除されますが、タイトル、投稿者、 報告日、撤回日、正当化（提供されている場合）。</ li> <li>報告は、最大4年間公開または停止できます。 停止の報告は、禁輸の有効期限が切れると自動的に公開されます。</ li> </ ul>報告フォームを選択して報告を続行します。'
-            create: 報告書を作成
-        page_title: '{nodeTitle} 報告書'
-        only_admins_can_initiate: プロジェクト管理者のみが報告を開始できます。
-        no_reports: このプロジェクトの報告書はありません。
-        no_drafts: このプロジェクトの報告草案はありません。
-        start_new: '「新規報告」ボタンをクリックして、新規報告を開始します。 作成した報告書は、編集または削除できません。'
+            title: メタデータ
+            info: '新規に作成したいメタデータのスキーマ(様式)を以下から選択してください。<ul><li>メタデータにはスキーマに定義された項目を入力することができます。</li><li>メタデータには、このプロジェクトに含まれるファイルのメタデータを登録することができます。</li><li>メタデータから報告書様式に準拠したファイルをダウンロードし、申請に利用することができます。</li></ul>'
+            create: メタデータを作成
+        page_title: '{nodeTitle} メタデータ'
+        only_admins_can_initiate: プロジェクト管理者のみがメタデータ作成を開始できます。
+        no_reports: このプロジェクトのメタデータはありません。
+        no_drafts: このプロジェクトのドラフトメタデータはありません。
+        start_new: '「新規メタデータ」ボタンをクリックして、新規メタデータ作成を開始します。登録したメタデータは、編集または削除できません。'
         register_entire_project: '代わりにプロジェクト"{rootNodeTitle}"全体を報告するには、クリックします。'
         here: こちら
-        new: 新規報告
-        reports: 報告書
-        draft_reports: ドラフト報告
+        new: 新規メタデータ
+        reports: メタデータ
+        draft_reports: ドラフトメタデータ
 delete_modal:
     title: 'この{nodeType}を削除してもよろしいですか？'
     body: '{nodeType}の他の投稿者は利用できなくなります。'
@@ -1011,20 +1012,20 @@ registries:
                 load_institutions_error: 'Failed to load affiliated institutions'
             form:
                 title: 登録フォームに記入
-                next: Next
-                back: Back
+                next: 次へ
+                back: 戻る
                 save_draft: 'Save draft'
                 new_registration: 'New registration'
-                last_saved: 'Auto-saved: '
+                last_saved: '自動保存済み: '
                 save_failed: 'Save failed. Unsaved changes present.'
                 failed_auto_save: 'Failed to auto-save draft registration form'
             review:
                 title: 送信前に登録を確認する
-                page_label: Review
-                start_review: Review
-                invalid_warning: 'Please address invalid or missing entries to complete registration.'
+                page_label: 内容確認
+                start_review: 内容確認
+                invalid_warning: 'メタデータを登録するには、各項目に正しい内容を入力してください。'
                 toggle_dropdown: 'Toggle navigation dropdown'
-            register: Register
+            register: 登録
             submit_error: 'Unable to create a registration.'
     index:
         lead: '<span class="f-w-lg">オープン</span> レジストリネットワーク'
@@ -1243,13 +1244,13 @@ registries:
         selectAll: 全選択
         clearAll: 全クリア
     finalizeRegistrationModal:
-        title: 'Almost done...'
-        notice: "Please keep in mind that:\n                <ul>\n                    <li>\n                        Registrations cannot be modified or deleted once completed.\n                    </li>\n                    <li>\n                        The content and version history of Wiki and GakuNin RDM Storage will be copied to the registration.\n                    </li>\n                    <li>\n                        This project contains links to other projects. These links will be copied into your registration, but the\n                        projects that they link to will not be registered. If you wish to register the linked projects, they must be\n                        registered separately. <a href='{learnMoreLink}' target='_blank' rel='noopener noreferrer'>Learn more about links</a>.\n                    </li>\n                </ul>"
+        title: '登録する前に...'
+        notice: "メタデータを登録する際は、以下の点に注意してください:\n                <ul>\n                    <li>\n                        登録した内容は編集や削除はできません。\n                    </li>\n                </ul>"
         immediateOption: 'Make registration public immediately'
         embargoOption: 'Enter registration into embargo'
         createDoi: 'Create DOI'
-        submit: Submit
-        back: Back
+        submit: 登録
+        back: 戻る
         datePlaceholder: 'Choose embargo end date'
 meetings:
     index:
@@ -1363,11 +1364,11 @@ routes:
         email: Eメール
 osf-components:
     draft-registration-card:
-        initiated_by: '次によって開始される:'
-        form_type: 'Form:'
-        started: '開始しました:'
+        initiated_by: '開始したユーザ:'
+        form_type: 'スキーマ:'
+        started: '開始日:'
         last_updated: '最終更新日:'
-        review: Review
+        review: 内容確認
         delete_draft_confirm: このドラフト登録を削除してもよろしいですか？
     copyable-text:
         copyToClipboard: クリップボードへコピー
@@ -1818,6 +1819,7 @@ binderhub:
 metadata:
     file-metadata-input:
         no_metadata: 'ファイルはありません'
+        no_metadata_editable: 'ファイルメタデータは登録されていません。プロジェクトページでファイルのメタデータを編集し、このドラフトに登録することができます:'
     draft-registration-card:
         export: 'エクスポート'
     registration-card:

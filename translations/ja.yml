@@ -1762,16 +1762,20 @@ iqbrims:
 binderhub:
     page_title: '{nodeTitle} BidnerHub'
     jupyter_servers_list:
-        header: 'このプロジェクトから作成した私の解析環境'
+        header: '私の解析環境'
         delete_confirm_dialog_title: '削除確認'
         delete_confirm_dialog_body: 'サーバーを削除しますか？ '
     project_editor:
         header: '新しい解析環境'
-        tab_editproject: 'このプロジェクトから作成'
-        tab_externalrepo: '外部リポジトリから作成'
     loading: 'BinderHub設定を読み込んでいます...'
     servers:
-        username: 'ログイン中: '
+        host: 'ホスト: '
+        username: 'ユーザー: '
+        server_exists: 'このプロジェクトから作った解析環境が {servers} 個あります。'
+        server_not_exists: 'このプロジェクトから作った解析環境はありません。'
+        max_servers_exceeded: '解析環境の数が上限に達しています。'
+        server_hub_home: 'すべての解析環境を表示'
+        logout: 'ログアウト'
         name: '解析環境名'
         url: 'URL'
         last_activity: '最終更新'
@@ -1779,10 +1783,12 @@ binderhub:
         delete: '削除'
         no_servers: '解析環境はありません'
     deployment:
+        header: '環境作成'
+        description: 'このプロジェクトのデフォルトストレージの内容がコピーされます。'
         launch: '起動'
-        environment: '環境'
+        environment: '基本イメージ'
         additionalpackages: '追加パッケージ'
-        postinstallscript: 'インストール後に実行するスクリプト'
+        postinstallscript: '自動実行スクリプト'
         select_environment: '選択'
         change_environment: '変更'
         add_package: '追加'
@@ -1790,14 +1796,11 @@ binderhub:
         reset_dockerfile: 'リセット: '
         unavailable: '設定ファイルがエディタ以外で変更されました。'
         no_environment: 'エディタにより設定された環境ではありません。'
-        has_post_install: 'postInstallスクリプトを使用します。'
-        no_post_install: 'デフォルトストレージ内にpostInstallスクリプトを定義すると、イメージビルド時に任意の処理を実行できます。'
-        has_post_build: 'postBuildスクリプトを使用します。'
-        no_post_build: 'デフォルトストレージ内にpostBuildスクリプトを定義すると、イメージビルド時に任意の処理を実行できます。'
-        open_post_install: 'ファイルを開く'
-        open_node_files: 'ファイル一覧を開く'
-        refresh_post_install: '更新'
-        refreshing_post_install: '更新中...'
+        post_build_placeholder: |-
+            #!/bin/bash
+            set -x
+            ...
+        save_post_build: '保存'
         mran_version_setting_error: 'MRANにバージョン番号を指定することはできません。'
         reset_dockerfile_confirm_dialog_title: 'リセット: '
         reset_dockerfile_confirm_dialog_body: 'リセットしたファイルは元に戻すことはできません。続行しますか？'
@@ -1807,6 +1810,7 @@ binderhub:
     build:
         launch: '起動'
         status: 'ビルド状況'
+        launch_new_enviornment: '新しい解析環境を作成: {binderhubUrl}'
     error:
         binderhub_auth_error: 'BinderHubと接続する必要があります。再認証してください。'
         binderhub_build_error: 'BinderHubとの接続時にエラーが発生しました。'

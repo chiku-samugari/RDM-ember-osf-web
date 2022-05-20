@@ -19,15 +19,8 @@
         {{t 'binderhub.loading'}}
     {{else}}
         <div local-class='jupyterhub-server-menu'>
-            {{#if this.defaultJupyterhubUser}}
-                <div local-class='jupyterhub-user'>
-                    {{t 'binderhub.servers.username'}}
-                    <span data-test-jupyterhub-user>
-                        {{this.defaultJupyterhubUser}}
-                    </span>
-                </div>
-            {{/if}}
             <div local-class='jupyterhub-selector'>
+                {{t 'binderhub.servers.host'}}
                 <select
                     data-test-jupyterhub-selection
                     onchange={{action this.binderhubChanged value='target.value'}}
@@ -43,73 +36,115 @@
                 </select>
             </div>
         </div>
-        <div local-class='toolbar-button'>
-            <button
-                data-test-server-refresh-button
-                type='button'
-                class='btn btn-default'
-                local-class='refresh-button'
-                {{action this.refreshServers target=this}}
-            >
-                {{fa-icon 'fa-undo'}}
-            </button>
-        </div>
-        <table class='table table-responsive'>
-            <thead>
-                <tr>
-                    <th class='col-md-2'>{{t 'binderhub.servers.name'}}</th>
-                    <th class='col-md-3'>{{t 'binderhub.servers.url'}}</th>
-                    <th class='col-md-3'>{{t 'binderhub.servers.last_activity'}}</th>
-                    <th class='col-md-2'>{{t 'binderhub.servers.launch'}}</th>
-                    <th class='col-md-2'>{{t 'binderhub.servers.delete'}}</th>
-                </tr>
-            </thead>
-            <tbody local-class='jupyter-server'>
-                {{#if this.servers.length}}
-                    {{#each this.servers as |server|}}
-                        <tr>
-                            <td class='col-md-2'>{{server.entry.name}}</td>
-                            <td class='col-md-3'>
-                                {{#if server.entry.ready}}
+        {{#if (not this.apiLoaded)}}
+            <a href={{this.serversLink}} target='_blank' rel='noopener'>
+                {{t 'binderhub.servers.server_hub_home'}}
+            </a>
+        {{else}}
+            <div local-class='jupyterhub-server-submenu'>
+                <div local-class='jupyterhub-servers'>
+                    {{#if (eq this.servers.length 0)}}
+                        {{t 'binderhub.servers.server_not_exists'}}
+                    {{else}}
+                        {{t
+                            'binderhub.servers.server_exists'
+                            servers=this.servers.length
+                        }}
+                    {{/if}}
+                    {{#if this.maxServersExceeded}}
+                        <strong local-class='max-servers-exceeded'>
+                            {{t 'binderhub.servers.max_servers_exceeded'}}
+                        </strong>
+                    {{/if}}
+                    <a href={{this.serversLink}} target='_blank' rel='noopener'>
+                        {{t 'binderhub.servers.server_hub_home'}}
+                    </a>
+                </div>
+                {{#if this.defaultJupyterhubUser}}
+                    <div local-class='jupyterhub-user'>
+                        {{t 'binderhub.servers.username'}}
+                        <span data-test-jupyterhub-user>
+                            {{this.defaultJupyterhubUser}}
+                        </span>
+                        {{#if this.canLogout}}
+                            <OsfButton
+                                @type='link'
+                                @onClick={{action this.performLogout}}
+                            >
+                                {{t 'binderhub.servers.logout'}}
+                            </OsfButton>
+                        {{/if}}
+                    </div>
+                {{/if}}
+            </div>
+            <div local-class='toolbar-button'>
+                <button
+                    data-test-server-refresh-button
+                    type='button'
+                    class='btn btn-default'
+                    local-class='refresh-button'
+                    {{action this.refreshServers target=this}}
+                >
+                    {{fa-icon 'fa-undo'}}
+                </button>
+            </div>
+            <table class='table table-responsive'>
+                <thead>
+                    <tr>
+                        <th class='col-md-2'>{{t 'binderhub.servers.name'}}</th>
+                        <th class='col-md-3'>{{t 'binderhub.servers.url'}}</th>
+                        <th class='col-md-3'>{{t 'binderhub.servers.last_activity'}}</th>
+                        <th class='col-md-2'>{{t 'binderhub.servers.launch'}}</th>
+                        <th class='col-md-2'>{{t 'binderhub.servers.delete'}}</th>
+                    </tr>
+                </thead>
+                <tbody local-class='jupyter-server'>
+                    {{#if this.servers.length}}
+                        {{#each this.servers as |server|}}
+                            <tr>
+                                <td class='col-md-2'>{{server.entry.name}}</td>
+                                <td class='col-md-3'>
+                                    {{#if server.entry.ready}}
+                                        <button
+                                            data-test-server-link
+                                            type='button'
+                                            class='btn btn-link'
+                                            local-class='jupyter-link'
+                                            {{action this.openServer server target=this}}
+                                        >
+                                            {{server.entry.url}}
+                                        </button>
+                                    {{/if}}
+                                </td>
+                                <td class='col-md-3'> {{moment-format server.entry.last_activity 'YYYY-MM-DD hh:mm A'}}</td>
+                                <td class='col-md-2'>
+                                    <GuidNode::Binderhub::-Components::LaunchButtons
+                                        @binderHubConfig={{this.binderHubConfig}}
+                                        @onClick={{action this.openServerWithPath server}}
+                                    />
+                                </td>
+                                <td class='col-md-2'>
                                     <button
                                         data-test-server-link
                                         type='button'
-                                        class='btn btn-link'
-                                        local-class='jupyter-link'
-                                        {{action this.openServer server target=this}}
+                                        class='btn btn-default'
+                                        {{action (mut this.showDeleteConfirmDialogTarget) server}}
                                     >
-                                        {{server.entry.url}}
+                                        {{fa-icon 'fa-trash'}}
                                     </button>
-                                {{/if}}
-                            </td>
-                            <td class='col-md-3'> {{moment-format server.entry.last_activity 'YYYY-MM-DD hh:mm A'}}</td>
-                            <td class='col-md-2'>
-                                <GuidNode::Binderhub::-Components::LaunchButtons
-                                    @binderHubConfig={{this.binderHubConfig}}
-                                    @onClick={{action this.openServerWithPath server}}
-                                />
-                            </td>
-                            <td class='col-md-2'>
-                                <button
-                                    data-test-server-link
-                                    type='button'
-                                    class='btn btn-default'
-                                    {{action (mut this.showDeleteConfirmDialogTarget) server}}
-                                >
-                                    {{fa-icon 'fa-trash'}}
-                                </button>
+                                </td>
+                            </tr>
+                        {{/each}}
+                    {{else}}
+                        <tr>
+                            <td colspan='5' class='col-md-12' local-class='no-jupyter-servers'>
+                                {{t 'binderhub.servers.no_servers'}}
                             </td>
                         </tr>
-                    {{/each}}
-                {{else}}
-                    <tr>
-                        <td colspan='5' class='col-md-12' local-class='no-jupyter-servers'>
-                            {{t 'binderhub.servers.no_servers'}}
-                        </td>
-                    </tr>
-                {{/if}}
-            </tbody>
-        </table>
+                    {{/if}}
+                </tbody>
+            </table>
+        {{/if}}
     {{/if}}
     <BsModal
         data-test-delete-server-confirm-modal

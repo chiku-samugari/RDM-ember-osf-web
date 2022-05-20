@@ -148,52 +148,47 @@
                         {{/if}}
                     {{/if}}
                 </div>
-                <h3>{{t 'binderhub.deployment.postinstallscript'}}</h3>
-                <div local-class='postscript_view'>
-                    <div local-class='postscript_status'>
-                        {{#if this.postInstallScriptModel}}
-                            {{#if this.environmentModel}}
-                                {{t 'binderhub.deployment.has_post_build'}}
-                            {{else}}
-                                {{t 'binderhub.deployment.has_post_install'}}
-                            {{/if}}
-                            <a
-                                href={{this.postInstallScriptModel.links.html}}
-                                target='_blank'
-                                rel='noopener'
-                            >
-                                {{t 'binderhub.deployment.open_post_install'}}
-                            </a>
+                <h3>
+                    {{t 'binderhub.deployment.postinstallscript'}}
+                    <OsfButton
+                        @type='link'
+                        @onClick={{action (mut this.postBuildOpen) (not this.postBuildOpen)}}
+                    >
+                        {{#if this.postBuildOpen}}
+                            {{fa-icon 'chevron-down'}}
                         {{else}}
-                            {{#if this.environmentModel}}
-                                {{t 'binderhub.deployment.no_post_build'}}
-                            {{else}}
-                                {{t 'binderhub.deployment.no_post_install'}}
-                            {{/if}}
-                            <a
-                                href={{this.nodeFilesLink}}
-                                target='_blank'
-                                rel='noopener'
-                            >
-                                {{t 'binderhub.deployment.open_node_files'}}
-                            </a>
+                            {{fa-icon 'chevron-right'}}
                         {{/if}}
-                    </div>
-                    {{#if this.node.userHasWritePermission}}
-                        <button
-                            data-test-refresh-post-install
-                            type='button'
-                            class='btn btn-default'
-                            disabled={{this.refreshingPostInstallScript}}
-                            {{action this.refreshPostInstall}}
-                        >
-                            {{fa-icon 'fa-undo'}}
-                            {{#if this.refreshingPostInstallScript}}
-                                {{t 'binderhub.deployment.refreshing_post_install'}}
-                            {{else}}
-                                {{t 'binderhub.deployment.refresh_post_install'}}
-                            {{/if}}
-                        </button>
+                    </OsfButton>
+                </h3>
+                <div local-class='postscript_view'>
+                    {{#if this.postBuildOpen}}
+                        <textarea
+                            data-test-post-build
+                            readonly={{not this.node.userHasWritePermission}}
+                            name='post_build'
+                            class='form-control'
+                            rows='4'
+                            placeholder={{t 'binderhub.deployment.post_build_placeholder'}}
+                            value={{this.postBuild}}
+                            onkeyup={{action this.editPostBuild value='target.value'}}
+                            onchange={{action this.editPostBuild value='target.value'}}
+                        />
+
+                        {{#if this.node.userHasWritePermission}}
+                            <div local-class='postscript_button'>
+                                <button
+                                    data-test-save-post-build
+                                    type='button'
+                                    class='btn btn-default'
+                                    disabled={{not this.editedPostBuild}}
+                                    {{action this.savePostBuild}}
+                                >
+                                    {{fa-icon 'save'}}
+                                    {{t 'binderhub.deployment.save_post_build'}}
+                                </button>
+                            </div>
+                        {{/if}}
                     {{/if}}
                 </div>
             {{/if}}

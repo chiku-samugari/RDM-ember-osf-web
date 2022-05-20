@@ -8,17 +8,22 @@ import { inject as service } from '@ember/service';
 import DS from 'ember-data';
 
 import Intl from 'ember-intl/services/intl';
-import { BuildFormValues } from 'ember-osf-web/guid-node/binderhub/-components/external-repository/component';
 import { getContext } from 'ember-osf-web/guid-node/binderhub/-components/jupyter-servers-list/component';
 import BinderHubConfigModel from 'ember-osf-web/models/binderhub-config';
 import FileModel from 'ember-osf-web/models/file';
-import FileProviderModel from 'ember-osf-web/models/file-provider';
 import Node from 'ember-osf-web/models/node';
 import Analytics from 'ember-osf-web/services/analytics';
 import CurrentUser from 'ember-osf-web/services/current-user';
 import StatusMessages from 'ember-osf-web/services/status-messages';
+import getHref from 'ember-osf-web/utils/get-href';
 import { addPathSegment } from 'ember-osf-web/utils/url-parts';
 import Toast from 'ember-toastr/services/toast';
+
+export interface BuildFormValues {
+    providerPrefix: string;
+    repo: string;
+    ref: string;
+}
 
 /* eslint-disable camelcase */
 export interface BuildMessage {
@@ -44,18 +49,16 @@ export default class GuidNodeBinderHub extends Controller {
     @service analytics!: Analytics;
     @service currentUser!: CurrentUser;
 
-    tab?: string;
-
     @reads('model.taskInstance.value')
     node?: Node;
 
     isPageDirty = false;
 
+    configFolder: FileModel | null = null;
+
     configCache?: DS.PromiseObject<BinderHubConfigModel>;
 
     buildLog: BuildMessage[] | null = null;
-
-    externalRepoBuildFormValues: BuildFormValues | null = null;
 
     jupyterHubAPIError = false;
 
@@ -67,20 +70,13 @@ export default class GuidNodeBinderHub extends Controller {
 
     jh: string | null = null;
 
+    loadingPath?: string;
+
+    loggedOutDomains: string[] | null = null;
+
     @computed('config.isFulfilled')
     get loading(): boolean {
         return !this.config || !this.config.get('isFulfilled');
-    }
-
-    @computed('tab')
-    get activeTab() {
-        return this.tab ? this.tab : 'editproject';
-    }
-
-    @action
-    changeTab(activeId: string) {
-        this.set('tab', activeId === 'editproject' ? undefined : activeId);
-        this.analytics.click('tab', `BinderHub tab - Change tab to: ${activeId}`);
     }
 
     @action
@@ -91,6 +87,9 @@ export default class GuidNodeBinderHub extends Controller {
         const config = this.config.content as BinderHubConfigModel;
         const binderhub = config.findBinderHubByURL(binderhubUrl);
         if (!binderhub) {
+            throw new EmberError('Illegal config');
+        }
+        if (!binderhub.authorize_url) {
             throw new EmberError('Illegal config');
         }
         window.location.href = this.getURLWithContext(binderhub.authorize_url);
@@ -104,6 +103,9 @@ export default class GuidNodeBinderHub extends Controller {
         const config = this.config.content as BinderHubConfigModel;
         const jupyterhub = config.findJupyterHubByURL(jupyterhubUrl);
         if (jupyterhub) {
+            if (!jupyterhub.authorize_url) {
+                throw new EmberError('Illegal config');
+            }
             window.location.href = this.getURLWithContext(jupyterhub.authorize_url);
             return;
         }
@@ -115,25 +117,93 @@ export default class GuidNodeBinderHub extends Controller {
         this.renewBinderHubToken(binderhubCand.binderhub_url);
     }
 
-    @computed('node.files.[]')
-    get defaultStorageProvider(): FileProviderModel | null {
-        if (!this.node) {
-            return null;
+    @action
+    logoutJupyterHub(this: GuidNodeBinderHub, jupyterhubUrl: string) {
+        if (!this.config) {
+            throw new EmberError('Illegal config');
         }
-        const providers = this.node.get('files').filter(f => f.name === 'osfstorage');
-        if (providers.length === 0) {
-            return null;
+        const config = this.config.content as BinderHubConfigModel;
+        const jupyterhub = config.findJupyterHubByURL(jupyterhubUrl);
+        if (!jupyterhub) {
+            // Already logout
+            return;
         }
-        return providers[0];
+        const logoutUrl = jupyterhub.logout_url;
+        if (!logoutUrl) {
+            throw new EmberError('Illegal config');
+        }
+        later(async () => {
+            const resp = await this.currentUser.authenticatedAJAX({
+                url: logoutUrl,
+                type: 'DELETE',
+                xhrFields: { withCredentials: true },
+            });
+            if (!resp || !resp.data) {
+                return;
+            }
+            if (!resp.data.deleted) {
+                return;
+            }
+            const jhLogoutUrl = resp.data.jupyterhub_logout_url;
+            window.open(jhLogoutUrl, '_blank');
+            if (!this.node) {
+                throw new EmberError('Illegal state');
+            }
+            const configCache = this.store.findRecord('binderhub-config', this.node.id);
+            await configCache;
+            this.configCache = configCache;
+            this.notifyPropertyChange('config');
+            this.set('loggedOutDomains', (this.loggedOutDomains || []).concat(jupyterhubUrl));
+        }, 0);
     }
 
-    @computed('defaultStorageProvider.rootFolder.files.[]')
-    get defaultStorage(): FileModel | null {
-        const provider = this.get('defaultStorageProvider');
-        if (!provider) {
-            return null;
+    async ensureConfigFolder() {
+        if (!this.node) {
+            throw new EmberError('Illegal state');
         }
-        return provider.get('rootFolder');
+        const allProviders = await this.node.get('files');
+        const providers = allProviders.filter(f => f.name === 'osfstorage');
+        if (providers.length === 0) {
+            throw new EmberError('Illegal state');
+        }
+        const defaultStorage = await providers[0].get('rootFolder');
+        if (!defaultStorage) {
+            throw new EmberError('Illegal state');
+        }
+        const files = await defaultStorage.get('files');
+        const configFolders = files.filter(file => file.name === '.binder');
+        if (configFolders.length === 0) {
+            const links = providers[0].get('links');
+            const link = links.new_folder;
+            if (!link) {
+                throw new EmberError('Illegal state');
+            }
+            await this.currentUser.authenticatedAJAX({
+                url: `${getHref(link)}&name=.binder`,
+                type: 'PUT',
+                xhrFields: { withCredentials: true },
+            });
+            await defaultStorage.reload();
+            const filesUpdated = await defaultStorage.get('files');
+            const configFoldersUpdated = filesUpdated.filter(file => file.name === '.binder');
+            if (configFoldersUpdated.length === 0) {
+                throw new EmberError('Illegal state');
+            }
+            this.set('configFolder', configFoldersUpdated[0]);
+            return;
+        }
+        this.set('configFolder', configFolders[0]);
+    }
+
+    async generatePersonalToken() {
+        const scopeIds = ['osf.full_read', 'osf.full_write'];
+        const scopes = await Promise.all(scopeIds.map(scopeId => this.store.findRecord('scope', scopeId)));
+        const token = await this.store.createRecord('token', {
+            name: `BinderHub addon ${new Date().toISOString()}`,
+            scopes,
+        });
+        await token.save();
+        return token;
     }
 
     async performBuild(
@@ -155,24 +225,28 @@ export default class GuidNodeBinderHub extends Controller {
         }
         const config = this.config.content as BinderHubConfigModel;
         const binderhub = config.findBinderHubByURL(binderhubUrl);
-        if (!binderhub || !binderhub.token) {
-            throw new EmberError('Illegal config');
-        }
         let additional = '';
         if (this.currentUser && this.currentUser.currentUserId) {
             additional += `&userctx=${this.currentUser.currentUserId}`;
         }
+        additional += `&${this.getUserOptions()}`;
+        if (binderhub && !binderhub.authorize_url) {
+            const token = await this.generatePersonalToken();
+            additional += `&repo_token=${token.tokenValue}`;
+            const hubUrl = addPathSegment(binderhub.url, 'hub');
+            const hubBuildUrl = addPathSegment(hubUrl, buildPath);
+            const hubUrlSep = hubBuildUrl.includes('?') ? '&' : '?';
+            const url = `${hubBuildUrl}${hubUrlSep}${additional.substring(1)}`;
+            window.open(url, '_blank');
+            return;
+        }
+        if (!binderhub || !binderhub.token) {
+            throw new EmberError('Illegal config');
+        }
         if (needsPersonalToken) {
-            const scopeIds = ['osf.full_read', 'osf.full_write'];
-            const scopes = await Promise.all(scopeIds.map(scopeId => this.store.findRecord('scope', scopeId)));
-            const token = await this.store.createRecord('token', {
-                name: `BinderHub addon ${new Date().toISOString()}`,
-                scopes,
-            });
-            await token.save();
+            const token = await this.generatePersonalToken();
             additional += `&repo_token=${token.tokenValue}`;
         }
-        additional += `&${this.getUserOptions()}`;
         const buildUrl = addPathSegment(binderhub.url, buildPath);
         const urlSep = buildUrl.includes('?') ? '&' : '?';
         const source = new EventSource(`${buildUrl}${urlSep}token=${binderhub.token.access_token}${additional}`);
@@ -211,9 +285,6 @@ export default class GuidNodeBinderHub extends Controller {
     }
 
     get buildFormValues(): BuildFormValues | null {
-        if (this.activeTab === 'externalrepo') {
-            return this.externalRepoBuildFormValues;
-        }
         if (!this.node) {
             throw new EmberError('Illegal config');
         }
@@ -267,11 +338,6 @@ export default class GuidNodeBinderHub extends Controller {
         }
         this.configCache = this.store.findRecord('binderhub-config', this.node.id);
         return this.configCache!;
-    }
-
-    @action
-    externalRepoChanged(this: GuidNodeBinderHub, buildFormValues: BuildFormValues) {
-        this.externalRepoBuildFormValues = buildFormValues;
     }
 
     @action

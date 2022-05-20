@@ -28,3 +28,21 @@
 .jupyter-server td {
     vertical-align: middle !important;
 }
+
+.jupyterhub-server-submenu {
+    display: flex;
+}
+
+.jupyterhub-servers {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.jupyterhub-user {
+    margin-left: auto;
+}
+
+.max-servers-exceeded {
+    color: #f00;
+}

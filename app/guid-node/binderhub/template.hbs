@@ -23,7 +23,9 @@
                 <GuidNode::Binderhub::-Components::JupyterServersList
                     @node={{this.node}}
                     @binderHubConfig={{this.config}}
+                    @loggedOutDomains={{this.loggedOutDomains}}
                     @renewToken={{action this.renewJupyterHubToken}}
+                    @logout={{action this.logoutJupyterHub}}
                     @buildPhase={{this.buildPhase}}
                     @onError={{action this.requestError}}
                 />
@@ -34,36 +36,21 @@
             >
                 {{t 'binderhub.project_editor.header'}}
             </h2>
-            <BsTab
-                data-analytics-scope='BinderHub Tab'
-                @activeId={{this.activeTab}}
-                @onChange={{action this.changeTab}}
-                as |tab|
-            >
-                <tab.pane
-                    @id='editproject'
-                    @title={{t 'binderhub.project_editor.tab_editproject'}}
-                >
-                    <div local-class='BinderHub__panel'>
-                        <GuidNode::Binderhub::-Components::ProjectEditor
-                            @node={{this.node}}
-                            @binderHubConfig={{this.config}}
-                            @configFolder={{this.defaultStorage}}
-                            @configStorageProvider={{this.defaultStorageProvider}}
-                            @onError={{action this.projectError}}
-                        />
-                    </div>
-                </tab.pane>
-                <tab.pane
-                    @id='externalrepo'
-                    @title={{t 'binderhub.project_editor.tab_externalrepo'}}
-                >
-                    <div local-class='BinderHub__panel'>
-                        <GuidNode::Binderhub::-Components::ExternalRepository
-                            @onChange={{action this.externalRepoChanged}}/>
-                    </div>
-                </tab.pane>
-            </BsTab>
+            <div local-class='BinderHub__panel'>
+                <GuidNode::Binderhub::-Components::ProjectEditor
+                    @node={{this.node}}
+                    @binderHubConfig={{this.config}}
+                    @configFolder={{this.configFolder}}
+                    @onError={{action this.projectError}}
+                />
+            </div>
+            <GuidNode::Binderhub::-Components::BuildConsole
+                @binderHubConfig={{this.config}}
+                @renewToken={{action this.renewBinderHubToken}}
+                @requestBuild={{action this.build}}
+                @buildLog={{this.buildLog}}
+                @buildPhase={{this.buildPhase}}
+              />
             <BsAlert
                 @type='danger'
                 @dismissible={{false}}
@@ -72,13 +59,6 @@
             >
                 {{t 'binderhub.error.binderhub_build_error'}}
             </BsAlert>
-            <GuidNode::Binderhub::-Components::BuildConsole
-                @binderHubConfig={{this.config}}
-                @renewToken={{action this.renewBinderHubToken}}
-                @requestBuild={{action this.build}}
-                @buildLog={{this.buildLog}}
-                @buildPhase={{this.buildPhase}}
-              />
         </div>
     {{/if}}
 </div>

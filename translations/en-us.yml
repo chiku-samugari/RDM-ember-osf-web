@@ -1762,16 +1762,20 @@ iqbrims:
 binderhub:
     page_title: '{nodeTitle} BidnerHub'
     jupyter_servers_list:
-        header: 'My environments for this project'
+        header: 'My environments'
         delete_confirm_dialog_title: 'Delete confirmation'
         delete_confirm_dialog_body: 'Do you want to delete the server?'
     project_editor:
         header: 'New environment'
-        tab_editproject: 'From This Project'
-        tab_externalrepo: 'From External Repository'
     loading: 'Loading BinderHub config...'
     servers:
-        username: 'Logged in as: '
+        host: 'Host: '
+        username: 'User: '
+        server_exists: '{servers} environment(s) created from this project.'
+        server_not_exists: 'No environments created from this project.'
+        max_servers_exceeded: 'The maximum number of environments has been reached.'
+        server_hub_home: 'Show all environments'
+        logout: 'Logout'
         name: 'Server name'
         url: 'URL'
         last_activity: 'Last activity'
@@ -1779,10 +1783,12 @@ binderhub:
         delete: 'Delete'
         no_servers: 'No Servers'
     deployment:
+        header: 'Creating an Environment'
+        description: 'The contents of the default storage in this project will be copied.'
         launch: 'Launch'
-        environment: 'Environment'
+        environment: 'Base Image'
         additionalpackages: 'Additional Packages'
-        postinstallscript: 'Post-Install Script'
+        postinstallscript: 'Auto-Execution Script'
         select_environment: 'Select'
         change_environment: 'Change'
         add_package: 'Add'
@@ -1790,14 +1796,11 @@ binderhub:
         reset_dockerfile: 'Reset: '
         unavailable: 'The configuration file has been manually changed.'
         no_environment: 'This environment is not configured by the editor.'
-        has_post_install: 'Using the postInstall script.'
-        no_post_install: 'You can define a postInstall script in the default storage to perform optional operations during image build.'
-        has_post_build: 'Using the postBuild script.'
-        no_post_build: 'You can define a postBuild script in the default storage to perform optional operations during image build.'
-        open_post_install: 'Open File'
-        open_node_files: 'Open Files'
-        refresh_post_install: 'Refresh'
-        refreshing_post_install: 'Refreshing...'
+        post_build_placeholder: |-
+            #!/bin/bash
+            set -x
+            ...
+        save_post_build: 'Save'
         mran_version_setting_error: 'The version number cannot be specified for MRAN.'
         reset_dockerfile_confirm_dialog_title: 'Reset: '
         reset_dockerfile_confirm_dialog_body: 'You cannot undo the files you have reset. Do you wish to continue?'
@@ -1807,6 +1810,7 @@ binderhub:
     build:
         launch: 'Launch'
         status: 'Build status'
+        launch_new_enviornment: 'Launch a new environment: {binderhubUrl}'
     error:
         binderhub_auth_error: 'You need to connect it to the BinderHub. Please reauthenticate.'
         binderhub_build_error: 'An error occurred while connecting to the BinderHub.'

@@ -7,8 +7,11 @@
     as |modal|
 >
     <modal.body data-analytics-scope='RegistrationReport modal'>
-        <div class='text-center'>
-            <h2 local-class='Modal__title'>{{ t 'metadata.registration-card.export-dialog.title' }}</h2>
+        <div>
+            <h4 local-class='Modal__title'>{{ t 'metadata.registration-card.export-dialog.title' }}</h4>
+        </div>
+        <div local-class='Export__description'>
+            {{t 'metadata.registration-card.export-dialog.description'}}
         </div>
         <div class='form-group'>
             <select id='registration-report-format-selection'>
@@ -23,24 +26,28 @@
     </modal.body>
     <modal.footer data-analytics-scope='RegistrationReport modal footer'>
         <OsfButton
+            data-test-registration-report-cancel
             data-analytics-name='Cancel'
             @onClick={{action modal.close}}
         >
             {{t 'general.cancel'}}
         </OsfButton>
         <OsfButton
+            data-test-registration-report-submit
             data-analytics-name='Submit'
             @type='success'
             @onClick={{action modal.submit}}
         >
-            {{t 'feedback.confirm_button_text'}}
+            {{t 'metadata.registration-card.export'}}
         </OsfButton>
     </modal.footer>
 </BsModal>
 
 <OsfButton
+    data-test-registration-card-export
     data-analytics-name='Export'
     @type='success'
+    @disabled={{this.hasNoFormats}}
     @onClick={{action this.export}}
 >
     {{t 'metadata.registration-card.export'}}

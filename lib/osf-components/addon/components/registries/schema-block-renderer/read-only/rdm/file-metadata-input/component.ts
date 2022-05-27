@@ -4,8 +4,10 @@ import { assert } from '@ember/debug';
 
 import { computed } from '@ember/object';
 import { alias } from '@ember/object/computed';
+import { inject as service } from '@ember/service';
 import { ChangesetDef } from 'ember-changeset/types';
 import config from 'ember-get-config';
+import Intl from 'ember-intl/services/intl';
 import { layout } from 'ember-osf-web/decorators/component';
 import NodeModel from 'ember-osf-web/models/node';
 import pathJoin from 'ember-osf-web/utils/path-join';
@@ -33,11 +35,14 @@ interface FileEntry {
     folder: boolean;
     title: string | null;
     url: string | null;
+    manager: string | null;
 }
 
 @layout(template, styles)
 @tagName('')
 export default class FileMetadataInput extends Component {
+    @service intl!: Intl;
+
     // Required param
     metadataChangeset!: ChangesetDef;
 
@@ -83,6 +88,7 @@ export default class FileMetadataInput extends Component {
             path: metadata.path,
             folder: metadata.path.match(/.+\/$/) !== null,
             title: this.extractTitleFromMetadata(metadata),
+            manager: this.extractManagerFromMetadata(metadata),
             url: this.extractUrlFromMetadata(metadata),
         }) as FileEntry);
     }
@@ -102,13 +108,31 @@ export default class FileMetadataInput extends Component {
         if (!titleJa.value && !titleEn.value) {
             return null;
         }
-        if (titleJa.value && !titleEn.value) {
+        if (this.intl.locale.includes('ja')) {
             return `${titleJa.value}`;
         }
-        if (!titleJa.value && titleEn.value) {
-            return `${titleEn.value}`;
+        return `${titleEn.value}`;
+    }
+
+    extractManagerFromMetadata(metadata: FileMetadata): string | null {
+        const managerJa = metadata.metadata['grdm-file:data-man-name-ja'];
+        const managerEn = metadata.metadata['grdm-file:data-man-name-en'];
+        if (!managerJa && !managerEn) {
+            return null;
         }
-        return `${titleJa.value} / ${titleEn.value}`;
+        if (managerJa && !managerEn) {
+            return `${managerJa.value}`;
+        }
+        if (!managerJa && managerEn) {
+            return `${managerEn.value}`;
+        }
+        if (!managerJa.value && !managerEn.value) {
+            return null;
+        }
+        if (this.intl.locale.includes('ja')) {
+            return `${managerJa.value}`;
+        }
+        return `${managerEn.value}`;
     }
 
     extractUrlFromMetadata(metadata: FileMetadata): string | null {

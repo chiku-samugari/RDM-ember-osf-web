@@ -26,12 +26,13 @@ interface ServiceLink {
     name: string;
     route?: string;
     href?: string;
+    disabled?: boolean;
 }
 
 export const OSF_SERVICES: ServiceLink[] = [
     { name: OSFService.HOME, route: 'home' },
     { name: OSFService.PREPRINTS, href: `${osfURL}preprints/` },
-    { name: OSFService.REGISTRIES, route: 'registries' },
+    { name: OSFService.REGISTRIES, route: 'registries', disabled: true },
     { name: OSFService.MEETINGS, route: 'meetings' },
     { name: OSFService.INSTITUTIONS, route: 'institutions' },
 ];
@@ -67,6 +68,9 @@ export default class OsfNavbar extends Component {
         const { currentRouteName } = this.router;
         if (activeService === OSFService.HOME && currentRouteName) {
             for (const osfService of OSF_SERVICES) {
+                if (osfService.disabled) {
+                    continue;
+                }
                 if (!osfService.route) {
                     continue;
                 }

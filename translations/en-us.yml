@@ -635,17 +635,18 @@ node:
         draft_registrations: 'Draft Registrations'
     metadata:
         new_report_modal:
-            title: Metadata
+            title: Select metadata schema
             info: 'Select the schema of the metadata you wish to create from the following:<ul><li>Metadata can be filled in with items defined in the schema.</li><li>You can register metadata for files included in this project in the metadata.</li><li>Files compliant with the report format can be downloaded from the metadata and used for the application.</li></ul>'
+            note: '*Metadata forms will be constantly added as the number of corresponding projects and institutions grows in the future.'
             create: 'Create Metadata'
         page_title: '{nodeTitle} Metadata'
         only_admins_can_initiate: 'Only project administrators can initiate metadata.'
         no_reports: 'There are no metadata of this project.'
         no_drafts: 'There are no draft metadata of this project.'
-        start_new: 'Start to edit a new metadata by clicking the “New metadata” button. Once created, metadata cannot be edited or deleted.'
+        start_new: 'Start to edit a new metadata by clicking the “Create new metadata” button. Once created, metadata cannot be edited or deleted.'
         register_entire_project: 'To register the entire project "{rootNodeTitle}" instead, click'
         here: here
-        new: 'New metadata'
+        new: 'Create new metadata'
         reports: Metadata
         draft_reports: 'Draft Metadata'
 delete_modal:
@@ -1824,9 +1825,15 @@ metadata:
     file-metadata-input:
         no_metadata: 'No files'
         no_metadata_editable: 'File metadata is not registered. You can edit the file metadata on the project page and register it in this draft:'
+        columns:
+            title: 'Title'
+            path: 'Path'
+            manager: 'Manager'
+        no_manager: '-'
     draft-registration-card:
         export: 'Export'
     registration-card:
         export: 'Export'
         export-dialog:
             title: 'Select a report format'
+            description: 'Select the report format you want to output.'

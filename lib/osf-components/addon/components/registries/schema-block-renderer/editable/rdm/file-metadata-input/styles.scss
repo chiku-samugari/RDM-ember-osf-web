@@ -1,18 +1,24 @@
 .file-metadata-input-container {
     width: 100%;
-    border: 1px solid #aaa;
+    border: 1px solid #eee;
     padding: 0.5em;
 }
 
-.file-metadata-input-header {
-    border: 1px solid #aaa;
-    padding: 0.5em;
-    background-color: #eee;
-    margin-bottom: 1em;
+.file-metadata-input-files {
+    border: 1px solid #eee;
 }
 
-.file-metadata-input-header h5 {
-    margin: 4px;
-    font-size: 1.5em;
-    font-weight: bold;
+.file-metadata-input-files th {
+    border: 1px solid #eee;
+    background: #f5f5f5;
+    height: 35px;
+}
+
+.file-metadata-input-files td {
+    border-top: 1px solid #eee;
+    height: 35px;
+}
+
+.file-metadata-input-edit-button {
+    padding: 0 !important;
 }

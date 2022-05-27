@@ -30,6 +30,7 @@ export default class NodeCard extends Component {
     readOnly: boolean = defaultTo(this.readOnly, false);
     showExportCsvLink: boolean = defaultTo(this.showExportCsvLink, false);
     showStatus: boolean = defaultTo(this.showStatus, true);
+    disableNodeLink: boolean = defaultTo(this.disableNodeLink, false);
 
     // Optional arguments
     metadataSchema?: MetadataNodeSchemaModel;

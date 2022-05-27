@@ -20,7 +20,7 @@ export default class Application extends Controller {
     @service features!: Features;
     @alias(`features.${camelize(newStyleFlag)}`) newStyleEnabled!: boolean;
 
-    activeService = OSFService.REGISTRIES;
+    activeService = OSFService.HOME;
     searchRoute = 'registries.discover';
     supportRoute = 'https://openscience.zendesk.com/hc/en-us/categories/360001550953';
 

@@ -59,10 +59,6 @@ export default class ERadAwardNumberInput extends Component {
                 this.draftManager.getResponseKeyByBlockType('e-rad-award-title-ja-input'),
                 eradRecord.kadai_mei,
             );
-            this.changeset.set(
-                this.draftManager.getResponseKeyByBlockType('e-rad-award-title-en-input'),
-                eradRecord.kadai_mei,
-            );
             this.metadataChangeset.set(
                 'title',
                 `${eradRecord.kadai_mei}`,

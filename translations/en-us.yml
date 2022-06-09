@@ -1761,7 +1761,7 @@ iqbrims:
     files_comment: 'コメント'
     uploader_comment: 'コメント'
 binderhub:
-    page_title: '{nodeTitle} BidnerHub'
+    page_title: '{nodeTitle} BinderHub'
     jupyter_servers_list:
         header: 'My environments'
         delete_confirm_dialog_title: 'Delete confirmation'

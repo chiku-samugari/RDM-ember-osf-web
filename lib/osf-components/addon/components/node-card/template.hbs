@@ -30,7 +30,9 @@
                     {{/if}}
                 {{/if}}
                 {{node-card/node-icon category=@node.category}}
-                {{#if this.schemaUrl}}
+                {{#if this.disableNodeLink}}
+                    {{@node.title}}
+                {{else if this.schemaUrl}}
                     <OsfLink
                         data-analytics-name='Title'
                         data-test-node-title='{{@node.id}}'

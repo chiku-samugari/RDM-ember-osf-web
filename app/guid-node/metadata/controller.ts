@@ -52,11 +52,10 @@ export default class GuidNodeMetadata extends Controller {
         const schemas = allSchemas.filter((a: RegistrationSchema) => checkGRDMSchema(a));
         schemas.sort((a: RegistrationSchema, b: RegistrationSchema) => a.name.length - b.name.length);
 
-        if (this.node) {
-            const metadataSchema: MetadataNodeSchemaModel = yield this.store
-                .findRecord('metadata-node-schema', this.node.id);
-            this.set('metadataSchema', metadataSchema);
-        }
+        const node: Node = yield this.model.taskInstance;
+        const metadataSchema: MetadataNodeSchemaModel = yield this.store
+            .findRecord('metadata-node-schema', node.id);
+        this.set('metadataSchema', metadataSchema);
 
         this.set('defaultSchema', schemas.firstObject);
         this.set('selectedSchema', this.defaultSchema);

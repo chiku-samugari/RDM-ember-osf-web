@@ -23,6 +23,7 @@
                             @modelTaskInstance={{this.model.taskInstance}}
                             @relationshipName='registrations'
                             @showTags={{true}}
+                            @disableNodeLink={{true}}
                             @showExportCsvLink={{true}}
                             @metadataSchema={{this.metadataSchema}}
                             @showStatus={{false}}
@@ -127,6 +128,7 @@
                                 </ul>
                             {{/if}}
                         </div>
+                        <p class='NewReportModal__info'>{{t 'node.metadata.new_report_modal.note'}}</p>
                     </modal.body>
                     <modal.footer
                       data-test-new-report-modal-footer

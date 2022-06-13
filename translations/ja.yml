@@ -635,19 +635,20 @@ node:
         draft_registrations: ドラフト登録
     metadata:
         new_report_modal:
-            title: メタデータ
-            info: '新規に作成したいメタデータのスキーマ(様式)を以下から選択してください。<ul><li>メタデータにはスキーマに定義された項目を入力することができます。</li><li>メタデータには、このプロジェクトに含まれるファイルのメタデータを登録することができます。</li><li>メタデータから報告書様式に準拠したファイルをダウンロードし、申請に利用することができます。</li></ul>'
+            title: メタデータ様式を選択
+            info: '新規に作成したいメタデータの様式を以下から選択してください。<ul><li>メタデータ作成では、様式で定義された各項目を入力することができます。</li><li>メタデータ作成では、このプロジェクトに含まれるファイルのメタデータを登録することができます。</li><li>メタデータ作成から報告書様式に準拠したファイルをダウンロードし、報告書等の提出に利用することができます。</li></ul>'
+            note: ＊今後、対応する事業や機関の増加に合わせて、メタデータの様式は随時追加されていきます。
             create: メタデータを作成
         page_title: '{nodeTitle} メタデータ'
         only_admins_can_initiate: プロジェクト管理者のみがメタデータ作成を開始できます。
         no_reports: このプロジェクトのメタデータはありません。
-        no_drafts: このプロジェクトのドラフトメタデータはありません。
-        start_new: '「新規メタデータ」ボタンをクリックして、新規メタデータ作成を開始します。登録したメタデータは、編集または削除できません。'
+        no_drafts: このプロジェクトに関する下書きはありません。
+        start_new: '「新規メタデータを作成」ボタンをクリックして、新規メタデータ作成を開始します。一度登録したメタデータを、編集または削除することはできません。'
         register_entire_project: '代わりにプロジェクト"{rootNodeTitle}"全体を報告するには、クリックします。'
         here: こちら
-        new: 新規メタデータ
+        new: 新規メタデータを作成
         reports: メタデータ
-        draft_reports: ドラフトメタデータ
+        draft_reports: 下書き
 delete_modal:
     title: 'この{nodeType}を削除してもよろしいですか？'
     body: '{nodeType}の他の投稿者は利用できなくなります。'
@@ -1000,9 +1001,9 @@ registries:
         help:
             title: 登録フォームの選択を支援
     drafts:
-        page_title: 登録ドラフトを表示
+        page_title: 下書きを表示
         index:
-            title: 未完成のドラフトを選択
+            title: 未完成の下書きを選択
         draft:
             metadata:
                 title: 基本的な登録情報を記入してください
@@ -1365,11 +1366,11 @@ routes:
 osf-components:
     draft-registration-card:
         initiated_by: '開始したユーザ:'
-        form_type: 'スキーマ:'
+        form_type: '様式:'
         started: '開始日:'
         last_updated: '最終更新日:'
         review: 内容確認
-        delete_draft_confirm: このドラフト登録を削除してもよろしいですか？
+        delete_draft_confirm: この下書きを削除してもよろしいですか？
     copyable-text:
         copyToClipboard: クリップボードへコピー
         copied: コピー済み
@@ -1760,7 +1761,7 @@ iqbrims:
     files_comment: コメント
     uploader_comment: コメント
 binderhub:
-    page_title: '{nodeTitle} BidnerHub'
+    page_title: '{nodeTitle} BinderHub'
     jupyter_servers_list:
         header: '私の解析環境'
         delete_confirm_dialog_title: '削除確認'
@@ -1823,10 +1824,16 @@ binderhub:
 metadata:
     file-metadata-input:
         no_metadata: 'ファイルはありません'
-        no_metadata_editable: 'ファイルメタデータは登録されていません。プロジェクトページでファイルのメタデータを編集し、このドラフトに登録することができます:'
+        no_metadata_editable: 'ファイルメタデータは登録されていません。プロジェクトページでファイルのメタデータを編集し、この下書きに登録することができます:'
+        columns:
+            title: 'タイトル'
+            path: 'パス'
+            manager: '管理者'
+        no_manager: '-'
     draft-registration-card:
         export: 'エクスポート'
     registration-card:
         export: 'エクスポート'
         export-dialog:
             title: '報告書フォーマットの選択'
+            description: '出力したい報告書のフォーマットを選択してください。'

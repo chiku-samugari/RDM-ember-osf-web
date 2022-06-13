@@ -341,7 +341,7 @@ export default class ProjectEditor extends Component {
             content += 'RUN /postBuild\n';
             content += '\n';
         }
-        content += 'COPY * ./\n';
+        content += 'COPY . .\n';
         const checksum = md5(content.trim());
         return `# rdm-binderhub:hash:${checksum}\n${content}`;
     }

@@ -28,20 +28,18 @@ export default class ERadAwardNumberInput extends Component {
     onInput!: () => void;
     onMetadataInput!: () => void;
 
-    candidates!: string[];
     anotherOption?: string;
 
     didReceiveAttrs() {
-        this.candidates = [...new Set(this.metadataNodeErad.records.map(rc => rc.kadai_id))];
         const current = this.changeset.get(this.valuePath);
-        if (!this.candidates.includes(current)) {
+        if (this.metadataNodeErad.records.every(rc => rc.kadai_id !== current)) {
             this.anotherOption = current;
         }
     }
 
     @computed('anotherOption')
     get options(): string[] {
-        const options: string[] = this.candidates.slice();
+        const options = this.metadataNodeErad.records.map(rc => this.getLocalizedItemText(rc));
         if (this.anotherOption) {
             options.push(this.anotherOption);
         }
@@ -50,32 +48,32 @@ export default class ERadAwardNumberInput extends Component {
 
     @action
     onChange(option: string) {
-        const eradRecords = this.metadataNodeErad.records.filter(rc => rc.kadai_id === option);
-        eradRecords.sort((a, b) => b.nendo - a.nendo);
-        if (eradRecords.length) {
-            this.updateCode('e-rad-award-funder-input', eradRecords[0].haibunkikan_cd);
-            this.updateCode('e-rad-award-field-input', eradRecords[0].bunya_cd);
+        const eradRecord = this.metadataNodeErad.records
+            .find(rc => this.getLocalizedItemText(rc) === option);
+        let kadaiId;
+        if (eradRecord) {
+            kadaiId = eradRecord.kadai_id;
+            this.updateCode('e-rad-award-funder-input', eradRecord.haibunkikan_cd);
+            this.updateCode('e-rad-award-field-input', eradRecord.bunya_cd);
             this.changeset.set(
                 this.draftManager.getResponseKeyByBlockType('e-rad-award-title-ja-input'),
-                eradRecords[0].kadai_mei,
-            );
-            this.changeset.set(
-                this.draftManager.getResponseKeyByBlockType('e-rad-award-title-en-input'),
-                eradRecords[0].kadai_mei,
+                eradRecord.kadai_mei,
             );
             this.metadataChangeset.set(
                 'title',
-                `${eradRecords[0].kadai_mei}`,
+                `${eradRecord.kadai_mei}`,
             );
+        } else {
+            kadaiId = option;
         }
-        this.changeset.set(this.valuePath, option);
+        this.changeset.set(this.valuePath, kadaiId);
         this.onMetadataInput();
         this.onInput();
     }
 
     @action
     onInputSearch(text: string) {
-        if (!this.candidates.includes(text) && this.anotherOption !== text) {
+        if (this.metadataNodeErad.records.every(rc => rc.kadai_id !== text) && this.anotherOption !== text) {
             this.set('anotherOption', text);
         }
         return true;
@@ -121,5 +119,12 @@ export default class ERadAwardNumberInput extends Component {
             return text;
         }
         return texts[2];
+    }
+
+    getLocalizedItemText(eradRecord: any) {
+        return `${eradRecord.kadai_id} | ${eradRecord.kadai_mei}`
+            + ` - ${eradRecord.haibunkikan_mei} | ${eradRecord.haibunkikan_cd}`
+            + ` - ${eradRecord.bunya_mei} | ${eradRecord.bunya_cd}`
+            + ` (${eradRecord.nendo})`;
     }
 }

@@ -23,7 +23,13 @@ export default class RegistrationReportExportButton extends Component {
         if (!this.metadataSchema) {
             return [];
         }
-        return this.metadataSchema.formats;
+        return this.metadataSchema.formats
+            .filter(format => format.schema_id === this.registrationSchemaId);
+    }
+
+    @computed('metadataFormats')
+    get hasNoFormats(): boolean {
+        return this.metadataFormats.length === 0;
     }
 
     @action
@@ -31,8 +37,7 @@ export default class RegistrationReportExportButton extends Component {
         if (!this.metadataSchema || !this.exportCsvUrl) {
             return;
         }
-        const formats = this.metadataSchema.formats
-            .filter(format => format.schema_id === this.registrationSchemaId);
+        const formats = this.metadataFormats;
         if (formats.length === 0) {
             return;
         }

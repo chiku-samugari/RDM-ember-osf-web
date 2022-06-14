@@ -299,7 +299,7 @@
                                     </div>
                                 </div>
                             {{/each}}
-                            {{#if (or this.manuscriptFiles.gdLoading this.manuscriptFiles.gdEmpty)}}
+                            {{#if this.manuscriptFiles.gdLoading}}
                                 <div class='row' local-class='IQBRIMS__file_body'>
                                     <div class='col-md-12'>{{t 'iqbrims.submitted_loading'}}</div>
                                 </div>
@@ -370,6 +370,17 @@
                         >
                             <h2 local-class='IQBRIMS__header'>{{t 'iqbrims.header_data' }}</h2>
                             {{#if this.isRawUploadable}}
+                                <p local-class='IQBRIMS__raw_note'>
+                                    {{t 'iqbrims.uploader_info_raw_file' htmlSafe=true}}
+                                </p>
+                                <div class='form-group row'>
+                                    <label class='col-sm-5'>{{t 'iqbrims.raw_drive_link'}}</label>
+                                    <div class='col-sm-7'>
+                                        <OsfLink @href={{this.workflowRawLink}} @target='_blank'>
+                                            {{this.workflowRawLink}}
+                                        </OsfLink>
+                                    </div>
+                                </div>
                                 <div class='form-group row'>
                                     <div class='col-sm-12 checkbox' local-class='IQBRIMS__checkbox'>
                                         {{input
@@ -418,11 +429,11 @@
                                         </div>
                                     </div>
                                 {{/each}}
-                                {{#if (and this.isDirectlySubmitData this.dataFiles.gdEmpty)}}
+                                {{#if this.isDirectlySubmitData}}
                                     <div class='row' local-class='IQBRIMS__file_body'>
                                         <div class='col-md-12'>{{t 'iqbrims.submitted_no_data'}}</div>
                                     </div>
-                                {{else if (or this.dataFiles.gdLoading this.dataFiles.gdEmpty)}}
+                                {{else if this.dataFiles.gdLoading}}
                                     <div class='row' local-class='IQBRIMS__file_body'>
                                         <div class='col-md-12'>{{t 'iqbrims.submitted_loading'}}</div>
                                     </div>
@@ -516,7 +527,7 @@
                                         </div>
                                     </div>
                                 {{/each}}
-                                {{#if (or this.checklistFiles.gdLoading this.checklistFiles.gdEmpty)}}
+                                {{#if this.checklistFiles.gdLoading}}
                                     <div class='row' local-class='IQBRIMS__file_body'>
                                         <div class='col-md-12'>{{t 'iqbrims.submitted_loading'}}</div>
                                     </div>

@@ -34,6 +34,11 @@ export default class GuidNodeIQBRIMSRoute extends Route.extend(ConfirmationMixin
         return this.modelFor('guid-node');
     }
 
+    setupController(controller: GuidNodeIQBRIMS, model: GuidRouteModel<Node>): void {
+        super.setupController(controller, model);
+        controller.get('getRelatedFiles').perform();
+    }
+
     @action
     async didTransition() {
         const { taskInstance } = this.controller.model as GuidRouteModel<Node>;

@@ -1722,7 +1722,8 @@ iqbrims:
     publish_date: 出版日
     volume: 巻（号）
     page_number: ページ番号
-    directly_submit_data: データを直接提出する
+    directly_submit_data: 生データファイル（.zip）を直接提出する
+    raw_drive_link: 生データファイル（.zip）をGoogle Driveでアップロード
     workflow_overall_state: 審査状況
     submit_manuscripts: 審査状況
     submit_data: 審査状況
@@ -1751,6 +1752,7 @@ iqbrims:
     uploader_rejected_manuscript_files: 'TIFF, PNG, JPEGファイルはアップロードできません。'
     uploader_rejected_data_files: 'ZIP, Excelファイルのみアップロードできます。'
     uploader_rejected_checklist_files: PDFファイルのみアップロードできます。
+    uploader_info_raw_file: '提出前に生データファイル（.zip）のサイズを確認ください。<ul><li><strong>10GB未満の場合：</strong> 以下の「アップロードするファイルをここにドロップ」から生データファイルを提出してください。</li><li><strong>10GB以上の場合：</strong> まずお手元のPC環境で、生データファイルからデータファイル一覧（Excelファイル）を作成してください（マニュアルを参照ください）。できたExcelファイルは以下の「アップロードするファイルをここにドロップ」から提出し、zipファイルの方は以下に記載のURL先のGoogle Driveフォルダへとアップロードをお願いします。</li></ul><strong>[注意]</strong> 以下の「アップロードするファイルをここにドロップ」は大きなzipファイルには使用できません。また、生データファイルが非常に大きい（200GB超）場合には、研究倫理推進室までご相談ください。'
     file_confirm_dialog_title: ファイルの提出
     file_confirm_dialog_body: ファイル提出後は変更・追加はできません。よろしいですか？
     file_confirm_dialog_notice: '処理完了にともない、通知メール "Your move has finished" が送られる場合があります。'

@@ -33,6 +33,9 @@ export default class IQBRIMSStatusModel extends OsfModel {
     @attr('fixstringarray') workflowPaperPermissions?: string[];
     @attr('fixstringarray') workflowRawPermissions?: string[];
     @attr('fixstringarray') workflowChecklistPermissions?: string[];
+    @attr('string') workflowPaperLink?: string;
+    @attr('string') workflowRawLink?: string;
+    @attr('string') workflowChecklistLink?: string;
     @attr('string') inputOverview?: string;
 }
 

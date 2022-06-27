@@ -79,6 +79,31 @@ module('Acceptance | guid-node/iqbrims', hooks => {
 
     test('logged in, deposit, overview submitted', async assert => {
         const node = server.create('node', { id: 'i9bri' });
+        const osfstorage = server.create('file-provider',
+            { node, name: 'osfstorage' });
+        const tempFolder = server.create(
+            'file',
+            {
+                target: node,
+                name: 'IQB-RIMS Temporary files',
+            },
+            'asFolder',
+        );
+        for (const name of ['最終原稿・組図', '生データ', 'チェックリスト']) {
+            server.create(
+                'file',
+                {
+                    target: node,
+                    name,
+                    dateModified: new Date(2022, 6, 17),
+                    parentFolder: tempFolder,
+                    files: [],
+                },
+            );
+        }
+        osfstorage.rootFolder.update({
+            files: [tempFolder],
+        });
         server.create('iqbrims-status', {
             id: node.id,
             isAdmin: false,
@@ -113,12 +138,38 @@ module('Acceptance | guid-node/iqbrims', hooks => {
 
     test('logged in, deposit, paper submitted', async assert => {
         const node = server.create('node', { id: 'i9bri' });
+        const osfstorage = server.create('file-provider',
+            { node, name: 'osfstorage' });
+        const tempFolder = server.create(
+            'file',
+            {
+                target: node,
+                name: 'IQB-RIMS Temporary files',
+            },
+            'asFolder',
+        );
+        for (const name of ['最終原稿・組図', '生データ', 'チェックリスト']) {
+            server.create(
+                'file',
+                {
+                    target: node,
+                    name,
+                    dateModified: new Date(2022, 6, 17),
+                    parentFolder: tempFolder,
+                    files: [],
+                },
+            );
+        }
+        osfstorage.rootFolder.update({
+            files: [tempFolder],
+        });
         server.create('iqbrims-status', {
             id: node.id,
             isAdmin: false,
             state: 'deposit',
             workflowPaperPermissions: ['VISIBLE'],
             workflowRawPermissions: ['VISIBLE', 'WRITABLE', 'UPLOADABLE'],
+            workflowRawLink: 'https://raw.test.site_/sampledata',
         });
         const url = `/${node.id}/iqbrims`;
 
@@ -148,6 +199,31 @@ module('Acceptance | guid-node/iqbrims', hooks => {
 
     test('logged in, deposit, rawdata submitted', async assert => {
         const node = server.create('node', { id: 'i9bri' });
+        const osfstorage = server.create('file-provider',
+            { node, name: 'osfstorage' });
+        const tempFolder = server.create(
+            'file',
+            {
+                target: node,
+                name: 'IQB-RIMS Temporary files',
+            },
+            'asFolder',
+        );
+        for (const name of ['最終原稿・組図', '生データ', 'チェックリスト']) {
+            server.create(
+                'file',
+                {
+                    target: node,
+                    name,
+                    dateModified: new Date(2022, 6, 17),
+                    parentFolder: tempFolder,
+                    files: [],
+                },
+            );
+        }
+        osfstorage.rootFolder.update({
+            files: [tempFolder],
+        });
         server.create('iqbrims-status', {
             id: node.id,
             isAdmin: false,
@@ -184,6 +260,31 @@ module('Acceptance | guid-node/iqbrims', hooks => {
 
     test('logged in, deposit, checklist submitted', async assert => {
         const node = server.create('node', { id: 'i9bri' });
+        const osfstorage = server.create('file-provider',
+            { node, name: 'osfstorage' });
+        const tempFolder = server.create(
+            'file',
+            {
+                target: node,
+                name: 'IQB-RIMS Temporary files',
+            },
+            'asFolder',
+        );
+        for (const name of ['最終原稿・組図', '生データ', 'チェックリスト']) {
+            server.create(
+                'file',
+                {
+                    target: node,
+                    name,
+                    dateModified: new Date(2022, 6, 17),
+                    parentFolder: tempFolder,
+                    files: [],
+                },
+            );
+        }
+        osfstorage.rootFolder.update({
+            files: [tempFolder],
+        });
         server.create('iqbrims-status', {
             id: node.id,
             isAdmin: false,
@@ -220,6 +321,31 @@ module('Acceptance | guid-node/iqbrims', hooks => {
 
     test('logged in, check started', async assert => {
         const node = server.create('node', { id: 'i9bri' });
+        const osfstorage = server.create('file-provider',
+            { node, name: 'osfstorage' });
+        const tempFolder = server.create(
+            'file',
+            {
+                target: node,
+                name: 'IQB-RIMS Temporary files',
+            },
+            'asFolder',
+        );
+        for (const name of ['最終原稿・組図', '生データ', 'チェックリスト']) {
+            server.create(
+                'file',
+                {
+                    target: node,
+                    name,
+                    dateModified: new Date(2022, 6, 17),
+                    parentFolder: tempFolder,
+                    files: [],
+                },
+            );
+        }
+        osfstorage.rootFolder.update({
+            files: [tempFolder],
+        });
         server.create('iqbrims-status', {
             id: node.id,
             isAdmin: false,
@@ -254,6 +380,31 @@ module('Acceptance | guid-node/iqbrims', hooks => {
 
     test('logged in, check, overview submitted', async assert => {
         const node = server.create('node', { id: 'i9bri' });
+        const osfstorage = server.create('file-provider',
+            { node, name: 'osfstorage' });
+        const tempFolder = server.create(
+            'file',
+            {
+                target: node,
+                name: 'IQB-RIMS Temporary files',
+            },
+            'asFolder',
+        );
+        for (const name of ['最終原稿・組図', '生データ', 'チェックリスト']) {
+            server.create(
+                'file',
+                {
+                    target: node,
+                    name,
+                    dateModified: new Date(2022, 6, 17),
+                    parentFolder: tempFolder,
+                    files: [],
+                },
+            );
+        }
+        osfstorage.rootFolder.update({
+            files: [tempFolder],
+        });
         server.create('iqbrims-status', {
             id: node.id,
             isAdmin: false,
@@ -288,6 +439,31 @@ module('Acceptance | guid-node/iqbrims', hooks => {
 
     test('logged in, check, paper submitted', async assert => {
         const node = server.create('node', { id: 'i9bri' });
+        const osfstorage = server.create('file-provider',
+            { node, name: 'osfstorage' });
+        const tempFolder = server.create(
+            'file',
+            {
+                target: node,
+                name: 'IQB-RIMS Temporary files',
+            },
+            'asFolder',
+        );
+        for (const name of ['最終原稿・組図', '生データ', 'チェックリスト']) {
+            server.create(
+                'file',
+                {
+                    target: node,
+                    name,
+                    dateModified: new Date(2022, 6, 17),
+                    parentFolder: tempFolder,
+                    files: [],
+                },
+            );
+        }
+        osfstorage.rootFolder.update({
+            files: [tempFolder],
+        });
         server.create('iqbrims-status', {
             id: node.id,
             isAdmin: false,

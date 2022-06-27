@@ -1,6 +1,5 @@
 import { A } from '@ember/array';
 import EmberObject, { action, computed } from '@ember/object';
-import { later } from '@ember/runloop';
 import { all, timeout } from 'ember-concurrency';
 import { task } from 'ember-concurrency-decorators';
 
@@ -19,14 +18,16 @@ export default class IQBRIMSFileBrowser extends EmberObject {
     sort: string = this.sort || 'name';
     newFolderRequest?: object;
     gdLoading = true;
-    gdEmpty = false;
     filled = false;
     hasError = false;
     rejectedFiles: string[] = [];
     acceptExtensions: string[] | null = null;
     rejectExtensions: string[] | null = null;
-    cachedFiles: File[] | undefined = undefined;
     indexFile: File | null = null;
+    targetDirectory: File | undefined = undefined;
+    allFiles: File[] | undefined = undefined;
+    gdTargetDirectory: File | undefined = undefined;
+    gdAllFiles: File[] | undefined = undefined;
 
     dropzoneOptions = {
         createImageThumbnails: false,
@@ -164,104 +165,60 @@ export default class IQBRIMSFileBrowser extends EmberObject {
         }
     });
 
-    @computed('owner.workingDirectory.files.[]')
-    get targetDirectory(): File | undefined {
-        if (!this.owner) {
-            return undefined;
-        }
-        const defaultStorage = this.owner.get('workingDirectory');
-        if (!defaultStorage) {
-            return undefined;
-        }
-        const storageFiles = defaultStorage.get('files');
-        const files = storageFiles.filter(f => f.name === this.folderName);
+    @task
+    prepareDefaultStorageFiles = task(function *(this: IQBRIMSFileBrowser, workingDirectory: File) {
+        let storageFiles: [File] = yield workingDirectory.get('files');
+        let files = storageFiles.filter(f => f.name === this.folderName);
         if (files.length === 0) {
-            this.createTargetDirectory(defaultStorage);
-            return undefined;
+            yield this.createTargetDirectory.perform(workingDirectory);
+            yield workingDirectory.reload();
+            storageFiles = yield workingDirectory.get('files');
+            files = storageFiles.filter(f => f.name === this.folderName);
         }
-        return files[0];
-    }
+        const targetDirectory = files[0];
+        this.set('targetDirectory', targetDirectory);
+        const fileList: [File] = yield targetDirectory.get('files');
+        const allFiles = fileList.filter(this.filterFiles);
+        const indexFiles = fileList.filter(f => !this.filterFiles(f));
+        this.set('indexFile', indexFiles.length > 0 ? indexFiles[0] : null);
+        this.notifyFilled(allFiles);
+        this.set('allFiles', allFiles);
+    });
 
-    createTargetDirectory(defaultStorage: File | undefined) {
-        if (!defaultStorage) {
-            return;
+    @task
+    createTargetDirectory = task(function *(this: IQBRIMSFileBrowser, workingDirectory: File) {
+        if (!this.owner || !this.folderName) {
+            throw new Error('Illegal state');
         }
-        if (this.newFolderRequest || !this.owner || !this.folderName) {
-            return;
-        }
-        const newFolderUrl = defaultStorage.get('links').new_folder;
-        this.newFolderRequest = this.owner.currentUser.authenticatedAJAX({
+        const newFolderUrl = workingDirectory.get('links').new_folder;
+        yield this.owner.currentUser.authenticatedAJAX({
             url: `${newFolderUrl}&name=${encodeURIComponent(this.folderName)}`,
             type: 'PUT',
-        }).then(() => {
-            window.location.reload();
         });
-    }
+    });
 
-    @computed('targetDirectory.files.[]')
-    get allFiles(): File[] | undefined {
-        if (!this.targetDirectory) {
-            return undefined;
-        }
-        if (this.cachedFiles !== undefined) {
-            return this.cachedFiles;
-        }
-        const dir = this.targetDirectory;
-        later(async () => {
-            const fileList = await dir.queryHasMany(
-                'files',
-                { 'page[size]': 1000 },
-            );
-            const files = fileList.filter(this.filterFiles);
-            const indexFiles = fileList.filter(f => !this.filterFiles(f));
-            this.set('indexFile', indexFiles.length > 0 ? indexFiles[0] : null);
-            this.notifyFilled(files);
-            this.cachedFiles = files;
-            this.notifyPropertyChange('allFiles');
-        }, 0);
-        return undefined;
-    }
-
-    @computed('owner.gdProvider.files.[]')
-    get gdTargetDirectory(): File | undefined | null {
-        if (!this.owner) {
-            return undefined;
-        }
-        const gdProvider = this.owner.get('gdProvider');
-        if (!gdProvider) {
-            return undefined;
-        }
-        const storageFiles = gdProvider.get('files');
+    @task
+    loadGoogleDriveFiles = task(function *(this: IQBRIMSFileBrowser, storageFiles: [File]) {
         const files = storageFiles.filter(f => f.name === this.folderName);
         if (files.length === 0) {
-            return undefined;
-        }
-        return files[0];
-    }
-
-    @computed('gdTargetDirectory.files.[]')
-    get gdAllFiles(): File[] | undefined {
-        if (this.gdTargetDirectory === undefined) {
-            return undefined;
-        }
-        if (this.gdTargetDirectory === null) {
+            this.set('gdAllFiles', []);
             this.set('gdLoading', false);
-            this.set('gdEmpty', true);
-            return [];
+            return;
         }
+        const targetDirectory = files[0];
+        this.set('gdTargetDirectory', targetDirectory);
         this.set('gdLoading', false);
-        const dir = this.gdTargetDirectory;
-        const files = dir.files.filter(this.filterFiles);
-        this.set('gdEmpty', files.length === 0);
-        return files;
-    }
+        const fileList: [File] = yield targetDirectory.get('files');
+        const allFiles = fileList.filter(this.filterFiles);
+        this.set('gdAllFiles', allFiles);
+    });
 
     @computed('allFiles.[]', 'filter', 'sort')
-    get files(this: IQBRIMSFileBrowser): File[] | null {
+    get files(): File[] | null {
         const filter: string = this.get('filter');
         const sort: string = this.get('sort');
 
-        let results = this.get('allFiles');
+        let results: File[] | undefined | null = this.get('allFiles');
         if (!results) {
             return null;
         }
@@ -285,7 +242,7 @@ export default class IQBRIMSFileBrowser extends EmberObject {
     }
 
     @computed('currentUser.currentUserId', 'user.id')
-    get canEdit(this: IQBRIMSFileBrowser): boolean {
+    get canEdit(): boolean {
         return true;
     }
 

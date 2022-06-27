@@ -8,6 +8,8 @@ import DS from 'ember-data';
 
 import { later } from '@ember/runloop';
 
+import { all } from 'ember-concurrency';
+import { task } from 'ember-concurrency-decorators';
 import Intl from 'ember-intl/services/intl';
 import File from 'ember-osf-web/models/file';
 import FileProviderModel from 'ember-osf-web/models/file-provider';
@@ -20,6 +22,7 @@ import StatusMessages from 'ember-osf-web/services/status-messages';
 import Toast from 'ember-toastr/services/toast';
 
 import moment from 'moment';
+import { RelationshipWithLinks } from 'osf-api';
 
 import IQBRIMSFileBrowser from './file-browser';
 
@@ -39,7 +42,7 @@ export default class GuidNodeIQBRIMS extends Controller {
     submitting = false;
     submitted = false;
 
-    statusCache?: DS.PromiseObject<IQBRIMSStatusModel>;
+    status: DS.PromiseObject<IQBRIMSStatusModel> | undefined = undefined;
     manuscriptFiles = IQBRIMSFileBrowser.create();
     dataFiles = IQBRIMSFileBrowser.create();
     checklistFiles = IQBRIMSFileBrowser.create();
@@ -48,6 +51,123 @@ export default class GuidNodeIQBRIMS extends Controller {
     showPaperConfirmDialog = false;
     showRawConfirmDialog = false;
     showChecklistConfirmDialog = false;
+
+    defaultStorage: File | undefined = undefined;
+    workingDirectory: File | undefined = undefined;
+
+    @task
+    moveFiles = task(function *(
+        this: GuidNodeIQBRIMS, status: IQBRIMSStatusModel, fileBrowser: IQBRIMSFileBrowser, createFileList: boolean,
+    ) {
+        const folder = fileBrowser.targetDirectory;
+        if (!folder) {
+            throw new EmberError('Illegal status');
+        }
+        yield status.save();
+        if (!createFileList) {
+            yield this.moveFilesInFolder.perform(folder);
+            return;
+        }
+        const { files, indexFile } = fileBrowser;
+        const filenames = files === null ? [] : files.map(f => f.name);
+        if (indexFile) {
+            yield indexFile.updateContents(filenames.join('\n'));
+        } else {
+            yield folder.createFile(IQBRIMSFileBrowser.FILES_TXT, filenames.join('\n'));
+            const indexFiles = ((yield folder.queryHasMany(
+                'files',
+                { 'page[size]': 1000 },
+            )) as [File]).filter(f => f.name === IQBRIMSFileBrowser.FILES_TXT);
+            fileBrowser.set('indexFile', indexFiles.length > 0 ? indexFiles[0] : null);
+        }
+        yield this.moveFilesInFolder.perform(folder);
+    });
+
+    @task
+    moveFilesInFolder = task(function *(this: GuidNodeIQBRIMS, folder: File) {
+        const files: [File] = yield folder.files;
+        const path = `/${folder.name}/`;
+        yield all(files.map(f => this.moveOnCurrentProjectTask.perform(f, 'iqbrims', path)));
+    });
+
+    @task({ enqueue: true, maxConcurrency: 3 })
+    moveOnCurrentProjectTask = task(function *(this: GuidNodeIQBRIMS, folder: File, provider: string, path: string) {
+        yield folder.moveOnCurrentProject(provider, path);
+    });
+
+    @task
+    getRelatedFiles = task(function *(this: GuidNodeIQBRIMS) {
+        const node: Node = yield this.model.taskInstance;
+        const status = this.store.findRecord('iqbrims-status', node.id);
+        yield status;
+        this.set('status', status);
+        if (status.get('isAdmin') || !['deposit', 'check'].includes(status.get('state'))) {
+            // No file loading required
+            return;
+        }
+        const providers: [FileProviderModel] = yield node.get('files');
+        yield all([
+            this.loadGoogleDriveFiles.perform(providers),
+            this.loadDefaultStorageFiles.perform(providers),
+        ]);
+    });
+
+    @task
+    loadGoogleDriveFiles = task(function *(this: GuidNodeIQBRIMS, providers: [FileProviderModel]) {
+        const iqbrimsProviders = providers.filter(f => f.name === 'iqbrims');
+        if (iqbrimsProviders.length === 0) {
+            return;
+        }
+        const files: [File] = yield this.getFilesFromRelationship.perform(iqbrimsProviders[0]);
+        all([this.manuscriptFiles, this.dataFiles, this.checklistFiles]
+            .map(fileBrowser => fileBrowser.loadGoogleDriveFiles.perform(files)));
+    });
+
+    @task
+    loadDefaultStorageFiles = task(function *(this: GuidNodeIQBRIMS, providers: [FileProviderModel]) {
+        const defaultStorageProviders = providers.filter(f => f.name === 'osfstorage');
+        if (defaultStorageProviders.length === 0) {
+            throw new Error('No default providers');
+        }
+        const defaultStorage: File = yield defaultStorageProviders[0].get('rootFolder');
+        this.set('defaultStorage', defaultStorage);
+        let storageFiles: [File] = yield defaultStorage.get('files');
+        let files = storageFiles.filter(f => f.name === this.workingFolderName);
+        if (files.length === 0) {
+            yield this.createWorkingDirectory.perform(defaultStorageProviders[0]);
+            yield defaultStorage.reload();
+            storageFiles = yield defaultStorage.get('files');
+            files = storageFiles.filter(f => f.name === this.workingFolderName);
+        }
+        this.manuscriptFiles.rejectExtensions = ['.tiff', '.png', '.jpg', '.jpeg'];
+        this.dataFiles.acceptExtensions = ['.zip', '.xls', '.xlsx'];
+        this.checklistFiles.acceptExtensions = ['.pdf'];
+        const workingDirectory: File = files[0];
+        this.set('workingDirectory', workingDirectory);
+        all([this.manuscriptFiles, this.dataFiles, this.checklistFiles]
+            .map(fileBrowser => fileBrowser.prepareDefaultStorageFiles.perform(workingDirectory)));
+    });
+
+    @task
+    getFilesFromRelationship = task(function *(this: GuidNodeIQBRIMS, provider: FileProviderModel) {
+        const filesLink = provider.relationshipLinks.files as RelationshipWithLinks;
+        const { related } = filesLink.links;
+        const filesEntity = yield this.currentUser.authenticatedAJAX({
+            url: (related as any).href,
+            type: 'GET',
+        });
+        return yield all(filesEntity.data
+            .map((fileEntity: any) => this.store.findRecord('file', fileEntity.id)));
+    });
+
+    @task
+    createWorkingDirectory = task(function *(this: GuidNodeIQBRIMS, defaultStorage: FileProviderModel) {
+        const newFolderUrl = defaultStorage.get('links').new_folder;
+        yield this.currentUser.authenticatedAJAX({
+            url: `${newFolderUrl}&name=${encodeURIComponent(this.workingFolderName)}`,
+            type: 'PUT',
+        });
+    });
 
     constructor(...args: any[]) {
         super(...args);
@@ -59,14 +179,34 @@ export default class GuidNodeIQBRIMS extends Controller {
         this.checklistFiles.folderName = 'チェックリスト';
     }
 
-    @computed('manuscriptFiles.loading', 'dataFiles.loading', 'checklistFiles.loading')
+    @computed('state', 'manuscriptFiles.loading', 'dataFiles.loading', 'checklistFiles.loading')
     get loadingForDeposit(): boolean {
+        if (!this.status || !this.status.get('isFulfilled')) {
+            return true;
+        }
+        const status = this.status.content as IQBRIMSStatusModel;
+        if (status.isAdmin) {
+            return false;
+        }
+        if (status.state !== 'deposit') {
+            return false;
+        }
         return this.manuscriptFiles.get('loading') || this.dataFiles.get('loading')
                || this.checklistFiles.get('loading');
     }
 
-    @computed('manuscriptFiles.loading')
+    @computed('state', 'manuscriptFiles.loading')
     get loadingForCheck(): boolean {
+        if (!this.status || !this.status.get('isFulfilled')) {
+            return true;
+        }
+        const status = this.status.content as IQBRIMSStatusModel;
+        if (status.isAdmin) {
+            return false;
+        }
+        if (status.state !== 'check') {
+            return false;
+        }
         return this.manuscriptFiles.get('loading');
     }
 
@@ -124,6 +264,15 @@ export default class GuidNodeIQBRIMS extends Controller {
         return laboNames[0];
     }
 
+    @computed('status')
+    get workflowRawLink() {
+        if (!this.status || !this.status.get('isFulfilled')) {
+            return null;
+        }
+        const status = this.status.content as IQBRIMSStatusModel;
+        return status.workflowRawLink;
+    }
+
     @action
     submitOverview(this: GuidNodeIQBRIMS) {
         if (!this.status) {
@@ -171,7 +320,7 @@ export default class GuidNodeIQBRIMS extends Controller {
                 status.set('workflowChecklistPermissions', ['VISIBLE', 'WRITABLE', 'UPLOADABLE']);
             }
         }
-        this.moveFiles(status, this.manuscriptFiles, true)
+        this.moveFiles.perform(status, this.manuscriptFiles, true)
             .then(() => {
                 status.set('isDirty', false);
                 status.set('workflowPaperPermissions', ['VISIBLE', 'WRITABLE']);
@@ -196,7 +345,7 @@ export default class GuidNodeIQBRIMS extends Controller {
                 status.set('workflowChecklistPermissions', ['VISIBLE', 'WRITABLE', 'UPLOADABLE']);
             }
         }
-        this.moveFiles(status, this.dataFiles, !status.isDirectlySubmitData)
+        this.moveFiles.perform(status, this.dataFiles, !status.isDirectlySubmitData)
             .then(() => {
                 status.set('isDirty', false);
                 status.set('workflowRawPermissions', ['VISIBLE', 'WRITABLE']);
@@ -216,7 +365,7 @@ export default class GuidNodeIQBRIMS extends Controller {
         }
         const status = this.status.content as IQBRIMSStatusModel;
         this.set('submitting', true);
-        this.moveFiles(status, this.checklistFiles, true)
+        this.moveFiles.perform(status, this.checklistFiles, true)
             .then(() => {
                 status.set('isDirty', false);
                 if (!status.workflowChecklistState) {
@@ -258,31 +407,6 @@ export default class GuidNodeIQBRIMS extends Controller {
         const message = this.intl.t('iqbrims.failed_to_submit');
         this.toast.error(message);
         this.set('submitting', false);
-    }
-
-    async moveFiles(status: IQBRIMSStatusModel, fileBrowser: IQBRIMSFileBrowser, createFileList: boolean) {
-        const folder = fileBrowser.targetDirectory;
-        if (!folder) {
-            throw new EmberError('Illegal status');
-        }
-        await status.save();
-        if (!createFileList) {
-            await folder.moveOnCurrentProject('iqbrims', '/');
-            return;
-        }
-        const { files, indexFile } = fileBrowser;
-        const filenames = files === null ? [] : files.map(f => f.name);
-        if (indexFile) {
-            await indexFile.updateContents(filenames.join('\n'));
-        } else {
-            await folder.createFile(IQBRIMSFileBrowser.FILES_TXT, filenames.join('\n'));
-            const indexFiles = (await folder.queryHasMany(
-                'files',
-                { 'page[size]': 1000 },
-            )).filter(f => f.name === IQBRIMSFileBrowser.FILES_TXT);
-            fileBrowser.set('indexFile', indexFiles.length > 0 ? indexFiles[0] : null);
-        }
-        await folder.moveOnCurrentProject('iqbrims', '/');
     }
 
     refresh() {
@@ -332,7 +456,7 @@ export default class GuidNodeIQBRIMS extends Controller {
             if (!status.acceptedDate || status.acceptedDate.length === 0) {
                 return false;
             }
-            if (!status.isDirectlySubmitData && this.dataFiles.hasError) {
+            if (this.dataFiles.hasError) {
                 return false;
             }
             if (this.checklistFiles.hasError) {
@@ -919,109 +1043,6 @@ export default class GuidNodeIQBRIMS extends Controller {
         }
         const status = this.status.content as IQBRIMSStatusModel;
         return status.isDirty;
-    }
-
-    @computed('node.files.[]')
-    get gdProviderProvider(): FileProviderModel | undefined {
-        if (!this.node) {
-            return undefined;
-        }
-        const providers = this.node.get('files').filter(f => f.name === 'iqbrims');
-        if (providers.length === 0) {
-            return undefined;
-        }
-        return providers[0];
-    }
-
-    @computed('gdProviderProvider.rootFolder.files.[]')
-    get gdProvider(): File | undefined {
-        const provider = this.get('gdProviderProvider');
-        if (!provider) {
-            return undefined;
-        }
-        const storage = provider.get('rootFolder');
-        if (!storage.isFulfilled && !storage.isRejected) {
-            later(() => {
-                this.notifyPropertyChange('gdProvider');
-            }, 500);
-            return undefined;
-        }
-        return storage;
-    }
-
-    @computed('node.files.[]')
-    get defaultStorageProvider(): FileProviderModel | undefined {
-        if (!this.node) {
-            return undefined;
-        }
-        const providers = this.node.get('files').filter(f => f.name === 'osfstorage');
-        if (providers.length === 0) {
-            return undefined;
-        }
-        return providers[0];
-    }
-
-    @computed('defaultStorageProvider.rootFolder.files.[]')
-    get defaultStorage(): File | undefined {
-        const provider = this.get('defaultStorageProvider');
-        if (!provider) {
-            return undefined;
-        }
-        const storage = provider.get('rootFolder');
-        if (!storage.isFulfilled && !storage.isRejected) {
-            later(() => {
-                this.notifyPropertyChange('defaultStorage');
-            }, 500);
-            return undefined;
-        }
-        return storage;
-    }
-
-    @computed('defaultStorage.files.[]')
-    get workingDirectory(): File | undefined {
-        const defaultStorage = this.get('defaultStorage');
-        if (!defaultStorage) {
-            return undefined;
-        }
-        const storageFiles = defaultStorage.get('files');
-        const files = storageFiles.filter(f => f.name === this.workingFolderName);
-        if (files.length === 0) {
-            this.createWorkingDirectory();
-            return undefined;
-        }
-        this.manuscriptFiles.rejectExtensions = ['.tiff', '.png', '.jpg', '.jpeg'];
-        this.dataFiles.acceptExtensions = ['.zip', '.xls', '.xlsx'];
-        this.checklistFiles.acceptExtensions = ['.pdf'];
-        return files[0];
-    }
-
-    createWorkingDirectory() {
-        const defaultStorage = this.get('defaultStorageProvider');
-        if (!defaultStorage) {
-            return;
-        }
-        if (this.newFolderRequest) {
-            return;
-        }
-        const newFolderUrl = defaultStorage.get('links').new_folder;
-        this.newFolderRequest = this.currentUser.authenticatedAJAX({
-            url: `${newFolderUrl}&name=${encodeURIComponent(this.workingFolderName)}`,
-            type: 'PUT',
-        }).then(() => {
-            window.location.reload();
-        });
-    }
-
-    @computed('node')
-    get status(): DS.PromiseObject<IQBRIMSStatusModel> | undefined {
-        if (this.statusCache) {
-            return this.statusCache;
-        }
-        if (!this.node) {
-            return undefined;
-        }
-        this.statusCache = this.store.findRecord('iqbrims-status', this.node.id);
-        return this.statusCache!;
     }
 
     @computed('status.hasDirtyAttributes', 'submitted')

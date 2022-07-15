@@ -636,7 +636,7 @@ node:
     metadata:
         new_report_modal:
             title: Select metadata schema
-            info: 'Select the schema of the metadata you wish to create from the following:<ul><li>Metadata can be filled in with items defined in the schema.</li><li>You can register metadata for files included in this project in the metadata.</li><li>Files compliant with the report format can be downloaded from the metadata and used for the application.</li></ul>'
+            info: 'Select the schema of the project metadata you wish to create from the following:<ul><li>Metadata can be filled in with items defined in the schema.</li><li>You can register metadata for files included in this project in the metadata.</li><li>Files compliant with the report format can be downloaded from the metadata and used for the application.</li></ul>'
             note: '*Metadata forms will be constantly added as the number of corresponding projects and institutions grows in the future.'
             create: 'Create Metadata'
         page_title: '{nodeTitle} Metadata'
@@ -1016,7 +1016,7 @@ registries:
                 next: Next
                 back: Back
                 save_draft: 'Save draft'
-                new_registration: 'New registration'
+                new_registration: 'Register Project Metadata'
                 last_saved: 'Auto-saved: '
                 save_failed: 'Save failed. Unsaved changes present.'
                 failed_auto_save: 'Failed to auto-save draft registration form'

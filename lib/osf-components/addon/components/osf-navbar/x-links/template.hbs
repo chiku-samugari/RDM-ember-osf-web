@@ -34,7 +34,10 @@
     search=(component 'osf-navbar/x-links/hyper-link'
         this.searchURL
         analyticsLabel='Search'
-        hidden=(not this.useNavSearch)
+        hidden=(or
+            (not this.session.isAuthenticated)
+            (not this.useNavSearch)
+        )
         tagName='li'
         text=(t 'navbar.search')
         onClicked=this.onLinkClicked

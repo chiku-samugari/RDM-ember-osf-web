@@ -636,7 +636,7 @@ node:
     metadata:
         new_report_modal:
             title: メタデータ様式を選択
-            info: '新規に作成したいメタデータの様式を以下から選択してください。<ul><li>メタデータ作成では、様式で定義された各項目を入力することができます。</li><li>メタデータ作成では、このプロジェクトに含まれるファイルのメタデータを登録することができます。</li><li>メタデータ作成から報告書様式に準拠したファイルをダウンロードし、報告書等の提出に利用することができます。</li></ul>'
+            info: '新規に作成したいプロジェクトメタデータの様式を以下から選択してください。<ul><li>メタデータ作成では、様式で定義された各項目を入力することができます。</li><li>メタデータ作成では、このプロジェクトに含まれるファイルのメタデータを登録することができます。</li><li>メタデータ作成から報告書様式に準拠したファイルをダウンロードし、報告書等の提出に利用することができます。</li></ul>'
             note: ＊今後、対応する事業や機関の増加に合わせて、メタデータの様式は随時追加されていきます。
             create: メタデータを作成
         page_title: '{nodeTitle} メタデータ'
@@ -1015,11 +1015,11 @@ registries:
                 title: 登録フォームに記入
                 next: 次へ
                 back: 戻る
-                save_draft: 'Save draft'
-                new_registration: 'New registration'
+                save_draft: 'ドラフトを保存'
+                new_registration: 'プロジェクトメタデータの登録'
                 last_saved: '自動保存済み: '
-                save_failed: 'Save failed. Unsaved changes present.'
-                failed_auto_save: 'Failed to auto-save draft registration form'
+                save_failed: '保存に失敗しました。保存できていない変更があります。'
+                failed_auto_save: '下書きの自動保存に失敗しました。'
             review:
                 title: 送信前に登録を確認する
                 page_label: 内容確認

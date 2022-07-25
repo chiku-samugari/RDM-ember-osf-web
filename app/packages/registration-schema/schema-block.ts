@@ -38,5 +38,6 @@ export interface SchemaBlock {
     helpText?: string;
     exampleText?: string;
     required?: boolean;
+    default?: boolean;
     index?: number;
 }

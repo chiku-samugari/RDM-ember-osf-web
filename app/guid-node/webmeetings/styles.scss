@@ -1,0 +1,127 @@
+@media screen and (max-width: 768px) {
+    .WebMeetings {
+        margin: 0;
+        padding: 0;
+    }
+}
+
+.WebMeetings__header {
+    background: #ecf0f1;
+    margin-top: 40px;
+}
+
+.WebMeetings__sidebar {
+    width: 20%;
+    float: left;
+    height: 575px;
+    border-right-style: inset;
+    margin-left: 15px;
+}
+
+.WebMeetings__menu {
+    list-style: none;
+}
+
+.WebMeetings__workflows {
+    width: 80%;
+    float: right;
+    margin-right: -15px;
+}
+
+.WebMeetings__webApp_screen {
+    width: 80%;
+    float: right;
+    margin-right: -15px;
+}
+
+.WebMeetings__statement {
+    margin-left: 20px;
+    margin-top: 20px;
+}
+
+.WebMeetings__web_meeting_tab {
+    margin-top: 30px;
+}
+
+.WebMeetings__tr {
+    border-bottom: 1px solid #ddd;
+}
+
+.WebMeetings__tr:hover {
+    background-color: #fffff0;
+}
+.WebMeetings__tr:not(:hover) button {
+    visibility: hidden;
+}
+
+.WebMeetings__th {
+    font-size: small;
+}
+
+.WebMeetings__td {
+    vertical-align: middle;
+}
+
+.WebMeetings__div_inline_block {
+    display: inline-block;
+}
+
+.WebMeetings__td_overflow {
+    vertical-align: middle;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    max-width: 200px;
+}
+
+.WebMeetings__div_overflow {
+    vertical-align: middle;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    max-width: 94%;
+}
+
+.WebMeetings__microsoftTeamsMeetings {
+    margin-top: 30px;
+    height: 575px;
+}
+
+.WebMeetings__web_meeting_navbar {
+    margin-top: 30px;
+    height: 40px;
+}
+
+.WebMeetings__cell {
+    vertical-align: middle;
+}
+
+.WebMeetings__input_items {
+    padding: 5px;
+}
+
+.WebMeetings__label_normal {
+    font-weight: normal;
+}
+
+.WebMeetings__buttons {
+    border: 1px solid #ddd;
+}
+
+.WebMeetings__link:hover {
+    color: #fff;
+    background-color: #4169e1;
+}
+
+.WebMeetings__button_list {
+    min-width: 60px;
+    color: #fff;
+    border: 1px solid transparent;
+    border-radius: 25px;
+    padding: 4px 8px;
+    visibility: visible;
+}
+
+.WebMeetings__button_list:hover {
+    cursor: pointer;
+}

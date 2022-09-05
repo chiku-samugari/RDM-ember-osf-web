@@ -17,6 +17,9 @@ import config from 'ember-get-config';
 import CurrentUser from 'ember-osf-web/services/current-user';
 import moment from 'moment';
 
+import Ember from 'ember';
+const { $ } = Ember;
+
 interface InstitutionUsers {
     fullname: string;
     guid: string;
@@ -541,10 +544,11 @@ export default class GuidNodeWebMeetings extends Controller {
         const webMeetingsStartDate = this.webMeetingsStartDate
             ? moment(this.webMeetingsStartDate).format('YYYY-MM-DD')
             : '';
-        const webMeetingsStartTimeElement
-            = document.querySelectorAll('select[id=create_web_meetings_start_time]').length
+        /* eslint-disable max-len */
+        const webMeetingsStartTimeElement = document.querySelectorAll('select[id=create_web_meetings_start_time]').length
                 ? document.querySelectorAll('select[id=create_web_meetings_start_time]') as any
                 : document.querySelectorAll('select[id=update_web_meetings_start_time]') as any;
+        /* eslint-enable max-len */
         const webMeetingsStartTime = webMeetingsStartTimeElement.length ? webMeetingsStartTimeElement[0].value : '';
         const strWebMeetingsStartDatetime = `${webMeetingsStartDate} ${webMeetingsStartTime}`;
         const webMeetingsEndDate = this.webMeetingsEndDate ? moment(this.webMeetingsEndDate).format('YYYY-MM-DD') : '';
@@ -600,8 +604,9 @@ export default class GuidNodeWebMeetings extends Controller {
             break;
         }
         case appsConfig.appNameWebexMeetings: {
-            const webexMeetingsAttendeesInfo
-                = this.makeWebexMeetingsAttendees(selectedAttendees, updateMeetingId, actionType);
+            /* eslint-disable max-len */
+            const webexMeetingsAttendeesInfo = this.makeWebexMeetingsAttendees(selectedAttendees, updateMeetingId, actionType);
+            /* eslint-enable max-len */
             webexMeetingsCreateInvitees = webexMeetingsAttendeesInfo.createInvitees;
             webexMeetingsDeleteInvitees = webexMeetingsAttendeesInfo.deleteInvitees;
             body = {

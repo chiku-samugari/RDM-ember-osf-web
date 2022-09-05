@@ -333,7 +333,7 @@ export default class GuidNodeWebMeetings extends Controller {
                 fullname = guestFullname;
                 requestIsGuest = true;
             }
-            const emailType = this.emailType;
+            const emailType = this.emailType as string;
             email = emailType === 'radio_signInAddress' ? this.signInAddress : this.outsideEmail;
             if (emailType === 'radio_signInAddress') {
                 emailTypeFlg = true;
@@ -541,10 +541,10 @@ export default class GuidNodeWebMeetings extends Controller {
         const webMeetingsStartDate = this.webMeetingsStartDate
             ? moment(this.webMeetingsStartDate).format('YYYY-MM-DD')
             : '';
-        const webMeetingsStartTimeElement = 
-            document.querySelectorAll('select[id=create_web_meetings_start_time]').length
-            ? document.querySelectorAll('select[id=create_web_meetings_start_time]') as any
-            : document.querySelectorAll('select[id=update_web_meetings_start_time]') as any;
+        const webMeetingsStartTimeElement
+            = document.querySelectorAll('select[id=create_web_meetings_start_time]').length
+                ? document.querySelectorAll('select[id=create_web_meetings_start_time]') as any
+                : document.querySelectorAll('select[id=update_web_meetings_start_time]') as any;
         const webMeetingsStartTime = webMeetingsStartTimeElement.length ? webMeetingsStartTimeElement[0].value : '';
         const strWebMeetingsStartDatetime = `${webMeetingsStartDate} ${webMeetingsStartTime}`;
         const webMeetingsEndDate = this.webMeetingsEndDate ? moment(this.webMeetingsEndDate).format('YYYY-MM-DD') : '';
@@ -600,8 +600,8 @@ export default class GuidNodeWebMeetings extends Controller {
             break;
         }
         case appsConfig.appNameWebexMeetings: {
-            const webexMeetingsAttendeesInfo = 
-                this.makeWebexMeetingsAttendees(selectedAttendees, updateMeetingId, actionType);
+            const webexMeetingsAttendeesInfo
+                = this.makeWebexMeetingsAttendees(selectedAttendees, updateMeetingId, actionType);
             webexMeetingsCreateInvitees = webexMeetingsAttendeesInfo.createInvitees;
             webexMeetingsDeleteInvitees = webexMeetingsAttendeesInfo.deleteInvitees;
             body = {
@@ -630,7 +630,6 @@ export default class GuidNodeWebMeetings extends Controller {
         }
         default:
         }
-
 
         const payload = {
             actionType,

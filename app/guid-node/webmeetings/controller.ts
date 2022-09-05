@@ -15,7 +15,6 @@ import Toast from 'ember-toastr/services/toast';
 
 import config from 'ember-get-config';
 import CurrentUser from 'ember-osf-web/services/current-user';
-//import $ from 'jquery';
 import moment from 'moment';
 
 interface InstitutionUsers {
@@ -210,7 +209,7 @@ export default class GuidNodeWebMeetings extends Controller {
 
     @action
     resetValue(this: GuidNodeWebMeetings) {
-        //dialog
+        // dialog
         this.set('showCreateWebMeetingsDialog', false);
         this.set('showCreateWebMeetingsInputDialog', false);
         this.set('showUpdateWebMeetingsDialog', false);
@@ -218,7 +217,7 @@ export default class GuidNodeWebMeetings extends Controller {
         this.set('showManageAttendees', false);
         this.set('showDetailWebMeetingsDialog', false);
 
-        //items
+        // items
         this.set('webMeetingsPk', '');
         this.set('webMeetingsSubject', '');
         this.set('webMeetingsAttendees', []);
@@ -230,11 +229,11 @@ export default class GuidNodeWebMeetings extends Controller {
         this.set('webMeetingsContent', '');
         this.set('webMeetingsPassword', '');
 
-        //update items
+        // update items
         this.set('webMeetingsUpdateMeetingId', '');
 
 
-        //delete items
+        // delete items
         this.set('webMeetingsDeleteMeetingId', '');
         this.set('webMeetingsDeleteSubject', '');
         this.set('webMeetingsDeleteStartDate', '');
@@ -242,7 +241,7 @@ export default class GuidNodeWebMeetings extends Controller {
         this.set('webMeetingsDeleteEndDate', '');
         this.set('webMeetingsDeleteEndTime', '');
 
-        //detail item
+        // detail item
         this.set('detailMode', true);
         this.set('webMeetingsDetailSubject', '');
         this.set('webMeetingsDetailAttendees', []);
@@ -258,14 +257,14 @@ export default class GuidNodeWebMeetings extends Controller {
     }
 
     resetRegisterEmailValue(this: GuidNodeWebMeetings) {
-            this.set('selectedUser', {});
-            this.set('guestFullname', '');
-            this.set('userType', '');
-            this.set('emailType', '');
-            this.set('signInAddress', '');
-            this.set('usernameOfApp', '');
-            this.set('showRegisterWebMeetingsEmailDialog', false);
-            this.set('showRegisteredAttendees', false);
+        this.set('selectedUser', {});
+        this.set('guestFullname', '');
+        this.set('userType', '');
+        this.set('emailType', '');
+        this.set('signInAddress', '');
+        this.set('usernameOfApp', '');
+        this.set('showRegisterWebMeetingsEmailDialog', false);
+        this.set('showRegisteredAttendees', false);
     }
 
     @action
@@ -299,7 +298,13 @@ export default class GuidNodeWebMeetings extends Controller {
     }
 
     @action
-    manageWebMeetingsEmail(this: GuidNodeWebMeetings, actionType: string, _id: string, guid: string, is_guest: boolean) {
+    manageWebMeetingsEmail(
+        this: GuidNodeWebMeetings,
+        actionType: string,
+        _id: string,
+        guid: string,
+        is_guest: boolean
+    ) {
         const headers = this.currentUser.ajaxHeaders();
         const webMeetingsDir = ((this.displayedWebMeetings).replace(' ', '')).toLowerCase();
         const url = registerWebMeetingsEmailUrl.replace('{}', String(this.model.guid)).replace('{2}', webMeetingsDir);
@@ -312,29 +317,29 @@ export default class GuidNodeWebMeetings extends Controller {
         let fullname = '';
 
         switch (actionType) {
-            case 'create':
-                if (userType === 'radio_grdmUserOrRegisteredGuest') {
-                    if (selectedUser._id) {
-                        _id = selectedUser._id;
-                    }
-                    const index = (selectedUser.name).indexOf('@') + 1;
-                    guid = (selectedUser.name).slice(index, index + 5);
-                    is_guest = false;
-                } else if (userType === 'radio_newGuest') {
-                    guid = `${(new Date()).getTime()}`;
-                    fullname = guestFullname;
-                    is_guest = true;
+        case 'create':
+            if (userType === 'radio_grdmUserOrRegisteredGuest') {
+                if (selectedUser._id) {
+                    _id = selectedUser._id;
                 }
-                const emailType = this.emailType;
-                email = emailType === 'radio_signInAddress' ? this.signInAddress : this.outsideEmail;
-                emailTypeFlg = emailType === 'radio_signInAddress' ? true : false;
-                break;
-            case 'update':
-                const elmentId = '#' + guid;
-                const element = $(elmentId) as any;
-                email = element[0].textContent;
-                break;
-        }
+                const index = (selectedUser.name).indexOf('@') + 1;
+                guid = (selectedUser.name).slice(index, index + 5);
+                is_guest = false;
+            } else if (userType === 'radio_newGuest') {
+                guid = `${(new Date()).getTime()}`;
+                fullname = guestFullname;
+                is_guest = true;
+            }
+            const emailType = this.emailType;
+            email = emailType === 'radio_signInAddress' ? this.signInAddress : this.outsideEmail;
+            emailTypeFlg = emailType === 'radio_signInAddress' ? true : false;
+            break;
+        case 'update':
+            const elmentId = '#' + guid;
+            const element = $(elmentId) as any;
+            email = element[0].textContent;
+            break;
+    }
         const payload = {
             _id,
             fullname,
@@ -404,14 +409,14 @@ export default class GuidNodeWebMeetings extends Controller {
         const webMeetingsDetailAttendees = this.webMeetingsDetailAttendees as string[];
 
         switch (appName) {
-            case appsConfig.appNameMicrosoftTeams:
-                const nodeMicrosoftTeamsAttendees = JSON.parse(appsConfig.nodeMicrosoftTeamsAttendees);
-                    this.makeAppAttendeesInfo(nodeMicrosoftTeamsAttendees, webMeetingsDetailAttendees);
-                break;
-            case appsConfig.appNameWebexMeetings:
-                const nodeWebexMeetingsAttendees = JSON.parse(appsConfig.nodeWebexMeetingsAttendees);
-                    this.makeAppAttendeesInfo(nodeWebexMeetingsAttendees, webMeetingsDetailAttendees);
-                break;
+        case appsConfig.appNameMicrosoftTeams:
+            const nodeMicrosoftTeamsAttendees = JSON.parse(appsConfig.nodeMicrosoftTeamsAttendees);
+            this.makeAppAttendeesInfo(nodeMicrosoftTeamsAttendees, webMeetingsDetailAttendees);
+            break;
+        case appsConfig.appNameWebexMeetings:
+            const nodeWebexMeetingsAttendees = JSON.parse(appsConfig.nodeWebexMeetingsAttendees);
+            this.makeAppAttendeesInfo(nodeWebexMeetingsAttendees, webMeetingsDetailAttendees);
+            break;
         }
     }
 
@@ -519,23 +524,25 @@ export default class GuidNodeWebMeetings extends Controller {
         const webMeetingsDir = ((this.displayedWebMeetings).replace(' ', '')).toLowerCase();
         const url = requestWebMeetingsApiUrl.replace('{}', String(this.model.guid)).replace('{2}', webMeetingsDir);
         const webMeetingsSubject = this.webMeetingsSubject as string;
-        const webMeetingsStartDate = this.webMeetingsStartDate ? moment(this.webMeetingsStartDate).format('YYYY-MM-DD') : '';
-        const webMeetingsStartTimeElement = document.querySelectorAll('select[id=create_web_meetings_start_time]').length ?
-                                             document.querySelectorAll('select[id=create_web_meetings_start_time]') as any :
-                                             document.querySelectorAll('select[id=update_web_meetings_start_time]') as any;
+        const webMeetingsStartDate = this.webMeetingsStartDate
+                                     ? moment(this.webMeetingsStartDate).format('YYYY-MM-DD')
+                                     : '';
+        const webMeetingsStartTimeElement = document.querySelectorAll('select[id=create_web_meetings_start_time]').length
+                                            ? document.querySelectorAll('select[id=create_web_meetings_start_time]') as any
+                                            : document.querySelectorAll('select[id=update_web_meetings_start_time]') as any;
         const webMeetingsStartTime = webMeetingsStartTimeElement.length ? webMeetingsStartTimeElement[0].value : '';
         const strWebMeetingsStartDatetime = `${webMeetingsStartDate} ${webMeetingsStartTime}`;
         const webMeetingsEndDate = this.webMeetingsEndDate ? moment(this.webMeetingsEndDate).format('YYYY-MM-DD') : '';
-        const webMeetingsEndTimeElement = document.querySelectorAll('select[id=create_web_meetings_end_time]').length ?
-                                          document.querySelectorAll('select[id=create_web_meetings_end_time]') as any :
-                                          document.querySelectorAll('select[id=update_web_meetings_end_time]') as any;
+        const webMeetingsEndTimeElement = document.querySelectorAll('select[id=create_web_meetings_end_time]').length
+                                          ? document.querySelectorAll('select[id=create_web_meetings_end_time]') as any
+                                          : document.querySelectorAll('select[id=update_web_meetings_end_time]') as any;
         const webMeetingsEndTime = webMeetingsEndTimeElement.length ? webMeetingsEndTimeElement[0].value : '';
         const strWebMeetingsEndDatetime = `${webMeetingsEndDate} ${webMeetingsEndTime}`;
         const webMeetingsContent = this.webMeetingsContent as string;
         const webMeetingsPassword = this.webMeetingsPassword as string;
-        const webMeetingsStartDatetime = strWebMeetingsStartDatetime !== ' ' ?
-                                         (new Date(strWebMeetingsStartDatetime)).toISOString() :
-                                         '';
+        const webMeetingsStartDatetime = strWebMeetingsStartDatetime !== ' '
+            ? (new Date(strWebMeetingsStartDatetime)).toISOString()
+            : '';
 
         const webMeetingsEndDatetime = strWebMeetingsEndDatetime !== ' ' ?
                                          (new Date(strWebMeetingsEndDatetime)).toISOString() :
@@ -548,58 +555,58 @@ export default class GuidNodeWebMeetings extends Controller {
         let webexMeetingsCreateInvitees: WebexMeetingsCreateInvitee[] = [];
         let webexMeetingsDeleteInvitees: string[] = [];
 
-        let body = {}
+        let body = {};
         let contentExtract = '';
         switch (this.displayedWebMeetings) {
-            case appsConfig.appNameMicrosoftTeams:
-                const microsoftTeamsAttendees = this.makeMicrosoftTeamsAttendees(selectedAttendees);
-                const content = (this.webMeetingsContent).replace(/\n/g,'<br>') as string;
-                const updateContent = (microsoftTeamsSignature.replace('{1}', content)).replace('{2}', this.webMeetingsJoinUrl);
-                contentExtract = (this.webMeetingsContent).replace(/\n/g,'\r\n');
-                body = {
-                    subject: webMeetingsSubject,
-                    start: {
-                        dateTime: webMeetingsStartDatetime,
-                        timeZone: "Asia/Tokyo"
-                    },
-                    end: {
-                        dateTime: webMeetingsEndDatetime,
-                        timeZone: "Asia/Tokyo"
-                    },
-                    body: {
-                        contentType: "HTML",
-                        content: actionType === 'update' ? updateContent : content,
-                    },
-                    attendees: microsoftTeamsAttendees,
-                    isOnlineMeeting: true
-                }
-                break;
-            case appsConfig.appNameWebexMeetings:
-                const webexMeetingsAttendeesInfo = this.makeWebexMeetingsAttendees(selectedAttendees, updateMeetingId, actionType);
-                webexMeetingsCreateInvitees = webexMeetingsAttendeesInfo.createInvitees;
-                webexMeetingsDeleteInvitees = webexMeetingsAttendeesInfo.deleteInvitees;
-                body = {
-                    title: webMeetingsSubject,
-                    start: webMeetingsStartDatetime,
-                    end: webMeetingsEndDatetime,
-                    invitees: webexMeetingsAttendeesInfo.invitees,
-                    agenda: webMeetingsContent,
-                    password: webMeetingsPassword,
-                }
-                break;
-            case appsConfig.appNameZoomMeetings:
-                const startDate = new Date(webMeetingsStartDatetime);
-                const endDate = new Date(webMeetingsEndDatetime);
-                const duration = (endDate.getTime() - startDate.getTime()) / (60 * 1000);
-                body = {
-                    topic: webMeetingsSubject,
-                    start_time: webMeetingsStartDatetime,
-                    duration,
-                    agenda: webMeetingsContent,
-                    timezone: 'UTC',
-                    type: 2
-                }
-                break;
+        case appsConfig.appNameMicrosoftTeams:
+            const microsoftTeamsAttendees = this.makeMicrosoftTeamsAttendees(selectedAttendees);
+            const content = (this.webMeetingsContent).replace(/\n/g, '<br>') as string;
+            const updateContent = (microsoftTeamsSignature.replace('{1}', content)).replace('{2}', this.webMeetingsJoinUrl);
+            contentExtract = (this.webMeetingsContent).replace(/\n/g, '\r\n');
+            body = {
+                subject: webMeetingsSubject,
+                start: {
+                    dateTime: webMeetingsStartDatetime,
+                    timeZone: "Asia/Tokyo",
+                },
+                end: {
+                    dateTime: webMeetingsEndDatetime,
+                    timeZone: "Asia/Tokyo",
+                },
+                body: {
+                    contentType: "HTML",
+                    content: actionType === 'update' ? updateContent : content,
+                },
+                attendees: microsoftTeamsAttendees,
+                isOnlineMeeting: true,
+            }
+            break;
+        case appsConfig.appNameWebexMeetings:
+            const webexMeetingsAttendeesInfo = this.makeWebexMeetingsAttendees(selectedAttendees, updateMeetingId, actionType);
+            webexMeetingsCreateInvitees = webexMeetingsAttendeesInfo.createInvitees;
+            webexMeetingsDeleteInvitees = webexMeetingsAttendeesInfo.deleteInvitees;
+            body = {
+                title: webMeetingsSubject,
+                start: webMeetingsStartDatetime,
+                end: webMeetingsEndDatetime,
+                invitees: webexMeetingsAttendeesInfo.invitees,
+                agenda: webMeetingsContent,
+                password: webMeetingsPassword,
+            }
+            break;
+        case appsConfig.appNameZoomMeetings:
+            const startDate = new Date(webMeetingsStartDatetime);
+            const endDate = new Date(webMeetingsEndDatetime);
+            const duration = (endDate.getTime() - startDate.getTime()) / (60 * 1000);
+            body = {
+                topic: webMeetingsSubject,
+                start_time: webMeetingsStartDatetime,
+                duration,
+                agenda: webMeetingsContent,
+                timezone: 'UTC',
+                type: 2
+            }
+            break;
         }
 
 
@@ -910,7 +917,9 @@ export default class GuidNodeWebMeetings extends Controller {
 
         for (let i = 0; i < institutionUsers.length; i++) {
             userName = institutionUsers[i].fullname;
-            unregisteredUserInfo = suggestionDisabled ? `@${institutionUsers[i].guid}${unregisteredLabel}` : `@${institutionUsers[i].guid}`;
+            unregisteredUserInfo = suggestionDisabled
+                                   ? `@${institutionUsers[i].guid}${unregisteredLabel}`
+                                   : `@${institutionUsers[i].guid}`;
 
             unregisteredInstitutionUsers.push(
                 {
@@ -941,8 +950,8 @@ export default class GuidNodeWebMeetings extends Controller {
                         },
                     );
 
-                        unregisteredInstitutionUsers.pop();
-                    }
+                    unregisteredInstitutionUsers.pop();
+                }
                 if (i === 0) {
                     if (nodeAppAttendee.fields.is_guest) {
                         guestUserName = nodeAppAttendee.fields.fullname;
@@ -1062,8 +1071,6 @@ export default class GuidNodeWebMeetings extends Controller {
 
         return institutionUsersWebexMeetingsToRegister;
     }
-
-
 
     @computed('node')
     get config(): DS.PromiseObject<WebMeetingsConfigModel> | undefined {

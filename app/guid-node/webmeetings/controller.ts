@@ -317,7 +317,7 @@ export default class GuidNodeWebMeetings extends Controller {
         let fullname = '';
         let requestAttendeeId = '';
         let requestGuid = '';
-        let requestIsGuest = '';
+        let requestIsGuest = isGuest;
 
         switch (actionType) {
         case 'create': {
@@ -358,7 +358,7 @@ export default class GuidNodeWebMeetings extends Controller {
             fullname,
             guid: requestGuid,
             email,
-            is_guest requestIsGuest: ,
+            is_guest: requestIsGuest,
             actionType,
             emailType: emailTypeFlg,
         };

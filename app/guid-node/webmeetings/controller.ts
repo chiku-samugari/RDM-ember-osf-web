@@ -15,7 +15,7 @@ import Toast from 'ember-toastr/services/toast';
 
 import config from 'ember-get-config';
 import CurrentUser from 'ember-osf-web/services/current-user';
-import $ from 'jquery
+import $ from 'jquery;
 import moment from 'moment';
 
 interface InstitutionUsers {

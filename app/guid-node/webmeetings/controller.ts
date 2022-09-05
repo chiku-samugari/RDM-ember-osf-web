@@ -15,10 +15,8 @@ import Toast from 'ember-toastr/services/toast';
 
 import config from 'ember-get-config';
 import CurrentUser from 'ember-osf-web/services/current-user';
+import $ from 'jquery
 import moment from 'moment';
-
-import Ember from 'ember';
-const { $ } = Ember;
 
 interface InstitutionUsers {
     fullname: string;
@@ -546,8 +544,8 @@ export default class GuidNodeWebMeetings extends Controller {
             : '';
         /* eslint-disable max-len */
         const webMeetingsStartTimeElement = document.querySelectorAll('select[id=create_web_meetings_start_time]').length
-                ? document.querySelectorAll('select[id=create_web_meetings_start_time]') as any
-                : document.querySelectorAll('select[id=update_web_meetings_start_time]') as any;
+            ? document.querySelectorAll('select[id=create_web_meetings_start_time]') as any
+            : document.querySelectorAll('select[id=update_web_meetings_start_time]') as any;
         /* eslint-enable max-len */
         const webMeetingsStartTime = webMeetingsStartTimeElement.length ? webMeetingsStartTimeElement[0].value : '';
         const strWebMeetingsStartDatetime = `${webMeetingsStartDate} ${webMeetingsStartTime}`;

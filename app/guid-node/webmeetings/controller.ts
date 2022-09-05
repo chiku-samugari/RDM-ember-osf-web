@@ -7,8 +7,8 @@ import { inject as service } from '@ember/service';
 import DS from 'ember-data';
 
 import Intl from 'ember-intl/services/intl';
-import WebMeetingsConfigModel from 'ember-osf-web/models/webmeetings-config';
 import Node from 'ember-osf-web/models/node';
+import WebMeetingsConfigModel from 'ember-osf-web/models/webmeetings-config';
 import Analytics from 'ember-osf-web/services/analytics';
 import StatusMessages from 'ember-osf-web/services/status-messages';
 import Toast from 'ember-toastr/services/toast';
@@ -95,7 +95,7 @@ export default class GuidNodeWebMeetings extends Controller {
     showCreateWebMeetingsInputDialog = false;
     showUpdateWebMeetingsDialog = false;
     showDeleteWebMeetingsDialog = false;
-    showDetailWebMeetingsDialog =false;
+    showDetailWebMeetingsDialog = false;
     detailMode = true;
     showManageAttendees = false;
     showRegisteredAttendees = false;
@@ -233,7 +233,6 @@ export default class GuidNodeWebMeetings extends Controller {
         // update items
         this.set('webMeetingsUpdateMeetingId', '');
 
-
         // delete items
         this.set('webMeetingsDeleteMeetingId', '');
         this.set('webMeetingsDeleteSubject', '');
@@ -302,7 +301,7 @@ export default class GuidNodeWebMeetings extends Controller {
     manageWebMeetingsEmail(
         this: GuidNodeWebMeetings,
         actionType: string,
-        _id: string,
+        id: string,
         guid: string,
         isGuest: boolean,
     ) {
@@ -347,7 +346,7 @@ export default class GuidNodeWebMeetings extends Controller {
             const elmentId = `#${guid}`;
             const element = $(elmentId) as any;
             email = element[0].textContent;
-            requestAttendeeId = _id;
+            requestAttendeeId = id;
             requestGuid = guid;
             requestIsGuest = isGuest;
             break;
@@ -397,7 +396,7 @@ export default class GuidNodeWebMeetings extends Controller {
         content: string,
         password: string,
         joinUrl: string,
-        appName:string,
+        appName: string,
     ) {
         this.set('detailMode', false);
         this.set('webMeetingsPk', meetingPk);
@@ -506,7 +505,7 @@ export default class GuidNodeWebMeetings extends Controller {
         content: string,
         password: string,
         joinUrl: string,
-        appName:string,
+        appName: string,
     ) {
         this.set('detailMode', true);
         this.set('showDetailWebMeetingsDialog', true);

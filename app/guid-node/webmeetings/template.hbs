@@ -584,9 +584,9 @@
                             {{#each this.nodeMicrosoftTeamsAttendees as |row|}}
                                 <tr>
                                     <td>{{row.fields.fullname}}</td>
-                                    <td contenteditable='true' onblur={{action this.manageWebMeetingsEmail 'update' row.fields._id row.fields.user_guid row.fields.is_guest}}>{{row.fields.email_address}}</td>
+                                    <td id='{{row.fields.user_guid}}' contenteditable='true' onblur={{action this.manageWebMeetingsEmail 'update' row.fields._id row.fields.user_guid row.fields.is_guest}}>{{row.fields.email_address}}</td>
                                     {{#if row.fields.is_guest}}
-                                        <td><i class='fa fa-times' style='cursor: pointer' onClick={{action this.manageWebMeetingsEmail 'delete' row.fields._id }}>></i></td>
+                                        <td><i class='fa fa-times' style='cursor: pointer' onClick={{action this.manageWebMeetingsEmail 'delete' row.fields._id }}></i></td>
                                     {{else}}
                                         <td></td>
                                     {{/if}}

@@ -351,6 +351,9 @@ export default class GuidNodeWebMeetings extends Controller {
             requestIsGuest = isGuest;
             break;
         }
+        case 'delete':
+            requestAttendeeId = id;
+            break;
         default:
         }
         const payload = {
@@ -741,8 +744,8 @@ export default class GuidNodeWebMeetings extends Controller {
             });
             arrayDeleteAttendeePks.forEach((arrayDeleteAttendeePk: any) => {
                 nodeWebexMeetingsAttendeesRelation.forEach((relation: any) => {
-                    if (this.webMeetingsPk === relation.fields.webex_meetings) {
-                        if (arrayDeleteAttendeePk === relation.fields.attendees) {
+                    if (this.webMeetingsPk === relation.fields.meeting) {
+                        if (arrayDeleteAttendeePk === relation.fields.attendee) {
                             webexMeetingsDeleteInvitees.push(
                                 relation.fields.webex_meetings_invitee_id,
                             );

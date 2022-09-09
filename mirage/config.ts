@@ -22,6 +22,7 @@ import { summaryMetrics } from './views/institution';
 import { iqbrimsStatus } from './views/iqbrims-status';
 import { metadataNodeErad } from './views/metadata-node-erad';
 import { metadataNodeProject } from './views/metadata-node-project';
+import { webmeetingsConfig } from './views/webmeetings-config';
 import { createNode } from './views/node';
 import { osfNestedResource, osfResource, osfToManyRelationship } from './views/osf-resource';
 import { getProviderSubjects } from './views/provider-subjects';
@@ -259,6 +260,7 @@ export default function(this: Server) {
     this.get('/project/:id/binderhub/config', binderhubConfig);
     this.get('/project/:id/metadata/erad/candidates', metadataNodeErad);
     this.get('/project/:id/metadata/project', metadataNodeProject);
+    this.get('/project/:id/webmeetings/config', webmeetingsConfig);
 
     this.urlPrefix = apiUrl;
     this.namespace = apiNamespace;

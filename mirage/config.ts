@@ -22,7 +22,6 @@ import { summaryMetrics } from './views/institution';
 import { iqbrimsStatus } from './views/iqbrims-status';
 import { metadataNodeErad } from './views/metadata-node-erad';
 import { metadataNodeProject } from './views/metadata-node-project';
-import { webmeetingsConfig } from './views/webmeetings-config';
 import { createNode } from './views/node';
 import { osfNestedResource, osfResource, osfToManyRelationship } from './views/osf-resource';
 import { getProviderSubjects } from './views/provider-subjects';
@@ -34,6 +33,7 @@ import { userNodeList } from './views/user';
 import { updatePassword } from './views/user-password';
 import * as userSettings from './views/user-setting';
 import * as wb from './views/wb';
+import { webmeetingsConfig } from './views/webmeetings-config';
 
 const { OSF: { apiUrl, url } } = config;
 

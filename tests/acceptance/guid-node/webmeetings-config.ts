@@ -11,7 +11,7 @@ module('Acceptance | guid-node/webmeetings', hooks => {
 
     test('logged in', async assert => {
         const node = server.create('node', { id: 'in2g6' });
-        server.create('webmeetings-config', { id: node.id, workflows: '123' });
+        server.create('webmeetings-config', { id: node.id });
         const url = `/${node.id}/webmeetings`;
 
         await visit(url);

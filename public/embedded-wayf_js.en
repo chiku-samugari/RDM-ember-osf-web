@@ -134,7 +134,13 @@ var wayf_idps = {
 		type:"hokkaido",
 		name:"Otaru University of Commerce",
 		search:["https://ictc-idp01.otaru-uc.ac.jp/idp/shibboleth", "Hokkaido", "Otaru University of Commerce", "Otaru University of Commerce", "小樽商科大学"],
-		SAML1SSOurl:"https://ictc-idp01.otaru-uc.ac.jp/idp/profile/Shibboleth/SSO"
+		SAML1SSOurl:"https://ictc-idp01.otaru-uc.ac.jp/saml/shib13/idp/SSOService.php"
+		},
+	"https://idp.do-johodai.ac.jp/idp/shibboleth":{
+		type:"hokkaido",
+		name:"Hokkaido Information University",
+		search:["https://idp.do-johodai.ac.jp/idp/shibboleth", "Hokkaido", "Hokkaido Information University", "Hokkaido Information University", "北海道情報大学"],
+		SAML1SSOurl:"https://idp.do-johodai.ac.jp/idp/profile/Shibboleth/SSO"
 		},
 	"https://upki.yamagata-u.ac.jp/idp/shibboleth":{
 		type:"tohoku",
@@ -261,6 +267,12 @@ var wayf_idps = {
 		name:"Fukushima University",
 		search:["https://fukushima-u.ex-tic.com/auth/gakunin/saml2/assertions", "Tohoku", "Fukushima University", "Fukushima University", "福島大学"],
 		SAML1SSOurl:"https://no.saml1.sso.url.defined.com/error"
+		},
+	"https://idp.cc.iwate-u.ac.jp/idp/shibboleth":{
+		type:"tohoku",
+		name:"Iwate University",
+		search:["https://idp.cc.iwate-u.ac.jp/idp/shibboleth", "Tohoku", "Iwate University", "Iwate University", "岩手大学"],
+		SAML1SSOurl:"https://idp.cc.iwate-u.ac.jp/idp/profile/Shibboleth/SSO"
 		},
 	"https://idp.nii.ac.jp/idp/shibboleth":{
 		type:"kanto",
@@ -718,6 +730,18 @@ var wayf_idps = {
 		search:["https://tuat.ex-tic.com/auth/gakunin/saml2/assertions", "Kanto", "Tokyo University of Agriculture and Technology", "Tokyo University of Agriculture and Technology", "東京農工大学"],
 		SAML1SSOurl:"https://no.saml1.sso.url.defined.com/error"
 		},
+	"https://ent.utsunomiya-u.ac.jp":{
+		type:"kanto",
+		name:"Utsunomiya University",
+		search:["https://ent.utsunomiya-u.ac.jp", "Kanto", "Utsunomiya University", "Utsunomiya University", "宇都宮大学"],
+		SAML1SSOurl:"https://ent.utsunomiya-u.ac.jp/saml/shib13/idp/SSOService.php"
+		},
+	"https://idp.luke.ac.jp/idp/shibboleth":{
+		type:"kanto",
+		name:"St. Luke\'s International University",
+		search:["https://idp.luke.ac.jp/idp/shibboleth", "Kanto", "St. Luke\'s International University", "St. Luke\'s International University", "聖路加国際大学"],
+		SAML1SSOurl:"https://idp.luke.ac.jp/idp/profile/Shibboleth/SSO"
+		},
 	"https://fed.mie-u.ac.jp/idp":{
 		type:"chubu",
 		name:"Mie University",
@@ -844,12 +868,6 @@ var wayf_idps = {
 		search:["https://ams.juen.ac.jp/idp/shibboleth", "Chubu", "Joetsu University of Education", "Joetsu University of Education", "上越教育大学"],
 		SAML1SSOurl:"https://no.saml1.sso.url.defined.com/error"
 		},
-	"https://idp1.b.cii.u-fukui.ac.jp/idp/shibboleth":{
-		type:"chubu",
-		name:"University of Fukui",
-		search:["https://idp1.b.cii.u-fukui.ac.jp/idp/shibboleth", "Chubu", "University of Fukui", "University of Fukui", "福井大学"],
-		SAML1SSOurl:"https://idp1.b.cii.u-fukui.ac.jp/idp/profile/Shibboleth/SSO"
-		},
 	"https://gakunin.gifu-u.ac.jp/idp/shibboleth":{
 		type:"chubu",
 		name:"Gifu University",
@@ -882,8 +900,8 @@ var wayf_idps = {
 		},
 	"https://idp.nifs.ac.jp/idp/shibboleth":{
 		type:"chubu",
-		name:"National Institute for Fusion Science",
-		search:["https://idp.nifs.ac.jp/idp/shibboleth", "Chubu", "National Institute for Fusion Science", "National Institute for Fusion Science", "核融合科学研究所"],
+		name:"National Institute for Fusion Science (obsolete)",
+		search:["https://idp.nifs.ac.jp/idp/shibboleth", "Chubu", "National Institute for Fusion Science (obsolete)", "National Institute for Fusion Science (obsolete)", "核融合科学研究所（旧）"],
 		SAML1SSOurl:"https://idp.nifs.ac.jp/idp/profile/Shibboleth/SSO"
 		},
 	"https://shib.chukyo-u.ac.jp/idp/shibboleth":{
@@ -978,9 +996,15 @@ var wayf_idps = {
 		},
 	"https://ufidp.cii.u-fukui.ac.jp/idp/shibboleth":{
 		type:"chubu",
-		name:"University of FUKUI (new)",
-		search:["https://ufidp.cii.u-fukui.ac.jp/idp/shibboleth", "Chubu", "University of FUKUI (new)", "University of FUKUI (new)", "福井大学（新）"],
+		name:"University of FUKUI",
+		search:["https://ufidp.cii.u-fukui.ac.jp/idp/shibboleth", "Chubu", "University of FUKUI", "University of FUKUI", "福井大学"],
 		SAML1SSOurl:"https://ufidp.cii.u-fukui.ac.jp/idp/profile/Shibboleth/SSO"
+		},
+	"https://nifsacjp.ex-tic.com/auth/gakunin/saml2/assertions":{
+		type:"chubu",
+		name:"National Institute for Fusion Science (extic)",
+		search:["https://nifsacjp.ex-tic.com/auth/gakunin/saml2/assertions", "Chubu", "National Institute for Fusion Science (extic)", "National Institute for Fusion Science (extic)", "核融合科学研究所 (extic)"],
+		SAML1SSOurl:"https://no.saml1.sso.url.defined.com/error"
 		},
 	"https://authidp1.iimc.kyoto-u.ac.jp/idp/shibboleth":{
 		type:"kinki",
@@ -1516,10 +1540,10 @@ var wayf_idps = {
 		search:["https://um-idp.cc.miyazaki-u.ac.jp/idp/shibboleth", "Kyushu", "University of Miyazaki", "University of Miyazaki", "宮崎大学"],
 		SAML1SSOurl:"https://um-idp.cc.miyazaki-u.ac.jp/idp/profile/Shibboleth/SSO"
 		},
-	"https://fed.u-ryukyu.ac.jp/shibboleth":{
+	"https://fed.u-ryukyu.ac.jp/idp/shibboleth":{
 		type:"kyushu",
 		name:"University of the Ryukyus",
-		search:["https://fed.u-ryukyu.ac.jp/shibboleth", "Kyushu", "University of the Ryukyus", "University of the Ryukyus", "琉球大学"],
+		search:["https://fed.u-ryukyu.ac.jp/idp/shibboleth", "Kyushu", "University of the Ryukyus", "University of the Ryukyus", "琉球大学"],
 		SAML1SSOurl:"https://fed.u-ryukyu.ac.jp/idp/profile/Shibboleth/SSO"
 		},
 	"https://kidp.kct.ac.jp/idp/shibboleth":{
@@ -2278,7 +2302,7 @@ function decodeBase64(input) {
 			+ '&amp;shire=' + encodeURIComponent(wayf_sp_samlACURL)
 			+ '&amp;target=' + encodeURIComponent(wayf_return_url);
 			
-			form_start = '<form id="IdPList" name="IdPList" method="post" target="_parent" onSubmit="return submitForm()" action="' + wayf_authReq_URL + '&amp;time=1646795132'
+			form_start = '<form id="IdPList" name="IdPList" method="post" target="_parent" onSubmit="return submitForm()" action="' + wayf_authReq_URL + '&amp;time=1663125733'
 			+ '">';
 		}
 		
@@ -2481,6 +2505,17 @@ function decodeBase64(input) {
 				dispDefault = 'Otaru University of Commerce';
 			}
 			pushIncSearchList('https://ictc-idp01.otaru-uc.ac.jp/idp/shibboleth');
+		}		if (last_idp == 'https://idp.do-johodai.ac.jp/idp/shibboleth'){
+			dispDefault = 'Hokkaido Information University';
+		}		if (isAllowedType('https://idp.do-johodai.ac.jp/idp/shibboleth','hokkaido') && isAllowedIdP('https://idp.do-johodai.ac.jp/idp/shibboleth')){
+			if (
+				"-" == "-" 
+				&& typeof(wayf_default_idp) != "undefined"
+				&& wayf_default_idp == "https://idp.do-johodai.ac.jp/idp/shibboleth"
+				){
+				dispDefault = 'Hokkaido Information University';
+			}
+			pushIncSearchList('https://idp.do-johodai.ac.jp/idp/shibboleth');
 		}		if (last_idp == 'https://upki.yamagata-u.ac.jp/idp/shibboleth'){
 			dispDefault = 'Yamagata University';
 		}		if (isAllowedType('https://upki.yamagata-u.ac.jp/idp/shibboleth','tohoku') && isAllowedIdP('https://upki.yamagata-u.ac.jp/idp/shibboleth')){
@@ -2712,6 +2747,17 @@ function decodeBase64(input) {
 				dispDefault = 'Fukushima University';
 			}
 			pushIncSearchList('https://fukushima-u.ex-tic.com/auth/gakunin/saml2/assertions');
+		}		if (last_idp == 'https://idp.cc.iwate-u.ac.jp/idp/shibboleth'){
+			dispDefault = 'Iwate University';
+		}		if (isAllowedType('https://idp.cc.iwate-u.ac.jp/idp/shibboleth','tohoku') && isAllowedIdP('https://idp.cc.iwate-u.ac.jp/idp/shibboleth')){
+			if (
+				"-" == "-" 
+				&& typeof(wayf_default_idp) != "undefined"
+				&& wayf_default_idp == "https://idp.cc.iwate-u.ac.jp/idp/shibboleth"
+				){
+				dispDefault = 'Iwate University';
+			}
+			pushIncSearchList('https://idp.cc.iwate-u.ac.jp/idp/shibboleth');
 		}		if (last_idp == 'https://idp.nii.ac.jp/idp/shibboleth'){
 			dispDefault = 'National Institute of Informatics';
 		}		if (isAllowedType('https://idp.nii.ac.jp/idp/shibboleth','kanto') && isAllowedIdP('https://idp.nii.ac.jp/idp/shibboleth')){
@@ -3548,6 +3594,28 @@ function decodeBase64(input) {
 				dispDefault = 'Tokyo University of Agriculture and Technology';
 			}
 			pushIncSearchList('https://tuat.ex-tic.com/auth/gakunin/saml2/assertions');
+		}		if (last_idp == 'https://ent.utsunomiya-u.ac.jp'){
+			dispDefault = 'Utsunomiya University';
+		}		if (isAllowedType('https://ent.utsunomiya-u.ac.jp','kanto') && isAllowedIdP('https://ent.utsunomiya-u.ac.jp')){
+			if (
+				"-" == "-" 
+				&& typeof(wayf_default_idp) != "undefined"
+				&& wayf_default_idp == "https://ent.utsunomiya-u.ac.jp"
+				){
+				dispDefault = 'Utsunomiya University';
+			}
+			pushIncSearchList('https://ent.utsunomiya-u.ac.jp');
+		}		if (last_idp == 'https://idp.luke.ac.jp/idp/shibboleth'){
+			dispDefault = 'St. Luke\'s International University';
+		}		if (isAllowedType('https://idp.luke.ac.jp/idp/shibboleth','kanto') && isAllowedIdP('https://idp.luke.ac.jp/idp/shibboleth')){
+			if (
+				"-" == "-" 
+				&& typeof(wayf_default_idp) != "undefined"
+				&& wayf_default_idp == "https://idp.luke.ac.jp/idp/shibboleth"
+				){
+				dispDefault = 'St. Luke\'s International University';
+			}
+			pushIncSearchList('https://idp.luke.ac.jp/idp/shibboleth');
 		}		if (last_idp == 'https://fed.mie-u.ac.jp/idp'){
 			dispDefault = 'Mie University';
 		}		if (isAllowedType('https://fed.mie-u.ac.jp/idp','chubu') && isAllowedIdP('https://fed.mie-u.ac.jp/idp')){
@@ -3779,17 +3847,6 @@ function decodeBase64(input) {
 				dispDefault = 'Joetsu University of Education';
 			}
 			pushIncSearchList('https://ams.juen.ac.jp/idp/shibboleth');
-		}		if (last_idp == 'https://idp1.b.cii.u-fukui.ac.jp/idp/shibboleth'){
-			dispDefault = 'University of Fukui';
-		}		if (isAllowedType('https://idp1.b.cii.u-fukui.ac.jp/idp/shibboleth','chubu') && isAllowedIdP('https://idp1.b.cii.u-fukui.ac.jp/idp/shibboleth')){
-			if (
-				"-" == "-" 
-				&& typeof(wayf_default_idp) != "undefined"
-				&& wayf_default_idp == "https://idp1.b.cii.u-fukui.ac.jp/idp/shibboleth"
-				){
-				dispDefault = 'University of Fukui';
-			}
-			pushIncSearchList('https://idp1.b.cii.u-fukui.ac.jp/idp/shibboleth');
 		}		if (last_idp == 'https://gakunin.gifu-u.ac.jp/idp/shibboleth'){
 			dispDefault = 'Gifu University';
 		}		if (isAllowedType('https://gakunin.gifu-u.ac.jp/idp/shibboleth','chubu') && isAllowedIdP('https://gakunin.gifu-u.ac.jp/idp/shibboleth')){
@@ -3846,14 +3903,14 @@ function decodeBase64(input) {
 			}
 			pushIncSearchList('https://shibboleth.niigata-cn.ac.jp/idp/shibboleth');
 		}		if (last_idp == 'https://idp.nifs.ac.jp/idp/shibboleth'){
-			dispDefault = 'National Institute for Fusion Science';
+			dispDefault = 'National Institute for Fusion Science (obsolete)';
 		}		if (isAllowedType('https://idp.nifs.ac.jp/idp/shibboleth','chubu') && isAllowedIdP('https://idp.nifs.ac.jp/idp/shibboleth')){
 			if (
 				"-" == "-" 
 				&& typeof(wayf_default_idp) != "undefined"
 				&& wayf_default_idp == "https://idp.nifs.ac.jp/idp/shibboleth"
 				){
-				dispDefault = 'National Institute for Fusion Science';
+				dispDefault = 'National Institute for Fusion Science (obsolete)';
 			}
 			pushIncSearchList('https://idp.nifs.ac.jp/idp/shibboleth');
 		}		if (last_idp == 'https://shib.chukyo-u.ac.jp/idp/shibboleth'){
@@ -4022,16 +4079,27 @@ function decodeBase64(input) {
 			}
 			pushIncSearchList('https://idp.aichi-pu.ac.jp/idp/shibboleth');
 		}		if (last_idp == 'https://ufidp.cii.u-fukui.ac.jp/idp/shibboleth'){
-			dispDefault = 'University of FUKUI (new)';
+			dispDefault = 'University of FUKUI';
 		}		if (isAllowedType('https://ufidp.cii.u-fukui.ac.jp/idp/shibboleth','chubu') && isAllowedIdP('https://ufidp.cii.u-fukui.ac.jp/idp/shibboleth')){
 			if (
 				"-" == "-" 
 				&& typeof(wayf_default_idp) != "undefined"
 				&& wayf_default_idp == "https://ufidp.cii.u-fukui.ac.jp/idp/shibboleth"
 				){
-				dispDefault = 'University of FUKUI (new)';
+				dispDefault = 'University of FUKUI';
 			}
 			pushIncSearchList('https://ufidp.cii.u-fukui.ac.jp/idp/shibboleth');
+		}		if (last_idp == 'https://nifsacjp.ex-tic.com/auth/gakunin/saml2/assertions'){
+			dispDefault = 'National Institute for Fusion Science (extic)';
+		}		if (isAllowedType('https://nifsacjp.ex-tic.com/auth/gakunin/saml2/assertions','chubu') && isAllowedIdP('https://nifsacjp.ex-tic.com/auth/gakunin/saml2/assertions')){
+			if (
+				"-" == "-" 
+				&& typeof(wayf_default_idp) != "undefined"
+				&& wayf_default_idp == "https://nifsacjp.ex-tic.com/auth/gakunin/saml2/assertions"
+				){
+				dispDefault = 'National Institute for Fusion Science (extic)';
+			}
+			pushIncSearchList('https://nifsacjp.ex-tic.com/auth/gakunin/saml2/assertions');
 		}		if (last_idp == 'https://authidp1.iimc.kyoto-u.ac.jp/idp/shibboleth'){
 			dispDefault = 'Kyoto University';
 		}		if (isAllowedType('https://authidp1.iimc.kyoto-u.ac.jp/idp/shibboleth','kinki') && isAllowedIdP('https://authidp1.iimc.kyoto-u.ac.jp/idp/shibboleth')){
@@ -5011,17 +5079,17 @@ function decodeBase64(input) {
 				dispDefault = 'University of Miyazaki';
 			}
 			pushIncSearchList('https://um-idp.cc.miyazaki-u.ac.jp/idp/shibboleth');
-		}		if (last_idp == 'https://fed.u-ryukyu.ac.jp/shibboleth'){
+		}		if (last_idp == 'https://fed.u-ryukyu.ac.jp/idp/shibboleth'){
 			dispDefault = 'University of the Ryukyus';
-		}		if (isAllowedType('https://fed.u-ryukyu.ac.jp/shibboleth','kyushu') && isAllowedIdP('https://fed.u-ryukyu.ac.jp/shibboleth')){
+		}		if (isAllowedType('https://fed.u-ryukyu.ac.jp/idp/shibboleth','kyushu') && isAllowedIdP('https://fed.u-ryukyu.ac.jp/idp/shibboleth')){
 			if (
 				"-" == "-" 
 				&& typeof(wayf_default_idp) != "undefined"
-				&& wayf_default_idp == "https://fed.u-ryukyu.ac.jp/shibboleth"
+				&& wayf_default_idp == "https://fed.u-ryukyu.ac.jp/idp/shibboleth"
 				){
 				dispDefault = 'University of the Ryukyus';
 			}
-			pushIncSearchList('https://fed.u-ryukyu.ac.jp/shibboleth');
+			pushIncSearchList('https://fed.u-ryukyu.ac.jp/idp/shibboleth');
 		}		if (last_idp == 'https://kidp.kct.ac.jp/idp/shibboleth'){
 			dispDefault = 'National Institute of Technology,Kitakyushu College';
 		}		if (isAllowedType('https://kidp.kct.ac.jp/idp/shibboleth','kyushu') && isAllowedIdP('https://kidp.kct.ac.jp/idp/shibboleth')){

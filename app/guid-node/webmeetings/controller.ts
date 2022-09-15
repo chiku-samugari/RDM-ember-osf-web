@@ -63,6 +63,10 @@ interface NodeAppAttendees {
     [fields: string]: Attendees;
 }
 
+interface guestOrNot {
+    [key: string]: string;
+}
+
 const {
     OSF: {
         url: host,
@@ -573,7 +577,7 @@ export default class GuidNodeWebMeetings extends Controller {
         const selectedAttendees = this.selectedAttendees as AttendeesInfo[];
         let webexMeetingsCreateInvitees: WebexMeetingsCreateInvitee[] = [];
         let webexMeetingsDeleteInvitees: string[] = [];
-
+        let guestOrNot = {} as guestOrNot;
         let body = {};
         let contentExtract = '';
         switch (this.displayedWebMeetings) {
@@ -584,6 +588,7 @@ export default class GuidNodeWebMeetings extends Controller {
                 .replace('{1}', content))
                 .replace('{2}', this.webMeetingsJoinUrl);
             contentExtract = (this.webMeetingsContent).replace(/\n/g, '\r\n');
+            guestOrNot = microsoftTeamsAttendeesInfo.guestOrNot;
             body = {
                 subject: webMeetingsSubject,
                 start: {
@@ -598,7 +603,7 @@ export default class GuidNodeWebMeetings extends Controller {
                     contentType: 'HTML',
                     content: actionType === 'update' ? updateContent : content,
                 },
-                attendees: microsoftTeamsAttendees,
+                attendees: microsoftTeamsAttendees.attendees,
                 isOnlineMeeting: true,
             };
             break;
@@ -607,6 +612,7 @@ export default class GuidNodeWebMeetings extends Controller {
             /* eslint-disable max-len */
             const webexMeetingsAttendeesInfo = this.makeWebexMeetingsAttendees(selectedAttendees, updateMeetingId, actionType);
             /* eslint-enable max-len */
+            guestOrNot = webexMeetingsAttendeesInfo.guestOrNot;
             webexMeetingsCreateInvitees = webexMeetingsAttendeesInfo.createInvitees;
             webexMeetingsDeleteInvitees = webexMeetingsAttendeesInfo.deleteInvitees;
             body = {
@@ -643,6 +649,7 @@ export default class GuidNodeWebMeetings extends Controller {
             contentExtract,
             createInvitees: webexMeetingsCreateInvitees,
             deleteInvitees: webexMeetingsDeleteInvitees,
+            guestOrNot,
             body,
         };
 
@@ -675,6 +682,7 @@ export default class GuidNodeWebMeetings extends Controller {
         selectedAttendees: AttendeesInfo[],
     ) {
         const microsoftTeamsAttendees: MicrosoftTeamsAttendee[] = [];
+        let guestOrNot = {} as guestOrNot;
         selectedAttendees.forEach((selectedAttendee: any) => {
             microsoftTeamsAttendees.push(
                 {
@@ -684,8 +692,13 @@ export default class GuidNodeWebMeetings extends Controller {
                     },
                 },
             );
+            guestOrNot[selectedAttendee.email] = selectedAttendee.is_guest;
         });
-        return microsoftTeamsAttendees;
+
+        return {
+            attendees: microsoftTeamsAttendees,
+            guestOrNot,
+        };
     }
 
     makeWebexMeetingsAttendees(
@@ -707,6 +720,7 @@ export default class GuidNodeWebMeetings extends Controller {
         const webexMeetingsDeleteInvitees: string[] = [];
         const nodeWebexMeetingsAttendees = JSON.parse(appsConfig.nodeWebexMeetingsAttendees);
         const nodeWebexMeetingsAttendeesRelation = JSON.parse(appsConfig.nodeWebexMeetingsAttendeesRelation);
+        let guestOrNot = {} as guestOrNot;
 
         selectedAttendees.forEach((selectedAttendee: any) => {
             webexMeetingsAttendees.push(
@@ -714,6 +728,7 @@ export default class GuidNodeWebMeetings extends Controller {
                     email: selectedAttendee.email,
                 },
             );
+            guestOrNot[selectedAttendee.email] = selectedAttendee.is_guest;
         });
 
         if (actionType === 'update') {
@@ -758,6 +773,7 @@ export default class GuidNodeWebMeetings extends Controller {
             invitees: webexMeetingsAttendees,
             createInvitees: webexMeetingsCreateInvitees,
             deleteInvitees: webexMeetingsDeleteInvitees,
+            guestOrNot,
         };
     }
 

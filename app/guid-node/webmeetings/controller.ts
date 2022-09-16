@@ -682,7 +682,7 @@ export default class GuidNodeWebMeetings extends Controller {
         selectedAttendees: AttendeesInfo[],
     ) {
         const microsoftTeamsAttendees: MicrosoftTeamsAttendee[] = [];
-        let guestOrNot = {} as guestOrNot;
+        const guestOrNot = {} as guestOrNot;
         selectedAttendees.forEach((selectedAttendee: any) => {
             microsoftTeamsAttendees.push(
                 {
@@ -720,7 +720,7 @@ export default class GuidNodeWebMeetings extends Controller {
         const webexMeetingsDeleteInvitees: string[] = [];
         const nodeWebexMeetingsAttendees = JSON.parse(appsConfig.nodeWebexMeetingsAttendees);
         const nodeWebexMeetingsAttendeesRelation = JSON.parse(appsConfig.nodeWebexMeetingsAttendeesRelation);
-        let guestOrNot = {} as guestOrNot;
+        const guestOrNot = {} as guestOrNot;
 
         selectedAttendees.forEach((selectedAttendee: any) => {
             webexMeetingsAttendees.push(

@@ -48,7 +48,7 @@
                                                         </tr>
                                                 {{/if}}
                                             {{/if}}
-                                                <tr local-class='WebMeetings__tr' {{action this.makeDetailWebMeetingDialog row.pk row.fields.meetingid row.fields.subject row.fields.attendees row.fields.organizer_fullname row.fields.start_datetime row.fields.end_datetime row.fields.content row.fields.meeting_password row.fields.join_url row.fields.app_name}}>
+                                                <tr local-class='WebMeetings__tr' {{action this.makeDetailWebMeetingDialog row.pk row.fields.meetingid row.fields.subject row.fields.attendees row.fields.organizer_fullname row.fields.start_datetime row.fields.end_datetime row.fields.content row.fields.meeting_password row.fields.join_url row.fields.app_name true}}>
                                                     <td local-class='WebMeetings__td' style='vertical-align: middle'>{{moment-format row.fields.start_datetime 'HH:mm'}}{{t 'web_meetings.from_hyphen'}}{{moment-format row.fields.end_datetime 'HH:mm'}}</td>
                                                     <td local-class='WebMeetings__td_overflow' style='vertical-align: middle'>{{row.fields.subject}}</td>
                                                     <td local-class='WebMeetings__td_overflow' style='vertical-align: middle'>{{row.fields.organizer_fullname}}</td>
@@ -95,13 +95,9 @@
                                                         </tr>
                                                 {{/if}}
                                                 {{/if}}
-                                                <tr local-class='WebMeetings__tr'>
+                                                <tr local-class='WebMeetings__tr' {{action this.makeDetailWebMeetingDialog row.pk row.fields.meetingid row.fields.subject row.fields.attendees row.fields.organizer_fullname row.fields.start_datetime row.fields.end_datetime row.fields.content row.fields.meeting_password row.fields.join_url row.fields.app_name false}}>
                                                     <td local-class='WebMeetings__td'>{{moment-format row.fields.start_datetime 'HH:mm'}}{{t 'web_meetings.from_hyphen'}}{{moment-format row.fields.end_datetime 'HH:mm'}}</td>
-                                                    <td local-class='WebMeetings__td_overflow'>
-                                                        <a onClick={{action this.makeDetailWebMeetingDialog row.pk row.fields.meetingid row.fields.subject row.fields.attendees row.fields.organizer_fullname row.fields.start_datetime row.fields.end_datetime row.fields.content row.fields.meeting_password row.fields.join_url row.fields.app_name}}>
-                                                            {{row.fields.subject}}
-                                                        </a>
-                                                    </td>
+                                                    <td local-class='WebMeetings__td_overflow'>{{row.fields.subject}}</td>
                                                     <td local-class='WebMeetings__td_overflow'>{{row.fields.organizer_fullname}}</td>
                                                     <td local-class='WebMeetings__td_overflow'>{{row.fields.app_name}}</td>
                                                 </tr>
@@ -373,20 +369,22 @@
                           {{this.webMeetingsOrganizerFullname}}
                     </span>
                 </div>
-                <div local-class='WebMeetings__input_items' style='padding-left: 20px;'>
-                    <span>{{t 'web_meetings.attendees'}}{{t 'web_meetings.colon'}}
-                        <div style='padding-left: 10px; padding-top: 5px'>
-                            {{#each this.selectedDetailAttendees as |attendee|}}
-                                {{#if attendees.fields.is_guest}}
-                                    <label local-class='WebMeetings__label_normal'>{{attendee.name}}</label>
-                                {{else}}
-                                    <label local-class='WebMeetings__label_normal'><a href={{attendee.profile}} target='_blank' data-toggle='tooltip' title={{attendee.email}}>{{attendee.name}}</a></label>
-                                {{/if}}
-                                &nbsp;&nbsp;&nbsp;
-                            {{/each}}
-                        </div>
-                    </span>
-                </div>
+                {{#if (not-eq this.displayedWebMeetings this.appNameZoomMeetings)}}
+                    <div local-class='WebMeetings__input_items' style='padding-left: 20px;'>
+                        <span>{{t 'web_meetings.attendees'}}{{t 'web_meetings.colon'}}
+                            <div style='padding-left: 10px; padding-top: 5px'>
+                                {{#each this.selectedDetailAttendees as |attendee|}}
+                                    {{#if attendees.fields.is_guest}}
+                                        <label local-class='WebMeetings__label_normal'>{{attendee.name}}</label>
+                                    {{else}}
+                                        <label local-class='WebMeetings__label_normal'><a href={{attendee.profile}} target='_blank' data-toggle='tooltip' title={{attendee.email}}>{{attendee.name}}</a></label>
+                                    {{/if}}
+                                    &nbsp;&nbsp;&nbsp;
+                                {{/each}}
+                            </div>
+                        </span>
+                    </div>
+                {{/if}}
                 <div local-class='WebMeetings__input_items' style='padding-left: 20px; padding-bottom: 10px;'>
                     <div style='border-top-style: inset; padding-top: 10px; white-space: pre-wrap;'>{{this.webMeetingsDetailContent}}</div>
                 </div>
@@ -509,33 +507,41 @@
         {{/if}}
     </modal.body>
     <modal.footer>
-        {{#if this.detailMode}}
-            <OsfButton
-                @type='info'
-                @onClick={{action (action this.startMeeting this.webMeetingsJoinUrl)}}
+        {{#if this.upcomingMode}}
+            {{#if this.detailMode}}
+                <OsfButton
+                    @type='info'
+                    @onClick={{action (action this.startMeeting this.webMeetingsJoinUrl)}}
+                >
+                    {{t 'web_meetings.meetingDialog.startBtn'}}
+                </OsfButton>
+                <OsfButton
+                    @type='success'
+                    @onClick={{action this.makeUpdateWebMeetingDialog this.webMeetingsPk this.webMeetingsUpdateMeetingId this.webMeetingsDetailSubject this.webMeetingsDetailAttendees this.webMeetingsDetailStartDateTime this.webMeetingsDetailEndDateTime this.webMeetingsDetailContent this.webMeetingsPassword this.webMeetingsJoinUrl this.displayedWebMeetings}}
             >
-                {{t 'web_meetings.meetingDialog.startBtn'}}
-            </OsfButton>
-            <OsfButton
-                @type='success'
-                @onClick={{action this.makeUpdateWebMeetingDialog this.webMeetingsPk this.webMeetingsUpdateMeetingId this.webMeetingsDetailSubject this.webMeetingsDetailAttendees this.webMeetingsDetailStartDateTime this.webMeetingsDetailEndDateTime this.webMeetingsDetailContent this.webMeetingsPassword this.webMeetingsJoinUrl this.displayedWebMeetings}}
-        >
-                {{t 'web_meetings.meetingDialog.updateBtn'}}
-            </OsfButton>
+                    {{t 'web_meetings.meetingDialog.updateBtn'}}
+                </OsfButton>
+                <BsButton
+                    @onClick={{action modal.close}}
+                >
+                    {{t 'web_meetings.meetingDialog.closeBtn'}}
+                </BsButton>
+            {{else}}
+                <OsfButton
+                    @type='success'
+                    @onClick={{action modal.submit}}
+                >
+                    {{t 'web_meetings.meetingDialog.saveBtn'}}
+                </OsfButton>
+                <BsButton
+                    @onClick={{action (mut this.detailMode) true}}
+                >
+                    {{t 'web_meetings.meetingDialog.closeBtn'}}
+                </BsButton>
+            {{/if}}
+        {{else}}
             <BsButton
                 @onClick={{action modal.close}}
-            >
-                {{t 'web_meetings.meetingDialog.closeBtn'}}
-            </BsButton>
-        {{else}}
-            <OsfButton
-                @type='success'
-                @onClick={{action modal.submit}}
-            >
-                {{t 'web_meetings.meetingDialog.saveBtn'}}
-            </OsfButton>
-            <BsButton
-                @onClick={{action (mut this.detailMode) true}}
             >
                 {{t 'web_meetings.meetingDialog.closeBtn'}}
             </BsButton>
@@ -614,15 +620,17 @@
                         </thead>
                         <tbody>
                             {{#each this.nodeWebexMeetingsAttendees as |row|}}
-                                <tr>
-                                    <td>{{row.fields.fullname}}</td>
-                                    <td id='{{row.fields.user_guid}}' contenteditable='true' onblur={{action this.manageWebMeetingsEmail 'update' row.fields._id row.fields.user_guid row.fields.is_guest}}>{{row.fields.email_address}}</td>
-                                    {{#if row.fields.is_guest}}
-                                        <td><i class='fa fa-times' style='cursor: pointer' onClick={{action this.manageWebMeetingsEmail 'delete' row.fields._id }}></i></td>
-                                    {{else}}
-                                        <td></td>
-                                    {{/if}}
-                                </tr>
+                                {{#if row.fields.is_active}}
+                                    <tr>
+                                        <td>{{row.fields.fullname}}</td>
+                                        <td id='{{row.fields.user_guid}}' contenteditable='true' onblur={{action this.manageWebMeetingsEmail 'update' row.fields._id row.fields.user_guid row.fields.is_guest}}>{{row.fields.email_address}}</td>
+                                        {{#if row.fields.is_guest}}
+                                            <td><i class='fa fa-times' style='cursor: pointer' onClick={{action this.manageWebMeetingsEmail 'delete' row.fields._id }}></i></td>
+                                        {{else}}
+                                            <td></td>
+                                        {{/if}}
+                                    </tr>
+                                {{/if}}
                             {{/each}}
                         </tbody>
                     </table>
@@ -677,13 +685,11 @@
                         </div>
                     {{/if}}
                     <div style='padding-left: 5px;' class='text-danger'>{{this.msgInvalidSelectedUser}}</div>
-                    <div style='padding-left: 5px;' class='text-danger'>{{this.msgInvalidGuestUser}}</div>
-                    <div style='padding-left: 5px;' class='text-danger'>{{this.msgErrorEmailVal}}</div>
                 </div>
                 <br>
                 <div local-class='WebMeetings__input_items'>
                     <input type='radio' name='emailType' id='radio_signInAddress' checked='checked' onClick={{action this.setEmailType value='target.id'}}>
-                    <label for='signInAddress'>{{t 'web_meetings.signInAdress' appName=this.displayedWebMeetings}}</label>
+                    <label for='radio_signInAddress'>{{t 'web_meetings.signInAdress' appName=this.displayedWebMeetings}}</label>
                     {{#if (eq this.userType 'radio_newGuest')}}
                         <input type='radio' name='emailType' id='radio_outsideAddress' onClick={{action this.setEmailType value='target.id'}}>
                         <label for='radio_outsideAddress'>{{t 'web_meetings.outsideEmail' appName=this.displayedWebMeetings}}</label>

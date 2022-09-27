@@ -931,8 +931,8 @@ export default class GuidNodeWebMeetings extends Controller {
                 arrayAttendees.push(selectedAttendee.email);
 
                 nodeWebexMeetingsAttendees.forEach((nodeWebexMeetingsAttendee: any) => {
-                    if (selectedAttendee.email === nodeWebexMeetingsAttendee.fields.email_address && 
-                       selectedAttendee.is_guest === nodeWebexMeetingsAttendee.fields.is_guest) {
+                    if (selectedAttendee.email === nodeWebexMeetingsAttendee.fields.email_address
+                        && selectedAttendee.is_guest === nodeWebexMeetingsAttendee.fields.is_guest) {
                         arrayAttendeePks.push(nodeWebexMeetingsAttendee.pk);
                     }
                 });

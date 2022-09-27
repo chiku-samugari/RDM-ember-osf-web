@@ -270,7 +270,6 @@ export default class GuidNodeWebMeetings extends Controller {
         this.set('msgInvalidSubject', '');
         this.set('msgInvalidAttendees', '');
         this.set('msgInvalidDatetime', '');
-
     }
 
     resetRegisterEmailValue(this: GuidNodeWebMeetings) {
@@ -348,7 +347,7 @@ export default class GuidNodeWebMeetings extends Controller {
                 this.toast.error('fail to register Web Meetigns email');
                 validFlag = false;
             }
-        }else if (!(regex.test(email))) {
+        } else if (!(regex.test(email))) {
             if (actionType === 'create') {
                 this.set(
                     'msgInvalidEmail',
@@ -360,9 +359,9 @@ export default class GuidNodeWebMeetings extends Controller {
                 validFlag = false;
             } else if (actionType === 'update') {
                 this.toast.error(this.intl.t(
-                        'web_meetings.meetingDialog.invalid.invalid',
-                        { item: this.intl.t('web_meetings.emailAdress') },
-                    ));
+                    'web_meetings.meetingDialog.invalid.invalid',
+                    { item: this.intl.t('web_meetings.emailAdress') },
+                ));
                 validFlag = false;
             }
         } else {
@@ -598,7 +597,11 @@ export default class GuidNodeWebMeetings extends Controller {
         appName: string,
         upcomingMeeting: boolean,
     ) {
-        upcomingMeeting ? this.set('upcomingMode', true) : this.set('upcomingMode', false);
+        if (upcomingMeeting) {
+            this.set('upcomingMode', true);
+        } else {
+            this.set('upcomingMode', false);
+        }
         this.set('detailMode', true);
         this.set('showDetailWebMeetingsDialog', true);
         this.set('webMeetingsPk', meetingPk);
@@ -665,12 +668,12 @@ export default class GuidNodeWebMeetings extends Controller {
                 );
                 validFlag = false;
             } else {
-                let attendeeEmails: string[] = [];
+                const attendeeEmails: string[] = [];
                 attendees.forEach((attendee: any) => {
                     attendeeEmails.push(attendee.email);
                 });
 
-                let notDuplicatedAttendees = new Set(attendeeEmails);
+                const notDuplicatedAttendees = new Set(attendeeEmails);
                 if (attendees.length > notDuplicatedAttendees.size) {
                     this.set(
                         'msgInvalidAttendees',
@@ -928,7 +931,8 @@ export default class GuidNodeWebMeetings extends Controller {
                 arrayAttendees.push(selectedAttendee.email);
 
                 nodeWebexMeetingsAttendees.forEach((nodeWebexMeetingsAttendee: any) => {
-                    if (selectedAttendee.email === nodeWebexMeetingsAttendee.fields.email_address && selectedAttendee.is_guest === nodeWebexMeetingsAttendee.fields.is_guest) {
+                    if (selectedAttendee.email === nodeWebexMeetingsAttendee.fields.email_address && 
+                       selectedAttendee.is_guest === nodeWebexMeetingsAttendee.fields.is_guest) {
                         arrayAttendeePks.push(nodeWebexMeetingsAttendee.pk);
                     }
                 });

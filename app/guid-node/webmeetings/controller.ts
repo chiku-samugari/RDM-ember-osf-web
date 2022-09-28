@@ -64,7 +64,7 @@ interface NodeAppAttendees {
     [fields: string]: Attendees;
 }
 
-interface guestOrNot {
+interface GuestOrNot {
     [key: string]: string;
 }
 
@@ -752,7 +752,7 @@ export default class GuidNodeWebMeetings extends Controller {
         const selectedAttendees = this.selectedAttendees as AttendeesInfo[];
         let webexMeetingsCreateInvitees: WebexMeetingsCreateInvitee[] = [];
         let webexMeetingsDeleteInvitees: string[] = [];
-        let guestOrNot = {} as guestOrNot;
+        let guestOrNot = {} as GuestOrNot;
         let body = {};
         let contentExtract = '';
 
@@ -877,7 +877,7 @@ export default class GuidNodeWebMeetings extends Controller {
         selectedAttendees: AttendeesInfo[],
     ) {
         const microsoftTeamsAttendees: MicrosoftTeamsAttendee[] = [];
-        const guestOrNot = {} as guestOrNot;
+        const guestOrNot = {} as GuestOrNot;
         selectedAttendees.forEach((selectedAttendee: any) => {
             microsoftTeamsAttendees.push(
                 {
@@ -915,7 +915,7 @@ export default class GuidNodeWebMeetings extends Controller {
         const webexMeetingsDeleteInvitees: string[] = [];
         const nodeWebexMeetingsAttendees = JSON.parse(appsConfig.nodeWebexMeetingsAttendees);
         const nodeWebexMeetingsAttendeesRelation = JSON.parse(appsConfig.nodeWebexMeetingsAttendeesRelation);
-        const guestOrNot = {} as guestOrNot;
+        const guestOrNot = {} as GuestOrNot;
 
         selectedAttendees.forEach((selectedAttendee: any) => {
             webexMeetingsAttendees.push(

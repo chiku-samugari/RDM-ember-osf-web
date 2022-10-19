@@ -18,10 +18,11 @@ import CurrentUser from 'ember-osf-web/services/current-user';
 import $ from 'jquery';
 import moment from 'moment';
 
-interface InstitutionUsers {
+interface ProjectContributors {
     fullname: string;
     guid: string;
     username: string;
+    institution: string;
 }
 
 interface WebexMeetingsCreateInvitee {
@@ -40,13 +41,15 @@ interface MicrosoftTeamsAttendee {
 /* eslint-disable camelcase */
 interface AttendeesInfo {
     guid: string;
-    name: string;
+    dispName: string;
+    fullname: string;
     email: string;
-    nameForApp: string;
+    institution: string;
+    appUsername: string;
+    appEmail: string;
     profile: string;
     _id: string;
     is_guest: boolean;
-    disabled: boolean;
 }
 
 interface Attendees {
@@ -94,8 +97,18 @@ export default class GuidNodeWebMeetings extends Controller {
 
     configCache?: DS.PromiseObject<WebMeetingsConfigModel>;
 
+    preDisplayedWebMeetings = '';
     displayedWebMeetings = '';
+    displayedUserId = '';
+    displayedUser = '';
+    appDisplayName = '';
+    appUsername = '';
+    displayedUserGuid = '';
+    displayedUserFullname = '';
+    displayedUserIsGuest = false;
 
+    showMeetingsList = true;
+    showAttendeesList = false;
     showCreateWebMeetingsDialog = false;
     showCreateWebMeetingsInputDialog = false;
     showUpdateWebMeetingsDialog = false;
@@ -106,15 +119,18 @@ export default class GuidNodeWebMeetings extends Controller {
     showManageAttendees = false;
     showRegisteredAttendees = false;
     showRegisterWebMeetingsEmailDialog = false;
+    showRegisterWebMeetingsAppEmailDialog = false;
+    showRegisterWebMeetingsGuestEmailDialog = false;
+    showUpdateWebMeetingsEmailDialog = false;
+    showDeleteWebMeetingsEmailDialog = false;
     webMeetingsSubject = '';
     webMeetingsPk = '';
     webMeetingsAttendees: string[] = [];
     webMeetingsStartDate = '';
     webMeetingsStartTime = '';
     webMeetingsStartDateTime = '';
-    webMeetingsEndDate = '';
-    webMeetingsEndTime = '';
-    webMeetingsEndDateTime = '';
+    webMeetingsDurationHours = '';
+    webMeetingsDurationMinutes = '';
     webMeetingsContent = '';
     webMeetingsPassword = '';
     webMeetingsJoinUrl = '';
@@ -147,9 +163,11 @@ export default class GuidNodeWebMeetings extends Controller {
 
     msgInvalidSelectedUser = '';
     msgInvalidEmail = '';
+    msgInvalidFullname = '';
     msgInvalidSubject = '';
     msgInvalidAttendees = '';
     msgInvalidDatetime = '';
+    msgOutsideEmail = '';
 
     selectedUser: AttendeesInfo = {} as AttendeesInfo;
     selectedAttendees: AttendeesInfo[] = [];
@@ -167,6 +185,14 @@ export default class GuidNodeWebMeetings extends Controller {
         '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30',
         '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30', '22:00', '22:30', '23:00', '23:30',
         '24:00',
+    ];
+
+    hours = [
+        '0', '1', '2', '3', '4', '5', '6', 
+    ];
+
+    minutes = [
+        '0', '15', '30', '45',
     ];
 
     @computed('config.isFulfilled')
@@ -204,9 +230,7 @@ export default class GuidNodeWebMeetings extends Controller {
     @action
     setDefaultDate(this: GuidNodeWebMeetings) {
         const updateStartDateElement = $('#update_start_date') as any;
-        const updateEndDateElement = $('#update_end_date') as any;
         updateStartDateElement[0].value = this.webMeetingsStartDate;
-        updateEndDateElement[0].value = this.webMeetingsEndDate;
     }
 
     @action
@@ -215,9 +239,57 @@ export default class GuidNodeWebMeetings extends Controller {
     }
 
     @action
-    setCreateWebMeetingsInputDialog(this: GuidNodeWebMeetings, name: string) {
-        this.setDisplayWebMeetings(name);
+    setCreateWebMeetingsInputDialog(this: GuidNodeWebMeetings, appName: string, firstTime: boolean ) {
+        if (firstTime) {
+            if (this.preDisplayedWebMeetings) {
+                this.setDisplayWebMeetings(this.preDisplayedWebMeetings);
+            } else {
+                this.setDisplayWebMeetings(appName);
+            }
+        } else {
+            this.set('preDisplayedWebMeetings', appName);
+            this.setDisplayWebMeetings(this.preDisplayedWebMeetings);
+        }
+        this.set('selectedAttendees', []);
+        this.set('showCreateWebMeetingsDialog', true);
         this.set('showCreateWebMeetingsInputDialog', true);
+    }
+
+    @action
+    addContributorsAsAttendees(this: GuidNodeWebMeetings, appName: string) {
+        if (!this.config) {
+            throw new EmberError('Illegal config');
+        }
+        const appsConfig = this.config.content as WebMeetingsConfigModel;
+        const projectContributors = JSON.parse(appsConfig.projectContributors);
+        let nodeAttendees: NodeAppAttendees[] = [];
+        switch (appName) {
+        case appsConfig.appNameMicrosoftTeams: {
+            nodeAttendees = JSON.parse(appsConfig.nodeMicrosoftTeamsAttendees);
+            break;
+        }
+        case appsConfig.appNameWebexMeetings: {
+            nodeAttendees = JSON.parse(appsConfig.nodeWebexMeetingsAttendees);
+            break;
+        }
+        default:
+        }
+        const nodeAttendeesAsRegisteredContributor = this.makeContributorList(
+            nodeAttendees,
+            projectContributors,
+            true,
+        );
+        if (nodeAttendeesAsRegisteredContributor.length === 0) {
+            this.toast.error(this.intl.t('web_meetings.error.noRegisteredContrib'));
+        }
+        this.set('selectedAttendees', nodeAttendeesAsRegisteredContributor);
+    }
+
+    @action
+    addNewAttendee(this: GuidNodeWebMeetings, newAttendee: AttendeesInfo) {
+        let attendees = this.selectedAttendees;
+        attendees.push(newAttendee);
+        this.set('selectedAttendees', attendees);
     }
 
     @action
@@ -237,8 +309,8 @@ export default class GuidNodeWebMeetings extends Controller {
         this.set('selectedAttendees', []);
         this.set('webMeetingsStartDate', '');
         this.set('webMeetingsStartTime', '');
-        this.set('webMeetingsEndDate', '');
-        this.set('webMeetingsEndTime', '');
+        this.set('webMeetingsDurationHours', '');
+        this.set('webMeetingsDurationMinutes', '');
         this.set('webMeetingsContent', '');
         this.set('webMeetingsPassword', '');
 
@@ -273,97 +345,77 @@ export default class GuidNodeWebMeetings extends Controller {
     }
 
     resetRegisterEmailValue(this: GuidNodeWebMeetings) {
-        this.set('selectedUser', {});
-        this.set('guestFullname', '');
-        this.set('userType', '');
-        this.set('emailType', '');
-        this.set('signInAddress', '');
-        this.set('usernameOfApp', '');
         this.set('showRegisterWebMeetingsEmailDialog', false);
-        this.set('showRegisteredAttendees', false);
+        this.set('showRegisterWebMeetingsAppEmailDialog', false);
+        this.set('showRegisterWebMeetingsGuestEmailDialog', false);
+        this.set('showUpdateWebMeetingsEmailDialog', false);
+        this.set('showDeleteWebMeetingsEmailDialog', false);
+        this.set('displayedUserFullname', '');
+        this.set('displayedUserGuid', '');
+        this.set('displayedUserIsGuest', false);
+        this.set('appDisplayName', '');
+        this.set('appUsername', '');
+        this.set('msgOutsideEmail', '');
         this.set('msgInvalidEmail', '');
+        this.set('msgInvalidFullname', '');
     }
 
     @action
-    makeManageAttendeesDialog(this: GuidNodeWebMeetings) {
-        this.set('showManageAttendees', true);
-        this.set('showRegisteredAttendees', true);
-    }
+    startRegisterAttendeesFlow(this: GuidNodeWebMeetings, attendees: AttendeesInfo[]) {
 
-    @action
-    makeRegisteredAttendeesDialog(this: GuidNodeWebMeetings) {
-        this.set('showRegisteredAttendees', true);
-        this.set('showRegisterWebMeetingsEmailDialog', false);
-    }
-
-    @action
-    makeRegisterWebMeetingsEmailDialog(this: GuidNodeWebMeetings) {
-        this.set('showRegisterWebMeetingsEmailDialog', true);
-        this.set('showRegisteredAttendees', false);
-        this.set('userType', 'radio_grdmUserOrRegisteredGuest');
-        this.set('emailType', 'radio_signInAddress');
-    }
-
-    @action
-    setUserType(this: GuidNodeWebMeetings, userType: string) {
-        this.set('userType', userType);
-    }
-
-    @action
-    setEmailType(this: GuidNodeWebMeetings, emailType: string) {
-        this.set('emailType', emailType);
+        const selectedAttendees = JSON.stringify(this.selectedAttendees);
+        const newAttendee = attendees.filter((i: AttendeesInfo) => selectedAttendees.indexOf(JSON.stringify(i)) === -1 );
+        const newAttendeeGuid = newAttendee.length > 0 ? newAttendee[0].guid : '';
+        if (newAttendeeGuid) {
+            if (newAttendeeGuid === 'addGuest') {
+                this.makeRegisterWebMeetingsEmailDialog('', '', '', true);
+                return;
+            }
+            const newAttendeeUserAppEmail = newAttendee[0].appEmail;
+            const newAttendeeUserIsGuest = newAttendee[0].is_guest;
+            if (!newAttendeeUserAppEmail && !newAttendeeUserIsGuest ) {
+                this.manageWebMeetingsEmail('create', '', '', '', false, true, true, newAttendee[0]);
+                return;
+            }
+        }
+        this.set('selectedAttendees', attendees);
     }
 
     webMeetingAppsEmailValidationCheck(
         this: GuidNodeWebMeetings,
-        registerPaticipant: string,
         email: string,
-        actionType: string,
+        fullname: string,
     ) {
         let validFlag = true;
         const regex = /^[A-Za-z0-9]{1}[A-Za-z0-9_.-]*@{1}[A-Za-z0-9_.-]{1,}.[A-Za-z0-9]{1,}$/;
-
-        if (!registerPaticipant) {
-            if (actionType === 'create') {
-                this.set('msgInvalidSelectedUser',
+        if (this.showRegisterWebMeetingsGuestEmailDialog) {
+            if (!fullname) {
+                this.set('msgInvalidFullname',
                     this.intl.t(
                         'web_meetings.meetingDialog.invalid.empty',
                         { item: this.intl.t('web_meetings.username') },
                     ));
                 validFlag = false;
+            } else {
+                this.set('msgInvalidFullname', '');
             }
-        } else {
-            this.set('msgInvalidSelectedUser', '');
         }
         if (!email) {
-            if (actionType === 'create') {
-                this.set('msgInvalidEmail',
-                    this.intl.t(
-                        'web_meetings.meetingDialog.invalid.empty',
-                        { item: this.intl.t('web_meetings.emailAdress') },
-                    ));
-                validFlag = false;
-            } else if (actionType === 'update') {
-                this.toast.error('fail to register Web Meetigns email');
-                validFlag = false;
-            }
-        } else if (!(regex.test(email))) {
-            if (actionType === 'create') {
-                this.set(
-                    'msgInvalidEmail',
-                    this.intl.t(
-                        'web_meetings.meetingDialog.invalid.invalid',
-                        { item: this.intl.t('web_meetings.emailAdress') },
-                    ),
-                );
-                validFlag = false;
-            } else if (actionType === 'update') {
-                this.toast.error(this.intl.t(
-                    'web_meetings.meetingDialog.invalid.invalid',
+            this.set('msgInvalidEmail',
+                this.intl.t(
+                    'web_meetings.meetingDialog.invalid.empty',
                     { item: this.intl.t('web_meetings.emailAdress') },
                 ));
-                validFlag = false;
-            }
+            validFlag = false;
+        } else if (!(regex.test(email))) {
+            this.set(
+                'msgInvalidEmail',
+                this.intl.t(
+                    'web_meetings.meetingDialog.invalid.invalid',
+                    { item: this.intl.t('web_meetings.emailAdress') },
+                ),
+            );
+            validFlag = false;
         } else {
             this.set('msgInvalidEmail', '');
         }
@@ -375,66 +427,62 @@ export default class GuidNodeWebMeetings extends Controller {
         this: GuidNodeWebMeetings,
         actionType: string,
         id: string,
+        fullname: string,
         guid: string,
         isGuest: boolean,
+        emailType: boolean,
+        regType: boolean,
+        newAttendee: AttendeesInfo,
     ) {
         const headers = this.currentUser.ajaxHeaders();
         const webMeetingsDir = ((this.displayedWebMeetings).replace(' ', '')).toLowerCase();
         const url = registerWebMeetingsEmailUrl.replace('{}', String(this.model.guid)).replace('{2}', webMeetingsDir);
         let email = '';
 
-        const selectedUser = this.selectedUser as AttendeesInfo;
-        const guestFullname = this.guestFullname as string;
-        const userType = this.userType as string;
-        let emailTypeFlg = false;
-        let fullname = '';
+        let requestFullname = '';
         let requestAttendeeId = '';
         let requestGuid = '';
         let requestIsGuest = isGuest;
-        let registerPaticipant = '';
 
         switch (actionType) {
         case 'create': {
-            if (userType === 'radio_grdmUserOrRegisteredGuest') {
-                if (selectedUser.name) {
-                    if (selectedUser._id) {
-                        requestAttendeeId = selectedUser._id;
-                    }
-                    const index = (selectedUser.name).indexOf('@') + 1;
-                    requestGuid = (selectedUser.name).slice(index, index + 5);
-                    requestIsGuest = false;
-                }
-                registerPaticipant = requestGuid;
-            } else if (userType === 'radio_newGuest') {
-                requestGuid = `${(new Date()).getTime()}`;
-                fullname = guestFullname;
-                requestIsGuest = true;
-                registerPaticipant = fullname;
-            }
-            const emailType = this.emailType as string;
-            email = emailType === 'radio_signInAddress' ? this.signInAddress : this.outsideEmail;
-            if (emailType === 'radio_signInAddress') {
-                emailTypeFlg = true;
+            if (newAttendee) {
+                requestGuid = newAttendee.guid;
+                requestFullname = newAttendee.fullname;
+                email = newAttendee.email;
+                requestIsGuest = newAttendee.is_guest;
+                if (!(this.webMeetingAppsEmailValidationCheck(email, ''))) {
+                    return;
+                };
             } else {
-                emailTypeFlg = false;
-            }
-            // validation check for input
-            if (!(this.webMeetingAppsEmailValidationCheck(registerPaticipant, email, actionType))) {
-                return;
+                requestFullname = fullname;
+                requestIsGuest = isGuest;
+                email = this.appUsername;
+                if (isGuest) {
+                    requestFullname = fullname ? fullname : this.appDisplayName;
+                    requestGuid = `${(new Date()).getTime()}`;
+                    if (!(this.webMeetingAppsEmailValidationCheck(email, requestFullname))) {
+                        return;
+                    };
+                } else {
+                    requestGuid = guid;
+                    if (!(this.webMeetingAppsEmailValidationCheck(email, ''))) {
+                        return;
+                    };
+                }
+            
             }
             break;
         }
         case 'update': {
-            const elmentId = `#${guid}`;
-            const element = $(elmentId) as any;
-            email = element[0].textContent;
+            requestGuid = `${(new Date()).getTime()}`;
+            requestFullname = fullname
+            email = this.appUsername;
             requestAttendeeId = id;
-            requestGuid = guid;
             requestIsGuest = isGuest;
-            // validation check for input
-            if (!(this.webMeetingAppsEmailValidationCheck('user', email, actionType))) {
+            if (!(this.webMeetingAppsEmailValidationCheck(email ,''))) {
                 return;
-            }
+            };
             break;
         }
         case 'delete':
@@ -444,12 +492,13 @@ export default class GuidNodeWebMeetings extends Controller {
         }
         const payload = {
             _id: requestAttendeeId,
-            fullname,
+            fullname: requestFullname,
             guid: requestGuid,
             email,
             is_guest: requestIsGuest,
             actionType,
-            emailType: emailTypeFlg,
+            emailType,
+            regType,
         };
 
         fetch(
@@ -462,15 +511,104 @@ export default class GuidNodeWebMeetings extends Controller {
         )
             .then(res => {
                 if (!res.ok) {
-                    this.toast.error('fail to register Web Meetigns email');
+                    this.toast.error(this.intl.t('web_meetings.error.failedToRegisterEmail'));
                     return;
                 }
-                this.save();
-                this.toast.info('success to register Web Meetings email');
+                return res.json();
+            })
+            .then(data => {
+                if (data.result === '') {
+                    this.save();
+                    this.resetRegisterEmailValue();
+                    this.addNewAttendee(data.newAttendee);
+                } else if (data.result === 'outside_email') {
+                    if (data.regType) {
+                        this.makeRegisterWebMeetingsEmailDialog(newAttendee.dispName, newAttendee.fullname, requestGuid, requestIsGuest);
+                    } else {
+                        this.setOutsideMsg();
+                    }
+                }
             })
             .catch(() => {
                 this.toast.error(this.intl.t('web_meetings.error.failedToRequest'));
             });
+    }
+
+    @action
+    setOutsideMsg( this: GuidNodeWebMeetings ) {
+        this.set(
+            'msgOutsideEmail',
+            this.intl.t(
+                'web_meetings.meetingDialog.invalid.failToRegister',
+                { appName: this.displayedWebMeetings },
+            ),
+        );
+    }
+
+    @action
+    setAttendeesList( this: GuidNodeWebMeetings ) {
+        this.set('showAttendeesList', true);
+        this.set('showMeetingsList', false);
+    }
+
+    @action
+    setMeetingsList( this: GuidNodeWebMeetings ) {
+        this.set('showAttendeesList', false);
+        this.set('showMeetingsList', true);
+    }
+
+    @action
+    makeRegisterWebMeetingsEmailDialog(
+        this: GuidNodeWebMeetings,
+        dispName: string,
+        fullname: string,
+        guid: string,
+        isGuest: boolean,
+    ) {
+        this.set('displayedUser', dispName);
+        this.set('displayedUserFullname', fullname);
+        this.set('displayedUserGuid', guid);
+        this.set('displayedUserIsGuest', isGuest);
+        if (isGuest) {
+            this.set('showRegisterWebMeetingsEmailDialog', true);
+            this.set('showRegisterWebMeetingsGuestEmailDialog', true);
+        } else {
+            this.set('showRegisterWebMeetingsEmailDialog', true);
+            this.set('showRegisterWebMeetingsAppEmailDialog', true);
+        }
+    }
+
+    @action
+    makeUpdateWebMeetingsEmailDialog(
+        this: GuidNodeWebMeetings,
+        id: string,
+        fullname: string,
+        email: string,
+        guid: string,
+        isGuest: boolean,
+        appName: string,
+    ) {
+        this.set('displayedUserId', id);
+        this.set('displayedUser', `${fullname}(${email})`);
+        this.set('displayedUserFullname', fullname);
+        this.set('displayedUserGuid', guid);
+        this.set('displayedUserIsGuest', isGuest);
+        this.set('displayedWebMeetings', appName);
+        this.set('showUpdateWebMeetingsEmailDialog', true);
+    }
+
+    @action
+    makeDeleteWebMeetingsEmailDialog(
+        this: GuidNodeWebMeetings,
+        id: string,
+        fullname: string,
+        email: string,
+        appName: string,
+    ) {
+        this.set('displayedUserId', id);
+        this.set('displayedUser', `${fullname}(${email})`);
+        this.set('displayedWebMeetings', appName);
+        this.set('showDeleteWebMeetingsEmailDialog', true);
     }
 
     @action
@@ -492,15 +630,23 @@ export default class GuidNodeWebMeetings extends Controller {
         this.set('webMeetingsUpdateMeetingId', meetingId);
         this.set('webMeetingsSubject', subject);
         this.set('webMeetingsAttendees', attendees);
-        this.set('selectedAttendees', this.selectedDetailAttendees);
+        const selectedDetailAttendees = Object.create(this.selectedDetailAttendees);
+        this.set('selectedAttendees', selectedDetailAttendees);
         this.set('webMeetingsStartDate', moment(startDatetime).format('YYYY/MM/DD'));
         this.set('webMeetingsStartTime', moment(startDatetime).format('HH:mm'));
-        this.set('webMeetingsEndDate', moment(endDatetime).format('YYYY/MM/DD'));
-        this.set('webMeetingsEndTime', moment(endDatetime).format('HH:mm'));
         this.set('webMeetingsContent', content);
         this.set('webMeetingsPassword', password);
         this.set('webMeetingsJoinUrl', joinUrl);
         this.setDisplayWebMeetings(appName);
+
+        const dStart = new Date(startDatetime);
+        const dEnd = new Date(endDatetime);
+        const duration = (dEnd.getTime() - dStart.getTime()) / (60 * 1000);
+        const durationHours = Math.floor(duration / 60);
+        const durationMinutes = duration % 60;
+        this.set('webMeetingsDurationHours', durationHours.toString());
+        this.set('webMeetingsDurationMinutes', durationMinutes.toString());
+
     }
 
     makeWebMeetingsAttendees(this: GuidNodeWebMeetings, appName: string) {
@@ -531,30 +677,45 @@ export default class GuidNodeWebMeetings extends Controller {
         nodeAppAttendees: NodeAppAttendees[],
         webMeetingsDetailAttendees: string[],
     ) {
-        let guidOrEmail = '';
         let profileUrl = '';
         let isGuest = false;
         let userGuid = '';
-        let appMail;
+        let fullname = '';
+        let username = '';
+        let institution = '';
+        let contrib: ProjectContributors = {} as ProjectContributors;
+        if (!this.config) {
+            throw new EmberError('Illegal config');
+        }
+        const appsConfig = this.config.content as WebMeetingsConfigModel;
+        const projectContributors = JSON.parse(appsConfig.projectContributors);
         webMeetingsDetailAttendees.forEach((webMeetingsDetailAttendee: any) => {
             for (const nodeAppAttendee of nodeAppAttendees) {
                 if (webMeetingsDetailAttendee === nodeAppAttendee.pk) {
                     isGuest = nodeAppAttendee.fields.is_guest;
-                    appMail = nodeAppAttendee.fields.email_address;
                     userGuid = nodeAppAttendee.fields.user_guid;
-
-                    guidOrEmail = isGuest ? `(${appMail})` : `@${userGuid}`;
+                    fullname = nodeAppAttendee.fields.fullname;
+                    contrib = {} as ProjectContributors;
+                    if (!isGuest) {
+                        contrib = projectContributors.filter(function(object: any) {
+                            return object.guid == userGuid;
+                        }).shift()
+                     }
+                    username = Object.keys(contrib).length ? contrib.username : nodeAppAttendee.fields.email_address;
+                    institution = Object.keys(contrib).length ? contrib.institution : '';
                     profileUrl = isGuest ? '' : profileUrlBase + userGuid;
                     this.selectedDetailAttendees.push(
                         {
                             guid: userGuid,
-                            name: nodeAppAttendee.fields.fullname + guidOrEmail,
-                            email: nodeAppAttendee.fields.email_address,
-                            nameForApp: nodeAppAttendee.fields.display_name,
+                            dispName: `${fullname}(${username})`,
+                            fullname: nodeAppAttendee.fields.fullname,
+                            email: username,
+                            institution: institution,
+                            appUsername: nodeAppAttendee.fields.display_name,
+                            appEmail:nodeAppAttendee.fields.email_address,
                             profile: profileUrl,
                             _id: nodeAppAttendee.fields._id,
                             is_guest: nodeAppAttendee.fields.is_guest,
-                            disabled: false,
                         },
                     );
                 }
@@ -625,12 +786,9 @@ export default class GuidNodeWebMeetings extends Controller {
     webMeetingsInputValidationCheck(
         this: GuidNodeWebMeetings,
         subject: string,
-        attendees: AttendeesInfo[],
         attendeesNum: number,
         startDate: string,
         startTime: string,
-        endDate: string,
-        endTime: string,
         startDatetime: string,
         endDatetime: string,
         appName: string,
@@ -668,27 +826,17 @@ export default class GuidNodeWebMeetings extends Controller {
                 );
                 validFlag = false;
             } else {
-                const attendeeEmails: string[] = [];
-                attendees.forEach((attendee: any) => {
-                    attendeeEmails.push(attendee.email);
+                const result = (this.selectedAttendees).filter((item, index, self) => {
+                    const appEmailList = self.map(item => item['appEmail']);
+                    if (appEmailList.indexOf(item.appEmail) === index) {
+                        return item;
+                    }
+                    return;
                 });
-
-                const notDuplicatedAttendees = new Set(attendeeEmails);
-                if (attendees.length > notDuplicatedAttendees.size) {
-                    this.set(
-                        'msgInvalidAttendees',
-                        this.intl.t(
-                            'web_meetings.meetingDialog.invalid.duplicated',
-                            { item: this.intl.t('web_meetings.attendees') },
-                        ),
-                    );
-                    validFlag = false;
-                } else {
-                    this.set('msgInvalidAttendees', '');
-                }
+                this.set('selectedAttendees', result);
             }
         }
-        if (!startDate || !startTime || !endDate || !endTime) {
+        if (!startDate || !startTime) {
             this.set(
                 'msgInvalidDatetime',
                 this.intl.t(
@@ -730,21 +878,26 @@ export default class GuidNodeWebMeetings extends Controller {
         /* eslint-enable max-len */
         const webMeetingsStartTime = webMeetingsStartTimeElement.length ? webMeetingsStartTimeElement[0].value : '';
         const strWebMeetingsStartDatetime = `${webMeetingsStartDate} ${webMeetingsStartTime}`;
-        const webMeetingsEndDate = this.webMeetingsEndDate ? moment(this.webMeetingsEndDate).format('YYYY-MM-DD') : '';
-        const webMeetingsEndTimeElement = document.querySelectorAll('select[id=create_web_meetings_end_time]').length
-            ? document.querySelectorAll('select[id=create_web_meetings_end_time]') as any
-            : document.querySelectorAll('select[id=update_web_meetings_end_time]') as any;
-        const webMeetingsEndTime = webMeetingsEndTimeElement.length ? webMeetingsEndTimeElement[0].value : '';
-        const strWebMeetingsEndDatetime = `${webMeetingsEndDate} ${webMeetingsEndTime}`;
+        const webMeetingsDurationHoursElement = document.querySelectorAll('select[id=create_web_meetings_duration_hours]').length
+            ? document.querySelectorAll('select[id=create_web_meetings_duration_hours]') as any
+            : document.querySelectorAll('select[id=update_web_meetings_duration_hours]') as any;
+        const webMeetingsDurationMinutesElement = document.querySelectorAll('select[id=create_web_meetings_duration_minutes]').length
+            ? document.querySelectorAll('select[id=create_web_meetings_duration_minutes]') as any
+            : document.querySelectorAll('select[id=update_web_meetings_duration_minutes]') as any;
+        const webMeetingsDurationHours = webMeetingsDurationHoursElement.length ? webMeetingsDurationHoursElement[0].value : '';
+        const webMeetingsDurationMinutes = webMeetingsDurationMinutesElement.length ? webMeetingsDurationMinutesElement[0].value : '';
+        const webMeetingsDuration = 60 * parseInt(webMeetingsDurationHours, 10) +  parseInt(webMeetingsDurationMinutes, 10);
+
         const webMeetingsContent = this.webMeetingsContent as string;
         const webMeetingsPassword = this.webMeetingsPassword as string;
-        const webMeetingsStartDatetime = !isNaN(new Date(strWebMeetingsStartDatetime).getTime())
-            ? (new Date(strWebMeetingsStartDatetime)).toISOString()
+        const dStartDatetime = new Date(strWebMeetingsStartDatetime);
+        const webMeetingsStartDatetime = !isNaN(dStartDatetime.getTime())
+            ? moment(dStartDatetime).format('YYYY-MM-DDTHH:mm:ss')
             : '';
-
-        const webMeetingsEndDatetime = !isNaN(new Date(strWebMeetingsEndDatetime).getTime())
-            ? (new Date(strWebMeetingsEndDatetime)).toISOString()
-            : '';
+        let dEndDatetime = dStartDatetime;
+        dEndDatetime.setMinutes(dEndDatetime.getMinutes() + webMeetingsDuration);
+        const strWebMeetingsEndDatetime = moment(dEndDatetime).format('YYYY-MM-DDTHH:mm:ss');
+        const webMeetingsEndDatetime = !isNaN(dEndDatetime.getTime()) ? strWebMeetingsEndDatetime : '';
 
         const updateMeetingId = this.webMeetingsUpdateMeetingId;
         const deleteMeetingId = this.webMeetingsDeleteMeetingId;
@@ -760,12 +913,9 @@ export default class GuidNodeWebMeetings extends Controller {
         if (actionType !== 'delete') {
             if (!this.webMeetingsInputValidationCheck(
                 webMeetingsSubject,
-                selectedAttendees,
                 selectedAttendees.length,
                 webMeetingsStartDate,
                 webMeetingsStartTime,
-                webMeetingsEndDate,
-                webMeetingsEndTime,
                 webMeetingsStartDatetime,
                 webMeetingsEndDatetime,
                 this.displayedWebMeetings,
@@ -775,13 +925,13 @@ export default class GuidNodeWebMeetings extends Controller {
         }
         switch (this.displayedWebMeetings) {
         case appsConfig.appNameMicrosoftTeams: {
-            const microsoftTeamsAttendees = this.makeMicrosoftTeamsAttendees(selectedAttendees);
+            const microsoftTeamsAttendeesInfo = this.makeMicrosoftTeamsAttendees(selectedAttendees);
             const content = (this.webMeetingsContent).replace(/\n/g, '<br>') as string;
             const updateContent = (microsoftTeamsSignature
                 .replace('{1}', content))
                 .replace('{2}', this.webMeetingsJoinUrl);
             contentExtract = (this.webMeetingsContent).replace(/\n/g, '\r\n');
-            guestOrNot = microsoftTeamsAttendees.guestOrNot;
+            guestOrNot = microsoftTeamsAttendeesInfo.guestOrNot;
             body = {
                 subject: webMeetingsSubject,
                 start: {
@@ -796,7 +946,7 @@ export default class GuidNodeWebMeetings extends Controller {
                     contentType: 'HTML',
                     content: actionType === 'update' ? updateContent : content,
                 },
-                attendees: microsoftTeamsAttendees.attendees,
+                attendees: microsoftTeamsAttendeesInfo.attendees,
                 isOnlineMeeting: true,
             };
             break;
@@ -815,19 +965,17 @@ export default class GuidNodeWebMeetings extends Controller {
                 invitees: webexMeetingsAttendeesInfo.invitees,
                 agenda: webMeetingsContent,
                 password: webMeetingsPassword,
+                timezone: 'Asia/Tokyo',
             };
             break;
         }
         case appsConfig.appNameZoomMeetings: {
-            const startDate = new Date(webMeetingsStartDatetime);
-            const endDate = new Date(webMeetingsEndDatetime);
-            const duration = (endDate.getTime() - startDate.getTime()) / (60 * 1000);
             body = {
                 topic: webMeetingsSubject,
                 start_time: webMeetingsStartDatetime,
-                duration,
+                duration: webMeetingsDuration,
                 agenda: webMeetingsContent,
-                timezone: 'UTC',
+                timezone: 'Asia/Tokyo',
                 type: 2,
             };
             break;
@@ -865,7 +1013,15 @@ export default class GuidNodeWebMeetings extends Controller {
                     );
                     return;
                 }
+                return res.json();
+            })
+            .then(data => {
                 this.save();
+                if (data.errCode === 401) {
+                    this.toast.error(this.intl.t('web_meetings.error.notAuth'));
+                } else if (data.errCode === 403){
+                    this.toast.error(this.intl.t('web_meetings.error.forbbiden'));
+                }
             })
             .catch(() => {
                 this.toast.error('AN ERROR HAPPENS');
@@ -882,12 +1038,12 @@ export default class GuidNodeWebMeetings extends Controller {
             microsoftTeamsAttendees.push(
                 {
                     emailAddress: {
-                        address: selectedAttendee.email,
-                        name: selectedAttendee.nameForApp ? selectedAttendee.nameForApp : 'Unregistered',
+                        address: selectedAttendee.appEmail,
+                        name: selectedAttendee.appUsername ? selectedAttendee.appUsername : 'Unregistered',
                     },
                 },
             );
-            guestOrNot[selectedAttendee.email] = selectedAttendee.is_guest;
+            guestOrNot[selectedAttendee.appEmail] = selectedAttendee.is_guest;
         });
 
         return {
@@ -920,18 +1076,18 @@ export default class GuidNodeWebMeetings extends Controller {
         selectedAttendees.forEach((selectedAttendee: any) => {
             webexMeetingsAttendees.push(
                 {
-                    email: selectedAttendee.email,
+                    email: selectedAttendee.appEmail,
                 },
             );
-            guestOrNot[selectedAttendee.email] = selectedAttendee.is_guest;
+            guestOrNot[selectedAttendee.appEmail] = selectedAttendee.is_guest;
         });
 
         if (actionType === 'update') {
             selectedAttendees.forEach((selectedAttendee: any) => {
-                arrayAttendees.push(selectedAttendee.email);
+                arrayAttendees.push(selectedAttendee.appEmail);
 
                 nodeWebexMeetingsAttendees.forEach((nodeWebexMeetingsAttendee: any) => {
-                    if (selectedAttendee.email === nodeWebexMeetingsAttendee.fields.email_address
+                    if (selectedAttendee.appEmail === nodeWebexMeetingsAttendee.fields.email_address
                         && selectedAttendee.is_guest === nodeWebexMeetingsAttendee.fields.is_guest) {
                         arrayAttendeePks.push(nodeWebexMeetingsAttendee.pk);
                     }
@@ -1107,102 +1263,85 @@ export default class GuidNodeWebMeetings extends Controller {
         return allPreviousWebMeetings;
     }
 
-    @computed('config.institutionUsers')
-    get institutionUsers() {
-        if (!this.config) {
-            return '';
-        }
-        const appsConfig = this.config.content as WebMeetingsConfigModel;
-        const institutionUsers = JSON.parse(appsConfig.institutionUsers);
-        const attendeesInfo: AttendeesInfo[] = [];
-
-        institutionUsers.forEach((institutionUser: any) => {
-            attendeesInfo.push(
-                {
-                    guid: institutionUser.guid,
-                    name: `${institutionUser.fullname}@${institutionUser.guid}`,
-                    email: '',
-                    nameForApp: '',
-                    profile: '',
-                    _id: '',
-                    is_guest: false,
-                    disabled: true,
-                },
-            );
-        });
-
-        return institutionUsers;
-    }
-
-    makeInstitutionUserList(
+    makeContributorList(
         this: GuidNodeWebMeetings,
         nodeAppAttendees: NodeAppAttendees[],
-        institutionUsers: InstitutionUsers[],
-        suggestionDisabled: boolean,
+        projectContributors: ProjectContributors[],
+        addRegisteredContrib: boolean,
     ) {
-        let institutionUserList: AttendeesInfo[] = [];
-        const registeredInstitutionUsers: AttendeesInfo[] = [];
-        const unregisteredInstitutionUsers: AttendeesInfo[] = [];
+        let projectContributorList: AttendeesInfo[] = [];
+        const registeredProjectContributors: AttendeesInfo[] = [];
+        const unregisteredProjectContributors: AttendeesInfo[] = [];
         const guestUsers: AttendeesInfo[] = [];
-        let userName = '';
-        let unregisteredUserInfo = '';
-        const unregisteredLabel = this.intl.t('web_meetings.meetingDialog.unregisteredLabel');
-        let registeredUserName = '';
-        let registeredUserInfo = '';
-        let guestUserName = '';
-        let guestUserInfo = '';
+        const addGuestLabel = {
+                            guid: 'addGuest',
+                            dispName: this.intl.t('web_meetings.addAttendee'),
+                            fullname: '',
+                            email: '',
+                            institution: '',
+                            appUsername: '',
+                            appEmail: '',
+                            profile: '',
+                            _id: '',
+                            is_guest: false,
+                        }
+        let fullname = '';
+        let username = '';
 
-        for (let i = 0; i < institutionUsers.length; i++) {
-            userName = institutionUsers[i].fullname;
-            unregisteredUserInfo = suggestionDisabled
-                ? `@${institutionUsers[i].guid}${unregisteredLabel}`
-                : `@${institutionUsers[i].guid}`;
-
-            unregisteredInstitutionUsers.push(
+        for (let i = 0; i < projectContributors.length; i++) {
+            fullname = projectContributors[i].fullname;
+            username = projectContributors[i].username;
+            unregisteredProjectContributors.push(
                 {
-                    guid: institutionUsers[i].guid,
-                    name: userName + unregisteredUserInfo,
-                    email: '',
-                    nameForApp: '',
-                    profile: profileUrlBase + institutionUsers[i].guid,
+                    guid: projectContributors[i].guid,
+                    dispName: `${fullname}(${username})`,
+                    fullname,
+                    email: username,
+                    institution: projectContributors[i].institution,
+                    appUsername: '',
+                    appEmail: '',
+                    profile: profileUrlBase + projectContributors[i].guid,
                     _id: '',
                     is_guest: false,
-                    disabled: suggestionDisabled,
                 },
             );
             for (const nodeAppAttendee of nodeAppAttendees) {
-                if (institutionUsers[i].guid === nodeAppAttendee.fields.user_guid) {
-                    registeredUserName = nodeAppAttendee.fields.fullname;
-                    registeredUserInfo = `@${nodeAppAttendee.fields.user_guid}`;
-                    registeredInstitutionUsers.push(
+                if (projectContributors[i].guid === nodeAppAttendee.fields.user_guid) {
+                    fullname = projectContributors[i].fullname;
+                    username = projectContributors[i].username;
+                    registeredProjectContributors.push(
                         {
-                            guid: nodeAppAttendee.fields.user_guid,
-                            name: registeredUserName + registeredUserInfo,
-                            email: nodeAppAttendee.fields.email_address,
-                            nameForApp: nodeAppAttendee.fields.display_name,
-                            profile: profileUrlBase + nodeAppAttendee.fields.user_guid,
+                            guid: projectContributors[i].guid,
+                            dispName: `${fullname}(${username})`,
+                            fullname,
+                            email: username,
+                            institution: projectContributors[i].institution,
+                            appUsername: nodeAppAttendee.fields.display_name,
+                            appEmail: nodeAppAttendee.fields.email_address,
+                            profile: profileUrlBase + projectContributors[i].guid,
                             _id: nodeAppAttendee.fields._id,
                             is_guest: false,
-                            disabled: false,
                         },
                     );
 
-                    unregisteredInstitutionUsers.pop();
+                    unregisteredProjectContributors.pop();
                 }
                 if (i === 0) {
                     if (nodeAppAttendee.fields.is_guest && nodeAppAttendee.fields.is_active) {
-                        guestUserName = nodeAppAttendee.fields.fullname;
-                        guestUserInfo = `(${nodeAppAttendee.fields.email_address})`;
+                        fullname = nodeAppAttendee.fields.fullname;
+                        username = nodeAppAttendee.fields.email_address;
                         guestUsers.push(
                             {
                                 guid: nodeAppAttendee.fields.user_guid,
-                                name: guestUserName + guestUserInfo,
-                                email: nodeAppAttendee.fields.email_address,
-                                nameForApp: nodeAppAttendee.fields.display_name,
+                                dispName: `${fullname}(${username})`,
+                                fullname,
+                                email: username,
+                                institution: projectContributors[i].institution,
+                                appUsername: nodeAppAttendee.fields.display_name,
+                                appEmail: nodeAppAttendee.fields.email_address,
                                 profile: '',
                                 _id: nodeAppAttendee.fields._id,
                                 is_guest: true,
-                                disabled: false,
                             },
                         );
                     }
@@ -1210,11 +1349,30 @@ export default class GuidNodeWebMeetings extends Controller {
             }
         }
 
-        if (suggestionDisabled) { institutionUserList = institutionUserList.concat(registeredInstitutionUsers); }
-        if (suggestionDisabled) { institutionUserList = institutionUserList.concat(guestUsers); }
-        institutionUserList = institutionUserList.concat(unregisteredInstitutionUsers);
+        if (addRegisteredContrib) {
+            projectContributorList = projectContributorList.concat(this.selectedAttendees);
+            projectContributorList = projectContributorList.concat(registeredProjectContributors);
+        } else {
+            projectContributorList = projectContributorList.concat(registeredProjectContributors);
+            projectContributorList = projectContributorList.concat(unregisteredProjectContributors);
+            projectContributorList = projectContributorList.concat(guestUsers);
+            projectContributorList = projectContributorList.concat(addGuestLabel);
+        }
 
-        return institutionUserList;
+
+
+        return projectContributorList;
+
+    }
+
+    @computed('config.projectContributors')
+    get projectContributors() {
+        if (!this.config) {
+            return '';
+        }
+        const appsConfig = this.config.content as WebMeetingsConfigModel;
+        const projectContributors = JSON.parse(appsConfig.projectContributors);
+        return projectContributors;
     }
 
     @computed('config.nodeMicrosoftTeamsAttendees')
@@ -1228,39 +1386,20 @@ export default class GuidNodeWebMeetings extends Controller {
         return nodeMicrosoftTeamsAttendees;
     }
 
-    @computed('config.nodeMicrosoftTeamsAttendees')
-    get institutionUsersMicrosoftTeams() {
+    @computed('config.projectContributors', 'config.nodeMicrosoftTeamsAttendees')
+    get possibleAttendeesMicrosoftTeams() {
         if (!this.config) {
             return '';
         }
         const appsConfig = this.config.content as WebMeetingsConfigModel;
+        const projectContributors = JSON.parse(appsConfig.projectContributors);
         const nodeMicrosoftTeamsAttendees = JSON.parse(appsConfig.nodeMicrosoftTeamsAttendees);
-        const institutionUsers = JSON.parse(appsConfig.institutionUsers);
-
-        const institutionUsersMicrosoftTeams = this.makeInstitutionUserList(
+        const nodeMicrosoftTeamsAttendeesAsContributor = this.makeContributorList(
             nodeMicrosoftTeamsAttendees,
-            institutionUsers,
-            true,
-        );
-
-        return institutionUsersMicrosoftTeams;
-    }
-
-    @computed('config.nodeMicrosoftTeamsAttendees')
-    get institutionUsersMicrosoftTeamsToRegister() {
-        if (!this.config) {
-            return '';
-        }
-        const appsConfig = this.config.content as WebMeetingsConfigModel;
-        const nodeMicrosoftTeamsAttendees = JSON.parse(appsConfig.nodeMicrosoftTeamsAttendees);
-        const institutionUsers = JSON.parse(appsConfig.institutionUsers);
-        const institutionUsersMicrosoftTeamsToRegister = this.makeInstitutionUserList(
-            nodeMicrosoftTeamsAttendees,
-            institutionUsers,
+            projectContributors,
             false,
         );
-
-        return institutionUsersMicrosoftTeamsToRegister;
+        return nodeMicrosoftTeamsAttendeesAsContributor;
     }
 
     @computed('config.nodeWebexMeetingsAttendees')
@@ -1274,39 +1413,20 @@ export default class GuidNodeWebMeetings extends Controller {
         return nodeWebexMeetingsAttendees;
     }
 
-    @computed('config.nodeWebexMeetingsAttendees')
-    get institutionUsersWebexMeetings() {
+    @computed('config.projectContributors', 'config.nodeWebexMeetingsAttendees')
+    get possibleAttendeesWebexMeetings() {
         if (!this.config) {
             return '';
         }
         const appsConfig = this.config.content as WebMeetingsConfigModel;
+        const projectContributors = JSON.parse(appsConfig.projectContributors);
         const nodeWebexMeetingsAttendees = JSON.parse(appsConfig.nodeWebexMeetingsAttendees);
-        const institutionUsers = JSON.parse(appsConfig.institutionUsers);
-
-        const institutionUsersWebexMeetings = this.makeInstitutionUserList(
+        const nodeWebexMeetingsAttendeesAsContributor = this.makeContributorList(
             nodeWebexMeetingsAttendees,
-            institutionUsers,
-            true,
-        );
-
-        return institutionUsersWebexMeetings;
-    }
-
-    @computed('config.nodeWebexMeetingsAttendees')
-    get institutionUsersWebexMeetingsToRegister() {
-        if (!this.config) {
-            return '';
-        }
-        const appsConfig = this.config.content as WebMeetingsConfigModel;
-        const nodeWebexMeetingsAttendees = JSON.parse(appsConfig.nodeWebexMeetingsAttendees);
-        const institutionUsers = JSON.parse(appsConfig.institutionUsers);
-        const institutionUsersWebexMeetingsToRegister = this.makeInstitutionUserList(
-            nodeWebexMeetingsAttendees,
-            institutionUsers,
+            projectContributors,
             false,
         );
-
-        return institutionUsersWebexMeetingsToRegister;
+        return nodeWebexMeetingsAttendeesAsContributor;
     }
 
     @computed('node')

@@ -7,118 +7,224 @@
         <div data-test-web-meeting-screen>
             <div id='allWebMeetings' class='main-screen'>
                 <div local-class='WebMeetings__web_meeting_navbar'>
-                    <label style='margin-top:10px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
                     <button style='margin-top:10px; margin-right:10px; background-color: #357935; border-color: #357935; min-width: 200px;'
                         local-class='WebMeetings__button_list'
                         class='text-success pull-right'
                         type='text'
-                        onClick={{action (mut this.showCreateWebMeetingsDialog) true}}
+                        onClick={{action this.setCreateWebMeetingsInputDialog this.webMeetingsApps.firstObject true}}
                     >
                         {{fa-icon 'plus'}}&nbsp;{{t 'web_meetings.meetingDialog.createLabel'}}
                     </button>
+                    {{#if showMeetingsList}}
+                        <button style='margin-top:10px; margin-right:10px; background-color: #1b6d85; border-color: #1b6d85; min-width: 180px;'
+                            local-class='WebMeetings__button_list'
+                            class='text-success pull-right'
+                            type='text'
+                            onClick={{action this.setAttendeesList }}
+                        >
+                            {{fa-icon 'user'}}&nbsp;{{t 'web_meetings.manageAttendees'}}
+                        </button>
+                    {{else}}
+                        <button style='margin-top:10px; margin-right:10px; background-color: #1b6d85; border-color: #1b6d85; min-width: 180px;'
+                            local-class='WebMeetings__button_list'
+                            class='text-success pull-right'
+                            type='text'
+                            onClick={{action this.setMeetingsList }}
+                        >
+                            {{fa-icon 'user'}}&nbsp;{{t 'web_meetings.manageMeetings'}}
+                        </button>
+                    {{/if}}
                 </div>
-                <BsTab local-class='WebMeetings__web_meeting_tab' as |tab|>
-                    <tab.pane @title={{t 'web_meetings.upcoming'}}>
-                        {{#if (eq this.allUpcomingWebMeetings.length 0)}}
-                            <p local-class='WebMeetings__statement'>{{t 'web_meetings.noUpcomingMeetings'}}</p>
-                        {{else}}
-                            <div class='row' id='upcoming-meeting-table-row'>
-                                <div class='col-xs-12'>
-                                    <table class='table'>
-                                        <tbody>
-                                            {{#each this.allUpcomingWebMeetings as |row index|}}
-                                            {{#if (eq index 0)}}
-                                                    <tr style='background-color: #efefef;'>
-                                                        <th width='15%' local-class='WebMeetings__th' style='padding: 3px; padding-left: 10px;'>{{t 'web_meetings.momentFormat.ll' year=(moment-format row.fields.start_datetime 'YYYY') month=(moment-format row.fields.start_datetime 'MM') day=(moment-format row.fields.start_datetime 'DD')}}</th>
-                                                        <th width='35%'></th>
-                                                        <th width='20%'></th>
-                                                        <th width='20%'></th>
-                                                        <th></th>
-                                                        <th></th>
-                                                    </tr>
-                                            {{else}}
-                                                {{#if row.date_bar}}
-                                                        <tr style='background-color: #efefef; padding: 3px; padding-left: 10px;'>
+                {{#if showMeetingsList}}
+                    <BsTab local-class='WebMeetings__web_meeting_tab' as |tab|>
+                        <tab.pane @title={{t 'web_meetings.upcoming'}}>
+                            {{#if (eq this.allUpcomingWebMeetings.length 0)}}
+                                <p local-class='WebMeetings__statement'>{{t 'web_meetings.noUpcomingMeetings'}}</p>
+                            {{else}}
+                                <div class='row' id='upcoming-meeting-table-row'>
+                                    <div class='col-xs-12'>
+                                        <table class='table'>
+                                            <tbody>
+                                                {{#each this.allUpcomingWebMeetings as |row index|}}
+                                                {{#if (eq index 0)}}
+                                                        <tr style='background-color: #efefef;'>
                                                             <th width='15%' local-class='WebMeetings__th' style='padding: 3px; padding-left: 10px;'>{{t 'web_meetings.momentFormat.ll' year=(moment-format row.fields.start_datetime 'YYYY') month=(moment-format row.fields.start_datetime 'MM') day=(moment-format row.fields.start_datetime 'DD')}}</th>
-                                                        <th width='35%'></th>
-                                                        <th width='20%'></th>
-                                                        <th width='20%'></th>
+                                                            <th width='35%'></th>
+                                                            <th width='20%'></th>
+                                                            <th width='20%'></th>
                                                             <th></th>
                                                             <th></th>
                                                         </tr>
+                                                {{else}}
+                                                    {{#if row.date_bar}}
+                                                            <tr style='background-color: #efefef; padding: 3px; padding-left: 10px;'>
+                                                                <th width='15%' local-class='WebMeetings__th' style='padding: 3px; padding-left: 10px;'>{{t 'web_meetings.momentFormat.ll' year=(moment-format row.fields.start_datetime 'YYYY') month=(moment-format row.fields.start_datetime 'MM') day=(moment-format row.fields.start_datetime 'DD')}}</th>
+                                                            <th width='35%'></th>
+                                                            <th width='20%'></th>
+                                                            <th width='20%'></th>
+                                                            <th></th>
+                                                            <th></th>
+                                                            </tr>
+                                                    {{/if}}
                                                 {{/if}}
-                                            {{/if}}
-                                                <tr local-class='WebMeetings__tr' {{action this.makeDetailWebMeetingDialog row.pk row.fields.meetingid row.fields.subject row.fields.attendees row.fields.organizer_fullname row.fields.start_datetime row.fields.end_datetime row.fields.content row.fields.meeting_password row.fields.join_url row.fields.app_name true}}>
-                                                    <td local-class='WebMeetings__td' style='vertical-align: middle'>{{moment-format row.fields.start_datetime 'HH:mm'}}{{t 'web_meetings.from_hyphen'}}{{moment-format row.fields.end_datetime 'HH:mm'}}</td>
-                                                    <td local-class='WebMeetings__td_overflow' style='vertical-align: middle'>{{row.fields.subject}}</td>
-                                                    <td local-class='WebMeetings__td_overflow' style='vertical-align: middle'>{{row.fields.organizer_fullname}}</td>
-                                                    <td local-class='WebMeetings__td_overflow' style='vertical-align: middle'>{{row.fields.app_name}}</td>
-                                                    <td local-class='WebMeetings__td'>
-                                                        <button local-class='WebMeetings__button_list' style='background-color: #1b6d85; border-color: #1b6d85' data-toggle='tooltip' title={{t 'web_meetings.meetingDialog.startHeader' appName=row.fields.app_name}}
-                                                            {{action this.startMeeting row.fields.join_url bubbles=false}}>{{t 'web_meetings.meetingDialog.startBtn'}}</button>
-                                                    </td>
-                                                    <td local-class='WebMeetings__td'>
-                                                        <button local-class='WebMeetings__button_list' style='background-color: #a94442; border-color: #a94442' data-toggle='tooltip' title={{t 'web_meetings.meetingDialog.deleteHeader' appName=row.fields.app_name}}
-                                                            {{action this.makeDeleteWebMeetingsDialog row.fields.meetingid row.fields.subject row.fields.start_datetime row.fields.end_datetime row.fields.app_name bubbles=false}}>{{t 'web_meetings.meetingDialog.deleteBtn'}}</button>
-                                                    </td>
-                                                </tr>
-                                            {{/each}}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        {{/if}}
-                    </tab.pane>
-                    <tab.pane @title={{t 'web_meetings.previous'}}>
-                        {{#if (eq this.allPreviousWebMeetings.length 0)}}
-                            <p local-class='WebMeetings__statement'>{{t 'web_meetings.noPreviousMeetings'}}</p>
-                        {{else}}
-                            <div class='row' id='previous-meeting-table-row'>
-                                <div class='col-xs-12'>
-                                    <table class='table'>
-                                        <tbody>
-                                            {{#each this.allPreviousWebMeetings as |row index|}}
-                                            {{#if (eq index 0)}}
-                                                    <tr style='background-color: #efefef;'>
-                                                        <th  local-class='WebMeetings__th' style='padding: 3px; padding-left: 10px;'>{{t 'web_meetings.momentFormat.ll' year=(moment-format row.fields.start_datetime 'YYYY') month=(moment-format row.fields.start_datetime 'MM') day=(moment-format row.fields.start_datetime 'DD')}}</th>
-                                                        <th></th>
-                                                        <th></th>
-                                                        <th></th>
+                                                    <tr local-class='WebMeetings__tr' {{action this.makeDetailWebMeetingDialog row.pk row.fields.meetingid row.fields.subject row.fields.attendees row.fields.organizer_fullname row.fields.start_datetime row.fields.end_datetime row.fields.content row.fields.meeting_password row.fields.join_url row.fields.app_name true}}>
+                                                        <td local-class='WebMeetings__td' style='vertical-align: middle'>{{moment-format row.fields.start_datetime 'HH:mm'}}{{t 'web_meetings.from_hyphen'}}{{moment-format row.fields.end_datetime 'HH:mm'}}</td>
+                                                        <td local-class='WebMeetings__td_overflow' style='vertical-align: middle'>{{row.fields.subject}}</td>
+                                                        <td local-class='WebMeetings__td_overflow' style='vertical-align: middle'>{{row.fields.organizer_fullname}}</td>
+                                                        <td local-class='WebMeetings__td_overflow' style='vertical-align: middle'>{{row.fields.app_name}}</td>
+                                                        <td local-class='WebMeetings__td'>
+                                                            <button local-class='WebMeetings__button_list' style='background-color: #1b6d85; border-color: #1b6d85' data-toggle='tooltip' title={{t 'web_meetings.meetingDialog.startHeader' appName=row.fields.app_name}}
+                                                                {{action this.startMeeting row.fields.join_url bubbles=false}}>{{t 'web_meetings.meetingDialog.startBtn'}}</button>
+                                                        </td>
+                                                        <td local-class='WebMeetings__td'>
+                                                            <button local-class='WebMeetings__button_list' style='background-color: #a94442; border-color: #a94442' data-toggle='tooltip' title={{t 'web_meetings.meetingDialog.deleteHeader' appName=row.fields.app_name}}
+                                                                {{action this.makeDeleteWebMeetingsDialog row.fields.meetingid row.fields.subject row.fields.start_datetime row.fields.end_datetime row.fields.app_name bubbles=false}}>{{t 'web_meetings.meetingDialog.deleteBtn'}}</button>
+                                                        </td>
                                                     </tr>
-                                            {{else}}
-                                                {{#if row.date_bar}}
-                                                        <tr style='background-color: #efefef; padding: 3px; padding-left: 10px;'>
-                                                            <th local-class='WebMeetings__th' style='padding: 3px; padding-left: 10px;'>{{t 'web_meetings.momentFormat.ll' year=(moment-format row.fields.start_datetime 'YYYY') month=(moment-format row.fields.start_datetime 'MM') day=(moment-format row.fields.start_datetime 'DD')}}</th>
+                                                {{/each}}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            {{/if}}
+                        </tab.pane>
+                        <tab.pane @title={{t 'web_meetings.previous'}}>
+                            {{#if (eq this.allPreviousWebMeetings.length 0)}}
+                                <p local-class='WebMeetings__statement'>{{t 'web_meetings.noPreviousMeetings'}}</p>
+                            {{else}}
+                                <div class='row' id='previous-meeting-table-row'>
+                                    <div class='col-xs-12'>
+                                        <table class='table'>
+                                            <tbody>
+                                                {{#each this.allPreviousWebMeetings as |row index|}}
+                                                {{#if (eq index 0)}}
+                                                        <tr style='background-color: #efefef;'>
+                                                            <th  local-class='WebMeetings__th' style='padding: 3px; padding-left: 10px;'>{{t 'web_meetings.momentFormat.ll' year=(moment-format row.fields.start_datetime 'YYYY') month=(moment-format row.fields.start_datetime 'MM') day=(moment-format row.fields.start_datetime 'DD')}}</th>
                                                             <th></th>
                                                             <th></th>
                                                             <th></th>
                                                         </tr>
-                                                {{/if}}
-                                                {{/if}}
-                                                <tr local-class='WebMeetings__tr' {{action this.makeDetailWebMeetingDialog row.pk row.fields.meetingid row.fields.subject row.fields.attendees row.fields.organizer_fullname row.fields.start_datetime row.fields.end_datetime row.fields.content row.fields.meeting_password row.fields.join_url row.fields.app_name false}}>
-                                                    <td local-class='WebMeetings__td'>{{moment-format row.fields.start_datetime 'HH:mm'}}{{t 'web_meetings.from_hyphen'}}{{moment-format row.fields.end_datetime 'HH:mm'}}</td>
-                                                    <td local-class='WebMeetings__td_overflow'>{{row.fields.subject}}</td>
-                                                    <td local-class='WebMeetings__td_overflow'>{{row.fields.organizer_fullname}}</td>
-                                                    <td local-class='WebMeetings__td_overflow'>{{row.fields.app_name}}</td>
-                                                </tr>
-                                            {{/each}}
-                                        </tbody>
-                                    </table>
+                                                {{else}}
+                                                    {{#if row.date_bar}}
+                                                            <tr style='background-color: #efefef; padding: 3px; padding-left: 10px;'>
+                                                                <th local-class='WebMeetings__th' style='padding: 3px; padding-left: 10px;'>{{t 'web_meetings.momentFormat.ll' year=(moment-format row.fields.start_datetime 'YYYY') month=(moment-format row.fields.start_datetime 'MM') day=(moment-format row.fields.start_datetime 'DD')}}</th>
+                                                                <th></th>
+                                                                <th></th>
+                                                                <th></th>
+                                                            </tr>
+                                                    {{/if}}
+                                                    {{/if}}
+                                                    <tr local-class='WebMeetings__tr' {{action this.makeDetailWebMeetingDialog row.pk row.fields.meetingid row.fields.subject row.fields.attendees row.fields.organizer_fullname row.fields.start_datetime row.fields.end_datetime row.fields.content row.fields.meeting_password row.fields.join_url row.fields.app_name false}}>
+                                                        <td local-class='WebMeetings__td'>{{moment-format row.fields.start_datetime 'HH:mm'}}{{t 'web_meetings.from_hyphen'}}{{moment-format row.fields.end_datetime 'HH:mm'}}</td>
+                                                        <td local-class='WebMeetings__td_overflow'>{{row.fields.subject}}</td>
+                                                        <td local-class='WebMeetings__td_overflow'>{{row.fields.organizer_fullname}}</td>
+                                                        <td local-class='WebMeetings__td_overflow'>{{row.fields.app_name}}</td>
+                                                    </tr>
+                                                {{/each}}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
-                            </div>
+                            {{/if}}
+                        </tab.pane>
+                    </BsTab>
+                {{/if}}
+                {{#if showAttendeesList}}
+                    <BsTab local-class='WebMeetings__web_meeting_tab' as |tab|>
+                    {{#each this.webMeetingsApps as |appName|}}
+                        {{#if (eq appName this.appNameMicrosoftTeams)}}
+                            <tab.pane @title={{appName}}>
+                            {{#if (eq this.nodeMicrosoftTeamsAttendees.length 0)}}
+                                <p local-class='WebMeetings__statement'>{{t 'web_meetings.noRegisteredAttendee'}}</p>
+                            {{else}}
+                                <div class='row' id='upcoming-meeting-table-row'>
+                                    <div class='col-xs-12'>
+                                        <table class='table'>
+                                            <tbody>
+                                                <tr style='background-color: #efefef; padding: 3px; padding-left: 10px;'>
+                                                    <th width='20%'></th>
+                                                    <th width='80%'></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                </tr>
+                                                {{#each this.nodeMicrosoftTeamsAttendees as |row index|}}
+                                                    {{#if row.fields.is_active}}
+                                                        <tr local-class='WebMeetings__tr'>
+                                                            <td local-class='WebMeetings__td_overflow' style='vertical-align: middle'>{{row.fields.fullname}}</td>
+                                                            <td local-class='WebMeetings__td_overflow' style='vertical-align: middle'>{{row.fields.email_address}}</td>
+                                                            <td local-class='WebMeetings__td'>
+                                                                <button local-class='WebMeetings__button_list' style='background-color: #1b6d85; border-color: #1b6d85'
+                                                                    {{action this.makeUpdateWebMeetingsEmailDialog row.fields._id row.fields.fullname row.fields.email_address row.fields.user_guid row.fields.is_guest appName}}>{{t 'web_meetings.meetingDialog.updateBtn'}}</button>
+                                                            </td>
+                                                            {{#if row.fields.is_guest}}
+                                                                <td local-class='WebMeetings__td'>
+                                                                    <button local-class='WebMeetings__button_list' style='background-color: #a94442; border-color: #a94442'
+                                                                        {{action this.makeDeleteWebMeetingsEmailDialog row.fields._id row.fields.fullname row.fields.email_address appName}}>{{t 'web_meetings.meetingDialog.deleteBtn'}}</button>
+                                                                </td>
+                                                            {{else}}
+                                                                <td></td>
+                                                            {{/if}}
+                                                        </tr>
+                                                    {{/if}}
+                                                {{/each}}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            {{/if}}
+                            </tab.pane>
                         {{/if}}
-                    </tab.pane>
-                </BsTab>
+                        {{#if (eq appName this.appNameWebexMeetings)}}
+                            <tab.pane @title={{appName}}>
+                            {{#if (eq this.nodeWebexMeetingsAttendees.length 0)}}
+                                <p local-class='WebMeetings__statement'>{{t 'web_meetings.noRegisteredAttendee'}}</p>
+                            {{else}}
+                                <div class='row' id='upcoming-meeting-table-row'>
+                                    <div class='col-xs-12'>
+                                        <table class='table'>
+                                            <tbody>
+                                                <tr style='background-color: #efefef; padding: 3px; padding-left: 10px;'>
+                                                    <th width='20%'></th>
+                                                    <th width='80%'></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                </tr>
+                                                {{#each this.nodeWebexMeetingsAttendees as |row index|}}
+                                                    {{#if row.fields.is_active}}
+                                                        <tr local-class='WebMeetings__tr'>
+                                                            <td local-class='WebMeetings__td_overflow' style='vertical-align: middle'>{{row.fields.fullname}}</td>
+                                                            <td local-class='WebMeetings__td_overflow' style='vertical-align: middle'>{{row.fields.email_address}}</td>
+                                                            <td local-class='WebMeetings__td'>
+                                                                <button local-class='WebMeetings__button_list' style='background-color: #1b6d85; border-color: #1b6d85'
+                                                                    {{action this.makeUpdateWebMeetingsEmailDialog row.fields._id row.fields.fullname row.fields.email_address row.fields.user_guid row.fields.is_guest appName}}>{{t 'web_meetings.meetingDialog.updateBtn'}}</button>
+                                                            </td>
+                                                            {{#if row.fields.is_guest}}
+                                                                <td local-class='WebMeetings__td'>
+                                                                    <button local-class='WebMeetings__button_list' style='background-color: #a94442; border-color: #a94442'
+                                                                        {{action this.makeDeleteWebMeetingsEmailDialog row.fields._id row.fields.fullname row.fields.email_address appName}}>{{t 'web_meetings.meetingDialog.deleteBtn'}}</button>
+                                                                </td>
+                                                            {{/if}}
+                                                        </tr>
+                                                    {{/if}}
+                                                {{/each}}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            {{/if}}
+                            </tab.pane>
+                        {{/if}}
+                    {{/each}}
+                    </BsTab>
+                {{/if}}
             </div>
         </div>
     {{/if}}
 </div>
 
-
 <!-- modal-dialog -->
 <BsModal
     data-test-create-web-meeting-modal
-    @backdropClose={{false}}
     @open={{this.showCreateWebMeetingsDialog}}
     @onSubmit={{action this.reqLaunch 'create'}}
     @onHidden={{action (mut this.showCreateWebMeetingsDialog) false}}
@@ -133,11 +239,15 @@
     </modal.header>
     <modal.body>
         <div class='form-group'>
-                {{#each this.webMeetingsApps as |appName|}}
-                    <input type='radio' name='webMeetingAppName' id='radio_{{appName}}' onClick={{action this.setCreateWebMeetingsInputDialog appName}}>
+                {{#each this.webMeetingsApps as |appName index|}}
+                    {{#if (eq appName this.displayedWebMeetings)}}
+                        <input type='radio' name='webMeetingAppName' id='radio_{{appName}}' onClick={{action this.setCreateWebMeetingsInputDialog appName false}} checked='checked'>
+                    {{else}}
+                        <input type='radio' name='webMeetingAppName' id='radio_{{appName}}' onClick={{action this.setCreateWebMeetingsInputDialog appName false}}>
+                    {{/if}}
                     <label for='radio_{{appName}}'>
                         {{appName}}
-                    </label>
+                    </label>&nbsp;&nbsp;&nbsp;&nbsp;
                 {{/each}}
                 {{#if showCreateWebMeetingsInputDialog}}
                     <div local-class='WebMeetings__input_items'>
@@ -153,36 +263,34 @@
                     <div style='padding-left: 5px;' class='text-danger'>{{this.msgInvalidSubject}}</div>
                     {{#if (not-eq this.displayedWebMeetings this.appNameZoomMeetings)}}
                         <div local-class='WebMeetings__input_items'>
+                        <div>
                             <label>{{t 'web_meetings.attendees'}}</label>
-                            <div>
-                                <div style='display: table-cell; width: 100%'>
-                                    {{#if (eq this.displayedWebMeetings this.appNameMicrosoftTeams)}}
-                                        <PowerSelectMultiple
-                                            @searchField='name'
-                                            @selected={{this.selectedAttendees}}
-                                            @options={{this.institutionUsersMicrosoftTeams}}
-                                            @renderInPlace={{true}}
-                                            @onchange={{fn (mut this.selectedAttendees)}}
-                                            @onInput={{this.checkLength}} as |name|>
-                                            {{name.name}}
-                                        </PowerSelectMultiple>
-                                    {{/if}}
-                                    {{#if (eq this.displayedWebMeetings this.appNameWebexMeetings)}}
-                                        <PowerSelectMultiple
-                                            @searchField='name'
-                                            @selected={{this.selectedAttendees}}
-                                            @options={{this.institutionUsersWebexMeetings}}
-                                            @renderInPlace={{true}}
-                                            @onchange={{fn (mut this.selectedAttendees)}}
-                                            @onInput={{this.checkLength}} as |name|>
-                                            {{name.name}}
-                                        </PowerSelectMultiple>
-                                    {{/if}}
-                                </div>
-                                <div style='display: table-cell; vertical-align: top;'>
-                                    <button onClick={{action makeManageAttendeesDialog}} style='font-size: x-small; white-space: nowrap;'>{{t 'web_meetings.meetingDialog.registerBtn'}}</button>
-                                </div>
-                            </div>
+                            <button style="margin-left: 20px; font-size: x-small; white-space: nowrap; vertical-align: top;" onClick={{action this.addContributorsAsAttendees this.displayedWebMeetings}} type='button'>{{t 'web_meetings.meetingDialog.addContributorsAsAttendeesBtn'}}</button>
+                        </div>
+                            {{#if (eq this.displayedWebMeetings this.appNameMicrosoftTeams)}}
+                                <PowerSelectMultiple
+                                    @searchField='name'
+                                    @selected={{this.selectedAttendees}}
+                                    @options={{this.possibleAttendeesMicrosoftTeams}}
+                                    @renderInPlace={{true}}
+                                    @selectedItemComponent='selected-item-attendees'
+                                    @onchange={{action this.startRegisterAttendeesFlow}}
+                                    @onInput={{this.checkLength}} as |name|>
+                                    {{name.dispName}}
+                                </PowerSelectMultiple>
+                            {{/if}}
+                            {{#if (eq this.displayedWebMeetings this.appNameWebexMeetings)}}
+                                <PowerSelectMultiple
+                                    @searchField='name'
+                                    @selected={{this.selectedAttendees}}
+                                    @options={{this.possibleAttendeesWebexMeetings}}
+                                    @renderInPlace={{true}}
+                                    @selectedItemComponent='selected-item-attendees'
+                                    @onchange={{action this.startRegisterAttendeesFlow}}
+                                    @onInput={{this.checkLength}} as |name|>
+                                    {{name.dispName}}
+                                </PowerSelectMultiple>
+                            {{/if}}
                         </div>
                         <div style='padding-left: 5px;' class='text-danger'>{{this.msgInvalidAttendees}}</div>
                     {{/if}}
@@ -190,7 +298,7 @@
                         <table>
                             <tr>
                                 <td><label>{{t 'web_meetings.start_datetime'}}</label></td><td></td><td></td>
-                                <td><label>{{t 'web_meetings.end_datetime'}}</label></td><td></td>
+                                <td><label>{{t 'web_meetings.duration'}}</label></td><td></td><td></td><td></td>
                             </tr>
                             <tr>
                                 <td>
@@ -215,29 +323,31 @@
                                         {{/each}}
                                     </select>
                                 </td>
-                                <td><label local-class='WebMeetings__input_items'>{{t 'web_meetings.from_tilde'}}</label></td>
+                                <td><label local-class='WebMeetings__input_items'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label></td>
                                 <td>
-                                    {{bootstrap-datepicker
-                                        name='web_meetings_end_date'
-                                        placeholder=(t 'web_meetings.placeholders.date_form')
-                                        class='form-control'
-                                        type='text'
-                                        value=this.webMeetingsEndDate
-                                        format='yyyy/mm/dd'
-                                        todayHighlight=true
-                                    }}
-                                </td>
-                                <td>
-                                    <select id='create_web_meetings_end_time' class='form-control'>
-                                        {{#each this.times as |times|}}
-                                            {{#if (eq times this.defaultEndTime)}}
-                                                <option value={{times}} selected>{{times}}</option>
+                                    <select id='create_web_meetings_duration_hours' class='form-control'>
+                                        {{#each this.hours as |hours index|}}
+                                            {{#if (eq index 1)}}
+                                                <option value={{hours}} selected>{{hours}}</option>
                                             {{else}}
-                                                <option value={{times}}>{{times}}</option>
+                                                <option value={{hours}}>{{hours}}</option>
                                             {{/if}}
                                         {{/each}}
                                     </select>
                                 </td>
+                                <td>&nbsp;&nbsp;{{t 'web_meetings.hour'}}&nbsp;&nbsp;</td>
+                                <td>
+                                    <select id='create_web_meetings_duration_minutes' class='form-control'>
+                                        {{#each this.minutes as |minutes index|}}
+                                            {{#if (eq index 0)}}
+                                                <option value={{minutes}} selected>{{minutes}}</option>
+                                            {{else}}
+                                                <option value={{minutes}}>{{minutes}}</option>
+                                            {{/if}}
+                                        {{/each}}
+                                    </select>
+                                </td>
+                                <td>&nbsp;&nbsp;{{t 'web_meetings.minutes'}}</td>
                             </tr>
                         </table>
                     </div>
@@ -323,7 +433,6 @@
 
 <BsModal
     data-test-detail-meeting-modal
-    @backdropClose={{false}}
     @open={{this.showDetailWebMeetingsDialog}}
     @onSubmit={{action this.reqLaunch 'update'}}
     @onHidden={{action (mut this.showDetailWebMeetingsDialog) false}}
@@ -374,10 +483,10 @@
                         <span>{{t 'web_meetings.attendees'}}{{t 'web_meetings.colon'}}
                             <div style='padding-left: 10px; padding-top: 5px'>
                                 {{#each this.selectedDetailAttendees as |attendee|}}
-                                    {{#if attendees.fields.is_guest}}
-                                        <label local-class='WebMeetings__label_normal'>{{attendee.name}}</label>
+                                    {{#if attendee.is_guest}}
+                                        <label local-class='WebMeetings__label_normal' title={{attendee.email}}>{{attendee.fullname}}</label>
                                     {{else}}
-                                        <label local-class='WebMeetings__label_normal'><a href={{attendee.profile}} target='_blank' data-toggle='tooltip' title={{attendee.email}}>{{attendee.name}}</a></label>
+                                        <label local-class='WebMeetings__label_normal'><a href={{attendee.profile}} target='_blank' data-toggle='tooltip' title='{{attendee.email}}({{attendee.institution}})'>{{attendee.fullname}}</a></label>
                                     {{/if}}
                                     &nbsp;&nbsp;&nbsp;
                                 {{/each}}
@@ -404,36 +513,34 @@
                 <div style='padding-left: 5px;' class='text-danger'>{{this.msgInvalidSubject}}</div>
                 {{#if (not-eq this.displayedWebMeetings this.appNameZoomMeetings)}}
                     <div local-class='WebMeetings__input_items'>
-                        <label>{{t 'web_meetings.attendees'}}</label>
                         <div>
-                            <div style='display: table-cell; width: 100%'>
-                                {{#if (eq this.displayedWebMeetings this.appNameMicrosoftTeams)}}
-                                    <PowerSelectMultiple
-                                        @searchField='name'
-                                        @selected={{this.selectedAttendees}}
-                                        @options={{this.institutionUsersMicrosoftTeams}}
-                                        @renderInPlace={{true}}
-                                        @onchange={{fn (mut this.selectedAttendees)}}
-                                        @onInput={{this.checkLength}} as |name|>
-                                        {{name.name}}
-                                    </PowerSelectMultiple>
-                                {{/if}}
-                                {{#if (eq this.displayedWebMeetings this.appNameWebexMeetings)}}
-                                    <PowerSelectMultiple
-                                        @searchField='name'
-                                        @selected={{this.selectedAttendees}}
-                                        @options={{this.institutionUsersWebexMeetings}}
-                                        @renderInPlace={{true}}
-                                        @onchange={{fn (mut this.selectedAttendees)}}
-                                        @onInput={{this.checkLength}} as |name|>
-                                        {{name.name}}
-                                    </PowerSelectMultiple>
-                                {{/if}}
-                                </div>
-                            <div style='display: table-cell; vertical-align: top;'>
-                                <button onClick={{action makeManageAttendeesDialog}} style='font-size: x-small; white-space: nowrap;'>{{t 'web_meetings.meetingDialog.registerBtn'}}</button>
-                            </div>
+                            <label>{{t 'web_meetings.attendees'}}</label>
+                            <button style="margin-left: 20px; font-size: x-small; white-space: nowrap; vertical-align: top;" onClick={{action this.addContributorsAsAttendees}} type='button'>{{t 'web_meetings.meetingDialog.addContributorsAsAttendeesBtn'}}</button>
                         </div>
+                        {{#if (eq this.displayedWebMeetings this.appNameMicrosoftTeams)}}
+                            <PowerSelectMultiple
+                                @searchField='name'
+                                @selected={{this.selectedAttendees}}
+                                @options={{this.possibleAttendeesMicrosoftTeams}}
+                                @renderInPlace={{true}}
+                                @selectedItemComponent='selected-item-attendees'
+                                @onchange={{action this.startRegisterAttendeesFlow}}
+                                @onInput={{this.checkLength}} as |name|>
+                                {{name.dispName}}
+                            </PowerSelectMultiple>
+                        {{/if}}
+                        {{#if (eq this.displayedWebMeetings this.appNameWebexMeetings)}}
+                            <PowerSelectMultiple
+                                @searchField='name'
+                                @selected={{this.selectedAttendees}}
+                                @options={{this.possibleAttendeesWebexMeetings}}
+                                @renderInPlace={{true}}
+                                @selectedItemComponent='selected-item-attendees'
+                                @onchange={{action this.startRegisterAttendeesFlow}}
+                                @onInput={{this.checkLength}} as |name|>
+                                {{name.dispName}}
+                            </PowerSelectMultiple>
+                        {{/if}}
                     </div>
                     <div style='padding-left: 5px;' class='text-danger'>{{this.msgInvalidAttendees}}</div>
                 {{/if}}
@@ -441,7 +548,7 @@
                     <table>
                         <tr>
                             <td><label>{{t 'web_meetings.start_datetime'}}</label></td><td></td><td></td>
-                            <td><label>{{t 'web_meetings.end_datetime'}}</label></td><td></td>
+                            <td><label>{{t 'web_meetings.duration'}}</label></td><td></td>
                         </tr>
                         <tr>
                             <td>
@@ -465,28 +572,31 @@
                                     {{/each}}
                                 </select>
                             </td>
-                            <td><label local-class='WebMeetings__input_items'>{{t 'web_meetings.from_tilde'}}</label></td>
+                            <td><label local-class='WebMeetings__input_items'>&nbsp;&nbsp;&nbsp;&nbsp;</label></td>
                             <td>
-                                {{bootstrap-datepicker
-                                    id='update_end_date'
-                                    class='form-control'
-                                    type='text'
-                                    value=this.webMeetingsEndDate
-                                    format='yyyy/mm/dd'
-                                    todayHighlight=true
-                                }}
-                            </td>
-                            <td>
-                                <select id='update_web_meetings_end_time' class='form-control'>
-                                    {{#each this.times as |times|}}
-                                        {{#if (eq times this.webMeetingsEndTime)}}
-                                            <option value={{times}} selected>{{times}}</option>
+                                <select id='update_web_meetings_duration_hours' class='form-control'>
+                                    {{#each this.hours as |hours|}}
+                                        {{#if (eq hours this.webMeetingsDurationHours)}}
+                                            <option value={{hours}} selected>{{hours}}</option>
                                         {{else}}
-                                            <option value={{times}}>{{times}}</option>
+                                            <option value={{hours}}>{{hours}}</option>
                                         {{/if}}
                                     {{/each}}
                                 </select>
                             </td>
+                            <td>&nbsp;&nbsp;{{t 'web_meetings.hour'}}&nbsp;&nbsp;</td>
+                            <td>
+                                <select id='update_web_meetings_duration_minutes' class='form-control'>
+                                    {{#each this.minutes as |minutes|}}
+                                        {{#if (eq minutes this.webMeetingsDurationMinutes)}}
+                                            <option value={{minutes}} selected>{{minutes}}</option>
+                                        {{else}}
+                                            <option value={{minutes}}>{{minutes}}</option>
+                                        {{/if}}
+                                    {{/each}}
+                                </select>
+                            </td>
+                            <td>&nbsp;&nbsp;{{t 'web_meetings.minutes'}}</td>
                         </tr>
                     </table>
                 </div>
@@ -509,6 +619,11 @@
     <modal.footer>
         {{#if this.upcomingMode}}
             {{#if this.detailMode}}
+                <BsButton
+                    @onClick={{action modal.close}}
+                >
+                    {{t 'web_meetings.meetingDialog.closeBtn'}}
+                </BsButton>
                 <OsfButton
                     @type='info'
                     @onClick={{action (action this.startMeeting this.webMeetingsJoinUrl)}}
@@ -521,23 +636,18 @@
             >
                     {{t 'web_meetings.meetingDialog.updateBtn'}}
                 </OsfButton>
+            {{else}}
                 <BsButton
-                    @onClick={{action modal.close}}
+                    @onClick={{action (mut this.detailMode) true}}
                 >
                     {{t 'web_meetings.meetingDialog.closeBtn'}}
                 </BsButton>
-            {{else}}
                 <OsfButton
                     @type='success'
                     @onClick={{action modal.submit}}
                 >
                     {{t 'web_meetings.meetingDialog.saveBtn'}}
                 </OsfButton>
-                <BsButton
-                    @onClick={{action (mut this.detailMode) true}}
-                >
-                    {{t 'web_meetings.meetingDialog.closeBtn'}}
-                </BsButton>
             {{/if}}
         {{else}}
             <BsButton
@@ -551,193 +661,177 @@
 
 <BsModal
     data-test-register-meeting-attendee-modal
-    @backdropClose={{false}}
-    @backdrop={{false}}
-    @onSubmit={{action this.manageWebMeetingsEmail 'create'}}
-    @open={{this.showManageAttendees}}
-    @onHidden={{action (mut this.showManageAttendees) false}}
+    @open={{this.showRegisterWebMeetingsEmailDialog}}
+    @onSubmit={{action this.manageWebMeetingsEmail 'create' '' this.displayedUserFullname this.displayedUserGuid this.displayedUserIsGuest true  false []}}
+    @onHidden={{action (mut this.showRegisterWebMeetingsEmailDialog) false}}
+    @onHide={{action this.resetRegisterEmailValue}}
+    @scrollable={{true}}
+    style='margin-top: 65px; margin-right: 40px; margin-left: 40px;'
+    as |modal|
+>
+    <modal.header>
+        <h4 style='font-weight:normal;'>
+            {{t 'web_meetings.meetingDialog.registerEmailHeader' appName=this.displayedWebMeetings}}
+        </h4>
+    </modal.header>
+    <modal.body>
+        {{#if showRegisterWebMeetingsAppEmailDialog}}
+            <label>{{t 'web_meetings.meetingDialog.registerEmail' user=this.displayedUser appName=this.displayedWebMeetings}}</label>
+            <div style='margin-top: 20px;' local-class='WebMeetings__input_items'>
+                <label>{{t 'web_meetings.accountLabel' appName=this.displayedWebMeetings}}</label>
+                {{input
+                    name='appUsername'
+                    placeholder=(t 'web_meetings.placeholders.email')
+                    class='form-control'
+                    type='text'
+                    value=this.appUsername
+                }}
+            </div>
+            {{#if this.msgInvalidEmail}}
+                <div class='text-danger'>{{this.msgInvalidEmail}}</div>
+            {{/if}}
+            {{#if this.msgOutsideEmail}}
+                <div class='text-danger'>{{this.msgOutsideEmail}}</div>
+            {{/if}}
+            <div>
+                <button onClick={{action this.manageWebMeetingsEmail 'create' '' this.displayedUserFullname this.displayedUserGuid true false false []}} style='margin-top: 20px; font-size: x-small;' local-class='WebMeetings__button_guest'>{{t 'web_meetings.registerAsGuest' appName=this.displayedWebMeetings}}</button>
+        </div>
+        {{/if}}
+        {{#if showRegisterWebMeetingsGuestEmailDialog}}
+            <label>{{t 'web_meetings.meetingDialog.registerGuestEmail'}}</label>
+            <div style='margin-top: 20px;' local-class='WebMeetings__input_items'>
+                <label>{{t 'web_meetings.meetingDialog.dispLabel'}}</label>
+                {{input
+                    name='appDisplayName'
+                    placeholder=(t 'web_meetings.placeholders.guestname')
+                    class='form-control'
+                    type='text'
+                    value=this.appDisplayName
+                }}
+            </div>
+            {{#if this.msgInvalidFullname}}
+                <div class='text-danger'>{{this.msgInvalidFullname}}</div>
+            {{/if}}
+            <div style='margin-top: 20px;' local-class='WebMeetings__input_items'>
+                <label>{{t 'web_meetings.meetingDialog.emailLabel'}}</label>
+                {{input
+                    name='appUsername'
+                    placeholder=(t 'web_meetings.placeholders.email')
+                    class='form-control'
+                    type='text'
+                    value=this.appUsername
+                }}
+            </div>
+            {{#if this.msgInvalidEmail}}
+                <div class='text-danger'>{{this.msgInvalidEmail}}</div>
+            {{/if}}
+            {{#if this.msgOutsideEmail}}
+                <div class='text-danger'>{{this.msgOutsideEmail}}</div>
+                <div>
+                    <button onClick={{action this.manageWebMeetingsEmail 'create' '' this.displayedUserFullname this.displayedUserGuid true false false []}} style='margin-top: 20px; font-size: x-small;' local-class='WebMeetings__button_guest'>{{t 'web_meetings.registerAsGuest' appName=this.displayedWebMeetings}}</button>
+                </div>
+            {{/if}}
+        {{/if}}
+    </modal.body>
+    <modal.footer>
+        <BsButton
+            @onClick={{action modal.close}}
+        >
+            {{t 'web_meetings.meetingDialog.closeBtn'}}
+        </BsButton>
+                <OsfButton
+                    @type='success'
+                    @onClick={{action modal.submit}}
+                >
+                    {{t 'web_meetings.meetingDialog.registerBtn'}}
+                </OsfButton>
+    </modal.footer>
+</BsModal>
+
+<BsModal
+    data-test-update-meeting-attendee-modal
+    @open={{this.showUpdateWebMeetingsEmailDialog}}
+    @onSubmit={{action this.manageWebMeetingsEmail 'update' this.displayedUserId this.displayedUserFullname this.displayedUserGuid this.displayedUserIsGuest true  false []}}
+    @onHidden={{action (mut this.showUpdateWebMeetingsEmailDialog) false}}
+    @onHide={{action this.resetRegisterEmailValue}}
+    @scrollable={{true}}
+    @position={{'center'}}
+    as |modal|
+>
+    <modal.header>
+        <h4 style='font-weight:normal;'>
+            {{t 'web_meetings.meetingDialog.registerEmailHeader' appName=this.displayedWebMeetings}}
+        </h4>
+    </modal.header>
+    <modal.body>
+        <div style='margin-top: 20px;' local-class='WebMeetings__input_items'>
+            <div>{{t 'web_meetings.meetingDialog.updateThisAttendee' user=this.displayedUser}}</div>
+        </div>
+        <div style='margin-top: 20px;' local-class='WebMeetings__input_items'>
+            <label>{{t 'web_meetings.meetingDialog.emailLabel'}}</label>
+            {{input
+                name='appUsername'
+                placeholder=(t 'web_meetings.placeholders.email')
+                class='form-control'
+                type='text'
+                value=this.appUsername
+            }}
+        </div>
+        {{#if this.msgInvalidEmail}}
+            <div class='text-danger'>{{this.msgInvalidEmail}}</div>
+        {{/if}}
+        {{#if this.msgOutsideEmail}}
+            <div class='text-danger'>{{this.msgOutsideEmail}}</div>
+        {{/if}}
+        <div>
+            <button onClick={{action this.manageWebMeetingsEmail 'update' this.displayedUserId this.displayedUserFullname this.displayedUserGuid true false false []}} style='margin-top: 20px; font-size: x-small;' local-class='WebMeetings__button_guest'>{{t 'web_meetings.updateAsGuest' appName=this.displayedWebMeetings}}</button>
+        </div>
+    </modal.body>
+    <modal.footer>
+        <BsButton
+            @onClick={{action modal.close}}
+        >
+            {{t 'web_meetings.meetingDialog.closeBtn'}}
+        </BsButton>
+                <OsfButton
+                    @type='success'
+                    @onClick={{action modal.submit}}
+                >
+                    {{t 'web_meetings.meetingDialog.updateBtn'}}
+                </OsfButton>
+    </modal.footer>
+</BsModal>
+
+<BsModal
+    data-test-delete-attendees-modal
+    @open={{this.showDeleteWebMeetingsEmailDialog}}
+    @onSubmit={{action this.manageWebMeetingsEmail 'delete' this.displayedUserId}}
+    @onHidden={{action (mut this.showDeleteWebMeetingsEmailDialog) false}}
     @onHide={{action this.resetRegisterEmailValue}}
     @scrollable={{true}}
     as |modal|
 >
     <modal.header>
         <h4 style='font-weight:normal;'>
-            {{t 'web_meetings.meetingDialog.registerAppsEmailHeader' appName=this.displayedWebMeetings}}
+             {{t 'web_meetings.meetingDialog.registerEmailHeader' appName=this.displayedWebMeetings}}
         </h4>
     </modal.header>
     <modal.body>
-        {{#if this.showRegisteredAttendees}}
-            <h3>{{t 'web_meetings.meetingDialog.emailToggle'}}
-                <button onClick={{action this.makeRegisterWebMeetingsEmailDialog}} class='btn btn-success' type='button'>{{t 'web_meetings.meetingDialog.registerBtn'}}</button>
-            </h3>
-            {{#if (eq this.displayedWebMeetings this.appNameMicrosoftTeams)}}
-                {{#if (eq this.nodeMicrosoftTeamsAttendees.length 0)}}
-                    {{t 'web_meetings.meetingDialog.noRegisteredAttendee'}}
-                {{else}}
-                    <table style='width: 100%;' class='table'>
-                        <thead>
-                            <tr>
-                                <th style='width: 65%;'>
-                                    <span class='header_text m-r-sm'>{{t 'web_meetings.meetingDialog.nameLabel'}}</span>
-                                </th>
-                                <th style='width: 35%;'>
-                                <span class='header_text m-r-sm'>{{t 'web_meetings.meetingDialog.emailLabel'}}</span>
-                                </th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {{#each this.nodeMicrosoftTeamsAttendees as |row|}}
-                                <tr>
-                                    <td>{{row.fields.fullname}}</td>
-                                    <td id='{{row.fields.user_guid}}' contenteditable='true' onblur={{action this.manageWebMeetingsEmail 'update' row.fields._id row.fields.user_guid row.fields.is_guest}}>{{row.fields.email_address}}</td>
-                                    {{#if row.fields.is_guest}}
-                                        <td><i class='fa fa-times' style='cursor: pointer' onClick={{action this.manageWebMeetingsEmail 'delete' row.fields._id }}></i></td>
-                                    {{else}}
-                                        <td></td>
-                                    {{/if}}
-                                </tr>
-                            {{/each}}
-                        </tbody>
-                    </table>
-                {{/if}}
-            {{/if}}
-            {{#if (eq this.displayedWebMeetings this.appNameWebexMeetings)}}
-                {{#if (eq this.nodeWebexMeetingsAttendees.length 0)}}
-                    {{t 'web_meetings.meetingDialog.noRegisteredAttendee'}}
-                {{else}}
-                    <table style='width: 100%;' class='table'>
-                        <thead>
-                            <tr>
-                                <th width='35%'>
-                                    <span class='header_text m-r-sm'>{{t 'web_meetings.meetingDialog.nameLabel'}}</span>
-                                </th>
-                                <th width='65%'>
-                                <span class='header_text m-r-sm'>{{t 'web_meetings.meetingDialog.emailLabel'}}</span>
-                                </th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {{#each this.nodeWebexMeetingsAttendees as |row|}}
-                                {{#if row.fields.is_active}}
-                                    <tr>
-                                        <td>{{row.fields.fullname}}</td>
-                                        <td id='{{row.fields.user_guid}}' contenteditable='true' onblur={{action this.manageWebMeetingsEmail 'update' row.fields._id row.fields.user_guid row.fields.is_guest}}>{{row.fields.email_address}}</td>
-                                        {{#if row.fields.is_guest}}
-                                            <td><i class='fa fa-times' style='cursor: pointer' onClick={{action this.manageWebMeetingsEmail 'delete' row.fields._id }}></i></td>
-                                        {{else}}
-                                            <td></td>
-                                        {{/if}}
-                                    </tr>
-                                {{/if}}
-                            {{/each}}
-                        </tbody>
-                    </table>
-                {{/if}}
-            {{/if}}
-        {{/if}}
-        {{#if this.showRegisterWebMeetingsEmailDialog}}
-            <div class='form-group'>
-                <div local-class='WebMeetings__input_items'>
-                    <input type='radio' name='userType' id='radio_grdmUserOrRegisteredGuest' checked='checked' onClick={{action this.setUserType value='target.id'}}>
-                    <label for='radio_grdmUserOrRegisteredGuest'>{{t 'web_meetings.grdmUserOrGuest' appName=this.displayedWebMeetings}}</label>
-                    <input type='radio' name='userType' id='radio_newGuest' onClick={{action this.setUserType value='target.id'}}>
-                    <label for='radio_newGuest'>{{t 'web_meetings.newGuest' appName=this.displayedWebMeetings}}</label>
-                    <div style='margin-left: 10px;'>
-                    {{#if (eq this.displayedWebMeetings this.appNameMicrosoftTeams)}}
-                        {{#if (eq this.userType 'radio_grdmUserOrRegisteredGuest')}}
-                            <PowerSelect
-                                @searchField='name'
-                                @selected={{this.selectedUser}}
-                                @options={{this.institutionUsersMicrosoftTeamsToRegister}}
-                                @renderInPlace={{true}}
-                                @onchange={{fn (mut this.selectedUser)}}
-                                @onInput={{this.checkLength}} as |name|>
-                               {{name.name}}
-                            </PowerSelect>
-                        {{/if}}
-                    {{/if}}
-                    {{#if (eq this.displayedWebMeetings this.appNameWebexMeetings)}}
-                        {{#if (eq this.userType 'radio_grdmUserOrRegisteredGuest')}}
-                            <PowerSelect
-                                @searchField='name'
-                                @selected={{this.selectedUser}}
-                                @options={{this.institutionUsersWebexMeetingsToRegister}}
-                                @renderInPlace={{true}}
-                                @onchange={{fn (mut this.selectedUser)}}
-                                @onInput={{this.checkLength}} as |name|>
-                                {{name.name}}
-                            </PowerSelect>
-                        {{/if}}
-                    {{/if}}
-                    </div>
-                    {{#if (eq this.userType 'radio_newGuest')}}
-                        <div style='margin-left: 10px;'>
-                            {{input
-                                name='guestFullname'
-                                placeholder=(t 'web_meetings.placeholders.guestname')
-                                class='form-control'
-                                type='text'
-                                value=this.guestFullname
-                                style='margin-left: 10px;'
-                            }}
-                        </div>
-                    {{/if}}
-                    <div style='padding-left: 5px;' class='text-danger'>{{this.msgInvalidSelectedUser}}</div>
-                </div>
-                <br>
-                <div local-class='WebMeetings__input_items'>
-                    <input type='radio' name='emailType' id='radio_signInAddress' checked='checked' onClick={{action this.setEmailType value='target.id'}}>
-                    <label for='radio_signInAddress'>{{t 'web_meetings.signInAdress' appName=this.displayedWebMeetings}}</label>
-                    {{#if (eq this.userType 'radio_newGuest')}}
-                        <input type='radio' name='emailType' id='radio_outsideAddress' onClick={{action this.setEmailType value='target.id'}}>
-                        <label for='radio_outsideAddress'>{{t 'web_meetings.outsideEmail' appName=this.displayedWebMeetings}}</label>
-                    {{/if}}
-                    {{#if (eq this.emailType 'radio_signInAddress')}}
-                        {{input
-                            name='signInAddress'
-                            placeholder=(t 'web_meetings.placeholders.signInAdress')
-                            class='form-control'
-                            type='text'
-                            value=this.signInAddress
-                        }}
-                        <div style='padding-left: 5px;' class='text-danger'>{{this.msgInvalidEmail}}</div>
-                    {{/if}}
-                    {{#if (eq this.emailType 'radio_outsideAddress')}}
-                            {{input
-                                name='outsideEmail'
-                                placeholder=(t 'web_meetings.placeholders.outsideEmail')
-                                class='form-control'
-                                type='text'
-                                value=this.outsideEmail
-                            }}
-                        <div style='padding-left: 5px;' class='text-danger'>{{this.msgInvalidEmail}}</div>
-                    {{/if}}
-                </div>
-            </div>
-        {{/if}}
+        <div style='margin-top: 20px;' local-class='WebMeetings__input_items'>
+            <div>{{t 'web_meetings.meetingDialog.deleteThisAttendee' user=this.displayedUser}}</div>
+        </div>
     </modal.body>
     <modal.footer>
-        {{#if this.showRegisteredAttendees}}
-            <BsButton
-                @onClick={{action modal.close}}
-            >
-                {{t 'web_meetings.meetingDialog.closeBtn'}}
-            </BsButton>
-        {{/if}}
-        {{#if this.showRegisterWebMeetingsEmailDialog}}
-            <BsButton
-                @onClick={{action this.makeRegisteredAttendeesDialog}}
-            >
-                {{t 'web_meetings.meetingDialog.cancelBtn'}}
-            </BsButton>
-            <OsfButton
-                @type='success'
-                @onClick={{action modal.submit}}
-            >
-                {{t 'web_meetings.meetingDialog.registerBtn'}}
-            </OsfButton>
-        {{/if}}
+        <BsButton
+            @onClick={{action modal.close}}
+        >
+            {{t 'web_meetings.meetingDialog.cancelBtn'}}
+        </BsButton>
+        <OsfButton
+            @type='danger'
+            @onClick={{action modal.submit}}
+        >
+            {{t 'web_meetings.meetingDialog.deleteBtn'}}
+        </OsfButton>
     </modal.footer>
 </BsModal>

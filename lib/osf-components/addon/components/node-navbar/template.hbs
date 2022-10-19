@@ -53,6 +53,9 @@
                         {{#if (and @node.userHasWritePermission (not @node.isRegistration))}}
                             {{node-navbar/link node=@node useLinkTo=false destination='addons'}}
                         {{/if}}
+                        {{#if this.webmeetingsEnabled }}
+                            {{node-navbar/link node=@node useLinkTo=false destination='webmeetings'}}
+                        {{/if}}
                         {{#if (if @node.isRegistration @node.userHasWritePermission @node.userHasReadPermission)}}
                             {{node-navbar/link node=@node useLinkTo=false destination='settings'}}
                         {{/if}}

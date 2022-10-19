@@ -71,6 +71,22 @@ export default class NodeNavbar extends Component {
     }
 
     @computed('node.addons')
+    get webmeetingsEnabled(): boolean | null {
+        if (!this.node) {
+            return null;
+        }
+        let result = null;
+        this.getAddons()
+            .then(addons => {
+                result = addons
+                    .filter(addon => addon.id === 'microsoftteams' || addon.id === 'webexmeetings' || addon.id === 'zoommeetings')
+                    .length > 0;
+                this.set('webmeetingsEnabled', result);
+            });
+        return result;
+    }
+
+    @computed('node.addons')
     get metadataEnabled(): boolean | null {
         if (!this.node) {
             return null;

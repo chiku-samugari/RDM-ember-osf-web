@@ -126,3 +126,19 @@
 .WebMeetings__button_list:hover {
     cursor: pointer;
 }
+
+.WebMeetings__button_guest {
+    border: none;
+    background: transparent;
+}
+
+.WebMeetings__button_guest:hover {
+    border: none;
+    background: #ced4da;
+}
+
+WebMeetings__register_attendee_modal {
+    margin-top: 65px;
+    margin-right: 40px;
+    margin-left: 40px;
+}

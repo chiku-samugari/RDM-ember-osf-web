@@ -1383,7 +1383,7 @@ export default class GuidNodeWebMeetings extends Controller {
         return nodeMicrosoftTeamsAttendees;
     }
 
-    @computed(config.{'projectContributors', 'nodeMicrosoftTeamsAttendees'})
+    @computed('config.{projectContributors,nodeMicrosoftTeamsAttendees}')
     get possibleAttendeesMicrosoftTeams() {
         if (!this.config) {
             return '';
@@ -1410,7 +1410,7 @@ export default class GuidNodeWebMeetings extends Controller {
         return nodeWebexMeetingsAttendees;
     }
 
-    @computed(config.{'projectContributors', 'nodeWebexMeetingsAttendees'})
+    @computed('config.{projectContributors,nodeWebexMeetingsAttendees}')
     get possibleAttendeesWebexMeetings() {
         if (!this.config) {
             return '';

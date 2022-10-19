@@ -188,7 +188,7 @@ export default class GuidNodeWebMeetings extends Controller {
     ];
 
     hours = [
-        '0', '1', '2', '3', '4', '5', '6', 
+        '0', '1', '2', '3', '4', '5', '6',
     ];
 
     minutes = [
@@ -239,7 +239,7 @@ export default class GuidNodeWebMeetings extends Controller {
     }
 
     @action
-    setCreateWebMeetingsInputDialog(this: GuidNodeWebMeetings, appName: string, firstTime: boolean ) {
+    setCreateWebMeetingsInputDialog(this: GuidNodeWebMeetings, appName: string, firstTime: boolean) {
         if (firstTime) {
             if (this.preDisplayedWebMeetings) {
                 this.setDisplayWebMeetings(this.preDisplayedWebMeetings);
@@ -287,7 +287,7 @@ export default class GuidNodeWebMeetings extends Controller {
 
     @action
     addNewAttendee(this: GuidNodeWebMeetings, newAttendee: AttendeesInfo) {
-        let attendees = this.selectedAttendees;
+        const attendees = this.selectedAttendees;
         attendees.push(newAttendee);
         this.set('selectedAttendees', attendees);
     }
@@ -364,7 +364,7 @@ export default class GuidNodeWebMeetings extends Controller {
     startRegisterAttendeesFlow(this: GuidNodeWebMeetings, attendees: AttendeesInfo[]) {
 
         const selectedAttendees = JSON.stringify(this.selectedAttendees);
-        const newAttendee = attendees.filter((i: AttendeesInfo) => selectedAttendees.indexOf(JSON.stringify(i)) === -1 );
+        const newAttendee = attendees.filter((i: AttendeesInfo) => selectedAttendees.indexOf(JSON.stringify(i)) === -1);
         const newAttendeeGuid = newAttendee.length > 0 ? newAttendee[0].guid : '';
         if (newAttendeeGuid) {
             if (newAttendeeGuid === 'addGuest') {
@@ -373,7 +373,7 @@ export default class GuidNodeWebMeetings extends Controller {
             }
             const newAttendeeUserAppEmail = newAttendee[0].appEmail;
             const newAttendeeUserIsGuest = newAttendee[0].is_guest;
-            if (!newAttendeeUserAppEmail && !newAttendeeUserIsGuest ) {
+            if (!newAttendeeUserAppEmail && !newAttendeeUserIsGuest) {
                 this.manageWebMeetingsEmail('create', '', '', '', false, true, true, newAttendee[0]);
                 return;
             }
@@ -453,13 +453,17 @@ export default class GuidNodeWebMeetings extends Controller {
                 requestIsGuest = newAttendee.is_guest;
                 if (!(this.webMeetingAppsEmailValidationCheck(email, ''))) {
                     return;
-                };
+                }
             } else {
                 requestFullname = fullname;
                 requestIsGuest = isGuest;
                 email = this.appUsername;
                 if (isGuest) {
-                    requestFullname = fullname ? fullname : this.appDisplayName;
+                    if (fullname) {
+                        requestFullname = fullname;
+                    } else {
+                        requestFullname = this.appDisplayName;
+                    }
                     requestGuid = `${(new Date()).getTime()}`;
                     if (!(this.webMeetingAppsEmailValidationCheck(email, requestFullname))) {
                         return;
@@ -468,21 +472,20 @@ export default class GuidNodeWebMeetings extends Controller {
                     requestGuid = guid;
                     if (!(this.webMeetingAppsEmailValidationCheck(email, ''))) {
                         return;
-                    };
+                    }
                 }
-            
             }
             break;
         }
         case 'update': {
             requestGuid = `${(new Date()).getTime()}`;
-            requestFullname = fullname
+            requestFullname = fullname;
             email = this.appUsername;
             requestAttendeeId = id;
             requestIsGuest = isGuest;
-            if (!(this.webMeetingAppsEmailValidationCheck(email ,''))) {
+            if (!(this.webMeetingAppsEmailValidationCheck(email, ''))) {
                 return;
-            };
+            }
             break;
         }
         case 'delete':
@@ -535,7 +538,7 @@ export default class GuidNodeWebMeetings extends Controller {
     }
 
     @action
-    setOutsideMsg( this: GuidNodeWebMeetings ) {
+    setOutsideMsg(this: GuidNodeWebMeetings) {
         this.set(
             'msgOutsideEmail',
             this.intl.t(
@@ -546,13 +549,13 @@ export default class GuidNodeWebMeetings extends Controller {
     }
 
     @action
-    setAttendeesList( this: GuidNodeWebMeetings ) {
+    setAttendeesList(this: GuidNodeWebMeetings) {
         this.set('showAttendeesList', true);
         this.set('showMeetingsList', false);
     }
 
     @action
-    setMeetingsList( this: GuidNodeWebMeetings ) {
+    setMeetingsList(this: GuidNodeWebMeetings) {
         this.set('showAttendeesList', false);
         this.set('showMeetingsList', true);
     }
@@ -646,7 +649,6 @@ export default class GuidNodeWebMeetings extends Controller {
         const durationMinutes = duration % 60;
         this.set('webMeetingsDurationHours', durationHours.toString());
         this.set('webMeetingsDurationMinutes', durationMinutes.toString());
-
     }
 
     makeWebMeetingsAttendees(this: GuidNodeWebMeetings, appName: string) {
@@ -698,9 +700,9 @@ export default class GuidNodeWebMeetings extends Controller {
                     contrib = {} as ProjectContributors;
                     if (!isGuest) {
                         contrib = projectContributors.filter(function(object: any) {
-                            return object.guid == userGuid;
-                        }).shift()
-                     }
+                            return object.guid === userGuid;
+                        }).shift();
+                    }
                     username = Object.keys(contrib).length ? contrib.username : nodeAppAttendee.fields.email_address;
                     institution = Object.keys(contrib).length ? contrib.institution : '';
                     profileUrl = isGuest ? '' : profileUrlBase + userGuid;
@@ -710,9 +712,9 @@ export default class GuidNodeWebMeetings extends Controller {
                             dispName: `${fullname}(${username})`,
                             fullname: nodeAppAttendee.fields.fullname,
                             email: username,
-                            institution: institution,
+                            institution,
                             appUsername: nodeAppAttendee.fields.display_name,
-                            appEmail:nodeAppAttendee.fields.email_address,
+                            appEmail: nodeAppAttendee.fields.email_address,
                             profile: profileUrl,
                             _id: nodeAppAttendee.fields._id,
                             is_guest: nodeAppAttendee.fields.is_guest,
@@ -827,7 +829,7 @@ export default class GuidNodeWebMeetings extends Controller {
                 validFlag = false;
             } else {
                 const result = (this.selectedAttendees).filter((item, index, self) => {
-                    const appEmailList = self.map(item => item['appEmail']);
+                    const appEmailList = self.map(item => item["appEmail"]);
                     if (appEmailList.indexOf(item.appEmail) === index) {
                         return item;
                     }
@@ -875,7 +877,6 @@ export default class GuidNodeWebMeetings extends Controller {
         const webMeetingsStartTimeElement = document.querySelectorAll('select[id=create_web_meetings_start_time]').length
             ? document.querySelectorAll('select[id=create_web_meetings_start_time]') as any
             : document.querySelectorAll('select[id=update_web_meetings_start_time]') as any;
-        /* eslint-enable max-len */
         const webMeetingsStartTime = webMeetingsStartTimeElement.length ? webMeetingsStartTimeElement[0].value : '';
         const strWebMeetingsStartDatetime = `${webMeetingsStartDate} ${webMeetingsStartTime}`;
         const webMeetingsDurationHoursElement = document.querySelectorAll('select[id=create_web_meetings_duration_hours]').length
@@ -886,15 +887,15 @@ export default class GuidNodeWebMeetings extends Controller {
             : document.querySelectorAll('select[id=update_web_meetings_duration_minutes]') as any;
         const webMeetingsDurationHours = webMeetingsDurationHoursElement.length ? webMeetingsDurationHoursElement[0].value : '';
         const webMeetingsDurationMinutes = webMeetingsDurationMinutesElement.length ? webMeetingsDurationMinutesElement[0].value : '';
-        const webMeetingsDuration = 60 * parseInt(webMeetingsDurationHours, 10) +  parseInt(webMeetingsDurationMinutes, 10);
-
+        const webMeetingsDuration = 60 * parseInt(webMeetingsDurationHours, 10) + parseInt(webMeetingsDurationMinutes, 10);
+        /* eslint-enable max-len */
         const webMeetingsContent = this.webMeetingsContent as string;
         const webMeetingsPassword = this.webMeetingsPassword as string;
         const dStartDatetime = new Date(strWebMeetingsStartDatetime);
         const webMeetingsStartDatetime = !isNaN(dStartDatetime.getTime())
             ? moment(dStartDatetime).format('YYYY-MM-DDTHH:mm:ss')
             : '';
-        let dEndDatetime = dStartDatetime;
+        const dEndDatetime = dStartDatetime;
         dEndDatetime.setMinutes(dEndDatetime.getMinutes() + webMeetingsDuration);
         const strWebMeetingsEndDatetime = moment(dEndDatetime).format('YYYY-MM-DDTHH:mm:ss');
         const webMeetingsEndDatetime = !isNaN(dEndDatetime.getTime()) ? strWebMeetingsEndDatetime : '';
@@ -1019,7 +1020,7 @@ export default class GuidNodeWebMeetings extends Controller {
                 this.save();
                 if (data.errCode === 401) {
                     this.toast.error(this.intl.t('web_meetings.error.notAuth'));
-                } else if (data.errCode === 403){
+                } else if (data.errCode === 403) {
                     this.toast.error(this.intl.t('web_meetings.error.forbbiden'));
                 }
             })
@@ -1274,17 +1275,17 @@ export default class GuidNodeWebMeetings extends Controller {
         const unregisteredProjectContributors: AttendeesInfo[] = [];
         const guestUsers: AttendeesInfo[] = [];
         const addGuestLabel = {
-                            guid: 'addGuest',
-                            dispName: this.intl.t('web_meetings.addAttendee'),
-                            fullname: '',
-                            email: '',
-                            institution: '',
-                            appUsername: '',
-                            appEmail: '',
-                            profile: '',
-                            _id: '',
-                            is_guest: false,
-                        }
+            guid: 'addGuest',
+            dispName: this.intl.t('web_meetings.addAttendee'),
+            fullname: '',
+            email: '',
+            institution: '',
+            appUsername: '',
+            appEmail: '',
+            profile: '',
+            _id: '',
+            is_guest: false,
+        };
         let fullname = '';
         let username = '';
 
@@ -1358,11 +1359,7 @@ export default class GuidNodeWebMeetings extends Controller {
             projectContributorList = projectContributorList.concat(guestUsers);
             projectContributorList = projectContributorList.concat(addGuestLabel);
         }
-
-
-
         return projectContributorList;
-
     }
 
     @computed('config.projectContributors')
@@ -1386,7 +1383,7 @@ export default class GuidNodeWebMeetings extends Controller {
         return nodeMicrosoftTeamsAttendees;
     }
 
-    @computed('config.projectContributors', 'config.nodeMicrosoftTeamsAttendees')
+    @computed({'config.projectContributors', 'config.nodeMicrosoftTeamsAttendees'})
     get possibleAttendeesMicrosoftTeams() {
         if (!this.config) {
             return '';
@@ -1413,7 +1410,7 @@ export default class GuidNodeWebMeetings extends Controller {
         return nodeWebexMeetingsAttendees;
     }
 
-    @computed('config.projectContributors', 'config.nodeWebexMeetingsAttendees')
+    @computed({'config.projectContributors', 'config.nodeWebexMeetingsAttendees'})
     get possibleAttendeesWebexMeetings() {
         if (!this.config) {
             return '';

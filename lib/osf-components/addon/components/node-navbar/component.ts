@@ -79,7 +79,9 @@ export default class NodeNavbar extends Component {
         this.getAddons()
             .then(addons => {
                 result = addons
-                    .filter(addon => addon.id === 'microsoftteams' || addon.id === 'webexmeetings' || addon.id === 'zoommeetings')
+                    .filter(addon => addon.id === 'microsoftteams'
+                    || addon.id === 'webexmeetings'
+                    || addon.id === 'zoommeetings')
                     .length > 0;
                 this.set('webmeetingsEnabled', result);
             });

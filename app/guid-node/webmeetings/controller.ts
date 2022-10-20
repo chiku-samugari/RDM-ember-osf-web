@@ -833,9 +833,9 @@ export default class GuidNodeWebMeetings extends Controller {
                 );
                 validFlag = false;
             } else {
-                const result = (this.selectedAttendees).filter((e, index, self) => {
-                    return self.findIndex((el) => el.appEmail === e.appEmail) === index;
-                });
+                /* eslint-disable max-len */
+                const result = (this.selectedAttendees).filter((e, index, self) => self.findIndex((el) => el.appEmail === e.appEmail) === index);
+                /* eslint-enable max-len */
                 this.set('selectedAttendees', result);
             }
         }

@@ -24,5 +24,7 @@ module('Acceptance | guid-node/webmeetings', hooks => {
         assert.dom('[data-test-delete-meeting-modal]').doesNotExist();
         assert.dom('[data-test-detail-meeting-modal]').doesNotExist();
         assert.dom('[data-test-register-meeting-attendee-modal]').doesNotExist();
+        assert.dom('[data-test-update-meeting-attendee-modal]').doesNotExist();
+        assert.dom('[data-test-delete-attendees-modal]').doesNotExist();
     });
 });

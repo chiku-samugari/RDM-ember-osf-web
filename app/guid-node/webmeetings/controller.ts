@@ -702,9 +702,9 @@ export default class GuidNodeWebMeetings extends Controller {
                     fullname = nodeAppAttendee.fields.fullname;
                     contrib = {} as ProjectContributors;
                     if (!isGuest) {
-                        projectContributors.forEach(con:any => {
-                            if (con.guid === userGuid) {
-                                contrib = con;
+                        projectContributors.forEach((value:any) => {
+                            if (value.guid === userGuid) {
+                                contrib = value;
                             }
                         });
                     }

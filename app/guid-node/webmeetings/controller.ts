@@ -702,9 +702,9 @@ export default class GuidNodeWebMeetings extends Controller {
                     fullname = nodeAppAttendee.fields.fullname;
                     contrib = {} as ProjectContributors;
                     if (!isGuest) {
-                        projectContributors.forEach(object:any => {
-                            if (abject.guid === userGuid) {
-                                contrib = object;
+                        projectContributors.forEach(con:any => {
+                            if (con.guid === userGuid) {
+                                contrib = con;
                             }
                         });
                     }
@@ -834,7 +834,7 @@ export default class GuidNodeWebMeetings extends Controller {
                 validFlag = false;
             } else {
                 const result = (this.selectedAttendees).filter((e, index, self) => {
-                    return self.findIndex((el) => el.id === e.id) === index;
+                    return self.findIndex((el) => el.appEmail === e.appEmail) === index;
                 });
                 this.set('selectedAttendees', result);
             }

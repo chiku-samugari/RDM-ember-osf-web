@@ -128,17 +128,11 @@
 }
 
 .WebMeetings__button_guest {
-    border: none;
+    border: 0;
     background: transparent;
 }
 
 .WebMeetings__button_guest:hover {
-    border: none;
+    border: 0;
     background: #ced4da;
-}
-
-WebMeetings__register_attendee_modal {
-    margin-top: 65px;
-    margin-right: 40px;
-    margin-left: 40px;
 }

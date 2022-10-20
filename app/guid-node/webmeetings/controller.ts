@@ -528,7 +528,7 @@ export default class GuidNodeWebMeetings extends Controller {
                             newAttendee.dispName,
                             newAttendee.fullname,
                             requestGuid,
-                            requestIsGuest
+                            requestIsGuest,
                         );
                     } else {
                         this.setOutsideMsg();
@@ -702,9 +702,7 @@ export default class GuidNodeWebMeetings extends Controller {
                     fullname = nodeAppAttendee.fields.fullname;
                     contrib = {} as ProjectContributors;
                     if (!isGuest) {
-                        contrib = projectContributors.filter(object => {
-                        return object.guid === userGuid;
-                        }).shift();
+                        contrib = projectContributors.filter((object:any) => object.guid === userGuid).shift();
                     }
                     username = Object.keys(contrib).length ? contrib.username : nodeAppAttendee.fields.email_address;
                     institution = Object.keys(contrib).length ? contrib.institution : '';

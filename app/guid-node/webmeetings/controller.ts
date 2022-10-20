@@ -362,7 +362,6 @@ export default class GuidNodeWebMeetings extends Controller {
 
     @action
     startRegisterAttendeesFlow(this: GuidNodeWebMeetings, attendees: AttendeesInfo[]) {
-
         const selectedAttendees = JSON.stringify(this.selectedAttendees);
         const newAttendee = attendees.filter((i: AttendeesInfo) => selectedAttendees.indexOf(JSON.stringify(i)) === -1);
         const newAttendeeGuid = newAttendee.length > 0 ? newAttendee[0].guid : '';
@@ -467,7 +466,7 @@ export default class GuidNodeWebMeetings extends Controller {
                     requestGuid = `${(new Date()).getTime()}`;
                     if (!(this.webMeetingAppsEmailValidationCheck(email, requestFullname))) {
                         return;
-                    };
+                    }
                 } else {
                     requestGuid = guid;
                     if (!(this.webMeetingAppsEmailValidationCheck(email, ''))) {
@@ -515,7 +514,6 @@ export default class GuidNodeWebMeetings extends Controller {
             .then(res => {
                 if (!res.ok) {
                     this.toast.error(this.intl.t('web_meetings.error.failedToRegisterEmail'));
-                    return;
                 }
                 return res.json();
             })
@@ -526,7 +524,12 @@ export default class GuidNodeWebMeetings extends Controller {
                     this.addNewAttendee(data.newAttendee);
                 } else if (data.result === 'outside_email') {
                     if (data.regType) {
-                        this.makeRegisterWebMeetingsEmailDialog(newAttendee.dispName, newAttendee.fullname, requestGuid, requestIsGuest);
+                        this.makeRegisterWebMeetingsEmailDialog(
+                            newAttendee.dispName,
+                            newAttendee.fullname,
+                            requestGuid,
+                            requestIsGuest
+                        );
                     } else {
                         this.setOutsideMsg();
                     }
@@ -699,8 +702,8 @@ export default class GuidNodeWebMeetings extends Controller {
                     fullname = nodeAppAttendee.fields.fullname;
                     contrib = {} as ProjectContributors;
                     if (!isGuest) {
-                        contrib = projectContributors.filter(function(object: any) {
-                            return object.guid === userGuid;
+                        contrib = projectContributors.filter(object => contrib) {
+                            return contrib.guid === userGuid;
                         }).shift();
                     }
                     username = Object.keys(contrib).length ? contrib.username : nodeAppAttendee.fields.email_address;
@@ -829,7 +832,7 @@ export default class GuidNodeWebMeetings extends Controller {
                 validFlag = false;
             } else {
                 const result = (this.selectedAttendees).filter((item, index, self) => {
-                    const appEmailList = self.map(item => item["appEmail"]);
+                    const appEmailList = self.map(item => item.appEmail);
                     if (appEmailList.indexOf(item.appEmail) === index) {
                         return item;
                     }
@@ -1012,7 +1015,6 @@ export default class GuidNodeWebMeetings extends Controller {
                     this.toast.error(
                         'an error happens',
                     );
-                    return;
                 }
                 return res.json();
             })

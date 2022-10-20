@@ -702,7 +702,11 @@ export default class GuidNodeWebMeetings extends Controller {
                     fullname = nodeAppAttendee.fields.fullname;
                     contrib = {} as ProjectContributors;
                     if (!isGuest) {
-                        contrib = projectContributors.filter((object:any) => object.guid === userGuid).shift();
+                        projectContributors.forEach(object:any => {
+                            if (abject.guid === userGuid) {
+                                contrib = object;
+                            }
+                        });
                     }
                     username = Object.keys(contrib).length ? contrib.username : nodeAppAttendee.fields.email_address;
                     institution = Object.keys(contrib).length ? contrib.institution : '';
@@ -829,12 +833,8 @@ export default class GuidNodeWebMeetings extends Controller {
                 );
                 validFlag = false;
             } else {
-                const result = (this.selectedAttendees).filter((item, index, self) => {
-                    const appEmailList = self.map(item => item.appEmail);
-                    if (appEmailList.indexOf(item.appEmail) === index) {
-                        return item;
-                    }
-                    return;
+                const result = (this.selectedAttendees).filter((e, index, self) => {
+                    return self.findIndex((el) => el.id === e.id) === index;
                 });
                 this.set('selectedAttendees', result);
             }

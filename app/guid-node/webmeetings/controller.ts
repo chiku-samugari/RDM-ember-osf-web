@@ -702,8 +702,8 @@ export default class GuidNodeWebMeetings extends Controller {
                     fullname = nodeAppAttendee.fields.fullname;
                     contrib = {} as ProjectContributors;
                     if (!isGuest) {
-                        contrib = projectContributors.filter(object => contrib) {
-                            return contrib.guid === userGuid;
+                        contrib = projectContributors.filter(object => {
+                        return object.guid === userGuid;
                         }).shift();
                     }
                     username = Object.keys(contrib).length ? contrib.username : nodeAppAttendee.fields.email_address;

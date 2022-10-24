@@ -25,7 +25,7 @@ enum NavLink {
     Files = 'files',
     IQBRIMS = 'iqbrims',
     BinderHub = 'binderhub',
-    Webmeetings = 'webmeetings'
+    Webmeetings = 'webmeetings',
     Wiki = 'wiki',
     Analytics = 'analytics',
     Registrations = 'registrations',

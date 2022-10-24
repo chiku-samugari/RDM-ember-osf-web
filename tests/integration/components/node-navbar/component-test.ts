@@ -304,7 +304,7 @@ module('Integration | Component | node-navbar', () => {
                 const binderhubEnabled = testCase.conditions.filter(c => c === NavCondition.BinderHubEnabled);
                 this.set('binderhubEnabled', binderhubEnabled.length > 0);
                 const webmeetingsEnabled = testCase.conditions.filter(c => c === NavCondition.WebmeetingsEnabled);
-                this.set('webmeetingsEnabled', WebmeetingsEnabled.length > 0);
+                this.set('webmeetingsEnabled', webmeetingsEnabled.length > 0);
 
                 await render(
                     hbs`{{node-navbar node=this.node iqbrimsEnabled=this.iqbrimsEnabled

@@ -168,6 +168,7 @@ export default class GuidNodeWebMeetings extends Controller {
     msgInvalidAttendees = '';
     msgInvalidDatetime = '';
     msgOutsideEmail = '';
+    msgDuplicatedEmail = '';
 
     selectedUser: AttendeesInfo = {} as AttendeesInfo;
     selectedAttendees: AttendeesInfo[] = [];
@@ -356,6 +357,7 @@ export default class GuidNodeWebMeetings extends Controller {
         this.set('appDisplayName', '');
         this.set('appUsername', '');
         this.set('msgOutsideEmail', '');
+        this.set('msgDuplicatedEmail', '');
         this.set('msgInvalidEmail', '');
         this.set('msgInvalidFullname', '');
     }
@@ -533,6 +535,8 @@ export default class GuidNodeWebMeetings extends Controller {
                     } else {
                         this.setOutsideMsg();
                     }
+                } else if (data.result === 'duplicated_email') {
+                    this.setDuplicatedMsg();
                 }
             })
             .catch(() => {
@@ -549,6 +553,11 @@ export default class GuidNodeWebMeetings extends Controller {
                 { appName: this.displayedWebMeetings },
             ),
         );
+    }
+
+    @action
+    setDuplicatedMsg(this: GuidNodeWebMeetings) {
+        this.set('msgDuplicatedEmail', this.intl.t('web_meetings.meetingDialog.invalid.duplicatedEmail'));
     }
 
     @action
@@ -636,7 +645,7 @@ export default class GuidNodeWebMeetings extends Controller {
         this.set('webMeetingsUpdateMeetingId', meetingId);
         this.set('webMeetingsSubject', subject);
         this.set('webMeetingsAttendees', attendees);
-        const selectedDetailAttendees = Object.create(this.selectedDetailAttendees);
+        const selectedDetailAttendees = Object.assign([], this.selectedDetailAttendees);
         this.set('selectedAttendees', selectedDetailAttendees);
         this.set('webMeetingsStartDate', moment(startDatetime).format('YYYY/MM/DD'));
         this.set('webMeetingsStartTime', moment(startDatetime).format('HH:mm'));

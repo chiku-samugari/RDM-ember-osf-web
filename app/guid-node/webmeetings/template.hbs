@@ -31,7 +31,7 @@
                             type='text'
                             onClick={{action this.setMeetingsList }}
                         >
-                            {{fa-icon 'user'}}&nbsp;{{t 'web_meetings.manageMeetings'}}
+                            {{t 'web_meetings.manageMeetings'}}
                         </button>
                     {{/if}}
                 </div>
@@ -484,9 +484,9 @@
                             <div style='padding-left: 10px; padding-top: 5px'>
                                 {{#each this.selectedDetailAttendees as |attendee|}}
                                     {{#if attendee.is_guest}}
-                                        <label local-class='WebMeetings__label_normal' title={{attendee.email}}>{{attendee.fullname}}</label>
+                                        <button local-class='WebMeetings__button_detail_guests' data-toggle='tooltip' title='{{attendee.email}}'>{{attendee.fullname}}</button>
                                     {{else}}
-                                        <label local-class='WebMeetings__label_normal'><a href={{attendee.profile}} target='_blank' data-toggle='tooltip' title='{{attendee.email}}({{attendee.institution}})'>{{attendee.fullname}}</a></label>
+                                        <button local-class='WebMeetings__button_detail_attendees' data-toggle='tooltip' title='{{attendee.email}}({{attendee.institution}})'><a style='text-decoration:none; color: inherit;' href={{attendee.profile}} target='_blank'>{{attendee.fullname}}</a></button>
                                     {{/if}}
                                     &nbsp;&nbsp;&nbsp;
                                 {{/each}}
@@ -515,7 +515,7 @@
                     <div local-class='WebMeetings__input_items'>
                         <div>
                             <label>{{t 'web_meetings.attendees'}}</label>
-                            <button style="margin-left: 20px; font-size: x-small; white-space: nowrap; vertical-align: top;" onClick={{action this.addContributorsAsAttendees}} type='button'>{{t 'web_meetings.meetingDialog.addContributorsAsAttendeesBtn'}}</button>
+                            <button style="margin-left: 20px; font-size: x-small; white-space: nowrap; vertical-align: top;" onClick={{action this.addContributorsAsAttendees this.displayedWebMeetings}} type='button'>{{t 'web_meetings.meetingDialog.addContributorsAsAttendeesBtn'}}</button>
                         </div>
                         {{#if (eq this.displayedWebMeetings this.appNameMicrosoftTeams)}}
                             <PowerSelectMultiple
@@ -693,6 +693,9 @@
             {{#if this.msgOutsideEmail}}
                 <div class='text-danger'>{{this.msgOutsideEmail}}</div>
             {{/if}}
+            {{#if this.msgDuplicatedEmail}}
+                <div class='text-danger'>{{this.msgDuplicatedEmail}}</div>
+            {{/if}}
             <div>
                 <button onClick={{action this.manageWebMeetingsEmail 'create' '' this.displayedUserFullname this.displayedUserGuid true false false []}} style='margin-top: 20px; font-size: x-small;' local-class='WebMeetings__button_guest'>{{t 'web_meetings.registerAsGuest' appName=this.displayedWebMeetings}}</button>
         </div>
@@ -724,6 +727,9 @@
             </div>
             {{#if this.msgInvalidEmail}}
                 <div class='text-danger'>{{this.msgInvalidEmail}}</div>
+            {{/if}}
+            {{#if this.msgDuplicatedEmail}}
+                <div class='text-danger'>{{this.msgDuplicatedEmail}}</div>
             {{/if}}
             {{#if this.msgOutsideEmail}}
                 <div class='text-danger'>{{this.msgOutsideEmail}}</div>
@@ -782,6 +788,9 @@
         {{/if}}
         {{#if this.msgOutsideEmail}}
             <div class='text-danger'>{{this.msgOutsideEmail}}</div>
+        {{/if}}
+        {{#if this.msgDuplicatedEmail}}
+            <div class='text-danger'>{{this.msgDuplicatedEmail}}</div>
         {{/if}}
         <div>
             <button onClick={{action this.manageWebMeetingsEmail 'update' this.displayedUserId this.displayedUserFullname this.displayedUserGuid true false false []}} style='margin-top: 20px; font-size: x-small;' local-class='WebMeetings__button_guest'>{{t 'web_meetings.updateAsGuest' appName=this.displayedWebMeetings}}</button>

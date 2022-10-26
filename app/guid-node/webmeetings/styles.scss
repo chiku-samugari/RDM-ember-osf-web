@@ -101,8 +101,26 @@
     padding: 5px;
 }
 
-.WebMeetings__label_normal {
-    font-weight: normal;
+.WebMeetings__button_detail_attendees {
+    border: 1px solid transparent;
+    border-radius: 20px;
+    background-color: #f2f4f5;
+    font-size: 12px;
+}
+
+.WebMeetings__button_detail_attendees:hover {
+    cursor: pointer;
+}
+
+.WebMeetings__button_detail_guests {
+    border: 1px solid transparent;
+    border-radius: 20px;
+    background-color: #f2f4f5;
+    font-size: 12px;
+}
+
+.WebMeetings__button_detail_guests:hover {
+    cursor: default;
 }
 
 .WebMeetings__buttons {

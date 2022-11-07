@@ -7,6 +7,7 @@
         <div data-test-web-meeting-screen>
             <div id='allWebMeetings' class='main-screen'>
                 <div local-class='WebMeetings__web_meeting_navbar'>
+                    {{#if showMeetingsList}}
                     <button style='margin-top:10px; margin-right:10px; background-color: #357935; border-color: #357935; min-width: 200px;'
                         local-class='WebMeetings__button_list'
                         class='text-success pull-right'
@@ -15,7 +16,6 @@
                     >
                         {{fa-icon 'plus'}}&nbsp;{{t 'web_meetings.meetingDialog.createLabel'}}
                     </button>
-                    {{#if showMeetingsList}}
                         <button style='margin-top:10px; margin-right:10px; background-color: #1b6d85; border-color: #1b6d85; min-width: 180px;'
                             local-class='WebMeetings__button_list'
                             class='text-success pull-right'
@@ -31,7 +31,7 @@
                             type='text'
                             onClick={{action this.setMeetingsList }}
                         >
-                            {{t 'web_meetings.manageMeetings'}}
+                            {{fa-icon 'users'}}&nbsp;{{t 'web_meetings.manageMeetings'}}
                         </button>
                     {{/if}}
                 </div>
@@ -154,15 +154,15 @@
                                                             <td local-class='WebMeetings__td_overflow' style='vertical-align: middle'>{{row.fields.email_address}}</td>
                                                             <td local-class='WebMeetings__td'>
                                                                 <button local-class='WebMeetings__button_list' style='background-color: #1b6d85; border-color: #1b6d85'
-                                                                    {{action this.makeUpdateWebMeetingsEmailDialog row.fields._id row.fields.fullname row.fields.email_address row.fields.user_guid row.fields.is_guest appName}}>{{t 'web_meetings.meetingDialog.updateBtn'}}</button>
+                                                                    {{action this.makeUpdateWebMeetingsEmailDialog row.fields._id row.fields.fullname row.fields.email_address row.fields.user_guid row.fields.has_grdm_account appName}}>{{t 'web_meetings.meetingDialog.updateBtn'}}</button>
                                                             </td>
-                                                            {{#if row.fields.is_guest}}
+                                                            {{#if row.fields.has_grdm_account}}
+                                                                <td></td>
+                                                            {{else}}
                                                                 <td local-class='WebMeetings__td'>
                                                                     <button local-class='WebMeetings__button_list' style='background-color: #a94442; border-color: #a94442'
                                                                         {{action this.makeDeleteWebMeetingsEmailDialog row.fields._id row.fields.fullname row.fields.email_address appName}}>{{t 'web_meetings.meetingDialog.deleteBtn'}}</button>
                                                                 </td>
-                                                            {{else}}
-                                                                <td></td>
                                                             {{/if}}
                                                         </tr>
                                                     {{/if}}
@@ -196,9 +196,11 @@
                                                             <td local-class='WebMeetings__td_overflow' style='vertical-align: middle'>{{row.fields.email_address}}</td>
                                                             <td local-class='WebMeetings__td'>
                                                                 <button local-class='WebMeetings__button_list' style='background-color: #1b6d85; border-color: #1b6d85'
-                                                                    {{action this.makeUpdateWebMeetingsEmailDialog row.fields._id row.fields.fullname row.fields.email_address row.fields.user_guid row.fields.is_guest appName}}>{{t 'web_meetings.meetingDialog.updateBtn'}}</button>
+                                                                    {{action this.makeUpdateWebMeetingsEmailDialog row.fields._id row.fields.fullname row.fields.email_address row.fields.user_guid row.fields.has_grdm_account appName}}>{{t 'web_meetings.meetingDialog.updateBtn'}}</button>
                                                             </td>
-                                                            {{#if row.fields.is_guest}}
+                                                            {{#if row.fields.has_grdm_account}}
+                                                                <td></td>
+                                                            {{else}}
                                                                 <td local-class='WebMeetings__td'>
                                                                     <button local-class='WebMeetings__button_list' style='background-color: #a94442; border-color: #a94442'
                                                                         {{action this.makeDeleteWebMeetingsEmailDialog row.fields._id row.fields.fullname row.fields.email_address appName}}>{{t 'web_meetings.meetingDialog.deleteBtn'}}</button>
@@ -251,7 +253,7 @@
                 {{/each}}
                 {{#if showCreateWebMeetingsInputDialog}}
                     <div local-class='WebMeetings__input_items'>
-                        <label>{{t 'web_meetings.subject'}}</label>
+                    <label>{{t 'web_meetings.subject'}}</label><label class='text-danger'>{{t 'web_meetings.asterisk'}}</label>
                         {{input
                             name='webMeetingsSubject'
                             placeholder=(t 'web_meetings.placeholders.subject')
@@ -260,11 +262,11 @@
                             value=this.webMeetingsSubject
                         }}
                     </div>
-                    <div style='padding-left: 5px;' class='text-danger'>{{this.msgInvalidSubject}}</div>
+                    <div local-class='WebMeetings__text_danger' class='text-danger'>{{this.msgInvalidSubject}}</div>
                     {{#if (not-eq this.displayedWebMeetings this.appNameZoomMeetings)}}
                         <div local-class='WebMeetings__input_items'>
                         <div>
-                            <label>{{t 'web_meetings.attendees'}}</label>
+                            <label>{{t 'web_meetings.attendees'}}</label><label class='text-danger'>{{t 'web_meetings.asterisk'}}</label>
                             <button style="margin-left: 20px; font-size: x-small; white-space: nowrap; vertical-align: top;" onClick={{action this.addContributorsAsAttendees this.displayedWebMeetings}} type='button'>{{t 'web_meetings.meetingDialog.addContributorsAsAttendeesBtn'}}</button>
                         </div>
                             {{#if (eq this.displayedWebMeetings this.appNameMicrosoftTeams)}}
@@ -292,13 +294,13 @@
                                 </PowerSelectMultiple>
                             {{/if}}
                         </div>
-                        <div style='padding-left: 5px;' class='text-danger'>{{this.msgInvalidAttendees}}</div>
+                        <div local-class='WebMeetings__text_danger' class='text-danger'>{{this.msgInvalidAttendees}}</div>
                     {{/if}}
                     <div local-class='WebMeetings__input_items'>
                         <table>
                             <tr>
-                                <td><label>{{t 'web_meetings.start_datetime'}}</label></td><td></td><td></td>
-                                <td><label>{{t 'web_meetings.duration'}}</label></td><td></td><td></td><td></td>
+                                <td style='width: 25%;'><label>{{t 'web_meetings.start_datetime'}}</label><label class='text-danger'>{{t 'web_meetings.asterisk'}}</label></td><td style='width: 15%;'></td><td></td>
+                                <td style='width: 12%;'><label>{{t 'web_meetings.duration'}}</label><label class='text-danger'>{{t 'web_meetings.asterisk'}}</label></td><td style='width: 8%;'></td><td style='width: 12%;'></td><td style='width: 8%;'></td><td></td>
                             </tr>
                             <tr>
                                 <td>
@@ -348,10 +350,11 @@
                                     </select>
                                 </td>
                                 <td>&nbsp;&nbsp;{{t 'web_meetings.minutes'}}</td>
+                                <td>{{this.tz}}</td>
                             </tr>
                         </table>
                     </div>
-                    <div style='padding-left: 5px;' class='text-danger'>{{this.msgInvalidDatetime}}</div>
+                    <div local-class='WebMeetings__text_danger' class='text-danger'>{{this.msgInvalidDatetime}}</div>
                     <div local-class='WebMeetings__input_items'>
                         <label>{{t 'web_meetings.content'}}</label>
                         {{textarea
@@ -483,10 +486,10 @@
                         <span>{{t 'web_meetings.attendees'}}{{t 'web_meetings.colon'}}
                             <div style='padding-left: 10px; padding-top: 5px'>
                                 {{#each this.selectedDetailAttendees as |attendee|}}
-                                    {{#if attendee.is_guest}}
-                                        <button local-class='WebMeetings__button_detail_guests' data-toggle='tooltip' title='{{attendee.email}}'>{{attendee.fullname}}</button>
-                                    {{else}}
+                                    {{#if attendee.has_grdm_account}}
                                         <button local-class='WebMeetings__button_detail_attendees' data-toggle='tooltip' title='{{attendee.email}}({{attendee.institution}})'><a style='text-decoration:none; color: inherit;' href={{attendee.profile}} target='_blank'>{{attendee.fullname}}</a></button>
+                                    {{else}}
+                                        <button local-class='WebMeetings__button_detail_guests' data-toggle='tooltip' title='{{attendee.email}}'>{{attendee.fullname}}</button>
                                     {{/if}}
                                     &nbsp;&nbsp;&nbsp;
                                 {{/each}}
@@ -510,7 +513,7 @@
                         value=this.webMeetingsSubject
                     }}
                 </div>
-                <div style='padding-left: 5px;' class='text-danger'>{{this.msgInvalidSubject}}</div>
+                <div local-class='WebMeetings__text_danger' class='text-danger'>{{this.msgInvalidSubject}}</div>
                 {{#if (not-eq this.displayedWebMeetings this.appNameZoomMeetings)}}
                     <div local-class='WebMeetings__input_items'>
                         <div>
@@ -542,13 +545,13 @@
                             </PowerSelectMultiple>
                         {{/if}}
                     </div>
-                    <div style='padding-left: 5px;' class='text-danger'>{{this.msgInvalidAttendees}}</div>
+                    <div local-class='WebMeetings__text_danger' class='text-danger'>{{this.msgInvalidAttendees}}</div>
                 {{/if}}
                 <div local-class='WebMeetings__input_items'>
                     <table>
                         <tr>
-                            <td><label>{{t 'web_meetings.start_datetime'}}</label></td><td></td><td></td>
-                            <td><label>{{t 'web_meetings.duration'}}</label></td><td></td>
+                            <td style='width: 25%;'><label>{{t 'web_meetings.start_datetime'}}</label><label class='text-danger'>{{t 'web_meetings.asterisk'}}</label></td><td style='width: 15%;'></td><td></td>
+                            <td style='width: 12%;'><label>{{t 'web_meetings.duration'}}</label><label class='text-danger'>{{t 'web_meetings.asterisk'}}</label></td><td style='width: 8%;'></td><td style='width: 12%;'></td><td style='width: 8%;'></td><td></td>
                         </tr>
                         <tr>
                             <td>
@@ -597,10 +600,11 @@
                                 </select>
                             </td>
                             <td>&nbsp;&nbsp;{{t 'web_meetings.minutes'}}</td>
+                            <td>{{this.tz}}</td>
                         </tr>
                     </table>
                 </div>
-                <div style='padding-left: 5px;' class='text-danger'>{{this.msgInvalidDatetime}}</div>
+                <div local-class='WebMeetings__text_danger' class='text-danger'>{{this.msgInvalidDatetime}}</div>
                 <div local-class='WebMeetings__input_items'>
                     <label>{{t 'web_meetings.content'}}</label>
                     {{textarea
@@ -662,7 +666,7 @@
 <BsModal
     data-test-register-meeting-attendee-modal
     @open={{this.showRegisterWebMeetingsEmailDialog}}
-    @onSubmit={{action this.manageWebMeetingsEmail 'create' '' this.displayedUserFullname this.displayedUserGuid this.displayedUserIsGuest true  false []}}
+    @onSubmit={{action this.manageWebMeetingsEmail 'create' '' this.displayedUserFullname this.displayedUserGuid false this.displayedUserHasGrdmAccount false this.displayedWebMeetings []}}
     @onHidden={{action (mut this.showRegisterWebMeetingsEmailDialog) false}}
     @onHide={{action this.resetRegisterEmailValue}}
     @scrollable={{true}}
@@ -678,7 +682,7 @@
         {{#if showRegisterWebMeetingsAppEmailDialog}}
             <label>{{t 'web_meetings.meetingDialog.registerEmail' user=this.displayedUser appName=this.displayedWebMeetings}}</label>
             <div style='margin-top: 20px;' local-class='WebMeetings__input_items'>
-                <label>{{t 'web_meetings.accountLabel' appName=this.displayedWebMeetings}}</label>
+                <label>{{t 'web_meetings.accountLabel' appName=this.displayedWebMeetings}}</label><label class='text-danger'>{{t 'web_meetings.asterisk'}}</label>
                 {{input
                     name='appUsername'
                     placeholder=(t 'web_meetings.placeholders.email')
@@ -688,22 +692,22 @@
                 }}
             </div>
             {{#if this.msgInvalidEmail}}
-                <div class='text-danger'>{{this.msgInvalidEmail}}</div>
+                <div local-class='WebMeetings__text_danger' class='text-danger'>{{this.msgInvalidEmail}}</div>
             {{/if}}
             {{#if this.msgOutsideEmail}}
-                <div class='text-danger'>{{this.msgOutsideEmail}}</div>
+                <div local-class='WebMeetings__text_danger' class='text-danger'>{{this.msgOutsideEmail}}</div>
             {{/if}}
             {{#if this.msgDuplicatedEmail}}
-                <div class='text-danger'>{{this.msgDuplicatedEmail}}</div>
+                <div local-class='WebMeetings__text_danger' class='text-danger'>{{this.msgDuplicatedEmail}}</div>
             {{/if}}
             <div>
-                <button onClick={{action this.manageWebMeetingsEmail 'create' '' this.displayedUserFullname this.displayedUserGuid true false false []}} style='margin-top: 20px; font-size: x-small;' local-class='WebMeetings__button_guest'>{{t 'web_meetings.registerAsGuest' appName=this.displayedWebMeetings}}</button>
+                <button onClick={{action this.manageWebMeetingsEmail 'create' '' this.displayedUserFullname this.displayedUserGuid true true false this.displayedWebMeetings []}} style='margin-top: 20px; margin-left: 5px;'>{{t 'web_meetings.registerAsGuest' appName=this.displayedWebMeetings}}</button>
         </div>
         {{/if}}
         {{#if showRegisterWebMeetingsGuestEmailDialog}}
             <label>{{t 'web_meetings.meetingDialog.registerGuestEmail'}}</label>
             <div style='margin-top: 20px;' local-class='WebMeetings__input_items'>
-                <label>{{t 'web_meetings.meetingDialog.dispLabel'}}</label>
+                <label>{{t 'web_meetings.meetingDialog.dispLabel'}}</label><label class='text-danger'>{{t 'web_meetings.asterisk'}}</label>
                 {{input
                     name='appDisplayName'
                     placeholder=(t 'web_meetings.placeholders.guestname')
@@ -713,10 +717,10 @@
                 }}
             </div>
             {{#if this.msgInvalidFullname}}
-                <div class='text-danger'>{{this.msgInvalidFullname}}</div>
+                <div local-class='WebMeetings__text_danger' class='text-danger'>{{this.msgInvalidFullname}}</div>
             {{/if}}
             <div style='margin-top: 20px;' local-class='WebMeetings__input_items'>
-                <label>{{t 'web_meetings.meetingDialog.emailLabel'}}</label>
+                <label>{{t 'web_meetings.meetingDialog.emailLabel'}}</label><label class='text-danger'>{{t 'web_meetings.asterisk'}}</label>
                 {{input
                     name='appUsername'
                     placeholder=(t 'web_meetings.placeholders.email')
@@ -726,15 +730,15 @@
                 }}
             </div>
             {{#if this.msgInvalidEmail}}
-                <div class='text-danger'>{{this.msgInvalidEmail}}</div>
+                <div local-class='WebMeetings__text_danger' class='text-danger'>{{this.msgInvalidEmail}}</div>
             {{/if}}
             {{#if this.msgDuplicatedEmail}}
-                <div class='text-danger'>{{this.msgDuplicatedEmail}}</div>
+                <div local-class='WebMeetings__text_danger' class='text-danger'>{{this.msgDuplicatedEmail}}</div>
             {{/if}}
             {{#if this.msgOutsideEmail}}
-                <div class='text-danger'>{{this.msgOutsideEmail}}</div>
+                <div local-class='WebMeetings__text_danger' class='text-danger'>{{this.msgOutsideEmail}}</div>
                 <div>
-                    <button onClick={{action this.manageWebMeetingsEmail 'create' '' this.displayedUserFullname this.displayedUserGuid true false false []}} style='margin-top: 20px; font-size: x-small;' local-class='WebMeetings__button_guest'>{{t 'web_meetings.registerAsGuest' appName=this.displayedWebMeetings}}</button>
+                    <button onClick={{action this.manageWebMeetingsEmail 'create' '' this.displayedUserFullname this.displayedUserGuid true false false this.displayedWebMeetings []}} style='margin-top: 20px; margin-left: 5px;'>{{t 'web_meetings.registerAsGuest' appName=this.displayedWebMeetings}}</button>
                 </div>
             {{/if}}
         {{/if}}
@@ -757,7 +761,7 @@
 <BsModal
     data-test-update-meeting-attendee-modal
     @open={{this.showUpdateWebMeetingsEmailDialog}}
-    @onSubmit={{action this.manageWebMeetingsEmail 'update' this.displayedUserId this.displayedUserFullname this.displayedUserGuid this.displayedUserIsGuest true  false []}}
+    @onSubmit={{action this.manageWebMeetingsEmail 'update' this.displayedUserId this.displayedUserFullname this.displayedUserGuid false this.displayedUserHasGrdmAccount false this.displayedWebMeetings []}}
     @onHidden={{action (mut this.showUpdateWebMeetingsEmailDialog) false}}
     @onHide={{action this.resetRegisterEmailValue}}
     @scrollable={{true}}
@@ -774,7 +778,7 @@
             <div>{{t 'web_meetings.meetingDialog.updateThisAttendee' user=this.displayedUser}}</div>
         </div>
         <div style='margin-top: 20px;' local-class='WebMeetings__input_items'>
-            <label>{{t 'web_meetings.meetingDialog.emailLabel'}}</label>
+            <label>{{t 'web_meetings.meetingDialog.emailLabel'}}</label><label class='text-danger'>{{t 'web_meetings.asterisk'}}</label>
             {{input
                 name='appUsername'
                 placeholder=(t 'web_meetings.placeholders.email')
@@ -784,16 +788,16 @@
             }}
         </div>
         {{#if this.msgInvalidEmail}}
-            <div class='text-danger'>{{this.msgInvalidEmail}}</div>
+            <div local-class='WebMeetings__text_danger' class='text-danger'>{{this.msgInvalidEmail}}</div>
         {{/if}}
         {{#if this.msgOutsideEmail}}
-            <div class='text-danger'>{{this.msgOutsideEmail}}</div>
+            <div local-class='WebMeetings__text_danger' class='text-danger'>{{this.msgOutsideEmail}}</div>
         {{/if}}
         {{#if this.msgDuplicatedEmail}}
-            <div class='text-danger'>{{this.msgDuplicatedEmail}}</div>
+            <div local-class='WebMeetings__text_danger' class='text-danger'>{{this.msgDuplicatedEmail}}</div>
         {{/if}}
         <div>
-            <button onClick={{action this.manageWebMeetingsEmail 'update' this.displayedUserId this.displayedUserFullname this.displayedUserGuid true false false []}} style='margin-top: 20px; font-size: x-small;' local-class='WebMeetings__button_guest'>{{t 'web_meetings.updateAsGuest' appName=this.displayedWebMeetings}}</button>
+            <button onClick={{action this.manageWebMeetingsEmail 'update' this.displayedUserId this.displayedUserFullname this.displayedUserGuid true this.displayedUserHasGrdmAccount false this.displayedWebMeetings []}} style='margin-top: 20px; margin-left: 5px;' local-class='WebMeetings__button_guest'>{{t 'web_meetings.updateAsGuest' appName=this.displayedWebMeetings}}</button>
         </div>
     </modal.body>
     <modal.footer>

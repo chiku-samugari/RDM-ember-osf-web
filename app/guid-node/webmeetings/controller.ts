@@ -6,7 +6,7 @@ import { inject as service } from '@ember/service';
 
 import DS from 'ember-data';
 
-import Intl from 'ember-intl/services/intl';
+import eIntl from 'ember-intl/services/intl';
 import Node from 'ember-osf-web/models/node';
 import WebMeetingsConfigModel from 'ember-osf-web/models/webmeetings-config';
 import Analytics from 'ember-osf-web/services/analytics';
@@ -50,6 +50,7 @@ interface AttendeesInfo {
     profile: string;
     _id: string;
     is_guest: boolean;
+    has_grdm_account: boolean;
 }
 
 interface Attendees {
@@ -60,6 +61,7 @@ interface Attendees {
     _id: string;
     is_guest: boolean;
     is_active: boolean;
+    has_grdm_account: boolean;
 }
 /* eslint-enable camelcase */
 
@@ -87,7 +89,7 @@ export default class GuidNodeWebMeetings extends Controller {
     @service toast!: Toast;
     @service statusMessages!: StatusMessages;
     @service analytics!: Analytics;
-    @service intl!: Intl;
+    @service intl!: eIntl;
     @service currentUser!: CurrentUser;
 
     @reads('model.taskInstance.value')
@@ -105,7 +107,7 @@ export default class GuidNodeWebMeetings extends Controller {
     appUsername = '';
     displayedUserGuid = '';
     displayedUserFullname = '';
-    displayedUserIsGuest = false;
+    displayedUserHasGrdmAccount = false;
 
     showMeetingsList = true;
     showAttendeesList = false;
@@ -179,6 +181,8 @@ export default class GuidNodeWebMeetings extends Controller {
     end = this.currentTime.setMinutes((Math.round(this.currentTime.getMinutes() / 30) * 30) + 60);
     defaultStartTime = moment(this.start).format('HH:mm');
     defaultEndTime = moment(this.end).format('HH:mm');
+
+    tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
     times = [
         '00:00', '00:30', '01:00', '01:30', '02:00', '02:30', '03:00', '03:30', '04:00', '04:30', '05:00', '05:30',
@@ -343,6 +347,9 @@ export default class GuidNodeWebMeetings extends Controller {
         this.set('msgInvalidSubject', '');
         this.set('msgInvalidAttendees', '');
         this.set('msgInvalidDatetime', '');
+
+        this.set('tz', Intl.DateTimeFormat().resolvedOptions().timeZone);
+
     }
 
     resetRegisterEmailValue(this: GuidNodeWebMeetings) {
@@ -353,7 +360,7 @@ export default class GuidNodeWebMeetings extends Controller {
         this.set('showDeleteWebMeetingsEmailDialog', false);
         this.set('displayedUserFullname', '');
         this.set('displayedUserGuid', '');
-        this.set('displayedUserIsGuest', false);
+        this.set('displayedUserHasGrdmAccount', false);
         this.set('appDisplayName', '');
         this.set('appUsername', '');
         this.set('msgOutsideEmail', '');
@@ -369,13 +376,14 @@ export default class GuidNodeWebMeetings extends Controller {
         const newAttendeeGuid = newAttendee.length > 0 ? newAttendee[0].guid : '';
         if (newAttendeeGuid) {
             if (newAttendeeGuid === 'addGuest') {
-                this.makeRegisterWebMeetingsEmailDialog('', '', '', true);
+                this.makeRegisterWebMeetingsEmailDialog('', '', '', false);
                 return;
             }
             const newAttendeeUserAppEmail = newAttendee[0].appEmail;
             const newAttendeeUserIsGuest = newAttendee[0].is_guest;
-            if (!newAttendeeUserAppEmail && !newAttendeeUserIsGuest) {
-                this.manageWebMeetingsEmail('create', '', '', '', false, true, true, newAttendee[0]);
+            const newAttendeeUserHasGrdmAccount = newAttendee[0].has_grdm_account;
+            if (!newAttendeeUserAppEmail && newAttendeeUserHasGrdmAccount) {
+                this.manageWebMeetingsEmail('create', '', '', '', newAttendeeUserIsGuest, newAttendeeUserHasGrdmAccount, true, this.displayedWebMeetings, newAttendee[0]);
                 return;
             }
         }
@@ -387,7 +395,7 @@ export default class GuidNodeWebMeetings extends Controller {
         email: string,
         fullname: string,
     ) {
-        let validFlag = true;
+        let validFlag = false;
         const regex = /^[A-Za-z0-9]{1}[A-Za-z0-9_.-]*@{1}[A-Za-z0-9_.-]{1,}.[A-Za-z0-9]{1,}$/;
         if (this.showRegisterWebMeetingsGuestEmailDialog) {
             if (!fullname) {
@@ -396,7 +404,7 @@ export default class GuidNodeWebMeetings extends Controller {
                         'web_meetings.meetingDialog.invalid.empty',
                         { item: this.intl.t('web_meetings.username') },
                     ));
-                validFlag = false;
+                validFlag = true;
             } else {
                 this.set('msgInvalidFullname', '');
             }
@@ -407,7 +415,7 @@ export default class GuidNodeWebMeetings extends Controller {
                     'web_meetings.meetingDialog.invalid.empty',
                     { item: this.intl.t('web_meetings.emailAdress') },
                 ));
-            validFlag = false;
+            validFlag = true;
         } else if (!(regex.test(email))) {
             this.set(
                 'msgInvalidEmail',
@@ -416,12 +424,42 @@ export default class GuidNodeWebMeetings extends Controller {
                     { item: this.intl.t('web_meetings.emailAdress') },
                 ),
             );
-            validFlag = false;
+            validFlag = true;
         } else {
             this.set('msgInvalidEmail', '');
         }
         return validFlag;
     }
+
+    webMeetingAppsEmailDuplicatedCheck(
+        this: GuidNodeWebMeetings,
+        appName: string,
+        email: string,
+    ) {
+        if (!this.config) {
+            throw new EmberError('Illegal config');
+        }
+        const appsConfig = this.config.content as WebMeetingsConfigModel;
+        let nodeAppAttendees: NodeAppAttendees[] = [];
+        switch (appName) {
+        case appsConfig.appNameMicrosoftTeams: {
+            nodeAppAttendees = JSON.parse(appsConfig.nodeMicrosoftTeamsAttendees);
+            break;
+        }
+        case appsConfig.appNameWebexMeetings: {
+            nodeAppAttendees = JSON.parse(appsConfig.nodeWebexMeetingsAttendees);
+            break;
+        }
+        default:
+        }
+        for (const nodeAppAttendee of nodeAppAttendees) {
+            if (email === nodeAppAttendee.fields.email_address) {
+                this.setDuplicatedMsg();
+                return true;
+            }
+        }
+        return false;
+     }
 
     @action
     manageWebMeetingsEmail(
@@ -431,8 +469,9 @@ export default class GuidNodeWebMeetings extends Controller {
         fullname: string,
         guid: string,
         isGuest: boolean,
-        emailType: boolean,
-        regType: boolean,
+        hasGrdmAccount: boolean,
+        regAuto: boolean,
+        appName: string,
         newAttendee: AttendeesInfo,
     ) {
         const headers = this.currentUser.ajaxHeaders();
@@ -444,6 +483,7 @@ export default class GuidNodeWebMeetings extends Controller {
         let requestAttendeeId = '';
         let requestGuid = '';
         let requestIsGuest = isGuest;
+        let requestHasGrdmAccount = hasGrdmAccount;
 
         switch (actionType) {
         case 'create': {
@@ -452,39 +492,35 @@ export default class GuidNodeWebMeetings extends Controller {
                 requestFullname = newAttendee.fullname;
                 email = newAttendee.email;
                 requestIsGuest = newAttendee.is_guest;
-                if (!(this.webMeetingAppsEmailValidationCheck(email, ''))) {
+                requestHasGrdmAccount = newAttendee.has_grdm_account;
+                if (!regAuto && (this.webMeetingAppsEmailValidationCheck(email, '') || this.webMeetingAppsEmailDuplicatedCheck(appName, email))) {
                     return;
                 }
             } else {
-                requestFullname = fullname;
+                if (fullname) {
+                    requestFullname = fullname;
+                } else {
+                    requestFullname = this.appDisplayName;
+                }
                 requestIsGuest = isGuest;
                 email = this.appUsername;
-                if (isGuest) {
-                    if (fullname) {
-                        requestFullname = fullname;
-                    } else {
-                        requestFullname = this.appDisplayName;
-                    }
-                    requestGuid = `${(new Date()).getTime()}`;
-                    if (!(this.webMeetingAppsEmailValidationCheck(email, requestFullname))) {
-                        return;
-                    }
-                } else {
+                if (this.webMeetingAppsEmailValidationCheck(email, requestFullname) || this.webMeetingAppsEmailDuplicatedCheck(appName, email)) {
+                    return;
+                }
+                if (requestHasGrdmAccount) {
                     requestGuid = guid;
-                    if (!(this.webMeetingAppsEmailValidationCheck(email, ''))) {
-                        return;
-                    }
+                } else {
+                    requestGuid = `${(new Date()).getTime()}`;
                 }
             }
             break;
         }
         case 'update': {
-            requestGuid = `${(new Date()).getTime()}`;
             requestFullname = fullname;
             email = this.appUsername;
             requestAttendeeId = id;
             requestIsGuest = isGuest;
-            if (!(this.webMeetingAppsEmailValidationCheck(email, ''))) {
+            if (this.webMeetingAppsEmailValidationCheck(email, '') || this.webMeetingAppsEmailDuplicatedCheck(appName, email)) {
                 return;
             }
             break;
@@ -500,9 +536,9 @@ export default class GuidNodeWebMeetings extends Controller {
             guid: requestGuid,
             email,
             is_guest: requestIsGuest,
+            has_grdm_account: requestHasGrdmAccount,
+            regAuto,
             actionType,
-            emailType,
-            regType,
         };
 
         fetch(
@@ -524,19 +560,17 @@ export default class GuidNodeWebMeetings extends Controller {
                     this.save();
                     this.resetRegisterEmailValue();
                     this.addNewAttendee(data.newAttendee);
-                } else if (data.result === 'outside_email') {
-                    if (data.regType) {
+                } else if (data.result === 'outside_email' || data.result === 'duplicated_email') {
+                    if (data.regAuto) {
                         this.makeRegisterWebMeetingsEmailDialog(
                             newAttendee.dispName,
                             newAttendee.fullname,
                             requestGuid,
-                            requestIsGuest,
+                            requestHasGrdmAccount,
                         );
                     } else {
                         this.setOutsideMsg();
                     }
-                } else if (data.result === 'duplicated_email') {
-                    this.setDuplicatedMsg();
                 }
             })
             .catch(() => {
@@ -578,18 +612,18 @@ export default class GuidNodeWebMeetings extends Controller {
         dispName: string,
         fullname: string,
         guid: string,
-        isGuest: boolean,
+        hasGrdmAccount: boolean,
     ) {
         this.set('displayedUser', dispName);
         this.set('displayedUserFullname', fullname);
         this.set('displayedUserGuid', guid);
-        this.set('displayedUserIsGuest', isGuest);
-        if (isGuest) {
-            this.set('showRegisterWebMeetingsEmailDialog', true);
-            this.set('showRegisterWebMeetingsGuestEmailDialog', true);
-        } else {
+        this.set('displayedUserHasGrdmAccount', hasGrdmAccount);
+        if (hasGrdmAccount) {
             this.set('showRegisterWebMeetingsEmailDialog', true);
             this.set('showRegisterWebMeetingsAppEmailDialog', true);
+        } else {
+            this.set('showRegisterWebMeetingsEmailDialog', true);
+            this.set('showRegisterWebMeetingsGuestEmailDialog', true);
         }
     }
 
@@ -600,14 +634,14 @@ export default class GuidNodeWebMeetings extends Controller {
         fullname: string,
         email: string,
         guid: string,
-        isGuest: boolean,
+        hasGrdmAccount: boolean,
         appName: string,
     ) {
         this.set('displayedUserId', id);
         this.set('displayedUser', `${fullname}(${email})`);
         this.set('displayedUserFullname', fullname);
         this.set('displayedUserGuid', guid);
-        this.set('displayedUserIsGuest', isGuest);
+        this.set('displayedUserHasGrdmAccount', hasGrdmAccount);
         this.set('displayedWebMeetings', appName);
         this.set('showUpdateWebMeetingsEmailDialog', true);
     }
@@ -692,7 +726,7 @@ export default class GuidNodeWebMeetings extends Controller {
         webMeetingsDetailAttendees: string[],
     ) {
         let profileUrl = '';
-        let isGuest = false;
+        let hasGrdmAccount = false;
         let userGuid = '';
         let fullname = '';
         let username = '';
@@ -706,11 +740,11 @@ export default class GuidNodeWebMeetings extends Controller {
         webMeetingsDetailAttendees.forEach((webMeetingsDetailAttendee: any) => {
             for (const nodeAppAttendee of nodeAppAttendees) {
                 if (webMeetingsDetailAttendee === nodeAppAttendee.pk) {
-                    isGuest = nodeAppAttendee.fields.is_guest;
+                    hasGrdmAccount = nodeAppAttendee.fields.has_grdm_account;
                     userGuid = nodeAppAttendee.fields.user_guid;
                     fullname = nodeAppAttendee.fields.fullname;
                     contrib = {} as ProjectContributors;
-                    if (!isGuest) {
+                    if (hasGrdmAccount) {
                         for (const projectContributor of projectContributors) {
                             if (projectContributor.guid === userGuid) {
                                 contrib = projectContributor;
@@ -719,7 +753,7 @@ export default class GuidNodeWebMeetings extends Controller {
                     }
                     username = Object.keys(contrib).length ? contrib.username : nodeAppAttendee.fields.email_address;
                     institution = Object.keys(contrib).length ? contrib.institution : '';
-                    profileUrl = isGuest ? '' : profileUrlBase + userGuid;
+                    profileUrl = hasGrdmAccount ? profileUrlBase + userGuid : '';
                     this.selectedDetailAttendees.push(
                         {
                             guid: userGuid,
@@ -732,6 +766,7 @@ export default class GuidNodeWebMeetings extends Controller {
                             profile: profileUrl,
                             _id: nodeAppAttendee.fields._id,
                             is_guest: nodeAppAttendee.fields.is_guest,
+                            has_grdm_account: nodeAppAttendee.fields.has_grdm_account,
                         },
                     );
                 }
@@ -902,6 +937,9 @@ export default class GuidNodeWebMeetings extends Controller {
         const webMeetingsContent = this.webMeetingsContent as string;
         const webMeetingsPassword = this.webMeetingsPassword as string;
         const dStartDatetime = new Date(strWebMeetingsStartDatetime);
+        const browserTzOffset = dStartDatetime.getTimezoneOffset()/60;
+        // Timezone is fixed to JST
+        dStartDatetime.setHours( dStartDatetime.getHours() + (browserTzOffset - ( -9 )));
         const webMeetingsStartDatetime = !isNaN(dStartDatetime.getTime())
             ? moment(dStartDatetime).format('YYYY-MM-DDTHH:mm:ss')
             : '';
@@ -1003,6 +1041,7 @@ export default class GuidNodeWebMeetings extends Controller {
             deleteInvitees: webexMeetingsDeleteInvitees,
             guestOrNot,
             body,
+            browserTzOffset,
         };
 
         this.resetValue();
@@ -1294,6 +1333,7 @@ export default class GuidNodeWebMeetings extends Controller {
             profile: '',
             _id: '',
             is_guest: false,
+            has_grdm_account: false,
         };
         let fullname = '';
         let username = '';
@@ -1313,6 +1353,7 @@ export default class GuidNodeWebMeetings extends Controller {
                     profile: profileUrlBase + projectContributors[i].guid,
                     _id: '',
                     is_guest: false,
+                    has_grdm_account: true,
                 },
             );
             for (const nodeAppAttendee of nodeAppAttendees) {
@@ -1330,14 +1371,15 @@ export default class GuidNodeWebMeetings extends Controller {
                             appEmail: nodeAppAttendee.fields.email_address,
                             profile: profileUrlBase + projectContributors[i].guid,
                             _id: nodeAppAttendee.fields._id,
-                            is_guest: false,
+                            is_guest: nodeAppAttendee.fields.is_guest,
+                            has_grdm_account: true,
                         },
                     );
 
                     unregisteredProjectContributors.pop();
                 }
                 if (i === 0) {
-                    if (nodeAppAttendee.fields.is_guest && nodeAppAttendee.fields.is_active) {
+                    if (nodeAppAttendee.fields.is_active && !(nodeAppAttendee.fields.has_grdm_account)) {
                         fullname = nodeAppAttendee.fields.fullname;
                         username = nodeAppAttendee.fields.email_address;
                         guestUsers.push(
@@ -1352,6 +1394,7 @@ export default class GuidNodeWebMeetings extends Controller {
                                 profile: '',
                                 _id: nodeAppAttendee.fields._id,
                                 is_guest: true,
+                                has_grdm_account: false,
                             },
                         );
                     }

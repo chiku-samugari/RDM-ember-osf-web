@@ -145,12 +145,8 @@
     cursor: pointer;
 }
 
-.WebMeetings__button_guest {
-    border: 0;
-    background: transparent;
-}
-
-.WebMeetings__button_guest:hover {
-    border: 0;
-    background: #ced4da;
+.WebMeetings__text_danger {
+    padding-left: 5px;
+    padding-left: 10px;
+    font-size: smaller;
 }

@@ -391,7 +391,7 @@ export default class GuidNodeWebMeetings extends Controller {
                     newAttendeeUserHasGrdmAccount,
                     true,
                     this.displayedWebMeetings,
-                    newAttendee[0]
+                    newAttendee[0],
                 );
                 return;
             }
@@ -531,8 +531,8 @@ export default class GuidNodeWebMeetings extends Controller {
             email = this.appUsername;
             requestAttendeeId = id;
             requestIsGuest = isGuest;
-            if (this.webMeetingAppsEmailValidationCheck(email, '') ||
-                this.webMeetingAppsEmailDuplicatedCheck(appName, email)) {
+            if (this.webMeetingAppsEmailValidationCheck(email, '')
+                || this.webMeetingAppsEmailDuplicatedCheck(appName, email)) {
                 return;
             }
             break;

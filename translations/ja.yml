@@ -1722,7 +1722,7 @@ iqbrims:
     publish_date: 出版日
     volume: 巻（号）
     page_number: ページ番号
-    directly_submit_data: 生データファイル（.zip）を直接提出する
+    directly_submit_data: 生データファイルが非常に大きいので研究倫理推進室に手渡しで直接提出する
     raw_drive_link: 生データファイル（.zip）をGoogle Driveでアップロード
     workflow_overall_state: 審査状況
     submit_manuscripts: 審査状況
@@ -1752,7 +1752,7 @@ iqbrims:
     uploader_rejected_manuscript_files: 'TIFF, PNG, JPEGファイルはアップロードできません。'
     uploader_rejected_data_files: 'ZIP, Excelファイルのみアップロードできます。'
     uploader_rejected_checklist_files: PDFファイルのみアップロードできます。
-    uploader_info_raw_file: '提出前に生データファイル（.zip）のサイズを確認ください。<ul><li><strong>10GB未満の場合：</strong> 以下の「アップロードするファイルをここにドロップ」から生データファイルを提出してください。</li><li><strong>10GB以上の場合：</strong> まずお手元のPC環境で、生データファイルからデータファイル一覧（Excelファイル）を作成してください（マニュアルを参照ください）。できたExcelファイルは以下の「アップロードするファイルをここにドロップ」から提出し、zipファイルの方は以下に記載のURL先のGoogle Driveフォルダへとアップロードをお願いします。</li></ul><strong>[注意]</strong> 以下の「アップロードするファイルをここにドロップ」は大きなzipファイルには使用できません。また、生データファイルが非常に大きい（200GB超）場合には、研究倫理推進室までご相談ください。'
+    uploader_info_raw_file: '提出前に生データファイル（.zip）のサイズを確認ください。<ul><li><strong>10GB未満の場合：</strong> 以下の「アップロードするファイルをここにドロップ」から生データファイルを提出してください。</li><li><strong>10GB以上の場合：</strong> (1) お手元のPC環境で、生データファイルからデータファイル一覧（Excelファイル）を作成してください（マニュアルを参照のこと）。(2) 以下の「生データファイル（.zip）をGoogle Driveでアップロード」で示したURLをクリックしてGoogle Driveフォルダを開き、そこへzipファイルをアップロードしてください。(3) ２が完了したら、１で作成したExcelファイルを以下の「アップロードするファイルをここにドロップ」から提出してください。</li></ul><strong>[注意]</strong> 以下の「アップロードするファイルをここにドロップ」は大きなzipファイルには使用できません。また、生データファイルが非常に大きい（200GB超）場合には、研究倫理推進室までご相談ください。'
     file_confirm_dialog_title: ファイルの提出
     file_confirm_dialog_body: ファイル提出後は変更・追加はできません。よろしいですか？
     file_confirm_dialog_notice: '処理完了にともない、通知メール "Your move has finished" が送られる場合があります。'
@@ -1842,17 +1842,20 @@ metadata:
 web_meetings:
     page_title: '{nodeTitle} Web会議'
     header: 'Web会議'
-    loading: 'ロード中'
+    loading: 'ロード中です。画面が変わらない場合は、Web会議アドオンのアカウント接続を確認してください。'
     failed_to_save: 'エラーが発生しました。'
     upcoming: '今後'
     previous: '完了'
     noUpcomingMeetings: '今後の会議が登録されていません。'
     noPreviousMeetings: '過去の会議が登録されていません。'
+    noRegisteredAttendee: '出席者の登録はありません。'
     appName: 'アプリ名'
     categoryDesp: 'ワークフローをカテゴリに分類できます'
     workflowListLabel: '全てのワークフロー'
     workflowLabel: 'ワークフロー'
     copyUrlLabel: 'URLコピー'
+    manageAttendees: '参加者リストを編集'
+    manageMeetings: 'ミーティングを管理'
     momentFormat:
         ll: '{year}年{month}月{day}日'
     meetingDialog:
@@ -1861,6 +1864,7 @@ web_meetings:
         deleteLabel: '会議を削除'
         startLabel: '会議を開始'
         nameLabel: '名前'
+        dispLabel: '表示名'
         emailLabel: 'メールアドレス'
         unregisteredLabel: '(未登録)'
         createHeader: '{appName}会議をスケジューリング'
@@ -1868,6 +1872,7 @@ web_meetings:
         deleteHeader: '{appName}会議を削除'
         detailHeader: '{appName}会議の詳細'
         startHeader: '{appName}会議開始'
+        registerEmailHeader: '{appName}会議サービス連携'
         registerAppsEmailHeader: '{appName}メール登録'
         deleteBody: 'この会議を削除しますか？'
         noAttendees: '出席者が登録されていません。'
@@ -1878,17 +1883,30 @@ web_meetings:
         cancelBtn: 'キャンセル'
         startBtn: '開始'
         closeBtn: '閉じる'
+        addContributorsAsAttendeesBtn: 'このプロジェクトのメンバー全員を追加'
         registerBtn: '登録'
         registerGuestBtn: 'ゲスト登録'
         registerOrUpdateBtn: '登録/編集'
-        noRegisteredAttendee: '出席者の登録はありません。'
         emailToggle: '登録されたメールアドレス'
+        registerEmail: '{user}のプライマリメールと{appName}の組織のメールアドレスが一致しませんでした。{appName}アカウント名を入力するか「{appName}をゲストとして利用する」を選択してください。'
+        registerGuestEmail: '会議に新規出席者を招待します。 出席者の情報を登録してください。'
+        updateThisAttendee: '{user}のメールアドレスを編集します。'
+        deleteThisAttendee: '{user}のメールアドレスを削除します。'
+        invalid:
+            empty: '{item}を入力してください。'
+            invalid: '{item}の値が不正です。'
+            duplicated: '{item}が重複しています'
+            datetime:
+                past: '開始日時が現在日時より前です。'
+                endBeforeStart: '終了日時が開始日時より前です。'
+            failToRegister: 'メールアドレスと{appName}の組織のメールアドレスが一致しませんでした。{appName}アカウント名を入力するか「{appName}をゲストとして利用する」を選択してください。'
+            duplicatedEmail: 'メールアドレスが重複しています'
     placeholders:
         subject: 'タイトルを入力してください'
         location: '場所を入力してください'
         content: '詳細を入力してください'
         date_form: 'YYYY/MM/DD'
-        guestname: 'ゲスト名を入力してください'
+        guestname: '表示名を入力してください'
         signInAdress: 'サインインアドレスを入力してください'
         outsideEmail: 'ゲスト参加者メールアドレスを入力してください'
         username: 'ユーザ名(または表示名)を入力してください'
@@ -1897,7 +1915,9 @@ web_meetings:
     organizer: '開催者'
     attendees: '出席者'
     start_datetime: '開始日時'
-    end_datetime: '終了日時'
+    duration: '所要時間'
+    hour: '時間'
+    minutes: '分'
     location: '場所'
     content: '内容'
     joinUrl: '招待URL'
@@ -1906,10 +1926,25 @@ web_meetings:
     registeredGuest: '登録済み{appName}ゲスト'
     newGuest: '新しい{appName}ゲスト参加者'
     signInAdress: '{appName}サインインアドレス'
+    emailAdress: 'メールアドレス'
     outsideEmail: '{appName}のゲスト参加者'
     username: 'ユーザー名'
     email: 'メールアドレス'
     from_tilde: ' ～ '
     from_hyphen: ' - '
     colon: '：'
+    asterisk: '*'
     registerBtn: '登録'
+    accountLabel: '{appName}アカウント名'
+    registerAsGuest: '{appName}をゲストとして利用する'
+    updateAsGuest: '{appName}をゲストとして編集する'
+    addAttendee: '出席者を追加'
+    info:
+        launch: 'リクエストを送信しました。'
+    error:
+        notAuth: '401:ブラウザを更新するか、アカウントを接続しなおしてください'
+        forbbiden: '403: Forbbiden'
+        noRegisteredContrib: '連携されているメンバーがいません。'
+        failedToRequest: 'リクエストに失敗しました。'
+        failedToRegisterEmail: 'メールアドレスの連携に失敗しました。'
+        canNotRegisterContrib: 'メールアドレスの登録に失敗したメンバーがいます：{contributors}'

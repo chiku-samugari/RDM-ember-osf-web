@@ -2,6 +2,7 @@
 {{title 'webmeetings'}}
 <div class='container' local-class='web_meeting'>
     {{#if this.loading}}
+        <br><br>
         {{t 'web_meetings.loading'}}
     {{else}}
         <div data-test-web-meeting-screen>
@@ -295,6 +296,7 @@
                             {{/if}}
                         </div>
                         <div local-class='WebMeetings__text_danger' class='text-danger'>{{this.msgInvalidAttendees}}</div>
+                        <div local-class='WebMeetings__text_danger' class='text-danger'>{{this.canNotRegisterContrib}}</div>
                     {{/if}}
                     <div local-class='WebMeetings__input_items'>
                         <table>
@@ -546,6 +548,7 @@
                         {{/if}}
                     </div>
                     <div local-class='WebMeetings__text_danger' class='text-danger'>{{this.msgInvalidAttendees}}</div>
+                    <div local-class='WebMeetings__text_danger' class='text-danger'>{{this.canNotRegisterContrib}}</div>
                 {{/if}}
                 <div local-class='WebMeetings__input_items'>
                     <table>

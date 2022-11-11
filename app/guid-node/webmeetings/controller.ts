@@ -23,7 +23,7 @@ interface ProjectContributors {
     guid: string;
     username: string;
     institution: string;
-    institution_ja: string;
+    institutionJa: string;
 }
 
 interface WebexMeetingsCreateInvitee {
@@ -826,7 +826,7 @@ export default class GuidNodeWebMeetings extends Controller {
                     }
                     username = Object.keys(contrib).length ? contrib.username : nodeAppAttendee.fields.email_address;
                     if (this.tz === 'Asia/Tokyo') {
-                        institution = Object.keys(contrib).length ? contrib.institution_ja : '';
+                        institution = Object.keys(contrib).length ? contrib.institutionJa : '';
                     } else {
                         institution = Object.keys(contrib).length ? contrib.institution : '';
                     }
@@ -1420,7 +1420,7 @@ export default class GuidNodeWebMeetings extends Controller {
             fullname = projectContributors[i].fullname;
             username = projectContributors[i].username;
             if (this.tz === 'Asia/Tokyo') {
-                institution = projectContributors[i].institution_ja;
+                institution = projectContributors[i].institutionJa;
             } else {
                 institution = projectContributors[i].institution;
             }

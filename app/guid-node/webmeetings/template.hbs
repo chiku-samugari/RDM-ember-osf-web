@@ -50,9 +50,9 @@
                                                 {{#if (eq index 0)}}
                                                         <tr style='background-color: #efefef;'>
                                                             <th width='15%' local-class='WebMeetings__th' style='padding: 3px; padding-left: 10px;'>{{t 'web_meetings.momentFormat.ll' year=(moment-format row.fields.start_datetime 'YYYY') month=(moment-format row.fields.start_datetime 'MM') day=(moment-format row.fields.start_datetime 'DD')}}</th>
-                                                            <th width='35%'></th>
-                                                            <th width='20%'></th>
-                                                            <th width='20%'></th>
+                                                            <th width='32%'></th>
+                                                            <th width='23%'></th>
+                                                            <th width='15%'></th>
                                                             <th></th>
                                                             <th></th>
                                                         </tr>
@@ -60,9 +60,9 @@
                                                     {{#if row.date_bar}}
                                                             <tr style='background-color: #efefef; padding: 3px; padding-left: 10px;'>
                                                                 <th width='15%' local-class='WebMeetings__th' style='padding: 3px; padding-left: 10px;'>{{t 'web_meetings.momentFormat.ll' year=(moment-format row.fields.start_datetime 'YYYY') month=(moment-format row.fields.start_datetime 'MM') day=(moment-format row.fields.start_datetime 'DD')}}</th>
-                                                            <th width='35%'></th>
-                                                            <th width='20%'></th>
-                                                            <th width='20%'></th>
+                                                            <th width='32%'></th>
+                                                            <th width='23%'></th>
+                                                            <th width='15%'></th>
                                                             <th></th>
                                                             <th></th>
                                                             </tr>
@@ -302,12 +302,12 @@
                         <table>
                             <tr>
                                 <td style='width: 25%;'><label>{{t 'web_meetings.start_datetime'}}</label><label class='text-danger'>{{t 'web_meetings.asterisk'}}</label></td><td style='width: 15%;'></td><td></td>
-                                <td style='width: 12%;'><label>{{t 'web_meetings.duration'}}</label><label class='text-danger'>{{t 'web_meetings.asterisk'}}</label></td><td style='width: 8%;'></td><td style='width: 12%;'></td><td style='width: 8%;'></td><td></td>
+                                <td style='width: 13%;'><label>{{t 'web_meetings.duration'}}</label><label class='text-danger'>{{t 'web_meetings.asterisk'}}</label></td><td style='width: 8%;'></td><td style='width: 13%;'></td><td style='width: 8%;'></td><td></td>
                             </tr>
                             <tr>
                                 <td>
                                     {{bootstrap-datepicker
-                                        name='web_meetings_start_date'
+                                        id='create_start_date'
                                         placeholder=(t 'web_meetings.placeholders.date_form')
                                         class='form-control'
                                         type='text'
@@ -366,6 +366,9 @@
                             placeholder=(t 'web_meetings.placeholders.content')
                         }}
                     </div>
+                    <script
+                    {{did-insert (action this.setDefaultDate 'create')}}
+                    ></script>
                 {{/if}}
         </div>
     </modal.body>
@@ -554,7 +557,7 @@
                     <table>
                         <tr>
                             <td style='width: 25%;'><label>{{t 'web_meetings.start_datetime'}}</label><label class='text-danger'>{{t 'web_meetings.asterisk'}}</label></td><td style='width: 15%;'></td><td></td>
-                            <td style='width: 12%;'><label>{{t 'web_meetings.duration'}}</label><label class='text-danger'>{{t 'web_meetings.asterisk'}}</label></td><td style='width: 8%;'></td><td style='width: 12%;'></td><td style='width: 8%;'></td><td></td>
+                            <td style='width: 13%;'><label>{{t 'web_meetings.duration'}}</label><label class='text-danger'>{{t 'web_meetings.asterisk'}}</label></td><td style='width: 8%;'></td><td style='width: 13%;'></td><td style='width: 8%;'></td><td></td>
                         </tr>
                         <tr>
                             <td>
@@ -619,7 +622,7 @@
                 </div>
             </div>
             <script
-                {{did-insert (action this.setDefaultDate)}}
+                {{did-insert (action this.setDefaultDate 'update')}}
             ></script>
         {{/if}}
     </modal.body>

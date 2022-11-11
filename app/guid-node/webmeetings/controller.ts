@@ -23,6 +23,7 @@ interface ProjectContributors {
     guid: string;
     username: string;
     institution: string;
+    institution_ja: string;
 }
 
 interface WebexMeetingsCreateInvitee {
@@ -235,9 +236,21 @@ export default class GuidNodeWebMeetings extends Controller {
     }
 
     @action
-    setDefaultDate(this: GuidNodeWebMeetings) {
-        const updateStartDateElement = $('#update_start_date') as any;
-        updateStartDateElement[0].value = this.webMeetingsStartDate;
+    setDefaultDate(this: GuidNodeWebMeetings, actionType: string) {
+        let startDateElement = null;
+
+        switch (actionType) {
+        case 'create': {
+            startDateElement = $('#create_start_date') as any;
+            break;
+        }
+        case 'update': {
+            startDateElement = $('#update_start_date') as any;
+            break;
+        }
+        default:
+        }
+        startDateElement[0].value = this.webMeetingsStartDate;
     }
 
     @action
@@ -333,7 +346,7 @@ export default class GuidNodeWebMeetings extends Controller {
         this.set('canNotRegisterContrib',
             this.intl.t(
                 'web_meetings.error.canNotRegisterContrib',
-                { item: canNotRegister },
+                { contributors: canNotRegister },
             ));
     }
 
@@ -459,7 +472,7 @@ export default class GuidNodeWebMeetings extends Controller {
                 this.set('msgInvalidFullname',
                     this.intl.t(
                         'web_meetings.meetingDialog.invalid.empty',
-                        { contributors: this.intl.t('web_meetings.username') },
+                        { item: this.intl.t('web_meetings.username') },
                     ));
                 validFlag = true;
             } else {
@@ -812,7 +825,11 @@ export default class GuidNodeWebMeetings extends Controller {
                         }
                     }
                     username = Object.keys(contrib).length ? contrib.username : nodeAppAttendee.fields.email_address;
-                    institution = Object.keys(contrib).length ? contrib.institution : '';
+                    if (this.tz === 'Asia/Tokyo') {
+                        institution = Object.keys(contrib).length ? contrib.institution_ja : '';
+                    } else {
+                        institution = Object.keys(contrib).length ? contrib.institution : '';
+                    }
                     profileUrl = hasGrdmAccount ? profileUrlBase + userGuid : '';
                     this.selectedDetailAttendees.push(
                         {
@@ -1398,17 +1415,22 @@ export default class GuidNodeWebMeetings extends Controller {
         };
         let fullname = '';
         let username = '';
-
+        let institution = '';
         for (let i = 0; i < projectContributors.length; i++) {
             fullname = projectContributors[i].fullname;
             username = projectContributors[i].username;
+            if (this.tz === 'Asia/Tokyo') {
+                institution = projectContributors[i].institution_ja;
+            } else {
+                institution = projectContributors[i].institution;
+            }
             unregisteredProjectContributors.push(
                 {
                     guid: projectContributors[i].guid,
                     dispName: `${fullname}(${username})`,
                     fullname,
                     email: username,
-                    institution: projectContributors[i].institution,
+                    institution,
                     appUsername: '',
                     appEmail: '',
                     profile: profileUrlBase + projectContributors[i].guid,
@@ -1427,7 +1449,7 @@ export default class GuidNodeWebMeetings extends Controller {
                             dispName: `${fullname}(${username})`,
                             fullname,
                             email: username,
-                            institution: projectContributors[i].institution,
+                            institution,
                             appUsername: nodeAppAttendee.fields.display_name,
                             appEmail: nodeAppAttendee.fields.email_address,
                             profile: profileUrlBase + projectContributors[i].guid,
@@ -1449,7 +1471,7 @@ export default class GuidNodeWebMeetings extends Controller {
                                 dispName: `${fullname}(${username})`,
                                 fullname,
                                 email: username,
-                                institution: projectContributors[i].institution,
+                                institution: '',
                                 appUsername: nodeAppAttendee.fields.display_name,
                                 appEmail: nodeAppAttendee.fields.email_address,
                                 profile: '',

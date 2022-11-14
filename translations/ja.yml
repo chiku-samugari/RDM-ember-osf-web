@@ -1832,6 +1832,7 @@ metadata:
             path: 'パス'
             manager: '管理者'
         no_manager: '-'
+        reload: '更新'
     draft-registration-card:
         export: 'エクスポート'
     registration-card:

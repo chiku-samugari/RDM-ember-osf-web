@@ -12,6 +12,7 @@ import { layout } from 'ember-osf-web/decorators/component';
 import NodeModel from 'ember-osf-web/models/node';
 import pathJoin from 'ember-osf-web/utils/path-join';
 
+import DraftRegistrationManager from 'registries/drafts/draft/draft-registration-manager';
 import styles from './styles';
 import template from './template';
 
@@ -50,6 +51,7 @@ export default class FileMetadataInput extends Component {
     // Required param
     changeset!: ChangesetDef;
     node!: NodeModel;
+    draftManager!: DraftRegistrationManager;
 
     @alias('schemaBlock.registrationResponseKey')
     valuePath!: string;
@@ -127,6 +129,14 @@ export default class FileMetadataInput extends Component {
     @action
     moveLower(this: FileMetadataInput, entry: FileEntry) {
         this.changeIndex(entry.path, 1);
+    }
+
+    @action
+    async reloadFileEntries() {
+        const draftRegistration = await this.draftManager.draftRegistration.reload();
+        const { registrationResponses } = draftRegistration;
+        this.draftManager.setChangesetValue(this.valuePath, registrationResponses[this.valuePath]);
+        this.notifyPropertyChange('changeset');
     }
 
     extractTitleFromMetadata(metadata: FileMetadata): string | null {

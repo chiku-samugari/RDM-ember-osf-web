@@ -1832,6 +1832,7 @@ metadata:
             path: 'Path'
             manager: 'Manager'
         no_manager: '-'
+        reload: 'Reload'
     draft-registration-card:
         export: 'Export'
     registration-card:

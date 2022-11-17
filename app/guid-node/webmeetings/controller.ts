@@ -255,7 +255,7 @@ export default class GuidNodeWebMeetings extends Controller {
         }
         default:
         }
-        startDateElement.datepicker("setDate", this.webMeetingsStartDate);
+        startDateElement.datepicker('setDate', this.webMeetingsStartDate);
     }
 
     @action
@@ -274,7 +274,7 @@ export default class GuidNodeWebMeetings extends Controller {
         }
         default:
         }
-        startDateElement.datepicker("setDate", this.webMeetingsStartDate);
+        startDateElement.datepicker('setDate', this.webMeetingsStartDate);
     }
 
     @action
@@ -829,7 +829,7 @@ export default class GuidNodeWebMeetings extends Controller {
         let username = '';
         let institution = '';
         let contrib: ProjectContributors = {} as ProjectContributors;
-        let language = window.navigator.language;
+        const { language } = window.navigator;
         if (!this.config) {
             throw new EmberError('Illegal config');
         }
@@ -1441,7 +1441,7 @@ export default class GuidNodeWebMeetings extends Controller {
         let fullname = '';
         let username = '';
         let institution = '';
-        let language = window.navigator.language;
+        const { language } = window.navigator;
         for (let i = 0; i < projectContributors.length; i++) {
             fullname = projectContributors[i].fullname;
             username = projectContributors[i].username;

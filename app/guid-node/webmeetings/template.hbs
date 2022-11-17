@@ -230,6 +230,7 @@
     data-test-create-web-meeting-modal
     @open={{this.showCreateWebMeetingsDialog}}
     @onSubmit={{action this.reqLaunch 'create'}}
+    @onShown={{action this.setDefaultDate 'create'}}
     @onHidden={{action (mut this.showCreateWebMeetingsDialog) false}}
     @onHide={{action this.resetValue}}
     @scrollable={{true}}
@@ -301,19 +302,19 @@
                     <div local-class='WebMeetings__input_items'>
                         <table>
                             <tr>
-                                <td style='width: 25%;'><label>{{t 'web_meetings.start_datetime'}}</label><label class='text-danger'>{{t 'web_meetings.asterisk'}}</label></td><td style='width: 15%;'></td><td></td>
+                                <td style='width: 23%;'><label>{{t 'web_meetings.start_datetime'}}</label><label class='text-danger'>{{t 'web_meetings.asterisk'}}</label></td><td style='width: 15%;'></td><td style='width: 5%;'></td>
                                 <td style='width: 13%;'><label>{{t 'web_meetings.duration'}}</label><label class='text-danger'>{{t 'web_meetings.asterisk'}}</label></td><td style='width: 8%;'></td><td style='width: 13%;'></td><td style='width: 8%;'></td><td></td>
                             </tr>
                             <tr>
                                 <td>
                                     {{bootstrap-datepicker
                                         id='create_start_date'
-                                        placeholder=(t 'web_meetings.placeholders.date_form')
                                         class='form-control'
                                         type='text'
                                         value=this.webMeetingsStartDate
                                         format='yyyy/mm/dd'
                                         todayHighlight=true
+                                        hide=(action this.fixDate 'create')
                                     }}
                                 </td>
                                 <td>
@@ -366,9 +367,6 @@
                             placeholder=(t 'web_meetings.placeholders.content')
                         }}
                     </div>
-                    <script
-                    {{did-insert (action this.setDefaultDate 'create')}}
-                    ></script>
                 {{/if}}
         </div>
     </modal.body>
@@ -556,7 +554,7 @@
                 <div local-class='WebMeetings__input_items'>
                     <table>
                         <tr>
-                            <td style='width: 25%;'><label>{{t 'web_meetings.start_datetime'}}</label><label class='text-danger'>{{t 'web_meetings.asterisk'}}</label></td><td style='width: 15%;'></td><td></td>
+                            <td style='width: 23%;'><label>{{t 'web_meetings.start_datetime'}}</label><label class='text-danger'>{{t 'web_meetings.asterisk'}}</label></td><td style='width: 15%;'></td><td style='width: 5%;'></td>
                             <td style='width: 13%;'><label>{{t 'web_meetings.duration'}}</label><label class='text-danger'>{{t 'web_meetings.asterisk'}}</label></td><td style='width: 8%;'></td><td style='width: 13%;'></td><td style='width: 8%;'></td><td></td>
                         </tr>
                         <tr>
@@ -568,6 +566,7 @@
                                     value=this.webMeetingsStartDate
                                     format='yyyy/mm/dd'
                                     todayHighlight=true
+                                    hide=(action this.fixDate 'update')
                                 }}
                             </td>
                             <td>

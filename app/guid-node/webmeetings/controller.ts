@@ -236,9 +236,14 @@ export default class GuidNodeWebMeetings extends Controller {
     }
 
     @action
-    setDefaultDate(this: GuidNodeWebMeetings, actionType: string) {
+    fixDate(this: GuidNodeWebMeetings, actionType: string) {
         let startDateElement = null;
-
+        const startDate = new Date(moment(this.webMeetingsStartDate).format('YYYY/MM/DD'));
+        const tzOffSet = startDate.getTimezoneOffset() / 60;
+        if (tzOffSet > 0) {
+            startDate.setDate(startDate.getDate() + 1);
+        }
+        this.set('webMeetingsStartDate', moment(startDate).format('YYYY/MM/DD'));
         switch (actionType) {
         case 'create': {
             startDateElement = $('#create_start_date') as any;
@@ -250,7 +255,26 @@ export default class GuidNodeWebMeetings extends Controller {
         }
         default:
         }
-        startDateElement[0].value = this.webMeetingsStartDate;
+        startDateElement.datepicker("setDate", this.webMeetingsStartDate);
+    }
+
+    @action
+    setDefaultDate(this: GuidNodeWebMeetings, actionType: string) {
+        let startDateElement = null;
+
+        switch (actionType) {
+        case 'create': {
+            startDateElement = $('#create_start_date') as any;
+            this.set('webMeetingsStartDate', moment(new Date()).format('YYYY/MM/DD'));
+            break;
+        }
+        case 'update': {
+            startDateElement = $('#update_start_date') as any;
+            break;
+        }
+        default:
+        }
+        startDateElement.datepicker("setDate", this.webMeetingsStartDate);
     }
 
     @action
@@ -523,7 +547,7 @@ export default class GuidNodeWebMeetings extends Controller {
         default:
         }
         for (const nodeAppAttendee of nodeAppAttendees) {
-            if (email === nodeAppAttendee.fields.email_address) {
+            if (email === nodeAppAttendee.fields.email_address && nodeAppAttendee.fields.is_active) {
                 this.setDuplicatedMsg();
                 return true;
             }
@@ -805,6 +829,7 @@ export default class GuidNodeWebMeetings extends Controller {
         let username = '';
         let institution = '';
         let contrib: ProjectContributors = {} as ProjectContributors;
+        let language = window.navigator.language;
         if (!this.config) {
             throw new EmberError('Illegal config');
         }
@@ -825,7 +850,7 @@ export default class GuidNodeWebMeetings extends Controller {
                         }
                     }
                     username = Object.keys(contrib).length ? contrib.username : nodeAppAttendee.fields.email_address;
-                    if (this.tz === 'Asia/Tokyo') {
+                    if (language === 'ja' || language === 'ja-jp' || language === 'ja-JP') {
                         institution = Object.keys(contrib).length ? contrib.institutionJa : '';
                     } else {
                         institution = Object.keys(contrib).length ? contrib.institution : '';
@@ -834,7 +859,7 @@ export default class GuidNodeWebMeetings extends Controller {
                     this.selectedDetailAttendees.push(
                         {
                             guid: userGuid,
-                            dispName: `${fullname}(${username})`,
+                            dispName: `${fullname}(${username}), ${institution}`,
                             fullname: nodeAppAttendee.fields.fullname,
                             email: username,
                             institution,
@@ -1416,10 +1441,11 @@ export default class GuidNodeWebMeetings extends Controller {
         let fullname = '';
         let username = '';
         let institution = '';
+        let language = window.navigator.language;
         for (let i = 0; i < projectContributors.length; i++) {
             fullname = projectContributors[i].fullname;
             username = projectContributors[i].username;
-            if (this.tz === 'Asia/Tokyo') {
+            if (language === 'ja' || language === 'ja-jp' || language === 'ja-JP') {
                 institution = projectContributors[i].institutionJa;
             } else {
                 institution = projectContributors[i].institution;
@@ -1427,7 +1453,7 @@ export default class GuidNodeWebMeetings extends Controller {
             unregisteredProjectContributors.push(
                 {
                     guid: projectContributors[i].guid,
-                    dispName: `${fullname}(${username})`,
+                    dispName: `${fullname}(${username}), ${institution}`,
                     fullname,
                     email: username,
                     institution,
@@ -1446,7 +1472,7 @@ export default class GuidNodeWebMeetings extends Controller {
                     registeredProjectContributors.push(
                         {
                             guid: projectContributors[i].guid,
-                            dispName: `${fullname}(${username})`,
+                            dispName: `${fullname}(${username}), ${institution}`,
                             fullname,
                             email: username,
                             institution,

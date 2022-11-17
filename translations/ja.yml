@@ -552,6 +552,7 @@ node_navbar:
     comments: コメント
     binderhub: 解析
     metadata: メタデータ
+    webmeetings: Web会議
 status:
     welcome_message: '<h1>GakuNin RDMへようこそ!</h1><p><a href="https://openscience.zendesk.com/hc/en-us" target="_blank" rel="noreferrer">プロジェクトの作成方法について学ぶ</a>か、<a href="https://osf.io/explore/activity/#popularPublicProjects">一般的な公開プロジェクトからインスピレーションを得ます</a>。</p>'
     alternate_email_error: '<b>メールアドレスがアカウントに追加されていません</ b>。 ログアウトして、メールのリンクを再確認してください。 ありがとうございました。'
@@ -1942,9 +1943,9 @@ web_meetings:
     info:
         launch: 'リクエストを送信しました。'
     error:
-        notAuth: '401:ブラウザを更新するか、アカウントを接続しなおしてください'
+        notAuth: '401:Web会議サービスに有効な認証情報が設定されていません。ブラウザを更新するか、アカウントを接続しなおしてください'
         forbbiden: '403: Forbbiden'
         noRegisteredContrib: '連携されているメンバーがいません。'
         failedToRequest: 'リクエストに失敗しました。'
         failedToRegisterEmail: 'メールアドレスの連携に失敗しました。'
-        canNotRegisterContrib: 'メールアドレスの登録に失敗したメンバーがいます：{contributors}'
+        canNotRegisterContrib: 'メールアドレスの連携に失敗したメンバーがいます：{contributors}'

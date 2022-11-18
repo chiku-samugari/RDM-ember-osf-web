@@ -847,7 +847,7 @@ export default class GuidNodeWebMeetings extends Controller {
                         }
                     }
                     username = Object.keys(contrib).length ? contrib.username : nodeAppAttendee.fields.email_address;
-                    isActive = nodeAppAttendee.fields.is_active
+                    isActive = nodeAppAttendee.fields.is_active;
                     if (!isActive) {
                         username = username.substring(0, username.lastIndexOf('_'));
                     }

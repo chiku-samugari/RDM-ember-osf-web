@@ -1843,7 +1843,7 @@ metadata:
 web_meetings:
     page_title: '{nodeTitle} Web Meeting'
     header: 'Web Meeting'
-    loading: 'Loading Web Meeting config. If the screen does not change, check the web conferencing add-on account connection.'
+    loading: 'Loading Web Meeting config. If the screen does not change after a while, set up the web meetings add-on account.'
     failed_to_save: 'An error occurred.'
     upcoming: 'Upcoming'
     previous: 'Previous'
@@ -1889,7 +1889,7 @@ web_meetings:
         registerGuestBtn: 'Register Guest'
         registerOrUpdateBtn: 'Register/Update'
         emailToggle: 'Registered Email'
-        registerEmail: '{user} primary email and {appName} organization email address did not match. Input {appName} username or select "Use {appName} as a guest"'
+        registerEmail: '{user}''s primary email and your organization''s {appName} email address did not match. Please enter your {appName} account name or select "Use {appName} as a guest".'
         registerGuestEmail: 'Invite a new attendee to the meeting. Register a attendee information.'
         updateThisAttendee: 'Update email of {user}'
         deleteThisAttendee: 'Delete eail of {user}'
@@ -1900,7 +1900,7 @@ web_meetings:
             datetime:
                 past: 'Start Datetime is before current time.'
                 endBeforeStart: 'End Datetime is before Start Datetime.'
-            failToRegister: 'Email address and {appName} organization email address did not match. Input {appName} username or select "Use {appName} as a guest"'
+            failToRegister: 'The email address you entered on this screen and your organization''s {appName} email address did not match. Please enter your {appName} account name or select "Use {appName} as a guest".'
             duplicatedEmail: 'Duplicated email'
     placeholders:
         subject: 'Enter the subject of this meeting'
@@ -1912,6 +1912,8 @@ web_meetings:
         outsideEmail: 'Enter the Email outside the organization of the app'
         username: 'Enter the Username or Display name'
         email: 'Enter the Email'
+    help:
+        dispLabel: 'Used as display name for GakuNin RDM or guest attendees of {appName}'
     subject: 'Subject'
     organizer: 'Organizer'
     attendees: 'Attendees'

@@ -70,10 +70,6 @@ interface NodeAppAttendees {
     [fields: string]: Attendees;
 }
 
-interface GuestOrNot {
-    [key: string]: string;
-}
-
 const {
     OSF: {
         url: host,
@@ -828,6 +824,7 @@ export default class GuidNodeWebMeetings extends Controller {
         let fullname = '';
         let username = '';
         let institution = '';
+        let isActive = true;
         let contrib: ProjectContributors = {} as ProjectContributors;
         const { language } = window.navigator;
         if (!this.config) {
@@ -850,6 +847,10 @@ export default class GuidNodeWebMeetings extends Controller {
                         }
                     }
                     username = Object.keys(contrib).length ? contrib.username : nodeAppAttendee.fields.email_address;
+                    isActive = nodeAppAttendee.fields.is_active
+                    if (!isActive) {
+                        username = username.substring(0, username.lastIndexOf('_'));
+                    }
                     if (language === 'ja' || language === 'ja-jp' || language === 'ja-JP') {
                         institution = Object.keys(contrib).length ? contrib.institutionJa : '';
                     } else {
@@ -1056,7 +1057,6 @@ export default class GuidNodeWebMeetings extends Controller {
         const selectedAttendees = this.selectedAttendees as AttendeesInfo[];
         let webexMeetingsCreateInvitees: WebexMeetingsCreateInvitee[] = [];
         let webexMeetingsDeleteInvitees: string[] = [];
-        let guestOrNot = {} as GuestOrNot;
         let body = {};
         let contentExtract = '';
 
@@ -1082,7 +1082,6 @@ export default class GuidNodeWebMeetings extends Controller {
                 .replace('{1}', content))
                 .replace('{2}', this.webMeetingsJoinUrl);
             contentExtract = (this.webMeetingsContent).replace(/\n/g, '\r\n');
-            guestOrNot = microsoftTeamsAttendeesInfo.guestOrNot;
             body = {
                 subject: webMeetingsSubject,
                 start: {
@@ -1106,7 +1105,6 @@ export default class GuidNodeWebMeetings extends Controller {
             /* eslint-disable max-len */
             const webexMeetingsAttendeesInfo = this.makeWebexMeetingsAttendees(selectedAttendees, updateMeetingId, actionType);
             /* eslint-enable max-len */
-            guestOrNot = webexMeetingsAttendeesInfo.guestOrNot;
             webexMeetingsCreateInvitees = webexMeetingsAttendeesInfo.createInvitees;
             webexMeetingsDeleteInvitees = webexMeetingsAttendeesInfo.deleteInvitees;
             body = {
@@ -1141,7 +1139,6 @@ export default class GuidNodeWebMeetings extends Controller {
             contentExtract,
             createInvitees: webexMeetingsCreateInvitees,
             deleteInvitees: webexMeetingsDeleteInvitees,
-            guestOrNot,
             body,
             browserTzOffset,
         };
@@ -1184,7 +1181,6 @@ export default class GuidNodeWebMeetings extends Controller {
         selectedAttendees: AttendeesInfo[],
     ) {
         const microsoftTeamsAttendees: MicrosoftTeamsAttendee[] = [];
-        const guestOrNot = {} as GuestOrNot;
         selectedAttendees.forEach((selectedAttendee: any) => {
             microsoftTeamsAttendees.push(
                 {
@@ -1194,12 +1190,10 @@ export default class GuidNodeWebMeetings extends Controller {
                     },
                 },
             );
-            guestOrNot[selectedAttendee.appEmail] = selectedAttendee.is_guest;
         });
 
         return {
             attendees: microsoftTeamsAttendees,
-            guestOrNot,
         };
     }
 
@@ -1222,7 +1216,6 @@ export default class GuidNodeWebMeetings extends Controller {
         const webexMeetingsDeleteInvitees: string[] = [];
         const nodeWebexMeetingsAttendees = JSON.parse(appsConfig.nodeWebexMeetingsAttendees);
         const nodeWebexMeetingsAttendeesRelation = JSON.parse(appsConfig.nodeWebexMeetingsAttendeesRelation);
-        const guestOrNot = {} as GuestOrNot;
 
         selectedAttendees.forEach((selectedAttendee: any) => {
             webexMeetingsAttendees.push(
@@ -1230,7 +1223,6 @@ export default class GuidNodeWebMeetings extends Controller {
                     email: selectedAttendee.appEmail,
                 },
             );
-            guestOrNot[selectedAttendee.appEmail] = selectedAttendee.is_guest;
         });
 
         if (actionType === 'update') {
@@ -1239,7 +1231,7 @@ export default class GuidNodeWebMeetings extends Controller {
 
                 nodeWebexMeetingsAttendees.forEach((nodeWebexMeetingsAttendee: any) => {
                     if (selectedAttendee.appEmail === nodeWebexMeetingsAttendee.fields.email_address
-                        && selectedAttendee.is_guest === nodeWebexMeetingsAttendee.fields.is_guest) {
+                        && nodeWebexMeetingsAttendee.fields.is_active) {
                         arrayAttendeePks.push(nodeWebexMeetingsAttendee.pk);
                     }
                 });
@@ -1276,7 +1268,6 @@ export default class GuidNodeWebMeetings extends Controller {
             invitees: webexMeetingsAttendees,
             createInvitees: webexMeetingsCreateInvitees,
             deleteInvitees: webexMeetingsDeleteInvitees,
-            guestOrNot,
         };
     }
 

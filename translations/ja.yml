@@ -1843,7 +1843,7 @@ metadata:
 web_meetings:
     page_title: '{nodeTitle} Web会議'
     header: 'Web会議'
-    loading: 'ロード中です。画面が変わらない場合は、Web会議アドオンのアカウント接続を確認してください。'
+    loading: 'ロード中です。しばらく経っても画面が切り替わらない場合は、Web会議アドオンのアカウントを設定してください。'
     failed_to_save: 'エラーが発生しました。'
     upcoming: '今後'
     previous: '完了'
@@ -1889,7 +1889,7 @@ web_meetings:
         registerGuestBtn: 'ゲスト登録'
         registerOrUpdateBtn: '登録/編集'
         emailToggle: '登録されたメールアドレス'
-        registerEmail: '{user}のプライマリメールと{appName}の組織のメールアドレスが一致しませんでした。{appName}アカウント名を入力するか「{appName}をゲストとして利用する」を選択してください。'
+        registerEmail: '{user}のプライマリメールとあなたの組織でご利用中の{appName}のメールアドレスが一致しませんでした。{appName}アカウント名を入力するか「{appName}をゲストとして利用する」を選択してください。'
         registerGuestEmail: '会議に新規出席者を招待します。 出席者の情報を登録してください。'
         updateThisAttendee: '{user}のメールアドレスを編集します。'
         deleteThisAttendee: '{user}のメールアドレスを削除します。'
@@ -1900,7 +1900,7 @@ web_meetings:
             datetime:
                 past: '開始日時が現在日時より前です。'
                 endBeforeStart: '終了日時が開始日時より前です。'
-            failToRegister: 'メールアドレスと{appName}の組織のメールアドレスが一致しませんでした。{appName}アカウント名を入力するか「{appName}をゲストとして利用する」を選択してください。'
+            failToRegister: 'この画面で入力したメールアドレスとあなたの組織でご利用中の{appName}のメールアドレスが一致しませんでした。{appName}アカウント名を入力するか、または「{appName}をゲストとして利用する」を選択してください。'
             duplicatedEmail: 'メールアドレスが重複しています'
     placeholders:
         subject: 'タイトルを入力してください'
@@ -1912,6 +1912,8 @@ web_meetings:
         outsideEmail: 'ゲスト参加者メールアドレスを入力してください'
         username: 'ユーザ名(または表示名)を入力してください'
         email: 'メールアドレスを入力して下さい'
+    help:
+        dispLabel: 'GakuNin RDM、または{appName}のゲスト出席者の場合に表示名として使われます'
     subject: 'タイトル'
     organizer: '開催者'
     attendees: '出席者'

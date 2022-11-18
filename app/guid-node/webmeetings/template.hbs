@@ -50,8 +50,7 @@
                                                 {{#if (eq index 0)}}
                                                         <tr style='background-color: #efefef;'>
                                                             <th width='15%' local-class='WebMeetings__th' style='padding: 3px; padding-left: 10px;'>{{t 'web_meetings.momentFormat.ll' year=(moment-format row.fields.start_datetime 'YYYY') month=(moment-format row.fields.start_datetime 'MM') day=(moment-format row.fields.start_datetime 'DD')}}</th>
-                                                            <th width='32%'></th>
-                                                            <th width='23%'></th>
+                                                            <th width='55%'></th>
                                                             <th width='15%'></th>
                                                             <th></th>
                                                             <th></th>
@@ -60,8 +59,7 @@
                                                     {{#if row.date_bar}}
                                                             <tr style='background-color: #efefef; padding: 3px; padding-left: 10px;'>
                                                                 <th width='15%' local-class='WebMeetings__th' style='padding: 3px; padding-left: 10px;'>{{t 'web_meetings.momentFormat.ll' year=(moment-format row.fields.start_datetime 'YYYY') month=(moment-format row.fields.start_datetime 'MM') day=(moment-format row.fields.start_datetime 'DD')}}</th>
-                                                            <th width='32%'></th>
-                                                            <th width='23%'></th>
+                                                            <th width='55%'></th>
                                                             <th width='15%'></th>
                                                             <th></th>
                                                             <th></th>
@@ -71,7 +69,6 @@
                                                     <tr local-class='WebMeetings__tr' {{action this.makeDetailWebMeetingDialog row.pk row.fields.meetingid row.fields.subject row.fields.attendees row.fields.organizer_fullname row.fields.start_datetime row.fields.end_datetime row.fields.content row.fields.meeting_password row.fields.join_url row.fields.app_name true}}>
                                                         <td local-class='WebMeetings__td' style='vertical-align: middle'>{{moment-format row.fields.start_datetime 'HH:mm'}}{{t 'web_meetings.from_hyphen'}}{{moment-format row.fields.end_datetime 'HH:mm'}}</td>
                                                         <td local-class='WebMeetings__td_overflow' style='vertical-align: middle'>{{row.fields.subject}}</td>
-                                                        <td local-class='WebMeetings__td_overflow' style='vertical-align: middle'>{{row.fields.organizer_fullname}}</td>
                                                         <td local-class='WebMeetings__td_overflow' style='vertical-align: middle'>{{row.fields.app_name}}</td>
                                                         <td local-class='WebMeetings__td'>
                                                             <button local-class='WebMeetings__button_list' style='background-color: #1b6d85; border-color: #1b6d85' data-toggle='tooltip' title={{t 'web_meetings.meetingDialog.startHeader' appName=row.fields.app_name}}
@@ -118,7 +115,6 @@
                                                     <tr local-class='WebMeetings__tr' {{action this.makeDetailWebMeetingDialog row.pk row.fields.meetingid row.fields.subject row.fields.attendees row.fields.organizer_fullname row.fields.start_datetime row.fields.end_datetime row.fields.content row.fields.meeting_password row.fields.join_url row.fields.app_name false}}>
                                                         <td local-class='WebMeetings__td'>{{moment-format row.fields.start_datetime 'HH:mm'}}{{t 'web_meetings.from_hyphen'}}{{moment-format row.fields.end_datetime 'HH:mm'}}</td>
                                                         <td local-class='WebMeetings__td_overflow'>{{row.fields.subject}}</td>
-                                                        <td local-class='WebMeetings__td_overflow'>{{row.fields.organizer_fullname}}</td>
                                                         <td local-class='WebMeetings__td_overflow'>{{row.fields.app_name}}</td>
                                                     </tr>
                                                 {{/each}}
@@ -405,7 +401,7 @@
             <div>{{t 'web_meetings.meetingDialog.deleteBody'}}</div>
             <br>
             <div local-class='WebMeetings__input_items'>
-                <div>{{this.webMeetingsDeleteSubject}}</div>
+                <div style='word-break: break-all;'>{{this.webMeetingsDeleteSubject}}</div>
             </div>
             <div style='padding: 5px;'>
                 <table>
@@ -458,7 +454,7 @@
     <modal.body style='border-bottom: 1px solid #E5E5E5'>
         {{#if this.detailMode}}
             <div class='form-group'>
-                <div local-class='WebMeetings__input_items WebMeetings__div_inline_block' style='font-size: x-large;'>
+                <div local-class='WebMeetings__input_items WebMeetings__div_inline_block' style='font-size: x-large; word-break: break-all;'>
                     {{this.webMeetingsDetailSubject}}
                 </div>
                 <div local-class='WebMeetings__input_items' style='padding-left: 20px;'>
@@ -712,7 +708,7 @@
         {{#if showRegisterWebMeetingsGuestEmailDialog}}
             <label>{{t 'web_meetings.meetingDialog.registerGuestEmail'}}</label>
             <div style='margin-top: 20px;' local-class='WebMeetings__input_items'>
-                <label>{{t 'web_meetings.meetingDialog.dispLabel'}}</label><label class='text-danger'>{{t 'web_meetings.asterisk'}}</label>
+                <label>{{t 'web_meetings.meetingDialog.dispLabel'}}</label><label class='text-danger'>{{t 'web_meetings.asterisk'}}</label>&nbsp;<span data-toggle='tooltip' title={{t 'web_meetings.help.dispLabel' appName=this.displayedWebMeetings}}>{{fa-icon 'question-circle'}}</span>
                 {{input
                     name='appDisplayName'
                     placeholder=(t 'web_meetings.placeholders.guestname')

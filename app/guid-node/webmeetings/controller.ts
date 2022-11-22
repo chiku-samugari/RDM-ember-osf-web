@@ -1169,6 +1169,8 @@ export default class GuidNodeWebMeetings extends Controller {
                     this.toast.error(this.intl.t('web_meetings.error.notAuth'));
                 } else if (data.errCode === 403) {
                     this.toast.error(this.intl.t('web_meetings.error.forbbiden'));
+                } else if (data.errCode) {
+                    this.toast.error('Error:' + data.errCode);
                 }
             })
             .catch(() => {

@@ -503,7 +503,7 @@
         {{else}}
             <div id='update_web_meetings_disp' class='form-group'>
                 <div local-class='WebMeetings__input_items'>
-                    <label>{{t 'web_meetings.subject'}}</label>
+                    <label>{{t 'web_meetings.subject'}}</label><label class='text-danger'>{{t 'web_meetings.asterisk'}}</label>
                     {{input
                         name='webMeetingsSubject'
                         placeholder=(t 'web_meetings.placeholders.subject')
@@ -516,7 +516,7 @@
                 {{#if (not-eq this.displayedWebMeetings this.appNameZoomMeetings)}}
                     <div local-class='WebMeetings__input_items'>
                         <div>
-                            <label>{{t 'web_meetings.attendees'}}</label>
+                            <label>{{t 'web_meetings.attendees'}}</label><label class='text-danger'>{{t 'web_meetings.asterisk'}}</label>
                             <button style="margin-left: 20px; font-size: x-small; white-space: nowrap; vertical-align: top;" onClick={{action this.addContributorsAsAttendees this.displayedWebMeetings}} type='button'>{{t 'web_meetings.meetingDialog.addContributorsAsAttendeesBtn'}}</button>
                         </div>
                         {{#if (eq this.displayedWebMeetings this.appNameMicrosoftTeams)}}

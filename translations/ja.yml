@@ -477,7 +477,7 @@ new-home:
         dropbox: 'Dropbox ロゴ'
         google_drive: 'Google Drive ロゴ'
 tos_consent:
-    paragraph: '<a href="https://support.rdm.nii.ac.jp/terms">利用規約</a>と<a href="https://support.rdm.nii.ac.jp/terms/privacy">プライバシーポリシー</a>を更新しました。注意深くお読みください。'
+    paragraph: '<a href="https://support.rdm.nii.ac.jp/terms">利用規約</a>と<a href="https://support.rdm.nii.ac.jp/terms/">プライバシーポリシー</a>を更新しました。注意深くお読みください。'
     have_read_and_agree: これらの規約を読み、同意します
     continue: 続ける
     failed_save: 'Unable to save Terms of Services consent.'
@@ -1337,7 +1337,7 @@ analytics:
         wiki: Wiki
     privateProject: "\n            <p>\n                分析は非公開プロジェクトでは使用できません。 分析を表示するには、\n                プロジェクトの概要ページから[公開]を選択して、プロジェクトを公開します。 公開プロジェクト:\n            </p>\n            <ul>\n                <li>は発見可能です。</li>\n                <li>は引用可能です。</li>\n                <li>はOSF for Institutionsパートナーと提携できます</li>\n                <li>ピア間のオープンプラクティスを促進する</li>\n            </ul>\n            <p>\n                分析を有効にしてプロジェクトへの訪問者に関するデータを受け取り、\n                作業の影響を発見し始めます。\n            </p>\n        "
 cookieBanner:
-    cookieWarning: 'GakuNin RDMは、利用機関の同意を受けて国立情報学研究所（NII）がサービスを提供しているものであり、利用者については、利用機関が定めた規程が適用されます。また、GakuNin RDMではサービスの運営およびユーザ体験の向上を目的にクッキーを利用しております。GakuNin RDMをご利用されるお客様は、<a href="https://support.rdm.nii.ac.jp/terms/privacy">プライバシーポリシー</a>に関する情報をご覧ください。右側の「同意する」ボタンをクリックまたは当サイトの利用を継続されることで、弊所がクッキーを使用することにご同意いただいたものとさせていただきます。ご同意いただけない場合には、お客様のブラウザ設定でクッキーを無効化していただくか、または当サイトの利用を中止して下さい。クッキーを利用しないことで、当サイトの一部の機能がご利用いただけない可能性がございますがご了承ください。尚、利用機関とNIIの間で同意している事項につきましては、<a href="https://support.rdm.nii.ac.jp/terms">規約サイト</a>で確認ができます。'
+    cookieWarning: 'GakuNin RDMは、利用機関の同意を受けて国立情報学研究所（NII）がサービスを提供しているものであり、利用者については、利用機関が定めた規程が適用されます。また、GakuNin RDMではサービスの運営およびユーザ体験の向上を目的にクッキーを利用しております。GakuNin RDMをご利用されるお客様は、<a href="https://support.rdm.nii.ac.jp/terms/">プライバシーポリシー</a>に関する情報をご覧ください。右側の「同意する」ボタンをクリックまたは当サイトの利用を継続されることで、弊所がクッキーを使用することにご同意いただいたものとさせていただきます。ご同意いただけない場合には、お客様のブラウザ設定でクッキーを無効化していただくか、または当サイトの利用を中止して下さい。クッキーを利用しないことで、当サイトの一部の機能がご利用いただけない可能性がございますがご了承ください。尚、利用機関とNIIの間で同意している事項につきましては、<a href="https://support.rdm.nii.ac.jp/terms">規約サイト</a>で確認ができます。'
     accept: 同意する
 discover:
     relevance: 関連性

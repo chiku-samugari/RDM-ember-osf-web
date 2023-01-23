@@ -395,12 +395,17 @@ export default class JupyterServersList extends Component {
         if (!jupyterhub || !jupyterhub.token || !validateJupyterHubToken(jupyterhub)) {
             throw new EmberError('Not authorized');
         }
-        const response = await this.jupyterhubAPIAJAX(jupyterhubUrl, `users/${jupyterhub.token.user}`);
+        const response = await this.jupyterhubAPIAJAX(
+            jupyterhubUrl,
+            `users/${jupyterhub.token.user}?include_stopped_servers=1`,
+        );
         const result = response as any;
         if (result.servers === undefined || result.servers === null) {
             throw new EmberError('Unexpected object');
         }
-        const serverNames: string[] = Object.keys(result.servers).map(key => key as string);
+        const serverNames: string[] = Object.keys(result.servers)
+            .map(key => key as string)
+            .filter(key => key.length > 0);
         serverNames.sort();
         return serverNames
             .map(serverName => result.servers[serverName] as JupyterServer)

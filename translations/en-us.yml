@@ -1246,7 +1246,7 @@ registries:
         clearAll: 'Clear All'
     finalizeRegistrationModal:
         title: 'Almost done...'
-        notice: "Please keep in mind that:\n                <ul>\n                    <li>\n                        Registrations cannot be modified or deleted once completed.\n                    </li>\n</ul>"
+        notice: "Please keep in mind that:\n<ul>\n<li>Registrations cannot be modified or deleted once completed.</li>\n<li>Reports can be generated from registrations.</li>\n<li>Registrations can be searched.</li>\n</ul>"
         immediateOption: 'Make registration public immediately'
         embargoOption: 'Enter registration into embargo'
         createDoi: 'Create DOI'

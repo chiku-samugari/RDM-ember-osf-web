@@ -536,6 +536,7 @@ validationErrors:
     onlyProjectOrComponentFiles: 'The {numOfFiles, plural, =1 {file} other {files}} "{missingFilesList}" cannot be found on this {projectOrComponent}.'
     new_folder_name: 'Folder name must not be blank.'
     year_format: 'Please specify a valid year.'
+    invalid_format_funder: 'Please enter the correct value. E.g., ABC012'
 validated_input_form:
     discard_changes: 'Discard changes'
 node_navbar:

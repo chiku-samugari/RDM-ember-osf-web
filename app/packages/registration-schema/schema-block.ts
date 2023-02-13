@@ -40,4 +40,6 @@ export interface SchemaBlock {
     required?: boolean;
     default?: boolean;
     index?: number;
+    pattern?: string;
+    spaceNormalization?: boolean;
 }

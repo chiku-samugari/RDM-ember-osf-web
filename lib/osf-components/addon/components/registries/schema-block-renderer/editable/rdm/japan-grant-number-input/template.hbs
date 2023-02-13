@@ -17,5 +17,10 @@
         >
             {{option}}
         </PowerSelect>
+        <ValidationErrors
+          local-class='ValidationErrors'
+          @changeset={{@changeset}}
+          @key={{@schemaBlock.registrationResponseKey}}
+        />
     </FormControls>
 </Registries::SchemaBlockRenderer::Editable::Base>

@@ -254,4 +254,11 @@ export default class DraftRegistrationManager {
         }
         return block.registrationResponseKey;
     }
+
+    setChangesetValue(valuePath: string, value: any) {
+        this.pageManagers
+            .forEach(pageManager => {
+                pageManager.setChangesetValue(valuePath, value);
+            });
+    }
 }

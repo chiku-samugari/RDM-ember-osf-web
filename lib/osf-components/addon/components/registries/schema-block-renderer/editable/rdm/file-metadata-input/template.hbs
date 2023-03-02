@@ -1,4 +1,14 @@
 <Registries::SchemaBlockRenderer::Editable::Base @helpText={{this.schemaBlock.helpText}}>
+    <div local-class='file-metadata-input-buttons'>
+        <OsfButton
+          data-test-file-metadata-input-reload
+          @onClick={{action this.reloadFileEntries}}
+          local-class='file-metadata-input-reload-button'
+        >
+            {{fa-icon 'rotate-right'}}
+            {{t 'metadata.file-metadata-input.reload'}}
+        </OsfButton>
+    </div>
     {{#if this.fileEntries}}
         <table local-class='file-metadata-input-files'>
             <thead>

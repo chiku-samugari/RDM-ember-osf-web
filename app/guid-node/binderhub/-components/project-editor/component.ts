@@ -100,6 +100,11 @@ interface ImageURL {
     params: string[][] | null;
 }
 
+interface EnvironmentDependencies {
+    condaPackages: string[];
+    pipPackages: string[];
+}
+
 export default class ProjectEditor extends Component {
     @service currentUser!: CurrentUser;
 
@@ -207,14 +212,10 @@ export default class ProjectEditor extends Component {
         return this.verifyHashHeader(content);
     }
 
-    @computed('requirements', 'environment')
     get requirementsManuallyChanged() {
-        const env = this.get('environment');
-        if (!env) {
-            return false;
-        }
-        const content = this.get('requirements');
-        return this.verifyHashHeader(content);
+        // Currently, requirements.txt is never created.
+        // To maintain compatibility with projects created in previous versions
+        return false;
     }
 
     @computed('apt', 'environment')
@@ -354,6 +355,10 @@ export default class ProjectEditor extends Component {
         if (imageURL.url !== REPO2DOCKER_IMAGE_ID) {
             return '';
         }
+        const basePipPackages = this.pipPackages || [];
+        const pipPackages = key === DockerfileProperty.Pip
+            ? value.split(/\s/).filter(item => item.length > 0)
+            : basePipPackages.map(pkg => getPipPackageId(pkg));
         const baseCondaPackages = this.condaPackages || [];
         let condaPackages = key === DockerfileProperty.Conda
             ? value.split(/\s/).filter(item => item.length > 0)
@@ -365,32 +370,17 @@ export default class ProjectEditor extends Component {
             condaPackages = condaPackages.concat(params.map(pkg => getCondaPackageId(pkg)));
         }
         let content = `name: "${imageURL.fullurl}"\n`;
-        if (condaPackages.length > 0) {
+        if (condaPackages.length > 0 || pipPackages.length > 0) {
             content += 'dependencies:\n';
-            content += condaPackages.map(item => `- ${item}\n`).join('');
         }
-        const checksum = md5(content.trim());
-        return `# rdm-binderhub:hash:${checksum}\n${content}`;
-    }
-
-    getUpdatedRequirements(key: DockerfileProperty, value: string) {
-        // Update requirements.txt with MD5 hash
-        const url = key === DockerfileProperty.From ? value : this.selectedImageUrl;
-        if (this.parseImageURL(url).url !== REPO2DOCKER_IMAGE_ID) {
-            return '';
+        content += condaPackages.map(item => `- ${item}\n`).join('');
+        if (pipPackages.length > 0) {
+            if (condaPackages.every(pkgId => parseCondaPackageId(pkgId)[0] !== 'pip')) {
+                content += '- pip\n';
+            }
+            content += '- pip:\n';
         }
-        const image = this.findImageByUrl(url);
-        if (!image.packages || !image.packages.includes('pip')) {
-            return '';
-        }
-        const basePipPackages = this.pipPackages || [];
-        const pipPackages = key === DockerfileProperty.Pip
-            ? value.split(/\s/).filter(item => item.length > 0)
-            : basePipPackages.map(pkg => getPipPackageId(pkg));
-        if (pipPackages.length === 0 || !this.pipSupported) {
-            return '';
-        }
-        const content = pipPackages.map(item => `${item}\n`).join('');
+        content += pipPackages.map(item => `  - ${item}\n`).join('');
         const checksum = md5(content.trim());
         return `# rdm-binderhub:hash:${checksum}\n${content}`;
     }
@@ -600,7 +590,7 @@ export default class ProjectEditor extends Component {
         const envDeps = this.get('environmentDependencies');
         if (envDeps !== null) {
             const imageURL = this.parseImageURL(this.get('selectedImageUrl'));
-            const packages = envDeps
+            const packages = envDeps.condaPackages
                 .map(item => item.trim())
                 .filter(item => item.length > 0)
                 .map(item => parseCondaPackageId(item));
@@ -628,7 +618,7 @@ export default class ProjectEditor extends Component {
             .map(item => parseCondaPackageId(item));
     }
 
-    @computed('dockerfileStatements', 'requirementsLines')
+    @computed('dockerfileStatements', 'environmentDependencies', 'requirementsLines')
     get pipPackages() {
         const reqLines = this.get('requirementsLines');
         if (reqLines !== null) {
@@ -636,6 +626,10 @@ export default class ProjectEditor extends Component {
                 .map(item => item.trim())
                 .filter(item => item.length > 0)
                 .map(item => parsePipPackageId(item));
+        }
+        const envDeps = this.get('environmentDependencies');
+        if (envDeps !== null) {
+            return envDeps.pipPackages.map(item => parsePipPackageId(item));
         }
         const dockerfileStatements = this.get('dockerfileStatements');
         if (dockerfileStatements === null) {
@@ -784,7 +778,7 @@ export default class ProjectEditor extends Component {
     }
 
     @computed('environment')
-    get environmentDependencies() {
+    get environmentDependencies(): EnvironmentDependencies | null {
         if (this.environmentManuallyChanged) {
             return null;
         }
@@ -794,9 +788,17 @@ export default class ProjectEditor extends Component {
         }
         const lines = content.split('\n');
         const deps: string[] = [];
+        const pips: string[] = [];
         let section = '';
+        let subsection = '';
         for (const line of lines) {
             if (line.trim().startsWith('#')) {
+                continue;
+            }
+            const subsectionm = line.match(/\s*-\s+(\S+):\s*$/);
+            if (subsectionm) {
+                // eslint-disable-next-line prefer-destructuring
+                subsection = subsectionm[1];
                 continue;
             }
             const sectionm = line.match(/\s*(\S+):\s*$/);
@@ -808,13 +810,24 @@ export default class ProjectEditor extends Component {
             if (section !== 'dependencies') {
                 continue;
             }
+            if (subsection === 'pip') {
+                const subitemm = line.match(/\s*-\s*(\S+)\s*$/);
+                if (!subitemm) {
+                    continue;
+                }
+                pips.push(subitemm[1]);
+                continue;
+            }
             const itemm = line.match(/\s*-\s*(\S+)\s*$/);
             if (!itemm) {
                 continue;
             }
             deps.push(itemm[1]);
         }
-        return deps;
+        return {
+            condaPackages: deps,
+            pipPackages: pips,
+        };
     }
 
     @computed('environment')
@@ -1092,7 +1105,7 @@ export default class ProjectEditor extends Component {
         const props: { [key: string]: string; } = {};
         props.dockerfile = this.getUpdatedDockerfile(key, value);
         props.environment = this.getUpdatedEnvironment(key, value);
-        props.requirements = this.getUpdatedRequirements(key, value);
+        props.requirements = '';
         props.apt = this.getUpdatedApt(key, value);
         props.installR = this.getUpdatedInstallR(key, value);
         props.postBuild = this.getUpdatedPostBuild(key, value);

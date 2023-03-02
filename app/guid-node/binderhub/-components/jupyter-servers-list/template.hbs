@@ -52,7 +52,7 @@
                         }}
                     {{/if}}
                     {{#if this.maxServersExceeded}}
-                        <strong local-class='max-servers-exceeded'>
+                        <strong data-test-max-servers-exceeded local-class='max-servers-exceeded'>
                             {{t 'binderhub.servers.max_servers_exceeded'}}
                         </strong>
                     {{/if}}
@@ -88,7 +88,7 @@
                     {{fa-icon 'fa-undo'}}
                 </button>
             </div>
-            <table class='table table-responsive'>
+            <table class='table table-responsive' data-test-server-list>
                 <thead>
                     <tr>
                         <th class='col-md-2'>{{t 'binderhub.servers.name'}}</th>
@@ -100,9 +100,9 @@
                 </thead>
                 <tbody local-class='jupyter-server'>
                     {{#if this.servers.length}}
-                        {{#each this.servers as |server|}}
+                        {{#each this.servers as |server index|}}
                             <tr>
-                                <td class='col-md-2'>{{server.entry.name}}</td>
+                                <td class='col-md-2' data-test-server-list-item={{index}}>{{server.entry.name}}</td>
                                 <td class='col-md-3'>
                                     {{#if server.entry.ready}}
                                         <button

@@ -14,11 +14,13 @@
             <div local-class='package_item'>
                 {{#if this.node.userHasWritePermission}}
                     <button
+                        data-test-package-edit-item={{index}}
                         {{action this.editPackage index target=this}}
                     >
                         {{pkg.[0]}}:{{pkg.[1]}}
                     </button>
                     <button
+                        data-test-package-delete-item={{index}}
                         {{action this.removePackage index target=this}}
                     >
                         <i class='fa fa-times' />

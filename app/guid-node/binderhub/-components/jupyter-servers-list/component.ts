@@ -15,6 +15,11 @@ export interface JupyterServerOptions {
     rdm_node?: string;
 }
 
+interface JupyterUser {
+    named_server_limit?: number | null;
+    servers?: {[key: string]: JupyterServer} | null;
+}
+
 export interface JupyterServer {
     name: string;
     last_activity?: string | null;
@@ -28,6 +33,11 @@ export interface JupyterServer {
 interface JupyterServerEntry {
     ownerUrl: string;
     entry: JupyterServer;
+}
+
+interface JupyterServerResponse {
+    namedServerLimit: number | null;
+    entries: JupyterServerEntry[];
 }
 
 export interface SelectableBinderhub {
@@ -127,6 +137,8 @@ export default class JupyterServersList extends Component {
 
     loggedOutDomains: string[] | null = null;
 
+    namedServerLimit: number | null = null;
+
     didReceiveAttrs() {
         const bhubUrl = getContext('jh');
         if (!this.selectedBinderhubUrl && bhubUrl) {
@@ -175,20 +187,30 @@ export default class JupyterServersList extends Component {
         return servers.filter(server => this.isTarget(server.entry));
     }
 
-    @computed('allServers', 'defaultJupyterhub')
-    get maxServersExceeded(): boolean {
+    get maxServers(): number | null {
+        if (this.namedServerLimit !== null) {
+            return this.namedServerLimit;
+        }
         const jupyterhub = this.defaultJupyterhub;
         if (!jupyterhub) {
-            return false;
+            return null;
         }
         if (jupyterhub.max_servers === null || jupyterhub.max_servers === undefined) {
-            return false;
+            return null;
         }
+        return jupyterhub.max_servers;
+    }
+
+    @computed('allServers', 'defaultJupyterhub')
+    get maxServersExceeded(): boolean {
         const servers = this.allServers;
         if (servers === null) {
             return false;
         }
-        return servers.length >= jupyterhub.max_servers;
+        if (this.maxServers === null) {
+            return false;
+        }
+        return servers.length >= this.maxServers;
     }
 
     @computed('defaultJupyterhub')
@@ -325,11 +347,13 @@ export default class JupyterServersList extends Component {
     performLoadServers(jupyterhubUrl: string) {
         this.set('allServers', null);
         this.set('serversLink', null);
+        this.set('namedServerLimit', null);
         later(async () => {
             const servers = await this.loadServers(jupyterhubUrl);
             const homeUrl = addPathSegment(jupyterhubUrl, 'hub/home');
             this.set('serversLink', homeUrl);
-            this.set('allServers', servers);
+            this.set('allServers', servers !== null ? servers.entries : null);
+            this.set('namedServerLimit', servers !== null ? servers.namedServerLimit : null);
         }, 0);
     }
 
@@ -382,7 +406,7 @@ export default class JupyterServersList extends Component {
         }
     }
 
-    async loadServers(jupyterhubUrl: string): Promise<JupyterServerEntry[] | null> {
+    async loadServers(jupyterhubUrl: string): Promise<JupyterServerResponse | null> {
         if (!this.binderHubConfig || !this.binderHubConfig.get('isFulfilled')) {
             throw new EmberError('Illegal config');
         }
@@ -395,19 +419,28 @@ export default class JupyterServersList extends Component {
         if (!jupyterhub || !jupyterhub.token || !validateJupyterHubToken(jupyterhub)) {
             throw new EmberError('Not authorized');
         }
-        const response = await this.jupyterhubAPIAJAX(jupyterhubUrl, `users/${jupyterhub.token.user}`);
-        const result = response as any;
-        if (result.servers === undefined || result.servers === null) {
+        const response = await this.jupyterhubAPIAJAX(
+            jupyterhubUrl,
+            `users/${jupyterhub.token.user}?include_stopped_servers=1`,
+        );
+        const result = response as JupyterUser;
+        const { servers } = result;
+        if (servers === undefined || servers === null) {
             throw new EmberError('Unexpected object');
         }
-        const serverNames: string[] = Object.keys(result.servers).map(key => key as string);
+        const serverNames: string[] = Object.keys(servers)
+            .map(key => key as string)
+            .filter(key => key.length > 0);
         serverNames.sort();
-        return serverNames
-            .map(serverName => result.servers[serverName] as JupyterServer)
-            .map(server => ({
-                ownerUrl: jupyterhubUrl,
-                entry: server,
-            }));
+        return {
+            namedServerLimit: result.named_server_limit !== undefined ? result.named_server_limit : null,
+            entries: serverNames
+                .map(serverName => servers[serverName] as JupyterServer)
+                .map(server => ({
+                    ownerUrl: jupyterhubUrl,
+                    entry: server,
+                })),
+        };
     }
 
     isTarget(server: JupyterServer) {
@@ -503,7 +536,7 @@ export default class JupyterServersList extends Component {
                 },
             );
             const servers = await this.loadServers(server.ownerUrl);
-            this.set('allServers', servers);
+            this.set('allServers', servers !== null ? servers.entries : null);
         }, 0);
     }
 

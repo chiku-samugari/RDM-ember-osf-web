@@ -536,6 +536,7 @@ validationErrors:
     onlyProjectOrComponentFiles: 'The {numOfFiles, plural, =1 {file} other {files}} "{missingFilesList}" cannot be found on this {projectOrComponent}.'
     new_folder_name: 'Folder name must not be blank.'
     year_format: 'Please specify a valid year.'
+    invalid_format_funder: '半角英数字で入力してください。'
 validated_input_form:
     discard_changes: 変更を破棄
 node_navbar:
@@ -1246,7 +1247,7 @@ registries:
         clearAll: 全クリア
     finalizeRegistrationModal:
         title: '登録する前に...'
-        notice: "メタデータを登録する際は、以下の点に注意してください:\n                <ul>\n                    <li>\n                        登録した内容は編集や削除はできません。\n                    </li>\n                </ul>"
+        notice: "メタデータを登録する際は、以下の点に注意してください:\n<ul>\n<li>登録した内容は編集や削除はできません。</li>\n<li>登録した内容のレポートを作成できます。</li>\n<li>登録した内容は検索できるようになります。</li>\n</ul>"
         immediateOption: 'Make registration public immediately'
         embargoOption: 'Enter registration into embargo'
         createDoi: 'Create DOI'

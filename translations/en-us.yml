@@ -536,6 +536,7 @@ validationErrors:
     onlyProjectOrComponentFiles: 'The {numOfFiles, plural, =1 {file} other {files}} "{missingFilesList}" cannot be found on this {projectOrComponent}.'
     new_folder_name: 'Folder name must not be blank.'
     year_format: 'Please specify a valid year.'
+    invalid_format_funder: 'Please use single-byte alphanumeric characters.'
 validated_input_form:
     discard_changes: 'Discard changes'
 node_navbar:
@@ -1246,7 +1247,7 @@ registries:
         clearAll: 'Clear All'
     finalizeRegistrationModal:
         title: 'Almost done...'
-        notice: "Please keep in mind that:\n                <ul>\n                    <li>\n                        Registrations cannot be modified or deleted once completed.\n                    </li>\n</ul>"
+        notice: "Please keep in mind that:\n<ul>\n<li>Registrations cannot be modified or deleted once completed.</li>\n<li>Reports can be generated from registrations.</li>\n<li>Registrations can be searched.</li>\n</ul>"
         immediateOption: 'Make registration public immediately'
         embargoOption: 'Enter registration into embargo'
         createDoi: 'Create DOI'

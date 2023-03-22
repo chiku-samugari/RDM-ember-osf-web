@@ -12,6 +12,9 @@ export type SchemaBlockType =
     'single-select-input' |
     'select-input-option' |
     'select-other-option' |
+    'japan-grant-number-input' |
+    'jgn-program-name-ja-input' |
+    'jgn-program-name-en-input' |
     'e-rad-award-funder-input' |
     'e-rad-award-number-input' |
     'e-rad-award-title-ja-input' |
@@ -40,4 +43,6 @@ export interface SchemaBlock {
     required?: boolean;
     default?: boolean;
     index?: number;
+    pattern?: string;
+    spaceNormalization?: boolean;
 }

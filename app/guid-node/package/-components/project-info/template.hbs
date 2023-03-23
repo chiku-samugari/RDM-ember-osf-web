@@ -1,0 +1,62 @@
+<div local-class='project_info'>
+    <div>
+        {{t 'metadata.package.project_info.description'}}
+    </div>
+    <div local-class='project_editor' class='row'>
+        <div class='form-group row'>
+            <label class='col-sm-2' for='creator'>{{t 'metadata.package.project_info.creator'}}</label>
+            <div data-test-creator class='col-sm-10'>
+                {{input
+                    name='creator'
+                    class='form-control'
+                    value=this.creatorName
+                    type='text'
+                }}
+            </div>
+        </div>
+        <div class='form-group row'>
+            <label class='col-sm-2' for='creator_affiliation'>{{t 'metadata.package.project_info.creator_affiliation'}}</label>
+            <div data-test-creator-affiliation class='col-sm-10'>
+                {{input
+                    name='creator_affiliation'
+                    class='form-control'
+                    value=this.creatorAffiliationName
+                    type='text'
+                }}
+            </div>
+        </div>
+        <div class='form-group row'>
+            <label class='col-sm-2' for='category'>{{t 'metadata.package.project_info.category'}}</label>
+            <div data-test-category class='col-sm-10'>
+                {{input
+                    name='category'
+                    class='form-control'
+                    value=this.category
+                    type='text'
+                }}
+            </div>
+        </div>
+        <div class='form-group row'>
+            <label class='col-sm-2' for='project_description'>{{t 'metadata.package.project_info.project_description'}}</label>
+            <div data-test-project-description class='col-sm-10'>
+                {{input
+                    name='project_description'
+                    class='form-control'
+                    value=this.projectDescription
+                    type='text'
+                }}
+            </div>
+        </div>
+        <div class='form-group row'>
+            <label class='col-sm-2' for='license'>{{t 'metadata.package.project_info.license'}}</label>
+            <div data-test-license class='col-sm-10'>
+                {{input
+                    name='license'
+                    class='form-control'
+                    value=this.license
+                    type='text'
+                }}
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,56 @@
+<div
+    data-test-file-browser-item='{{this.item.id}}'
+    local-class='file-row {{if this.shouldIndent 'indent'}} {{unless this.parentChecked 'parent-unchecked'}}'
+    tabindex='0'
+>
+    {{#if this.isCurrentFolder}}
+        <div data-test-current-folder local-class='name-container'>
+            <div
+                role='button'
+                {{on 'click' (action this.onChecked)}}
+            >
+                {{#if this.checked}}
+                    <FaIcon @icon='check-square' @fixedWidth={{true}} />
+                {{else}}
+                    <FaIcon @icon='square' @fixedWidth={{true}} />
+                {{/if}}
+            </div>
+            <div
+                role='button'
+                local-class='name-button'
+                {{on 'click' (action this.onClick)}}
+                {{on 'keypress' (action this.onKeyPress)}}
+            >
+                <FaIcon @icon='angle-left' @fixedWidth={{true}} />
+                <span local-class='filename'>{{this.item.itemName}}</span>
+            </div>
+        </div>
+    {{else}}
+        <div local-class='name-container'>
+            <div
+                role='button'
+                {{on 'click' (action this.onChecked)}}
+            >
+                {{#if this.checked}}
+                    <FaIcon @icon='check-square' @fixedWidth={{true}} />
+                {{else}}
+                    <FaIcon @icon='square' @fixedWidth={{true}} />
+                {{/if}}
+            </div>
+            <div
+                role='button'
+                local-class='name-button'
+                {{on 'click' (action this.onClick)}}
+                {{on 'keypress' (action this.onKeyPress)}}
+            >
+                <FileIcon @item={{this.item}} />
+                <span data-test-file-name local-class='filename'>{{this.item.itemName}}</span>
+            </div>
+        </div>
+        {{#unless this.item.isFolder}}
+            <time local-class='date-modified' data-test-file-date-modified>
+                {{this.date}}
+            </time>
+        {{/unless}}
+    {{/if}}
+</div>

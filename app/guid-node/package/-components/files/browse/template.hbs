@@ -1,0 +1,80 @@
+{{#if @filesManager.loading}}
+    <LoadingIndicator @dark={{true}} />
+{{else}}
+    <div
+        data-test-file-browser-list
+        local-class='file-browser-list'
+        class='file-browser-list'
+    >
+        <div local-class='header'>
+            <div local-class='column'>
+                <span local-class='sortable-column'>{{t 'general.name'}}</span>
+                <SortButton
+                    @sortAction={{@filesManager.sortItems}}
+                    @sort={{@filesManager.sort}}
+                    @sortBy='name'
+                    local-class='sort-by'
+                />
+            </div>
+
+            <div local-class='column'>
+                <span local-class='sortable-column'>{{t 'general.last_modified'}}</span>
+                <SortButton
+                    @sortAction={{@filesManager.sortItems}}
+                    @sort={{@filesManager.sort}}
+                    @sortBy='date_modified'
+                    local-class='sort-by'
+                />
+            </div>
+        </div>
+
+        {{#if this.notInRootFolder}}
+            <GuidNode::Package::-Components::Files::Item
+                @item={{@filesManager.currentFolder}}
+                @filesManager={{@filesManager}}
+                @selectionManager={{@selectionManager}}
+                local-class='current-folder'
+            />
+        {{/if}}
+
+        <div tabindex='0' local-class='files-list'>
+            {{#if @filesManager.loadingFolderItems}}
+                <LoadingIndicator @dark={{true}} />
+            {{else}}
+                <AnimatedContainer>
+                    <AnimatedValue
+                        @value={{@filesManager.currentFolder}}
+                        @rules={{this.rules}}
+                        @duration={{500}}
+                    >
+                        <GuidNode::Package::-Components::Files::List
+                            @items={{@filesManager.displayedItems}}
+                            @filesManager={{@filesManager}}
+                            @selectionManager={{@selectionManager}}
+                        />
+                    </AnimatedValue>
+                </AnimatedContainer>
+            {{/if}}
+        </div>
+
+        {{#if this.shouldShowLoadMoreButton}}
+            <div local-class='load-more'>
+                {{#if @filesManager.loadingMore}}
+                    <LoadingIndicator @inline={{true}} @dark={{true}} />
+                {{else}}
+                    <OsfButton
+                        data-test-load-more-items
+                        local-class='load-more-button'
+                        class='btn-block'
+                        aria-label={{t 'osf-components.files-widget.load_more'}}
+                        tabindex='0'
+                        @type='link'
+                        @onClick={{@filesManager.loadMore}}
+                    >
+                        <FaIcon @icon='chevron-down' @fixedWidth={{true}} />
+                    </OsfButton>
+                {{/if}}
+            </div>
+        {{/if}}
+    </div>
+{{/if}}

@@ -1,0 +1,46 @@
+.file-row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 20px 15px;
+    /*
+    i,
+    .filename {
+        color: $color-text-blue-dark;
+    }
+    */
+    &:hover {
+        cursor: pointer;
+        background-color: $color-bg-gray-light;
+    }
+
+    &.indent {
+        padding-left: 35px;
+    }
+
+    .name-container {
+        display: flex;
+        flex-grow: 1;
+        align-items: center;
+
+        span {
+            padding-right: 10px;
+        }
+    }
+
+    .name-button {
+        border-top: 0 !important;
+        flex: 1;
+    }
+
+    .date-modified {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        width: 40%;
+    }
+}
+
+.parent-unchecked {
+    color: #ccc;
+}

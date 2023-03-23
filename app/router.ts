@@ -145,6 +145,7 @@ Router.map(function() {
         this.route('binderhub');
         this.route('metadata');
         this.route('registrations');
+        this.route('package');
         this.route('drafts', { path: '/drafts/:draftId' }, function() {
             this.route('register');
         });

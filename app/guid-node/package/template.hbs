@@ -1,0 +1,54 @@
+{{! using unsafeTitle here to avoid double encoding because the title helper does its own }}
+{{title (t 'metadata.package.page_title' nodeTitle=this.model.taskInstance.value.unsafeTitle)}}
+<div class='container' local-class='Package'>
+    <div local-class='Package__editor'>
+        <h2 local-class='Package__header'>{{t 'metadata.package.header'}}</h2>
+
+        {{#unless this.loading}}
+            {{#if this.phaseFiles}}
+                <GuidNode::Package::-Components::FileSelector
+                    @node={{this.node}}
+                    @files={{this.files}}
+                    @selectionManager={{this.selectionManager}}
+                    @wikiEnabled={{this.wikiEnabled}}
+                    @commentEnabled={{this.commentEnabled}}
+                    @logEnabled={{this.logEnabled}}
+                />
+            {{/if}}
+            {{#if this.phaseProjectInfo}}
+                <GuidNode::Package::-Components::ProjectInfo
+                    @node={{this.node}}
+                />
+            {{/if}}
+            {{#if this.phaseExportTarget}}
+                <GuidNode::Package::-Components::ExportTarget
+                    @node={{this.node}}
+                />
+            {{/if}}
+        {{/unless}}
+
+        <div class='text-right' local-class='Package__buttons'>
+            {{#unless this.phaseFiles}}
+                <OsfButton data-test-previous-button
+                            @type='success'
+                            @onClick={{action this.goToPrevious}}>
+                    {{t 'metadata.package.previous_button'}}
+                </OsfButton>
+            {{/unless}}
+            {{#if this.phaseExportTarget}}
+                <OsfButton data-test-export-button
+                            @type='success'
+                            @disabled={{this.exporting}}
+                            @onClick={{action this.export}}>
+                    {{t 'metadata.package.export_button'}}
+                </OsfButton>
+            {{else}}
+                <OsfButton data-test-next-button
+                            @type='success'
+                            @onClick={{action this.goToNext}}>
+                    {{t 'metadata.package.next_button'}}
+                </OsfButton>
+            {{/if}}
+        </div>
+    </div>
+</div>

@@ -26,6 +26,8 @@ export default class ERadAwardFunderInput extends Component {
     onInput!: () => void;
     onMetadataInput!: () => void;
 
+    anotherOption?: string;
+
     didReceiveAttrs() {
         assert(
             'SchemaBlockRenderer::Editable::ERadAwardFunderInput requires optionBlocks to render',
@@ -33,22 +35,33 @@ export default class ERadAwardFunderInput extends Component {
         );
     }
 
-    @computed('optionBlocks.[]')
+    @computed('optionBlocks.[]', 'anotherOption')
     get optionBlockValues() {
-        return this.optionBlocks
+        const options = this.optionBlocks
             .map(item => this.getLocalizedItemText(item));
+        if (this.anotherOption) {
+            options.push(this.anotherOption);
+        }
+        return options;
     }
 
     @action
     onChange(option: string) {
-        const optionBlock = this.optionBlocks
-            .filter(item => this.getLocalizedItemText(item) === option);
-        if (optionBlock.length === 0) {
-            throw new Error(`Unexpected option: ${option}`);
-        }
-        const value = optionBlock[0].displayText;
-        this.changeset.set(this.valuePath, value);
+        const code = (option.split('|').pop() || '').trim();
+        const item = this.optionBlocks.find(b => code === b.displayText);
+        const result = item ? item.displayText : option;
+        this.changeset.set(this.valuePath, result);
+        this.onMetadataInput();
         this.onInput();
+        this.set('anotherOption', null);
+    }
+
+    @action
+    onInputSearch(text: string) {
+        if (!this.optionBlocks.find(item => item.displayText === text || this.getLocalizedItemText(item) === text)) {
+            this.set('anotherOption', text);
+        }
+        return true;
     }
 
     getLocalizedItemText(item: SchemaBlock) {

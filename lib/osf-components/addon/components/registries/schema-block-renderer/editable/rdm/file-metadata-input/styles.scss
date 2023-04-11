@@ -19,6 +19,27 @@
     height: 35px;
 }
 
+.file-metadata-input-files .file-metadata-path {
+    max-width: 250px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.file-metadata-input-files .file-metadata-title {
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.file-metadata-input-files .file-metadata-manager {
+    max-width: 50px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .file-metadata-input-edit-button {
     padding: 0 !important;
 }

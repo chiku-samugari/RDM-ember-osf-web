@@ -55,6 +55,12 @@ export default class JapanGrantNumberInput extends Component {
             kadaiId = eradRecord.japan_grant_number;
             this.updateCode('e-rad-award-funder-input', eradRecord.haibunkikan_cd);
             this.updateCode('e-rad-award-field-input', eradRecord.bunya_cd);
+            if (eradRecord.funding_stream_code) {
+                const key = this.getResponseKeyByBlockType('funding-stream-code-input');
+                if (key) {
+                    this.changeset.set(key, eradRecord.funding_stream_code);
+                }
+            }
             if (eradRecord.program_name_ja) {
                 const key = this.getResponseKeyByBlockType('jgn-program-name-ja-input');
                 if (key) {

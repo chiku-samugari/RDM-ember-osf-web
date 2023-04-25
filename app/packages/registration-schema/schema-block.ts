@@ -13,6 +13,7 @@ export type SchemaBlockType =
     'select-input-option' |
     'select-other-option' |
     'japan-grant-number-input' |
+    'funding-stream-code-input' |
     'jgn-program-name-ja-input' |
     'jgn-program-name-en-input' |
     'e-rad-award-funder-input' |

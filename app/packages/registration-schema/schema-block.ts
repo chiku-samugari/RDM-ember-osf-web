@@ -13,6 +13,7 @@ export type SchemaBlockType =
     'select-input-option' |
     'select-other-option' |
     'japan-grant-number-input' |
+    'funding-stream-code-input' |
     'jgn-program-name-ja-input' |
     'jgn-program-name-en-input' |
     'e-rad-award-funder-input' |
@@ -30,7 +31,8 @@ export type SchemaBlockType =
     'file-creators-input' |
     'file-url-input' |
     'file-institution-ja-input' |
-    'file-institution-en-input';
+    'file-institution-en-input' |
+    'file-institution-id-input';
 
 export interface SchemaBlock {
     id?: string;

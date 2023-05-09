@@ -59,7 +59,7 @@ export function buildValidation(groups: SchemaBlockGroup[], node?: NodeModel) {
                 const key = (group.registrationResponseKey || '').substr('__responseKey_'.length);
                 validationForResponse.push(
                     validateFormat({
-                        allowBlank: false,
+                        allowBlank: !inputBlock.required,
                         regex: new RegExp(inputBlock.pattern),
                         type: `invalid_format_${key}`,
                     }),

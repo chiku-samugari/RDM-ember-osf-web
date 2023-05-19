@@ -27,6 +27,7 @@ export default class FileProviderModel extends BaseFileItem {
     @attr('fixstring') name!: string;
     @attr('string') path!: string;
     @attr('fixstring') provider!: string;
+    @attr('boolean') forInstitutions?: boolean;
 
     @belongsTo('file')
     rootFolder!: DS.PromiseObject<FileModel> & FileModel;

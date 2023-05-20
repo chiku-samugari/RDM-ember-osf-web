@@ -11,7 +11,6 @@ import DS from 'ember-data';
 import Intl from 'ember-intl/services/intl';
 import { getContext } from 'ember-osf-web/guid-node/binderhub/-components/jupyter-servers-list/component';
 import BinderHubConfigModel from 'ember-osf-web/models/binderhub-config';
-import FileModel from 'ember-osf-web/models/file';
 import FileProviderModel from 'ember-osf-web/models/file-provider';
 import Node from 'ember-osf-web/models/node';
 import Analytics from 'ember-osf-web/services/analytics';
@@ -19,6 +18,8 @@ import CurrentUser from 'ember-osf-web/services/current-user';
 import StatusMessages from 'ember-osf-web/services/status-messages';
 import getHref from 'ember-osf-web/utils/get-href';
 import { addPathSegment } from 'ember-osf-web/utils/url-parts';
+import { WaterButlerFile } from 'ember-osf-web/utils/waterbutler/base';
+import { wrap } from 'ember-osf-web/utils/waterbutler/wrap';
 import Toast from 'ember-toastr/services/toast';
 
 export interface BuildFormValues {
@@ -56,7 +57,7 @@ export default class GuidNodeBinderHub extends Controller {
 
     isPageDirty = false;
 
-    configFolder: FileModel | null = null;
+    configFolder: WaterButlerFile | null = null;
 
     configCache?: DS.PromiseObject<BinderHubConfigModel>;
 
@@ -165,11 +166,11 @@ export default class GuidNodeBinderHub extends Controller {
         }
         const allProviders = await this.node.get('files');
         const provider = this.getDefaultStorage(allProviders);
-        const defaultStorage = await provider.get('rootFolder');
+        const defaultStorage = await wrap(this.currentUser, provider);
         if (!defaultStorage) {
             throw new EmberError('Illegal state');
         }
-        const files = await defaultStorage.get('files');
+        const files = await defaultStorage.files;
         const configFolders = files.filter(file => file.name === '.binder');
         if (configFolders.length === 0) {
             const links = provider.get('links');
@@ -183,7 +184,7 @@ export default class GuidNodeBinderHub extends Controller {
                 xhrFields: { withCredentials: true },
             });
             await defaultStorage.reload();
-            const filesUpdated = await defaultStorage.get('files');
+            const filesUpdated = await defaultStorage.files;
             const configFoldersUpdated = filesUpdated.filter(file => file.name === '.binder');
             if (configFoldersUpdated.length === 0) {
                 throw new EmberError('Illegal state');
@@ -203,6 +204,7 @@ export default class GuidNodeBinderHub extends Controller {
         if (instProviders.length === 0) {
             throw new EmberError('No default storages');
         }
+        // TBD sort storages by name
         return instProviders[0];
     }
 

@@ -28,6 +28,7 @@ export default class HyperLink extends Component {
     queryParams?: { [k: string]: string };
     params: any[] = defaultTo(this.params, []);
     onClicked?: () => void;
+    target?: string = '_self';
 
     @computed('route', 'positionalRoute')
     get resolvedRoute(): string {

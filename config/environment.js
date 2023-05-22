@@ -233,6 +233,7 @@ module.exports = function(environment) {
         },
         support: {
             globalUrl: '',
+            serviceUrl: '',
             preregUrl: 'https://cos.io/prereg/',
             statusPageUrl: 'https://status.cos.io',
             faqPageUrl: 'https://openscience.zendesk.com/hc/en-us/articles/360019737894',

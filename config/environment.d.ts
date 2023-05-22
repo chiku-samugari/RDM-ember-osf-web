@@ -138,6 +138,7 @@ declare const config: {
     },
     support: {
         globalUrl: string;
+        serviceUrl: string;
         preregUrl: string;
         statusPageUrl: string;
         faqPageUrl: string;

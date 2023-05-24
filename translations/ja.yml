@@ -1419,7 +1419,7 @@ osf-components:
     hero-banner:
         headingA: 'The place to share your research'
         headingB: 'There’s a better way to manage your research'
-        subheading: 'GakuNin RDMは研究をサポートし、継続的なコラボレーションを可能にする研究データマネージメントサービスです。'
+        subheading: 'GakuNin RDMは、国立情報学研究所が提供する研究データ管理システムです。研究チームが持つ多様なデータを一元管理し、効率的で公正なデータ活用をサポートします。'
         add_your_research:
             heading: あなたの研究を追加
             subheading: '世界中のラボとチームがGakuNin RDMを使用して、プロジェクトを科学コミュニティに公開しています。'

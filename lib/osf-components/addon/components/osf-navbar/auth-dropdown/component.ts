@@ -26,7 +26,6 @@ const {
         globalUrl,
     },
     navbar: {
-        useSupport,
         useGlobalSupport,
         useSignup,
         useEmbeddedDS,
@@ -60,7 +59,6 @@ export class AuthBase extends Component {
     signUpURL: string = defaultTo(this.signUpURL, pathJoin(baseUrl, 'register'));
     onLinkClicked?: () => void;
 
-    useNavSupport: boolean = useSupport;
     useNavGlobalSupport: boolean = useGlobalSupport;
     useNavSignUp: boolean = useSignup;
     useNavEmbeddedDS: boolean = useEmbeddedDS;

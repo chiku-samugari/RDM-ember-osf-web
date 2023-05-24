@@ -1419,7 +1419,7 @@ osf-components:
     hero-banner:
         headingA: 'The place to share your research'
         headingB: 'There’s a better way to manage your research'
-        subheading: 'GakuNin RDM is a free, open platform to support your research and enable collaboration.'
+        subheading: 'GakuNin RDM is a research data management service provided by National Institute of Informatics. It supports research teams by managing and sharing valuable data in one place.'
         add_your_research:
             heading: 'Add your research'
             subheading: 'Labs and teams across the globe use GakuNin RDM to open their projects up to the scientific community.'

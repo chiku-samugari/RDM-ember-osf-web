@@ -45,7 +45,7 @@
                     {{t 'general.settings'}}
                 </OsfLink>
             </ddm.item>
-            {{#if (or this.useNavSupport this.useNavGlobalSupport)}}
+            {{#if this.useNavGlobalSupport}}
                 <ddm.item role='menuitem'>
                     {{#if this.replaceGlobalSupportUrl}}
                         <a href='{{this.globalSupportURL}}' onclick={{action '_onLinkClicked' 'Navbar - Support'}} target='{{this.globalSupportTarget}}'>

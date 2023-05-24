@@ -14,6 +14,9 @@ import template from './template';
 const osfURL = config.OSF.url;
 
 const {
+    support: {
+        serviceUrl,
+    },
     navbar: {
         useQuickfiles,
         useRegistrations,
@@ -30,6 +33,7 @@ export default class XLinks extends Component {
     @service session!: Session;
     @service currentUser!: CurrentUser;
 
+    serviceSupportURL: string = serviceUrl;
     searchURL: string = defaultTo(this.searchURL, `${osfURL}search/`);
     myProjectsURL: string = defaultTo(this.myProjectsURL, `${osfURL}myprojects/`);
     myRegistrationsURL: string = defaultTo(this.myRegistrationsURL, `${osfURL}myprojects/#registrations`);
@@ -41,13 +45,27 @@ export default class XLinks extends Component {
     useNavSupport: boolean = useSupport;
     useNavDonate: boolean = useDonate;
 
-    @computed('router.currentRouteName')
+    @computed('this.serviceSupportURL')
+    get serviceSupportTarget() {
+        if (/^https?:\/\//.test(this.serviceSupportURL)) {
+            return '_blank';
+        }
+        return '_self';
+    }
+
+    @computed('router.currentRouteName', 'this.serviceSupportURL')
     get supportURL() {
-        return this.onInstitutions ? 'https://openscience.zendesk.com/hc/en-us/categories/360001550913' : 'support';
+        if (this.onInstitutions) {
+            return 'https://openscience.zendesk.com/hc/en-us/categories/360001550913';
+        }
+        if (this.serviceSupportURL) {
+            return this.serviceSupportURL;
+        }
+        return 'support';
     }
 
     @computed('router.currentRouteName')
     get onInstitutions() {
-        return this.router.currentRouteName === 'institutions';
+        return this.router.currentRouteName === 'institutions.index';
     }
 }

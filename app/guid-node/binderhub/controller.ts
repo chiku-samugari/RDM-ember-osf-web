@@ -204,7 +204,16 @@ export default class GuidNodeBinderHub extends Controller {
         if (instProviders.length === 0) {
             throw new EmberError('No default storages');
         }
-        // TBD sort storages by name
+        // Sort storages by name
+        instProviders.sort((a, b) => {
+            if (a.name < b.name) {
+                return -1;
+            }
+            if (a.name > b.name) {
+                return 1;
+            }
+            return 0;
+        });
         return instProviders[0];
     }
 
@@ -301,8 +310,11 @@ export default class GuidNodeBinderHub extends Controller {
         if (!this.node) {
             throw new EmberError('Illegal config');
         }
+        if (!this.configFolder) {
+            throw new EmberError('Illegal config');
+        }
         const nodeUrl = this.node.links.html as string;
-        const storageUrl = addPathSegment(nodeUrl, 'osfstorage');
+        const storageUrl = addPathSegment(nodeUrl, this.configFolder.provider);
         const encodedNodeUrl = encodeURIComponent(storageUrl);
         return {
             providerPrefix: 'rdm',

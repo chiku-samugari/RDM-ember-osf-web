@@ -178,7 +178,7 @@ export default class GuidNodeBinderHub extends Controller {
             if (!link) {
                 throw new EmberError('Illegal state');
             }
-            await this.currentUser.authenticatedAJAX({
+            await this.wbAuthenticatedAJAX({
                 url: `${getHref(link)}&name=.binder`,
                 type: 'PUT',
                 xhrFields: { withCredentials: true },
@@ -391,6 +391,11 @@ export default class GuidNodeBinderHub extends Controller {
         }
         ourl.search = `?${osearch.toString()}`;
         return ourl.href;
+    }
+
+    async wbAuthenticatedAJAX(ajaxOptions: JQuery.AjaxSettings) {
+        const r = await this.currentUser.authenticatedAJAX(ajaxOptions);
+        return r;
     }
 }
 

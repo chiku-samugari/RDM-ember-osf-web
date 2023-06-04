@@ -5,9 +5,33 @@ import { module, test } from 'qunit';
 import sinon from 'sinon';
 
 import BinderHubConfigModel from 'ember-osf-web/models/binderhub-config';
-import FileModel from 'ember-osf-web/models/file';
 import { Permission } from 'ember-osf-web/models/osf-model';
 import { currentURL, setupOSFApplicationTest, visit } from 'ember-osf-web/tests/helpers';
+import { AbstractFile, Metadata } from 'ember-osf-web/utils/waterbutler/base';
+
+function createFileResponse(attrs: Metadata) {
+    return {
+        type: 'files',
+        attributes: attrs,
+        links: {
+            delete: `http://localhost:7777/${attrs.provider}${attrs.path}`,
+            upload: `http://localhost:7777/${attrs.provider}${attrs.path}`,
+            download: `http://localhost:7777/${attrs.provider}${attrs.path}`,
+        },
+    };
+}
+
+function createFolderResponse(attrs: Metadata) {
+    return {
+        type: 'files',
+        attributes: attrs,
+        links: {
+            delete: `http://localhost:7777/${attrs.provider}${attrs.path}`,
+            upload: `http://localhost:7777/${attrs.provider}${attrs.path}`,
+            download: `http://localhost:7777/${attrs.provider}${attrs.path}`,
+        },
+    };
+}
 
 module('Acceptance | guid-node/binderhub', hooks => {
     setupOSFApplicationTest(hooks);
@@ -69,27 +93,42 @@ module('Acceptance | guid-node/binderhub', hooks => {
                 ],
             },
         });
-        const osfstorage = server.create('file-provider',
+        server.create('file-provider',
             { node, name: 'osfstorage' });
-        const fileOne = server.create('file',
-            { target: node, name: 'a', dateModified: new Date(2019, 3, 3) });
-        const fileTwo = server.create('file',
-            { target: node, name: 'b', dateModified: new Date(2019, 2, 2) });
-        const binderFolder = server.create('file',
-            {
-                target: node,
-                name: '.binder',
-                files: [],
-            });
-        osfstorage.rootFolder.update({
-            files: [fileOne, fileTwo, binderFolder],
-        });
         const sandbox = sinon.createSandbox();
         const ajaxStub = sandbox.stub(BinderHubConfigModel.prototype, 'jupyterhubAPIAJAX');
         ajaxStub.resolves({
             kind: 'user',
             name: 'testuser',
             servers: {},
+        });
+        const wbFileAjaxStub = sandbox.stub(AbstractFile.prototype, 'wbAuthenticatedAJAX');
+        wbFileAjaxStub
+            .onFirstCall()
+            .resolves({
+                data: [
+                    createFileResponse({
+                        kind: 'file',
+                        provider: 'osfstorage',
+                        name: 'a',
+                        path: '/a',
+                    }),
+                    createFileResponse({
+                        kind: 'file',
+                        provider: 'osfstorage',
+                        name: 'b',
+                        path: '/b',
+                    }),
+                    createFolderResponse({
+                        kind: 'folder',
+                        provider: 'osfstorage',
+                        name: '.binder',
+                        path: '/.binder',
+                    }),
+                ],
+            });
+        wbFileAjaxStub.resolves({
+            data: [],
         });
         const url = `/${node.id}/binderhub`;
 
@@ -108,6 +147,19 @@ module('Acceptance | guid-node/binderhub', hooks => {
         assert.dom('[data-test-package-editor="conda"]').doesNotExist();
         assert.dom('[data-test-package-editor="pip"]').doesNotExist();
 
+        assert.equal(
+            wbFileAjaxStub.callCount,
+            2,
+            'WaterButler API has been called a specified number of times',
+        );
+        assert.equal(
+            wbFileAjaxStub.firstCall.args[0].url,
+            'http://localhost:8000/v2/nodes/i9bri/files/osfstorage/upload',
+        );
+        assert.equal(
+            wbFileAjaxStub.secondCall.args[0].url,
+            'http://localhost:7777/osfstorage/.binder',
+        );
         assert.ok(
             ajaxStub.calledOnceWithExactly('http://localhost:30123/', 'users/testuser?include_stopped_servers=1', null),
             'BinderHub calls JupyterHub REST API',
@@ -176,29 +228,8 @@ module('Acceptance | guid-node/binderhub', hooks => {
                 ],
             },
         });
-        const osfstorage = server.create('file-provider',
+        server.create('file-provider',
             { node, name: 'osfstorage' });
-        const binderFolder = server.create('file', { target: node }, 'asFolder');
-        binderFolder.update({
-            name: '.binder',
-        });
-        server.create('file',
-            {
-                target: node,
-                name: 'a',
-                dateModified: new Date(2019, 3, 3),
-                parentFolder: binderFolder,
-            });
-        server.create('file',
-            {
-                target: node,
-                name: 'Dockerfile',
-                dateModified: new Date(2019, 2, 2),
-                parentFolder: binderFolder,
-            });
-        osfstorage.rootFolder.update({
-            files: [binderFolder],
-        });
         const sandbox = sinon.createSandbox();
         const ajaxStub = sandbox.stub(BinderHubConfigModel.prototype, 'jupyterhubAPIAJAX');
         ajaxStub.resolves({
@@ -206,7 +237,38 @@ module('Acceptance | guid-node/binderhub', hooks => {
             name: 'testuser',
             servers: {},
         });
-        const getContentsStub = sandbox.stub(FileModel.prototype, 'getContents');
+        const wbFileAjaxStub = sandbox.stub(AbstractFile.prototype, 'wbAuthenticatedAJAX');
+        const rootFolders = {
+            data: [
+                createFolderResponse({
+                    kind: 'folder',
+                    provider: 'osfstorage',
+                    name: '.binder',
+                    path: '/.binder',
+                }),
+            ],
+        };
+        const binderFolders = {
+            data: [
+                createFileResponse({
+                    kind: 'file',
+                    provider: 'osfstorage',
+                    name: 'Dockerfile',
+                    path: '/.binder/Dockerfile',
+                }),
+            ],
+        };
+        wbFileAjaxStub
+            .onFirstCall()
+            .resolves(rootFolders)
+            .onSecondCall()
+            .resolves(binderFolders)
+            .onThirdCall()
+            .resolves(binderFolders);
+        wbFileAjaxStub.resolves({
+            data: [],
+        });
+        const getContentsStub = sandbox.stub(AbstractFile.prototype, 'getContents');
         const toStringStub = sinon.stub();
         toStringStub.returns('# rdm-binderhub:hash:7c5b3a3d0a63ffd19147fd8c5e52d9a0\nFROM jupyter/scipy-notebook\n');
         getContentsStub.resolves({ toString: toStringStub });
@@ -228,6 +290,19 @@ module('Acceptance | guid-node/binderhub', hooks => {
         assert.dom('[data-test-package-editor="pip"]').doesNotExist();
         assert.dom('[data-test-package-editor="rmran"]').doesNotExist();
 
+        assert.equal(
+            wbFileAjaxStub.callCount,
+            4,
+            'WaterButler API has been called a specified number of times',
+        );
+        assert.equal(
+            wbFileAjaxStub.firstCall.args[0].url,
+            'http://localhost:8000/v2/nodes/i9bri/files/osfstorage/upload',
+        );
+        assert.equal(
+            wbFileAjaxStub.secondCall.args[0].url,
+            'http://localhost:7777/osfstorage/.binder',
+        );
         assert.ok(
             getContentsStub.calledOnceWithExactly(),
             'BinderHub retrieves Dockerfile data',
@@ -296,29 +371,8 @@ module('Acceptance | guid-node/binderhub', hooks => {
                 ],
             },
         });
-        const osfstorage = server.create('file-provider',
+        server.create('file-provider',
             { node, name: 'osfstorage' });
-        const binderFolder = server.create('file', { target: node }, 'asFolder');
-        binderFolder.update({
-            name: '.binder',
-        });
-        server.create('file',
-            {
-                target: node,
-                name: 'a',
-                dateModified: new Date(2019, 3, 3),
-                parentFolder: binderFolder,
-            });
-        server.create('file',
-            {
-                target: node,
-                name: 'environment.yml',
-                dateModified: new Date(2019, 2, 2),
-                parentFolder: binderFolder,
-            });
-        osfstorage.rootFolder.update({
-            files: [binderFolder],
-        });
         const sandbox = sinon.createSandbox();
         const ajaxStub = sandbox.stub(BinderHubConfigModel.prototype, 'jupyterhubAPIAJAX');
         ajaxStub.resolves({
@@ -326,7 +380,42 @@ module('Acceptance | guid-node/binderhub', hooks => {
             name: 'testuser',
             servers: {},
         });
-        const getContentsStub = sandbox.stub(FileModel.prototype, 'getContents');
+        const wbFileAjaxStub = sandbox.stub(AbstractFile.prototype, 'wbAuthenticatedAJAX');
+        const rootFolders = {
+            data: [
+                createFolderResponse({
+                    kind: 'folder',
+                    provider: 'osfstorage',
+                    name: '.binder',
+                    path: '/.binder',
+                }),
+            ],
+        };
+        const binderFolders = {
+            data: [
+                createFileResponse({
+                    kind: 'file',
+                    provider: 'osfstorage',
+                    name: 'a',
+                    path: '/.binder/a',
+                }),
+                createFileResponse({
+                    kind: 'file',
+                    provider: 'osfstorage',
+                    name: 'environment.yml',
+                    path: '/.binder/environment.yml',
+                }),
+            ],
+        };
+        wbFileAjaxStub
+            .onFirstCall()
+            .resolves(rootFolders)
+            .onSecondCall()
+            .resolves(binderFolders);
+        wbFileAjaxStub.resolves({
+            data: [],
+        });
+        const getContentsStub = sandbox.stub(AbstractFile.prototype, 'getContents');
         const toStringStub = sinon.stub();
         toStringStub.returns('# rdm-binderhub:hash:bb2a9dd68272d5f92e93acfbcfbbd267\n'
             + 'name: "#repo2docker#r-base"\ndependencies:\n- r-base\n');
@@ -349,6 +438,19 @@ module('Acceptance | guid-node/binderhub', hooks => {
         assert.dom('[data-test-package-editor="pip"]').doesNotExist();
         assert.dom('[data-test-package-editor="rmran"]').exists();
 
+        assert.equal(
+            wbFileAjaxStub.callCount,
+            2,
+            'WaterButler API has been called a specified number of times',
+        );
+        assert.equal(
+            wbFileAjaxStub.firstCall.args[0].url,
+            'http://localhost:8000/v2/nodes/i9bri/files/osfstorage/upload',
+        );
+        assert.equal(
+            wbFileAjaxStub.secondCall.args[0].url,
+            'http://localhost:7777/osfstorage/.binder',
+        );
         assert.ok(
             getContentsStub.calledOnceWithExactly(),
             'BinderHub retrieves Dockerfile data',
@@ -423,29 +525,8 @@ module('Acceptance | guid-node/binderhub', hooks => {
                 ],
             },
         });
-        const osfstorage = server.create('file-provider',
+        server.create('file-provider',
             { node, name: 'osfstorage' });
-        const binderFolder = server.create('file', { target: node }, 'asFolder');
-        binderFolder.update({
-            name: '.binder',
-        });
-        server.create('file',
-            {
-                target: node,
-                name: 'a',
-                dateModified: new Date(2019, 3, 3),
-                parentFolder: binderFolder,
-            });
-        server.create('file',
-            {
-                target: node,
-                name: 'Dockerfile',
-                dateModified: new Date(2019, 2, 2),
-                parentFolder: binderFolder,
-            });
-        osfstorage.rootFolder.update({
-            files: [binderFolder],
-        });
         const sandbox = sinon.createSandbox();
         const ajaxStub = sandbox.stub(BinderHubConfigModel.prototype, 'jupyterhubAPIAJAX');
         ajaxStub.resolves({
@@ -453,12 +534,43 @@ module('Acceptance | guid-node/binderhub', hooks => {
             name: 'testuser',
             servers: {},
         });
-        const getContentsStub = sandbox.stub(FileModel.prototype, 'getContents');
+        const wbFileAjaxStub = sandbox.stub(AbstractFile.prototype, 'wbAuthenticatedAJAX');
+        const rootFolders = {
+            data: [
+                createFolderResponse({
+                    kind: 'folder',
+                    provider: 'osfstorage',
+                    name: '.binder',
+                    path: '/.binder',
+                }),
+            ],
+        };
+        const binderFolders = {
+            data: [
+                createFileResponse({
+                    kind: 'file',
+                    provider: 'osfstorage',
+                    name: 'Dockerfile',
+                    path: '/.binder/Dockerfile',
+                }),
+            ],
+        };
+        wbFileAjaxStub
+            .onFirstCall()
+            .resolves(rootFolders)
+            .onSecondCall()
+            .resolves(binderFolders)
+            .onThirdCall()
+            .resolves(binderFolders);
+        wbFileAjaxStub.resolves({
+            data: [],
+        });
+        const getContentsStub = sandbox.stub(AbstractFile.prototype, 'getContents');
         const toStringStub = sinon.stub();
         toStringStub.returns('# rdm-binderhub:hash:8a89cc5c3fed08d4da5a7b7396733b53\n'
             + 'FROM jupyter/scipy-notebook\n\nCOPY --chown=$NB_UID:$NB_GID . .\n');
         getContentsStub.resolves({ toString: toStringStub });
-        const updateContentsStub = sandbox.stub(FileModel.prototype, 'updateContents');
+        const updateContentsStub = sandbox.stub(AbstractFile.prototype, 'updateContents');
         const url = `/${node.id}/binderhub`;
 
         await visit(url);
@@ -496,17 +608,48 @@ module('Acceptance | guid-node/binderhub', hooks => {
         await click('[data-test-package-editor="pip"] button[data-test-package-item-confirm]');
 
         assert.equal(
-            updateContentsStub.getCall(0).args[0],
-            '# rdm-binderhub:hash:b5593825f5c1fca1627623cc5870ba0a\nFROM jupyter/scipy-notebook\n\nUSER root\n'
-                + 'RUN pip install -U --no-cache-dir \\\n\t\ttestpackage \n\nUSER $NB_USER\n\n'
-                + 'COPY --chown=$NB_UID:$NB_GID . .\n',
+            wbFileAjaxStub.callCount,
+            3,
+            'WaterButler API has been called a specified number of times',
+        );
+        assert.equal(
+            wbFileAjaxStub.firstCall.args[0].url,
+            'http://localhost:8000/v2/nodes/i9bri/files/osfstorage/upload',
+        );
+        assert.equal(
+            wbFileAjaxStub.secondCall.args[0].url,
+            'http://localhost:7777/osfstorage/.binder',
+        );
+        assert.equal(
+            wbFileAjaxStub.thirdCall.args[0].url,
+            'http://localhost:7777/osfstorage/.binder',
+        );
+        assert.ok(
+            getContentsStub.calledOnceWithExactly(),
+            'BinderHub retrieves Dockerfile data',
+        );
+        assert.ok(
+            updateContentsStub.calledOnceWithExactly(
+                '# rdm-binderhub:hash:b5593825f5c1fca1627623cc5870ba0a\nFROM jupyter/scipy-notebook\n\nUSER root\n'
+                    + 'RUN pip install -U --no-cache-dir \\\n\t\ttestpackage \n\nUSER $NB_USER\n\n'
+                    + 'COPY --chown=$NB_UID:$NB_GID . .\n',
+            ),
+            'BinderHub updates Dockerfile data(testpackage added)',
         );
 
         assert.dom('[data-test-package-editor="conda"] button[data-test-package-edit-item]').doesNotExist();
         assert.dom('[data-test-package-editor="pip"] button[data-test-package-edit-item]').exists();
 
-        getContentsStub.resetHistory();
-        updateContentsStub.resetHistory();
+        getContentsStub.reset();
+        toStringStub.returns(
+            '# rdm-binderhub:hash:b5593825f5c1fca1627623cc5870ba0a\nFROM jupyter/scipy-notebook\n\nUSER root\n'
+                + 'RUN pip install -U --no-cache-dir \\\n\t\ttestpackage \n\nUSER $NB_USER\n\n'
+                + 'COPY --chown=$NB_UID:$NB_GID . .\n',
+        );
+        getContentsStub.resolves({ toString: toStringStub });
+        updateContentsStub.reset();
+        wbFileAjaxStub.reset();
+        wbFileAjaxStub.resolves(binderFolders);
 
         await click('[data-test-package-editor="pip"] [data-test-package-add]');
 
@@ -517,10 +660,21 @@ module('Acceptance | guid-node/binderhub', hooks => {
         await click('[data-test-package-editor="pip"] button[data-test-package-item-confirm]');
 
         assert.equal(
-            updateContentsStub.getCall(0).args[0],
-            '# rdm-binderhub:hash:a45a5cbb263fad90f6a564cd978b7256\nFROM jupyter/scipy-notebook\n\n'
-                + 'USER root\nRUN pip install -U --no-cache-dir \\\n\t\ttestpackage  \\\n\t\ttestpackage2==2.0.0 \n\n'
-                + 'USER $NB_USER\n\nCOPY --chown=$NB_UID:$NB_GID . .\n',
+            wbFileAjaxStub.callCount,
+            1,
+            'WaterButler API has been called a specified number of times',
+        );
+        assert.equal(
+            wbFileAjaxStub.firstCall.args[0].url,
+            'http://localhost:7777/osfstorage/.binder',
+        );
+        assert.ok(
+            updateContentsStub.calledOnceWithExactly(
+                '# rdm-binderhub:hash:a45a5cbb263fad90f6a564cd978b7256\nFROM jupyter/scipy-notebook\n\n'
+                    + 'USER root\nRUN pip install -U --no-cache-dir \\\n\t\ttestpackage  \\\n\t\t'
+                    + 'testpackage2==2.0.0 \n\nUSER $NB_USER\n\nCOPY --chown=$NB_UID:$NB_GID . .\n',
+            ),
+            'BinderHub updates Dockerfile data(testpackage2 added)',
         );
 
         assert.dom('[data-test-package-editor="pip"] button[data-test-package-edit-item="0"]').exists();
@@ -535,11 +689,13 @@ module('Acceptance | guid-node/binderhub', hooks => {
         await fillIn('[data-test-package-editor="pip"] input[name="package_version"]', '1.0.0');
         await click('[data-test-package-editor="pip"] button[data-test-package-item-confirm]');
 
-        assert.equal(
-            updateContentsStub.getCall(0).args[0],
-            '# rdm-binderhub:hash:d0a42ba50b7cd64445ea6f40ab5e5a40\nFROM jupyter/scipy-notebook\n\nUSER root\n'
-                + 'RUN pip install -U --no-cache-dir \\\n\t\ttestpackage==1.0.0  \\\n\t\ttestpackage2==2.0.0 \n\n'
-                + 'USER $NB_USER\n\nCOPY --chown=$NB_UID:$NB_GID . .\n',
+        assert.ok(
+            updateContentsStub.calledOnceWithExactly(
+                '# rdm-binderhub:hash:d0a42ba50b7cd64445ea6f40ab5e5a40\nFROM jupyter/scipy-notebook\n\nUSER root\n'
+                    + 'RUN pip install -U --no-cache-dir \\\n\t\ttestpackage==1.0.0  \\\n\t\ttestpackage2==2.0.0 \n\n'
+                    + 'USER $NB_USER\n\nCOPY --chown=$NB_UID:$NB_GID . .\n',
+            ),
+            'BinderHub updates Dockerfile data(testpackage updated)',
         );
 
         assert.dom('[data-test-package-editor="pip"] button[data-test-package-edit-item="0"]').exists();
@@ -550,11 +706,13 @@ module('Acceptance | guid-node/binderhub', hooks => {
 
         await click('[data-test-package-editor="pip"] button[data-test-package-delete-item="0"]');
 
-        assert.equal(
-            updateContentsStub.getCall(0).args[0],
-            '# rdm-binderhub:hash:42326367829418c69a54417da69946ad\nFROM jupyter/scipy-notebook\n\nUSER root\n'
-                + 'RUN pip install -U --no-cache-dir \\\n\t\ttestpackage2==2.0.0 \n\nUSER $NB_USER\n\n'
-                + 'COPY --chown=$NB_UID:$NB_GID . .\n',
+        assert.ok(
+            updateContentsStub.calledOnceWithExactly(
+                '# rdm-binderhub:hash:42326367829418c69a54417da69946ad\nFROM jupyter/scipy-notebook\n\nUSER root\n'
+                    + 'RUN pip install -U --no-cache-dir \\\n\t\ttestpackage2==2.0.0 \n\nUSER $NB_USER\n\n'
+                    + 'COPY --chown=$NB_UID:$NB_GID . .\n',
+            ),
+            'BinderHub updates Dockerfile data(testpackage removed)',
         );
 
         assert.dom('[data-test-package-editor="pip"] button[data-test-package-edit-item="0"]').exists();
@@ -649,12 +807,45 @@ module('Acceptance | guid-node/binderhub', hooks => {
             name: 'testuser',
             servers: {},
         });
-        const getContentsStub = sandbox.stub(FileModel.prototype, 'getContents');
+        const wbFileAjaxStub = sandbox.stub(AbstractFile.prototype, 'wbAuthenticatedAJAX');
+        const rootFolders = {
+            data: [
+                createFolderResponse({
+                    kind: 'folder',
+                    provider: 'osfstorage',
+                    name: '.binder',
+                    path: '/.binder',
+                }),
+            ],
+        };
+        const binderFolders = {
+            data: [
+                createFileResponse({
+                    kind: 'file',
+                    provider: 'osfstorage',
+                    name: 'a',
+                    path: '/.binder/a',
+                }),
+                createFileResponse({
+                    kind: 'file',
+                    provider: 'osfstorage',
+                    name: 'environment.yml',
+                    path: '/.binder/environment.yml',
+                }),
+            ],
+        };
+        wbFileAjaxStub
+            .onFirstCall()
+            .resolves(rootFolders)
+            .onSecondCall()
+            .resolves(binderFolders);
+        wbFileAjaxStub.resolves(binderFolders);
+        const getContentsStub = sandbox.stub(AbstractFile.prototype, 'getContents');
         const toStringStub = sinon.stub();
         toStringStub.returns('# rdm-binderhub:hash:bb2a9dd68272d5f92e93acfbcfbbd267\n'
             + 'name: "#repo2docker#r-base"\ndependencies:\n- r-base\n');
         getContentsStub.resolves({ toString: toStringStub });
-        const updateContentsStub = sandbox.stub(FileModel.prototype, 'updateContents');
+        const updateContentsStub = sandbox.stub(AbstractFile.prototype, 'updateContents');
         const url = `/${node.id}/binderhub`;
 
         await visit(url);
@@ -692,9 +883,32 @@ module('Acceptance | guid-node/binderhub', hooks => {
         await click('[data-test-package-editor="pip"] button[data-test-package-item-confirm]');
 
         assert.equal(
-            updateContentsStub.getCall(0).args[0],
-            '# rdm-binderhub:hash:b093e8ad8a6f8545bffc2d2d2b0ea511\nname: "#repo2docker#r-base"\ndependencies:\n'
-                + '- r-base\n- pip\n- pip:\n  - testpackage\n',
+            wbFileAjaxStub.callCount,
+            3,
+            'WaterButler API has been called a specified number of times',
+        );
+        assert.equal(
+            wbFileAjaxStub.firstCall.args[0].url,
+            'http://localhost:8000/v2/nodes/i9bri/files/osfstorage/upload',
+        );
+        assert.equal(
+            wbFileAjaxStub.secondCall.args[0].url,
+            'http://localhost:7777/osfstorage/.binder',
+        );
+        assert.equal(
+            wbFileAjaxStub.thirdCall.args[0].url,
+            'http://localhost:7777/osfstorage/.binder',
+        );
+        assert.ok(
+            getContentsStub.calledOnceWithExactly(),
+            'BinderHub retrieves Dockerfile data',
+        );
+        assert.ok(
+            updateContentsStub.calledOnceWithExactly(
+                '# rdm-binderhub:hash:b093e8ad8a6f8545bffc2d2d2b0ea511\nname: "#repo2docker#r-base"\ndependencies:\n'
+                    + '- r-base\n- pip\n- pip:\n  - testpackage\n',
+            ),
+            'BinderHub updates Dockerfile data(testpackage added)',
         );
 
         assert.dom('[data-test-package-editor="conda"] button[data-test-package-edit-item]').exists();
@@ -711,10 +925,12 @@ module('Acceptance | guid-node/binderhub', hooks => {
         await fillIn('[data-test-package-editor="pip"] input[name="package_version"]', '2.0.0');
         await click('[data-test-package-editor="pip"] button[data-test-package-item-confirm]');
 
-        assert.equal(
-            updateContentsStub.getCall(0).args[0],
-            '# rdm-binderhub:hash:8945f069096ac7de0f2fc2b520c03c7e\nname: "#repo2docker#r-base"\ndependencies:\n'
-                + '- pip\n- r-base\n- pip:\n  - testpackage\n  - testpackage2==2.0.0\n',
+        assert.ok(
+            updateContentsStub.calledOnceWithExactly(
+                '# rdm-binderhub:hash:8945f069096ac7de0f2fc2b520c03c7e\nname: "#repo2docker#r-base"\ndependencies:\n'
+                    + '- pip\n- r-base\n- pip:\n  - testpackage\n  - testpackage2==2.0.0\n',
+            ),
+            'BinderHub updates Dockerfile data(testpackage2 added)',
         );
 
         assert.dom('[data-test-package-editor="conda"] button[data-test-package-edit-item]').exists();
@@ -730,10 +946,12 @@ module('Acceptance | guid-node/binderhub', hooks => {
         await fillIn('[data-test-package-editor="pip"] input[name="package_version"]', '1.0.0');
         await click('[data-test-package-editor="pip"] button[data-test-package-item-confirm]');
 
-        assert.equal(
-            updateContentsStub.getCall(0).args[0],
-            '# rdm-binderhub:hash:0373e4c7c00ca8ca191fa56b757fd1c0\nname: "#repo2docker#r-base"\ndependencies:\n'
-                + '- pip\n- r-base\n- pip:\n  - testpackage==1.0.0\n  - testpackage2==2.0.0\n',
+        assert.ok(
+            updateContentsStub.calledOnceWithExactly(
+                '# rdm-binderhub:hash:0373e4c7c00ca8ca191fa56b757fd1c0\nname: "#repo2docker#r-base"\ndependencies:\n'
+                    + '- pip\n- r-base\n- pip:\n  - testpackage==1.0.0\n  - testpackage2==2.0.0\n',
+            ),
+            'BinderHub updates Dockerfile data(testpackage updated)',
         );
 
         assert.dom('[data-test-package-editor="conda"] button[data-test-package-edit-item]').exists();
@@ -745,10 +963,12 @@ module('Acceptance | guid-node/binderhub', hooks => {
 
         await click('[data-test-package-editor="pip"] button[data-test-package-delete-item="0"]');
 
-        assert.equal(
-            updateContentsStub.getCall(0).args[0],
-            '# rdm-binderhub:hash:1195309e970cd09c0353cc3bb8f3f532\nname: "#repo2docker#r-base"\ndependencies:\n'
-                + '- pip\n- r-base\n- pip:\n  - testpackage2==2.0.0\n',
+        assert.ok(
+            updateContentsStub.calledOnceWithExactly(
+                '# rdm-binderhub:hash:1195309e970cd09c0353cc3bb8f3f532\nname: "#repo2docker#r-base"\ndependencies:\n'
+                    + '- pip\n- r-base\n- pip:\n  - testpackage2==2.0.0\n',
+            ),
+            'BinderHub updates Dockerfile data(testpackage removed)',
         );
 
         assert.dom('[data-test-package-editor="conda"] button[data-test-package-edit-item]').exists();
@@ -818,29 +1038,8 @@ module('Acceptance | guid-node/binderhub', hooks => {
                 ],
             },
         });
-        const osfstorage = server.create('file-provider',
+        server.create('file-provider',
             { node, name: 'osfstorage' });
-        const binderFolder = server.create('file', { target: node }, 'asFolder');
-        binderFolder.update({
-            name: '.binder',
-        });
-        server.create('file',
-            {
-                target: node,
-                name: 'a',
-                dateModified: new Date(2019, 3, 3),
-                parentFolder: binderFolder,
-            });
-        server.create('file',
-            {
-                target: node,
-                name: 'Dockerfile',
-                dateModified: new Date(2019, 2, 2),
-                parentFolder: binderFolder,
-            });
-        osfstorage.rootFolder.update({
-            files: [binderFolder],
-        });
         const sandbox = sinon.createSandbox();
         const ajaxStub = sandbox.stub(BinderHubConfigModel.prototype, 'jupyterhubAPIAJAX');
         ajaxStub.resolves({
@@ -858,7 +1057,38 @@ module('Acceptance | guid-node/binderhub', hooks => {
                 },
             },
         });
-        const getContentsStub = sandbox.stub(FileModel.prototype, 'getContents');
+        const wbFileAjaxStub = sandbox.stub(AbstractFile.prototype, 'wbAuthenticatedAJAX');
+        const rootFolders = {
+            data: [
+                createFolderResponse({
+                    kind: 'folder',
+                    provider: 'osfstorage',
+                    name: '.binder',
+                    path: '/.binder',
+                }),
+            ],
+        };
+        const binderFolders = {
+            data: [
+                createFileResponse({
+                    kind: 'file',
+                    provider: 'osfstorage',
+                    name: 'Dockerfile',
+                    path: '/.binder/Dockerfile',
+                }),
+            ],
+        };
+        wbFileAjaxStub
+            .onFirstCall()
+            .resolves(rootFolders)
+            .onSecondCall()
+            .resolves(binderFolders)
+            .onThirdCall()
+            .resolves(binderFolders);
+        wbFileAjaxStub.resolves({
+            data: [],
+        });
+        const getContentsStub = sandbox.stub(AbstractFile.prototype, 'getContents');
         const toStringStub = sinon.stub();
         toStringStub.returns('# rdm-binderhub:hash:7c5b3a3d0a63ffd19147fd8c5e52d9a0\nFROM jupyter/scipy-notebook\n');
         getContentsStub.resolves({ toString: toStringStub });

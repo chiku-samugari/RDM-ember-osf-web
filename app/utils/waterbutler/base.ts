@@ -90,7 +90,7 @@ export abstract class AbstractFile implements WaterButlerFile {
     }
 
     async loadFiles(): Promise<WaterButlerFile[]> {
-        const content = await this.currentUser.authenticatedAJAX({
+        const content = await this.wbAuthenticatedAJAX({
             url: this.filesURL,
             type: 'GET',
             xhrFields: { withCredentials: true },
@@ -103,7 +103,7 @@ export abstract class AbstractFile implements WaterButlerFile {
     }
 
     async delete(): Promise<void> {
-        await this.currentUser.authenticatedAJAX({
+        await this.wbAuthenticatedAJAX({
             url: this.deleteURL,
             type: 'DELETE',
             xhrFields: { withCredentials: true },
@@ -112,7 +112,7 @@ export abstract class AbstractFile implements WaterButlerFile {
 
     async getContents(): Promise<object> {
         if (this.isFile) {
-            return this.currentUser.authenticatedAJAX({
+            return this.wbAuthenticatedAJAX({
                 url: this.downloadURL,
                 type: 'GET',
                 data: {
@@ -125,7 +125,7 @@ export abstract class AbstractFile implements WaterButlerFile {
     }
 
     async updateContents(data: string): Promise<void> {
-        await this.currentUser.authenticatedAJAX({
+        await this.wbAuthenticatedAJAX({
             url: this.uploadURL,
             type: 'PUT',
             xhrFields: { withCredentials: true },
@@ -135,7 +135,7 @@ export abstract class AbstractFile implements WaterButlerFile {
     }
 
     async createFile(name: string, data: string): Promise<void> {
-        await this.currentUser.authenticatedAJAX({
+        await this.wbAuthenticatedAJAX({
             url: `${this.uploadURL}?name=${name}`,
             type: 'PUT',
             xhrFields: { withCredentials: true },
@@ -150,4 +150,9 @@ export abstract class AbstractFile implements WaterButlerFile {
     }
 
     abstract wrap(file: FilesResponse): WaterButlerFile;
+
+    async wbAuthenticatedAJAX(ajaxOptions: JQuery.AjaxSettings) {
+        const r = await this.currentUser.authenticatedAJAX(ajaxOptions);
+        return r;
+    }
 }

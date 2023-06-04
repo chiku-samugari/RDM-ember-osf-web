@@ -1,6 +1,8 @@
 import CurrentUser from 'ember-osf-web/services/current-user';
 
 export interface WaterButlerFile {
+    provider: string;
+
     name: string;
 
     path: string;
@@ -58,6 +60,10 @@ export abstract class AbstractFile implements WaterButlerFile {
     constructor(currentUser: CurrentUser, metadata: Metadata) {
         this.currentUser = currentUser;
         this.metadata = metadata;
+    }
+
+    get provider() {
+        return this.metadata.provider;
     }
 
     get name() {

@@ -108,6 +108,15 @@ export default class GuidNodePackage extends Controller {
                         enable: false,
                     },
                 },
+                wiki: {
+                    enable: this.wikiEnabled,
+                },
+                comment: {
+                    enable: this.commentEnabled,
+                },
+                log: {
+                    enable: this.logEnabled,
+                },
             }),
         });
         const { progress_api_url: progressApiUrl } = resp;

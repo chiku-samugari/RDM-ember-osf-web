@@ -32,7 +32,8 @@ export type SchemaBlockType =
     'file-url-input' |
     'file-institution-ja-input' |
     'file-institution-en-input' |
-    'file-institution-id-input';
+    'file-institution-id-input' |
+    'file-data-number-input';
 
 export interface SchemaBlock {
     id?: string;

@@ -59,6 +59,7 @@ export function getSchemaBlockGroups(blocks: SchemaBlock[] | undefined) {
             case 'file-institution-ja-input':
             case 'file-institution-en-input':
             case 'file-institution-id-input':
+            case 'file-data-number-input':
 
                 assert('input block with no registrationResponseKey!', !isEmpty(block.registrationResponseKey));
                 assert('question with multiple input blocks!', !schemaBlockGroup.inputBlock);

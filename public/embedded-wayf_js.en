@@ -760,6 +760,18 @@ var wayf_idps = {
 		search:["https://niph.ex-tic.com/auth/gakunin/saml2/assertions", "Kanto", "National Institute of Public Health", "National Institute of Public Health", "国立保健医療科学院"],
 		SAML1SSOurl:"https://no.saml1.sso.url.defined.com/error"
 		},
+	"https://kokugakuin.ex-tic.com/auth/gakunin/saml2/assertions":{
+		type:"kanto",
+		name:"Kokugakuin University",
+		search:["https://kokugakuin.ex-tic.com/auth/gakunin/saml2/assertions", "Kanto", "Kokugakuin University", "Kokugakuin University", "國學院大學"],
+		SAML1SSOurl:"https://no.saml1.sso.url.defined.com/error"
+		},
+	"https://suidp.ex-tic.com/auth/gakunin/saml2/assertions":{
+		type:"kanto",
+		name:"Surugadai University",
+		search:["https://suidp.ex-tic.com/auth/gakunin/saml2/assertions", "Kanto", "Surugadai University", "Surugadai University", "駿河台大学"],
+		SAML1SSOurl:"https://no.saml1.sso.url.defined.com/error"
+		},
 	"https://fed.mie-u.ac.jp/idp":{
 		type:"chubu",
 		name:"Mie University",
@@ -1491,6 +1503,12 @@ var wayf_idps = {
 		name:"Fukuyama City University",
 		search:["https://idp.fcu.ac.jp/idp/shibboleth", "Chugoku", "Fukuyama City University", "Fukuyama City University", "福山市立大学"],
 		SAML1SSOurl:"https://idp.fcu.ac.jp/idp/profile/Shibboleth/SSO"
+		},
+	"https://auth.shujitsu.ac.jp/idp/shibboleth":{
+		type:"chugoku",
+		name:"Shujitsu University",
+		search:["https://auth.shujitsu.ac.jp/idp/shibboleth", "Chugoku", "Shujitsu University", "Shujitsu University", "就実大学"],
+		SAML1SSOurl:"https://auth.shujitsu.ac.jp/idp/profile/Shibboleth/SSO"
 		},
 	"https://idp.cc.ehime-u.ac.jp/idp/shibboleth":{
 		type:"shikoku",
@@ -2392,7 +2410,7 @@ function decodeBase64(input) {
 			+ '&amp;shire=' + encodeURIComponent(wayf_sp_samlACURL)
 			+ '&amp;target=' + encodeURIComponent(wayf_return_url);
 			
-			form_start = '<form id="IdPList" name="IdPList" method="post" target="_parent" onSubmit="return submitForm()" action="' + wayf_authReq_URL + '&amp;time=1683681724'
+			form_start = '<form id="IdPList" name="IdPList" method="post" target="_parent" onSubmit="return submitForm()" action="' + wayf_authReq_URL + '&amp;time=1686705660'
 			+ '">';
 		}
 		
@@ -3739,6 +3757,28 @@ function decodeBase64(input) {
 				dispDefault = 'National Institute of Public Health';
 			}
 			pushIncSearchList('https://niph.ex-tic.com/auth/gakunin/saml2/assertions');
+		}		if (last_idp == 'https://kokugakuin.ex-tic.com/auth/gakunin/saml2/assertions'){
+			dispDefault = 'Kokugakuin University';
+		}		if (isAllowedType('https://kokugakuin.ex-tic.com/auth/gakunin/saml2/assertions','kanto') && isAllowedIdP('https://kokugakuin.ex-tic.com/auth/gakunin/saml2/assertions')){
+			if (
+				"-" == "-" 
+				&& typeof(wayf_default_idp) != "undefined"
+				&& wayf_default_idp == "https://kokugakuin.ex-tic.com/auth/gakunin/saml2/assertions"
+				){
+				dispDefault = 'Kokugakuin University';
+			}
+			pushIncSearchList('https://kokugakuin.ex-tic.com/auth/gakunin/saml2/assertions');
+		}		if (last_idp == 'https://suidp.ex-tic.com/auth/gakunin/saml2/assertions'){
+			dispDefault = 'Surugadai University';
+		}		if (isAllowedType('https://suidp.ex-tic.com/auth/gakunin/saml2/assertions','kanto') && isAllowedIdP('https://suidp.ex-tic.com/auth/gakunin/saml2/assertions')){
+			if (
+				"-" == "-" 
+				&& typeof(wayf_default_idp) != "undefined"
+				&& wayf_default_idp == "https://suidp.ex-tic.com/auth/gakunin/saml2/assertions"
+				){
+				dispDefault = 'Surugadai University';
+			}
+			pushIncSearchList('https://suidp.ex-tic.com/auth/gakunin/saml2/assertions');
 		}		if (last_idp == 'https://fed.mie-u.ac.jp/idp'){
 			dispDefault = 'Mie University';
 		}		if (isAllowedType('https://fed.mie-u.ac.jp/idp','chubu') && isAllowedIdP('https://fed.mie-u.ac.jp/idp')){
@@ -5081,6 +5121,17 @@ function decodeBase64(input) {
 				dispDefault = 'Fukuyama City University';
 			}
 			pushIncSearchList('https://idp.fcu.ac.jp/idp/shibboleth');
+		}		if (last_idp == 'https://auth.shujitsu.ac.jp/idp/shibboleth'){
+			dispDefault = 'Shujitsu University';
+		}		if (isAllowedType('https://auth.shujitsu.ac.jp/idp/shibboleth','chugoku') && isAllowedIdP('https://auth.shujitsu.ac.jp/idp/shibboleth')){
+			if (
+				"-" == "-" 
+				&& typeof(wayf_default_idp) != "undefined"
+				&& wayf_default_idp == "https://auth.shujitsu.ac.jp/idp/shibboleth"
+				){
+				dispDefault = 'Shujitsu University';
+			}
+			pushIncSearchList('https://auth.shujitsu.ac.jp/idp/shibboleth');
 		}		if (last_idp == 'https://idp.cc.ehime-u.ac.jp/idp/shibboleth'){
 			dispDefault = 'Ehime University';
 		}		if (isAllowedType('https://idp.cc.ehime-u.ac.jp/idp/shibboleth','shikoku') && isAllowedIdP('https://idp.cc.ehime-u.ac.jp/idp/shibboleth')){

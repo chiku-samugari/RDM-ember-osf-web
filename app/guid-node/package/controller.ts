@@ -21,6 +21,17 @@ const {
     },
 } = config;
 
+/* eslint-disable camelcase */
+interface ExportingProgressInformation {
+    file_url?: string;
+}
+/* eslint-enable camelcase */
+
+interface ExportingProgress {
+    state?: string;
+    info?: ExportingProgressInformation;
+}
+
 export default class GuidNodePackage extends Controller {
     @service toast!: Toast;
     @service intl!: Intl;
@@ -38,6 +49,12 @@ export default class GuidNodePackage extends Controller {
     wikiEnabled = true;
     commentEnabled = true;
     logEnabled = true;
+
+    editingCreatorName?: string;
+    editingCreatorAffiliationName?: string;
+    editingCategory?: string;
+    editingProjectDescription?: string;
+    editingLicense?: string;
 
     phase = 0;
 
@@ -80,6 +97,100 @@ export default class GuidNodePackage extends Controller {
             });
     }
 
+    @computed('node', 'editingCreatorName')
+    get creatorName() {
+        if (this.editingCreatorName !== undefined) {
+            return this.editingCreatorName;
+        }
+        if (!this.node) {
+            return '';
+        }
+        return this.node.get('creator').get('fullName');
+    }
+
+    set creatorName(value: string) {
+        if (this.creatorName === value) {
+            return;
+        }
+        this.set('editingCreatorName', value);
+    }
+
+    @computed('node', 'editingCreatorAffiliationName')
+    get creatorAffiliationName() {
+        if (this.editingCreatorAffiliationName !== undefined) {
+            return this.editingCreatorAffiliationName;
+        }
+        if (!this.node) {
+            return '';
+        }
+        const employment = this.node.get('creator').get('employment');
+        if (!employment) {
+            return '';
+        }
+        return employment[0].institution;
+    }
+
+    set creatorAffiliationName(value: string) {
+        if (this.creatorAffiliationName === value) {
+            return;
+        }
+        this.set('editingCreatorAffiliationName', value);
+    }
+
+    @computed('node', 'editingCategory')
+    get category() {
+        if (this.editingCategory !== undefined) {
+            return this.editingCategory;
+        }
+        if (!this.node) {
+            return '';
+        }
+        return this.node.get('category').toString();
+    }
+
+    set category(value: string) {
+        if (this.category === value) {
+            return;
+        }
+        this.set('editingCategory', value);
+    }
+
+    @computed('node', 'editingProjectDescription')
+    get projectDescription() {
+        if (this.editingProjectDescription !== undefined) {
+            return this.editingProjectDescription;
+        }
+        if (!this.node) {
+            return '';
+        }
+        return this.node.get('description');
+    }
+
+    set projectDescription(value: string) {
+        if (this.projectDescription === value) {
+            return;
+        }
+        this.set('editingProjectDescription', value);
+    }
+
+    @computed('node', 'editingLicense')
+    get license() {
+        if (this.editingLicense !== undefined) {
+            return this.editingLicense;
+        }
+        if (!this.node) {
+            return '';
+        }
+        return this.node.get('license').get('name');
+    }
+
+    set license(value: string) {
+        if (this.license === value) {
+            return;
+        }
+        this.set('editingLicense', value);
+    }
+
     async performExport() {
         if (!this.node) {
             throw new Error('Node not loaded');
@@ -90,6 +201,10 @@ export default class GuidNodePackage extends Controller {
             addPathSegment(this.node.id, 'metadata/packages/'),
         );
         const url = addPathSegment(host, addPathSegment(namespace, apiPath));
+        const files = Object.keys(this.selectionManager.checked).map(materialized => ({
+            materialized,
+            enable: this.selectionManager.checked[materialized],
+        }));
         const resp = await this.currentUser.authenticatedAJAX({
             url,
             type: 'PUT',
@@ -100,12 +215,21 @@ export default class GuidNodePackage extends Controller {
                 'Content-Type': 'application/json',
             },
             data: JSON.stringify({
-                addons: {
-                    iqbrims: {
-                        enable: false,
+                node: {
+                    creator: {
+                        name: this.creatorName,
+                        affiliation: this.creatorAffiliationName,
                     },
+                    description: this.projectDescription,
+                    license: this.license,
+                    category: this.category,
+                },
+                addons: {
                     weko: {
                         enable: false,
+                    },
+                    osfstorage: {
+                        files,
                     },
                 },
                 wiki: {
@@ -131,12 +255,15 @@ export default class GuidNodePackage extends Controller {
             type: 'GET',
             xhrFields: { withCredentials: true },
         });
-        const { state } = resp;
-        if (state === 'SUCCESS') {
+        const progress = resp as ExportingProgress;
+        if (progress.state === 'SUCCESS') {
             this.set('exporting', false);
+            if (progress.info && progress.info.file_url) {
+                window.location.href = progress.info.file_url;
+            }
             return;
         }
-        if (state === 'FAILURE') {
+        if (progress.state === 'FAILURE') {
             this.set('exporting', false);
             const { error } = resp;
             this.toast.error(error.toString());

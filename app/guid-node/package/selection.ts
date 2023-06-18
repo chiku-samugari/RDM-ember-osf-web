@@ -8,8 +8,13 @@ export class SelectionManager {
     checked: Checked = {};
 
     isChecked(item: File) {
-        const v = this.checked[item.get('materializedPath')];
+        const materializedPath = item.get('materializedPath');
+        const v = this.checked[materializedPath];
         if (v === undefined) {
+            if (materializedPath === '/.weko/') {
+                // .weko folder is not selected by default
+                return false;
+            }
             return true;
         }
         return v;

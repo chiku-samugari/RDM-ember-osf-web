@@ -1848,7 +1848,7 @@ metadata:
         next_button: '次へ'
         previous_button: '前へ'
         files:
-            description: 'エクスポートするファイル/フォルダと、その他のデータを選択してください。'
+            description: 'エクスポートするファイル/フォルダを選択してください。'
             notice: '外部ストレージのアカウント情報はエクスポートされません。'
             wiki: 'Wiki'
             comment: 'コメント'

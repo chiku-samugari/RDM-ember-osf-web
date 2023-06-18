@@ -1845,3 +1845,21 @@ metadata:
         page_title: 'Export Project'
         header: 'Export Project'
         export_button: 'Export'
+        next_button: 'Next'
+        previous_button: 'Previous'
+        files:
+            description: 'Select the file/folder to be exported.'
+            notice: 'Account information for external storage is not exported.'
+            wiki: 'Wiki'
+            comment: 'Comment'
+            log: 'Action Logs'
+        project_info:
+            description: 'Review/modify your project information.'
+            creator: 'Creator'
+            creator_affiliation: 'Affiliation of the creator'
+            category: 'Category'
+            project_description: 'Description of Project'
+            license: 'License Information'
+        export_target:
+            description: 'Select the destination for export.'
+            weko: 'WEKO'

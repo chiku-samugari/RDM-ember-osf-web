@@ -18,6 +18,11 @@
             {{#if this.phaseProjectInfo}}
                 <GuidNode::Package::-Components::ProjectInfo
                     @node={{this.node}}
+                    @creatorName={{this.creatorName}}
+                    @creatorAffiliationName={{this.creatorAffiliationName}}
+                    @category={{this.category}}
+                    @projectDescription={{this.projectDescription}}
+                    @license={{this.license}}
                 />
             {{/if}}
             {{#if this.phaseExportTarget}}

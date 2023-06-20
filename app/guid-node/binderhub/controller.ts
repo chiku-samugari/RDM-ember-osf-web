@@ -1,3 +1,4 @@
+import ArrayProxy from '@ember/array/proxy';
 import Controller from '@ember/controller';
 import EmberError from '@ember/error';
 import { action, computed } from '@ember/object';
@@ -10,13 +11,15 @@ import DS from 'ember-data';
 import Intl from 'ember-intl/services/intl';
 import { getContext } from 'ember-osf-web/guid-node/binderhub/-components/jupyter-servers-list/component';
 import BinderHubConfigModel from 'ember-osf-web/models/binderhub-config';
-import FileModel from 'ember-osf-web/models/file';
+import FileProviderModel from 'ember-osf-web/models/file-provider';
 import Node from 'ember-osf-web/models/node';
 import Analytics from 'ember-osf-web/services/analytics';
 import CurrentUser from 'ember-osf-web/services/current-user';
 import StatusMessages from 'ember-osf-web/services/status-messages';
 import getHref from 'ember-osf-web/utils/get-href';
 import { addPathSegment } from 'ember-osf-web/utils/url-parts';
+import { WaterButlerFile } from 'ember-osf-web/utils/waterbutler/base';
+import { wrap } from 'ember-osf-web/utils/waterbutler/wrap';
 import Toast from 'ember-toastr/services/toast';
 
 export interface BuildFormValues {
@@ -54,7 +57,7 @@ export default class GuidNodeBinderHub extends Controller {
 
     isPageDirty = false;
 
-    configFolder: FileModel | null = null;
+    configFolder: WaterButlerFile | null = null;
 
     configCache?: DS.PromiseObject<BinderHubConfigModel>;
 
@@ -162,29 +165,26 @@ export default class GuidNodeBinderHub extends Controller {
             throw new EmberError('Illegal state');
         }
         const allProviders = await this.node.get('files');
-        const providers = allProviders.filter(f => f.name === 'osfstorage');
-        if (providers.length === 0) {
-            throw new EmberError('Illegal state');
-        }
-        const defaultStorage = await providers[0].get('rootFolder');
+        const provider = this.getDefaultStorage(allProviders);
+        const defaultStorage = await wrap(this.currentUser, provider);
         if (!defaultStorage) {
             throw new EmberError('Illegal state');
         }
-        const files = await defaultStorage.get('files');
+        const files = await defaultStorage.files;
         const configFolders = files.filter(file => file.name === '.binder');
         if (configFolders.length === 0) {
-            const links = providers[0].get('links');
+            const links = provider.get('links');
             const link = links.new_folder;
             if (!link) {
                 throw new EmberError('Illegal state');
             }
-            await this.currentUser.authenticatedAJAX({
+            await this.wbAuthenticatedAJAX({
                 url: `${getHref(link)}&name=.binder`,
                 type: 'PUT',
                 xhrFields: { withCredentials: true },
             });
             await defaultStorage.reload();
-            const filesUpdated = await defaultStorage.get('files');
+            const filesUpdated = await defaultStorage.files;
             const configFoldersUpdated = filesUpdated.filter(file => file.name === '.binder');
             if (configFoldersUpdated.length === 0) {
                 throw new EmberError('Illegal state');
@@ -193,6 +193,28 @@ export default class GuidNodeBinderHub extends Controller {
             return;
         }
         this.set('configFolder', configFolders[0]);
+    }
+
+    getDefaultStorage(allProviders: ArrayProxy<FileProviderModel>): FileProviderModel {
+        const providers = allProviders.filter(f => f.name === 'osfstorage');
+        if (providers.length > 0) {
+            return providers[0];
+        }
+        const instProviders = allProviders.filter(f => f.forInstitutions);
+        if (instProviders.length === 0) {
+            throw new EmberError('No default storages');
+        }
+        // Sort storages by name
+        instProviders.sort((a, b) => {
+            if (a.name < b.name) {
+                return -1;
+            }
+            if (a.name > b.name) {
+                return 1;
+            }
+            return 0;
+        });
+        return instProviders[0];
     }
 
     async generatePersonalToken() {
@@ -288,8 +310,11 @@ export default class GuidNodeBinderHub extends Controller {
         if (!this.node) {
             throw new EmberError('Illegal config');
         }
+        if (!this.configFolder) {
+            throw new EmberError('Illegal config');
+        }
         const nodeUrl = this.node.links.html as string;
-        const storageUrl = addPathSegment(nodeUrl, 'osfstorage');
+        const storageUrl = addPathSegment(nodeUrl, this.configFolder.provider);
         const encodedNodeUrl = encodeURIComponent(storageUrl);
         return {
             providerPrefix: 'rdm',
@@ -378,6 +403,11 @@ export default class GuidNodeBinderHub extends Controller {
         }
         ourl.search = `?${osearch.toString()}`;
         return ourl.href;
+    }
+
+    async wbAuthenticatedAJAX(ajaxOptions: JQuery.AjaxSettings) {
+        const r = await this.currentUser.authenticatedAJAX(ajaxOptions);
+        return r;
     }
 }
 

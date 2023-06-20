@@ -447,7 +447,7 @@ export default class JupyterServersList extends Component {
         if (!this.node) {
             return false;
         }
-        const m = server.name.match(/^(.+)-osfstorage-(.+)$/);
+        const m = server.name.match(/^(.+)-([a-z0-9]+)-(.+)$/);
         if (!m) {
             return false;
         }

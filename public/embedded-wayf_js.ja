@@ -760,6 +760,12 @@ var wayf_idps = {
 		search:["https://niph.ex-tic.com/auth/gakunin/saml2/assertions", "関東", "国立保健医療科学院", "National Institute of Public Health", "国立保健医療科学院"],
 		SAML1SSOurl:"https://no.saml1.sso.url.defined.com/error"
 		},
+	"https://nipr.ex-tic.com/auth/gakunin/saml2/assertions":{
+		type:"kanto",
+		name:"国立極地研究所",
+		search:["https://nipr.ex-tic.com/auth/gakunin/saml2/assertions", "関東", "国立極地研究所", "National Institute of Polar Research", "国立極地研究所"],
+		SAML1SSOurl:"https://no.saml1.sso.url.defined.com/error"
+		},
 	"https://kokugakuin.ex-tic.com/auth/gakunin/saml2/assertions":{
 		type:"kanto",
 		name:"國學院大學",
@@ -770,6 +776,24 @@ var wayf_idps = {
 		type:"kanto",
 		name:"駿河台大学",
 		search:["https://suidp.ex-tic.com/auth/gakunin/saml2/assertions", "関東", "駿河台大学", "Surugadai University", "駿河台大学"],
+		SAML1SSOurl:"https://no.saml1.sso.url.defined.com/error"
+		},
+	"https://twmu.ex-tic.com/auth/gakunin/saml2/assertions":{
+		type:"kanto",
+		name:"東京女子医科大学",
+		search:["https://twmu.ex-tic.com/auth/gakunin/saml2/assertions", "関東", "東京女子医科大学", "Tokyo Women\'s Medical University", "東京女子医科大学"],
+		SAML1SSOurl:"https://no.saml1.sso.url.defined.com/error"
+		},
+	"https://libidp.kuhs.ac.jp/idp/shibboleth":{
+		type:"kanto",
+		name:"神奈川県立保健福祉大学",
+		search:["https://libidp.kuhs.ac.jp/idp/shibboleth", "関東", "神奈川県立保健福祉大学", "Kanagawa University of Human Services", "神奈川県立保健福祉大学"],
+		SAML1SSOurl:"https://libidp.kuhs.ac.jp/idp/profile/Shibboleth/SSO"
+		},
+	"https://nijl.ex-tic.com/auth/gakunin/saml2/assertions":{
+		type:"kanto",
+		name:"国文学研究資料館",
+		search:["https://nijl.ex-tic.com/auth/gakunin/saml2/assertions", "関東", "国文学研究資料館", "National Institute of Japanese Literature", "国文学研究資料館"],
 		SAML1SSOurl:"https://no.saml1.sso.url.defined.com/error"
 		},
 	"https://fed.mie-u.ac.jp/idp":{
@@ -1336,6 +1360,12 @@ var wayf_idps = {
 		search:["https://bukkyouniv.ex-tic.com/auth/gakunin/saml2/assertions", "近畿", "佛教大学", "Bukkyo University", "佛教大学"],
 		SAML1SSOurl:"https://no.saml1.sso.url.defined.com/error"
 		},
+	"https://idp.osaka-dent.ac.jp/idp/shibboleth":{
+		type:"kinki",
+		name:"大阪歯科大学",
+		search:["https://idp.osaka-dent.ac.jp/idp/shibboleth", "近畿", "大阪歯科大学", "Osaka Dental University", "大阪歯科大学"],
+		SAML1SSOurl:"https://idp.osaka-dent.ac.jp/idp/profile/Shibboleth/SSO"
+		},
 	"https://idp.hiroshima-u.ac.jp/idp/shibboleth":{
 		type:"chugoku",
 		name:"広島大学",
@@ -1815,12 +1845,6 @@ var wayf_idps = {
 		name:"KAGRA",
 		search:["https://shibbi.pki.itc.u-tokyo.ac.jp/idp/shibboleth", "その他", "KAGRA", "KAGRA", "KAGRA"],
 		SAML1SSOurl:"https://shibbi.pki.itc.u-tokyo.ac.jp/idp/profile/Shibboleth/SSO"
-		},
-	"https://nipr.ex-tic.com/auth/gakunin/saml2/assertions":{
-		type:"others",
-		name:"国立極地研究所",
-		search:["https://nipr.ex-tic.com/auth/gakunin/saml2/assertions", "その他", "国立極地研究所", "National Institute of Polar Research", "国立極地研究所"],
-		SAML1SSOurl:"https://no.saml1.sso.url.defined.com/error"
 		} };
 var wayf_hint_list = [  ];
 var inc_search_list = [];
@@ -2410,7 +2434,7 @@ function decodeBase64(input) {
 			+ '&amp;shire=' + encodeURIComponent(wayf_sp_samlACURL)
 			+ '&amp;target=' + encodeURIComponent(wayf_return_url);
 			
-			form_start = '<form id="IdPList" name="IdPList" method="post" target="_parent" onSubmit="return submitForm()" action="' + wayf_authReq_URL + '&amp;time=1686705660'
+			form_start = '<form id="IdPList" name="IdPList" method="post" target="_parent" onSubmit="return submitForm()" action="' + wayf_authReq_URL + '&amp;time=1690281279'
 			+ '">';
 		}
 		
@@ -3757,6 +3781,17 @@ function decodeBase64(input) {
 				dispDefault = '国立保健医療科学院';
 			}
 			pushIncSearchList('https://niph.ex-tic.com/auth/gakunin/saml2/assertions');
+		}		if (last_idp == 'https://nipr.ex-tic.com/auth/gakunin/saml2/assertions'){
+			dispDefault = '国立極地研究所';
+		}		if (isAllowedType('https://nipr.ex-tic.com/auth/gakunin/saml2/assertions','kanto') && isAllowedIdP('https://nipr.ex-tic.com/auth/gakunin/saml2/assertions')){
+			if (
+				"-" == "-" 
+				&& typeof(wayf_default_idp) != "undefined"
+				&& wayf_default_idp == "https://nipr.ex-tic.com/auth/gakunin/saml2/assertions"
+				){
+				dispDefault = '国立極地研究所';
+			}
+			pushIncSearchList('https://nipr.ex-tic.com/auth/gakunin/saml2/assertions');
 		}		if (last_idp == 'https://kokugakuin.ex-tic.com/auth/gakunin/saml2/assertions'){
 			dispDefault = '國學院大學';
 		}		if (isAllowedType('https://kokugakuin.ex-tic.com/auth/gakunin/saml2/assertions','kanto') && isAllowedIdP('https://kokugakuin.ex-tic.com/auth/gakunin/saml2/assertions')){
@@ -3779,6 +3814,39 @@ function decodeBase64(input) {
 				dispDefault = '駿河台大学';
 			}
 			pushIncSearchList('https://suidp.ex-tic.com/auth/gakunin/saml2/assertions');
+		}		if (last_idp == 'https://twmu.ex-tic.com/auth/gakunin/saml2/assertions'){
+			dispDefault = '東京女子医科大学';
+		}		if (isAllowedType('https://twmu.ex-tic.com/auth/gakunin/saml2/assertions','kanto') && isAllowedIdP('https://twmu.ex-tic.com/auth/gakunin/saml2/assertions')){
+			if (
+				"-" == "-" 
+				&& typeof(wayf_default_idp) != "undefined"
+				&& wayf_default_idp == "https://twmu.ex-tic.com/auth/gakunin/saml2/assertions"
+				){
+				dispDefault = '東京女子医科大学';
+			}
+			pushIncSearchList('https://twmu.ex-tic.com/auth/gakunin/saml2/assertions');
+		}		if (last_idp == 'https://libidp.kuhs.ac.jp/idp/shibboleth'){
+			dispDefault = '神奈川県立保健福祉大学';
+		}		if (isAllowedType('https://libidp.kuhs.ac.jp/idp/shibboleth','kanto') && isAllowedIdP('https://libidp.kuhs.ac.jp/idp/shibboleth')){
+			if (
+				"-" == "-" 
+				&& typeof(wayf_default_idp) != "undefined"
+				&& wayf_default_idp == "https://libidp.kuhs.ac.jp/idp/shibboleth"
+				){
+				dispDefault = '神奈川県立保健福祉大学';
+			}
+			pushIncSearchList('https://libidp.kuhs.ac.jp/idp/shibboleth');
+		}		if (last_idp == 'https://nijl.ex-tic.com/auth/gakunin/saml2/assertions'){
+			dispDefault = '国文学研究資料館';
+		}		if (isAllowedType('https://nijl.ex-tic.com/auth/gakunin/saml2/assertions','kanto') && isAllowedIdP('https://nijl.ex-tic.com/auth/gakunin/saml2/assertions')){
+			if (
+				"-" == "-" 
+				&& typeof(wayf_default_idp) != "undefined"
+				&& wayf_default_idp == "https://nijl.ex-tic.com/auth/gakunin/saml2/assertions"
+				){
+				dispDefault = '国文学研究資料館';
+			}
+			pushIncSearchList('https://nijl.ex-tic.com/auth/gakunin/saml2/assertions');
 		}		if (last_idp == 'https://fed.mie-u.ac.jp/idp'){
 			dispDefault = '三重大学';
 		}		if (isAllowedType('https://fed.mie-u.ac.jp/idp','chubu') && isAllowedIdP('https://fed.mie-u.ac.jp/idp')){
@@ -4813,6 +4881,17 @@ function decodeBase64(input) {
 				dispDefault = '佛教大学';
 			}
 			pushIncSearchList('https://bukkyouniv.ex-tic.com/auth/gakunin/saml2/assertions');
+		}		if (last_idp == 'https://idp.osaka-dent.ac.jp/idp/shibboleth'){
+			dispDefault = '大阪歯科大学';
+		}		if (isAllowedType('https://idp.osaka-dent.ac.jp/idp/shibboleth','kinki') && isAllowedIdP('https://idp.osaka-dent.ac.jp/idp/shibboleth')){
+			if (
+				"-" == "-" 
+				&& typeof(wayf_default_idp) != "undefined"
+				&& wayf_default_idp == "https://idp.osaka-dent.ac.jp/idp/shibboleth"
+				){
+				dispDefault = '大阪歯科大学';
+			}
+			pushIncSearchList('https://idp.osaka-dent.ac.jp/idp/shibboleth');
 		}		if (last_idp == 'https://idp.hiroshima-u.ac.jp/idp/shibboleth'){
 			dispDefault = '広島大学';
 		}		if (isAllowedType('https://idp.hiroshima-u.ac.jp/idp/shibboleth','chugoku') && isAllowedIdP('https://idp.hiroshima-u.ac.jp/idp/shibboleth')){
@@ -5693,17 +5772,6 @@ function decodeBase64(input) {
 				dispDefault = 'KAGRA';
 			}
 			pushIncSearchList('https://shibbi.pki.itc.u-tokyo.ac.jp/idp/shibboleth');
-		}		if (last_idp == 'https://nipr.ex-tic.com/auth/gakunin/saml2/assertions'){
-			dispDefault = '国立極地研究所';
-		}		if (isAllowedType('https://nipr.ex-tic.com/auth/gakunin/saml2/assertions','others') && isAllowedIdP('https://nipr.ex-tic.com/auth/gakunin/saml2/assertions')){
-			if (
-				"-" == "-" 
-				&& typeof(wayf_default_idp) != "undefined"
-				&& wayf_default_idp == "https://nipr.ex-tic.com/auth/gakunin/saml2/assertions"
-				){
-				dispDefault = '国立極地研究所';
-			}
-			pushIncSearchList('https://nipr.ex-tic.com/auth/gakunin/saml2/assertions');
 		}		if (wayf_additional_idps.length > 0){
 			var listcnt = inc_search_list.length;
 			

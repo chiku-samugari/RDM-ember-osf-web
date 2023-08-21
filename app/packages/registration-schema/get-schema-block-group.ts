@@ -51,6 +51,7 @@ export function getSchemaBlockGroups(blocks: SchemaBlock[] | undefined) {
             case 'date-input':
             case 'file-capacity-input':
             case 'file-creators-input':
+            case 'file-title-input':
             case 'file-url-input':
             case 'file-institution-ja-input':
             case 'file-institution-en-input':

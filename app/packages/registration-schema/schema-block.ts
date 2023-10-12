@@ -12,6 +12,10 @@ export type SchemaBlockType =
     'single-select-input' |
     'select-input-option' |
     'select-other-option' |
+    'japan-grant-number-input' |
+    'funding-stream-code-input' |
+    'jgn-program-name-ja-input' |
+    'jgn-program-name-en-input' |
     'e-rad-award-funder-input' |
     'e-rad-award-number-input' |
     'e-rad-award-title-ja-input' |
@@ -27,7 +31,8 @@ export type SchemaBlockType =
     'file-creators-input' |
     'file-url-input' |
     'file-institution-ja-input' |
-    'file-institution-en-input';
+    'file-institution-en-input' |
+    'file-institution-id-input';
 
 export interface SchemaBlock {
     id?: string;
@@ -40,4 +45,6 @@ export interface SchemaBlock {
     required?: boolean;
     default?: boolean;
     index?: number;
+    pattern?: string;
+    spaceNormalization?: boolean;
 }

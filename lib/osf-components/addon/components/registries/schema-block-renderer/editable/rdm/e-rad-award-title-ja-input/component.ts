@@ -21,15 +21,25 @@ export default class ERadAwardTitleJaInput extends Component {
     valuePath!: string;
     onInput!: () => void;
     onMetadataInput!: () => void;
+    @alias('schemaBlock.spaceNormalization')
+    spaceNormalization!: boolean;
+
+    normalize(value: string) {
+        if (this.spaceNormalization) {
+            return value.replace(/\s+/g, ' ').trim();
+        }
+        return value;
+    }
 
     @action
     onInput2() {
-        const ja = this.changeset.get(this.valuePath);
+        const ja = this.normalize(this.changeset.get(this.valuePath));
         const en = this.changeset.get(
             this.draftManager.getResponseKeyByBlockType('e-rad-award-title-en-input'),
         );
         this.metadataChangeset.set('title', `${ja} (${en})`);
         this.onMetadataInput();
+        this.changeset.set(this.valuePath, ja);
         this.onInput();
     }
 }

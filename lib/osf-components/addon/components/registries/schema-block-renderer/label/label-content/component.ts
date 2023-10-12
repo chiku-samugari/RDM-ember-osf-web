@@ -39,4 +39,24 @@ export default class LabelContent extends Component {
         }
         return texts[1];
     }
+
+    @computed('schemaBlock')
+    get localizedHelpText() {
+        const text = this.schemaBlock.helpText;
+        if (!text) {
+            return text;
+        }
+        return this.getLocalizedText(text);
+    }
+
+    getLocalizedText(text: string) {
+        if (!text.includes('|')) {
+            return text;
+        }
+        const texts = text.split('|');
+        if (this.intl.locale.includes('ja')) {
+            return texts[0];
+        }
+        return texts[1];
+    }
 }

@@ -12,6 +12,7 @@ import { layout } from 'ember-osf-web/decorators/component';
 import NodeModel from 'ember-osf-web/models/node';
 import pathJoin from 'ember-osf-web/utils/path-join';
 
+import MetadataNodeProjectModel from 'ember-osf-web/models/metadata-node-project';
 import DraftRegistrationManager from 'registries/drafts/draft/draft-registration-manager';
 import styles from './styles';
 import template from './template';
@@ -26,7 +27,7 @@ interface FileMetadataEntity {
 
 interface FileMetadata {
     path: string;
-    urlpath: string;
+    urlpath: string | null;
     metadata: {
         [key: string]: FileMetadataEntity,
     };
@@ -34,13 +35,19 @@ interface FileMetadata {
 
 interface FileEntry {
     path: string;
+    parts: string[];
+    lastPart: string;
+    lastPartDepth: number;
     folder: boolean;
     title: string | null;
     url: string | null;
     fileUrl: string | null;
     manager: string | null;
-    canMoveLower: boolean;
-    canMoveUpper: boolean;
+    metadata: FileMetadata | null;
+    added: boolean;
+    style: string;
+    visible: boolean;
+    folderExpanded: boolean;
 }
 
 @layout(template, styles)
@@ -51,11 +58,17 @@ export default class FileMetadataInput extends Component {
     // Required param
     changeset!: ChangesetDef;
     node!: NodeModel;
+    metadataNodeProject!: MetadataNodeProjectModel;
     draftManager!: DraftRegistrationManager;
 
     @alias('schemaBlock.registrationResponseKey')
     valuePath!: string;
     onInput!: () => void;
+
+    @alias('schemaBlock.schema.id')
+    schemaId!: any;
+
+    folderExpands: {[key: string]: boolean} = {};
 
     didReceiveAttrs() {
         assert(
@@ -70,6 +83,16 @@ export default class FileMetadataInput extends Component {
             'Registries::SchemaBlockRenderer::Editable::Rdm::FileMetadataInput requires a valuePath to render',
             Boolean(this.valuePath),
         );
+        const paths = this.get('projectFilePaths');
+        const folderExpands = this.get('folderExpands');
+        if (!Object.values(folderExpands).length) {
+            paths.forEach(path => {
+                if (path.endsWith('/') && path.split('/').length === 2) {
+                    folderExpands[path] = true;
+                }
+            });
+            this.set('folderExpands', folderExpands);
+        }
     }
 
     @computed('node')
@@ -83,60 +106,124 @@ export default class FileMetadataInput extends Component {
         if (!value) {
             return [];
         }
-        return JSON.parse(value) as FileMetadata[];
+        const metadatas: FileMetadata[] = JSON.parse(value);
+        metadatas.sort((a, b) => a.path.localeCompare(b.path));
+        return metadatas;
     }
 
-    @computed('fileMetadatas')
+    @computed('metadataNodeProject')
+    get projectFileMetadata(): FileMetadata[] {
+        const res: FileMetadata[] = [];
+        this.metadataNodeProject.files.forEach(entry => {
+            const item = entry.items.find((it: any) => it.schema === this.schemaId);
+            if (item) {
+                res.push({
+                    path: entry.path,
+                    urlpath: entry.urlpath,
+                    metadata: item.data,
+                });
+            }
+        });
+        return res;
+    }
+
+    @computed('projectFileMetadata')
+    get projectFilePaths(): string[] {
+        const projectFileMetadatas = this.get('projectFileMetadata');
+        const pathSet = new Set();
+        projectFileMetadatas.forEach(projectFileMetadata => {
+            let path = '';
+            const parts = projectFileMetadata.path.split('/');
+            parts.forEach((part, i) => {
+                if (!part.length) {
+                    return;
+                }
+                path += part;
+                if (i + 1 < parts.length) {
+                    path += '/';
+                }
+                pathSet.add(path);
+            });
+        });
+        return Array.from(pathSet).sort((a, b) => a.localeCompare(b));
+    }
+
+    @computed('fileMetadatas', 'projectFileMetadata', 'projectFilePaths', 'folderExpands')
     get fileEntries(): FileEntry[] {
-        const metadatas = this.get('fileMetadatas');
-        return metadatas.map((metadata, index) => ({
-            path: metadata.path,
-            folder: metadata.path.match(/.+\/$/) !== null,
-            title: this.extractTitleFromMetadata(metadata),
-            manager: this.extractManagerFromMetadata(metadata),
-            url: this.extractUrlFromMetadata(metadata),
-            fileUrl: `${pathJoin(baseURL, metadata.urlpath)}#edit-metadata`,
-            canMoveLower: index < metadatas.length - 1,
-            canMoveUpper: index > 0,
-        }) as FileEntry);
+        const metadataMap: {[key: string]: FileMetadata} = {};
+        this.get('fileMetadatas').forEach(metadata => {
+            metadataMap[metadata.path] = metadata;
+        });
+        const projectFileMetadataMap: {[key: string]: FileMetadata} = {};
+        this.get('projectFileMetadata').forEach(projectFileMetadata => {
+            projectFileMetadataMap[projectFileMetadata.path] = projectFileMetadata;
+        });
+        const paths = this.get('projectFilePaths');
+        const folderExpands = this.get('folderExpands');
+        const res = paths.map(path => {
+            const metadata = metadataMap[path] || projectFileMetadataMap[path];
+            const parts = path.split('/');
+            if (!parts[parts.length - 1].length) {
+                parts.pop();
+            }
+            const folder = path.match(/.+\/$/) !== null;
+            // 18
+            return {
+                path,
+                parts,
+                lastPart: parts[parts.length - 1],
+                lastPartDepth: parts.length,
+                folder,
+                title: metadata ? this.extractTitleFromMetadata(metadata) : null,
+                manager: metadata ? this.extractManagerFromMetadata(metadata) : null,
+                url: metadata ? this.extractUrlFromMetadata(metadata) : null,
+                fileUrl: metadata && metadata.urlpath ? `${pathJoin(baseURL, metadata.urlpath)}#edit-metadata` : null,
+                metadata,
+                added: metadataMap[path] != null,
+                hasProject: projectFileMetadataMap[path] != null,
+                style: `margin: 0 0 0 ${parts.length * 16 + (folder ? 0 : 18)}px`,
+                visible: [...parts.slice(0, parts.length - 1).keys()]
+                    .every(i => folderExpands[`${parts.slice(0, i + 1).join('/')}/`]),
+                folderExpanded: folderExpands[path],
+            } as FileEntry;
+        });
+        return res;
     }
 
-    changeIndex(path: string, move: number) {
-        const value = this.changeset.get(this.valuePath);
-        if (!value) {
-            throw new Error('Invalid state');
-        }
-        const metadatas = JSON.parse(value) as FileMetadata[];
-        const oldMetadatas = metadatas
-            .map((metadata, index) => ({ path: metadata.path, index }))
-            .filter(metadata => metadata.path === path);
-        if (oldMetadatas.length === 0) {
-            throw new Error(`No item for ${path}`);
-        }
-        const oldIndex = oldMetadatas[0].index;
-        const newIndex = oldIndex + move;
-        metadatas.splice(newIndex, 0, metadatas.splice(oldIndex, 1)[0]);
+    saveFileMetadatas(metadatas: FileMetadata[]) {
+        metadatas.sort((a, b) => a.path.localeCompare(b.path));
         this.changeset.set(this.valuePath, JSON.stringify(metadatas));
         this.onInput();
         this.notifyPropertyChange('fileMetadatas');
     }
 
     @action
-    moveUpper(this: FileMetadataInput, entry: FileEntry) {
-        this.changeIndex(entry.path, -1);
+    addFileMetadata(this: FileMetadataInput, entry: FileEntry) {
+        const metadatas = this.get('fileMetadatas');
+        if (entry.metadata) {
+            metadatas.push(entry.metadata);
+        }
+        this.saveFileMetadatas(metadatas);
     }
 
     @action
-    moveLower(this: FileMetadataInput, entry: FileEntry) {
-        this.changeIndex(entry.path, 1);
+    removeFileMetadata(this: FileMetadataInput, entry: FileEntry) {
+        const metadatas = this.get('fileMetadatas');
+        const metadata = metadatas.find(m => m.path === entry.path);
+        if (metadata) {
+            metadatas.splice(metadatas.indexOf(metadata), 1);
+        }
+        this.saveFileMetadatas(metadatas);
     }
 
     @action
-    async reloadFileEntries() {
+    async reloadMetadata() {
         const draftRegistration = await this.draftManager.draftRegistration.reload();
         const { registrationResponses } = draftRegistration;
         this.draftManager.setChangesetValue(this.valuePath, registrationResponses[this.valuePath]);
         this.notifyPropertyChange('changeset');
+        await this.metadataNodeProject.reload();
+        this.notifyPropertyChange('metadataNodeProject');
     }
 
     extractTitleFromMetadata(metadata: FileMetadata): string | null {
@@ -187,5 +274,13 @@ export default class FileMetadataInput extends Component {
             return null;
         }
         return `${url.value}`;
+    }
+
+    @action
+    expandFolder(this: FileMetadataInput, entry: FileEntry, expand: boolean) {
+        const folderExpands = this.get('folderExpands');
+        folderExpands[entry.path] = expand;
+        this.set('folderExpands', folderExpands);
+        this.notifyPropertyChange('folderExpands');
     }
 }

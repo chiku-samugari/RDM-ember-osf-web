@@ -9,9 +9,11 @@
                 class='form-control'
                 onchange={{action this.destinationChanged value='target.value'}}
             >
-                <option selected={{if (eq this.destination 'weko') 'selected'}} value=''>
-                    {{t 'metadata.package.export_target.weko'}}
-                </option>
+                {{#each this.providers as |provider|}}
+                    <option selected={{if (eq this.destination provider.name) 'selected'}} value={{ provider.name }}>
+                        {{provider.name}}
+                    </option>
+                {{/each}}
             </select>
         </div>
     </div>

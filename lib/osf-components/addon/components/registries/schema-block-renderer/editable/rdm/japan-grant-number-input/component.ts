@@ -75,11 +75,15 @@ export default class JapanGrantNumberInput extends Component {
             }
             this.changeset.set(
                 this.draftManager.getResponseKeyByBlockType('e-rad-award-title-ja-input'),
-                eradRecord.kadai_mei,
+                this.getLocalizedTextFrom(eradRecord.kadai_mei, 0),
+            );
+            this.changeset.set(
+                this.draftManager.getResponseKeyByBlockType('e-rad-award-title-en-input'),
+                this.getLocalizedTextFrom(eradRecord.kadai_mei, 1),
             );
             this.metadataChangeset.set(
                 'title',
-                `${eradRecord.kadai_mei}`,
+                `${this.getLocalizedTextFrom(eradRecord.kadai_mei, 0)}`,
             );
         } else {
             kadaiId = option;
@@ -87,6 +91,23 @@ export default class JapanGrantNumberInput extends Component {
         this.changeset.set(this.valuePath, kadaiId);
         this.onMetadataInput();
         this.onInput();
+    }
+
+    getLocalizedTextFrom(text: string, index: number) {
+        const pos = text.lastIndexOf('|');
+        if (pos === -1) {
+            if (index === 1) {
+                return '';
+            }
+            return text;
+        }
+        if (index === 0) {
+            return text.substring(0, pos);
+        }
+        if (index === 1) {
+            return text.substring(pos + 1);
+        }
+        throw new Error(`Invalid index: ${index}`);
     }
 
     getResponseKeyByBlockType(name: string) {

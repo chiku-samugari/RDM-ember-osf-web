@@ -1234,11 +1234,11 @@ var wayf_idps = {
 		search:["https://idp.kobe-cufs.ac.jp/idp/shibboleth", "近畿", "神戸市外国語大学", "Kobe City University of Foreign Studies", "神戸市外国語大学"],
 		SAML1SSOurl:"https://idp.kobe-cufs.ac.jp/idp/profile/Shibboleth/SSO"
 		},
-	"https://sumsidp.shiga-med.ac.jp/idp/shibboleth":{
+	"https://mfa-idp.shiga-med.ac.jp/idp/shibboleth":{
 		type:"kinki",
-		name:"滋賀医科大学",
-		search:["https://sumsidp.shiga-med.ac.jp/idp/shibboleth", "近畿", "滋賀医科大学", "Shiga University of Medical Science", "滋賀医科大学"],
-		SAML1SSOurl:"https://sumsidp.shiga-med.ac.jp/idp/profile/Shibboleth/SSO"
+		name:"滋賀医科大学 (新IdP)",
+		search:["https://mfa-idp.shiga-med.ac.jp/idp/shibboleth", "近畿", "滋賀医科大学 (新IdP)", "Shiga University of Medical Science (new IdP)", "滋賀医科大学 (新IdP)"],
+		SAML1SSOurl:"https://mfa-idp.shiga-med.ac.jp/idp/profile/Shibboleth/SSO"
 		},
 	"https://idp.kobe-tokiwa.ac.jp/idp/shibboleth":{
 		type:"kinki",
@@ -1324,12 +1324,6 @@ var wayf_idps = {
 		search:["https://idp.wakayama-u.ac.jp/idp/shibboleth", "近畿", "和歌山大学", "Wakayama University", "和歌山大学"],
 		SAML1SSOurl:"https://idp.wakayama-u.ac.jp/idp/profile/Shibboleth/SSO"
 		},
-	"https://idp.21c.osakafu-u.ac.jp/idp/shibboleth":{
-		type:"kinki",
-		name:"大阪府立大学",
-		search:["https://idp.21c.osakafu-u.ac.jp/idp/shibboleth", "近畿", "大阪府立大学", "Osaka Prefecture University", "大阪府立大学"],
-		SAML1SSOurl:"https://idp.21c.osakafu-u.ac.jp/idp/profile/Shibboleth/SSO"
-		},
 	"https://dc-shibsv.shiga-u.ac.jp/idp/shibboleth/":{
 		type:"kinki",
 		name:"滋賀大学",
@@ -1390,11 +1384,11 @@ var wayf_idps = {
 		search:["https://idp.omu.ac.jp/idp/shibboleth", "近畿", "大阪公立大学", "Osaka Metropolitan University", "大阪公立大学"],
 		SAML1SSOurl:"https://idp.omu.ac.jp/idp/profile/Shibboleth/SSO"
 		},
-	"https://mfa-idp.shiga-med.ac.jp/idp/shibboleth":{
+	"https://sumsidp.shiga-med.ac.jp/idp/shibboleth":{
 		type:"kinki",
-		name:"滋賀医科大学 (移行中 新IdP)",
-		search:["https://mfa-idp.shiga-med.ac.jp/idp/shibboleth", "近畿", "滋賀医科大学 (移行中 新IdP)", "Shiga University of Medical Science (in prep)", "滋賀医科大学 (移行中 新IdP)"],
-		SAML1SSOurl:"https://mfa-idp.shiga-med.ac.jp/idp/profile/Shibboleth/SSO"
+		name:"滋賀医科大学",
+		search:["https://sumsidp.shiga-med.ac.jp/idp/shibboleth", "近畿", "滋賀医科大学", "Shiga University of Medical Science", "滋賀医科大学"],
+		SAML1SSOurl:"https://sumsidp.shiga-med.ac.jp/idp/profile/Shibboleth/SSO"
 		},
 	"https://bukkyouniv.ex-tic.com/auth/gakunin/saml2/assertions":{
 		type:"kinki",
@@ -2506,7 +2500,7 @@ function decodeBase64(input) {
 			+ '&amp;shire=' + encodeURIComponent(wayf_sp_samlACURL)
 			+ '&amp;target=' + encodeURIComponent(wayf_return_url);
 			
-			form_start = '<form id="IdPList" name="IdPList" method="post" target="_parent" onSubmit="return submitForm()" action="' + wayf_authReq_URL + '&amp;time=1704836175'
+			form_start = '<form id="IdPList" name="IdPList" method="post" target="_parent" onSubmit="return submitForm()" action="' + wayf_authReq_URL + '&amp;time=1706066951'
 			+ '">';
 		}
 		
@@ -4722,17 +4716,17 @@ function decodeBase64(input) {
 				dispDefault = '神戸市外国語大学';
 			}
 			pushIncSearchList('https://idp.kobe-cufs.ac.jp/idp/shibboleth');
-		}		if (last_idp == 'https://sumsidp.shiga-med.ac.jp/idp/shibboleth'){
-			dispDefault = '滋賀医科大学';
-		}		if (isAllowedType('https://sumsidp.shiga-med.ac.jp/idp/shibboleth','kinki') && isAllowedIdP('https://sumsidp.shiga-med.ac.jp/idp/shibboleth')){
+		}		if (last_idp == 'https://mfa-idp.shiga-med.ac.jp/idp/shibboleth'){
+			dispDefault = '滋賀医科大学 (新IdP)';
+		}		if (isAllowedType('https://mfa-idp.shiga-med.ac.jp/idp/shibboleth','kinki') && isAllowedIdP('https://mfa-idp.shiga-med.ac.jp/idp/shibboleth')){
 			if (
 				"-" == "-" 
 				&& typeof(wayf_default_idp) != "undefined"
-				&& wayf_default_idp == "https://sumsidp.shiga-med.ac.jp/idp/shibboleth"
+				&& wayf_default_idp == "https://mfa-idp.shiga-med.ac.jp/idp/shibboleth"
 				){
-				dispDefault = '滋賀医科大学';
+				dispDefault = '滋賀医科大学 (新IdP)';
 			}
-			pushIncSearchList('https://sumsidp.shiga-med.ac.jp/idp/shibboleth');
+			pushIncSearchList('https://mfa-idp.shiga-med.ac.jp/idp/shibboleth');
 		}		if (last_idp == 'https://idp.kobe-tokiwa.ac.jp/idp/shibboleth'){
 			dispDefault = '神戸常盤大学';
 		}		if (isAllowedType('https://idp.kobe-tokiwa.ac.jp/idp/shibboleth','kinki') && isAllowedIdP('https://idp.kobe-tokiwa.ac.jp/idp/shibboleth')){
@@ -4887,17 +4881,6 @@ function decodeBase64(input) {
 				dispDefault = '和歌山大学';
 			}
 			pushIncSearchList('https://idp.wakayama-u.ac.jp/idp/shibboleth');
-		}		if (last_idp == 'https://idp.21c.osakafu-u.ac.jp/idp/shibboleth'){
-			dispDefault = '大阪府立大学';
-		}		if (isAllowedType('https://idp.21c.osakafu-u.ac.jp/idp/shibboleth','kinki') && isAllowedIdP('https://idp.21c.osakafu-u.ac.jp/idp/shibboleth')){
-			if (
-				"-" == "-" 
-				&& typeof(wayf_default_idp) != "undefined"
-				&& wayf_default_idp == "https://idp.21c.osakafu-u.ac.jp/idp/shibboleth"
-				){
-				dispDefault = '大阪府立大学';
-			}
-			pushIncSearchList('https://idp.21c.osakafu-u.ac.jp/idp/shibboleth');
 		}		if (last_idp == 'https://dc-shibsv.shiga-u.ac.jp/idp/shibboleth/'){
 			dispDefault = '滋賀大学';
 		}		if (isAllowedType('https://dc-shibsv.shiga-u.ac.jp/idp/shibboleth/','kinki') && isAllowedIdP('https://dc-shibsv.shiga-u.ac.jp/idp/shibboleth/')){
@@ -5008,17 +4991,17 @@ function decodeBase64(input) {
 				dispDefault = '大阪公立大学';
 			}
 			pushIncSearchList('https://idp.omu.ac.jp/idp/shibboleth');
-		}		if (last_idp == 'https://mfa-idp.shiga-med.ac.jp/idp/shibboleth'){
-			dispDefault = '滋賀医科大学 (移行中 新IdP)';
-		}		if (isAllowedType('https://mfa-idp.shiga-med.ac.jp/idp/shibboleth','kinki') && isAllowedIdP('https://mfa-idp.shiga-med.ac.jp/idp/shibboleth')){
+		}		if (last_idp == 'https://sumsidp.shiga-med.ac.jp/idp/shibboleth'){
+			dispDefault = '滋賀医科大学';
+		}		if (isAllowedType('https://sumsidp.shiga-med.ac.jp/idp/shibboleth','kinki') && isAllowedIdP('https://sumsidp.shiga-med.ac.jp/idp/shibboleth')){
 			if (
 				"-" == "-" 
 				&& typeof(wayf_default_idp) != "undefined"
-				&& wayf_default_idp == "https://mfa-idp.shiga-med.ac.jp/idp/shibboleth"
+				&& wayf_default_idp == "https://sumsidp.shiga-med.ac.jp/idp/shibboleth"
 				){
-				dispDefault = '滋賀医科大学 (移行中 新IdP)';
+				dispDefault = '滋賀医科大学';
 			}
-			pushIncSearchList('https://mfa-idp.shiga-med.ac.jp/idp/shibboleth');
+			pushIncSearchList('https://sumsidp.shiga-med.ac.jp/idp/shibboleth');
 		}		if (last_idp == 'https://bukkyouniv.ex-tic.com/auth/gakunin/saml2/assertions'){
 			dispDefault = '佛教大学';
 		}		if (isAllowedType('https://bukkyouniv.ex-tic.com/auth/gakunin/saml2/assertions','kinki') && isAllowedIdP('https://bukkyouniv.ex-tic.com/auth/gakunin/saml2/assertions')){

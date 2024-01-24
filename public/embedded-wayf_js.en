@@ -1234,11 +1234,11 @@ var wayf_idps = {
 		search:["https://idp.kobe-cufs.ac.jp/idp/shibboleth", "Kinki", "Kobe City University of Foreign Studies", "Kobe City University of Foreign Studies", "神戸市外国語大学"],
 		SAML1SSOurl:"https://idp.kobe-cufs.ac.jp/idp/profile/Shibboleth/SSO"
 		},
-	"https://sumsidp.shiga-med.ac.jp/idp/shibboleth":{
+	"https://mfa-idp.shiga-med.ac.jp/idp/shibboleth":{
 		type:"kinki",
-		name:"Shiga University of Medical Science",
-		search:["https://sumsidp.shiga-med.ac.jp/idp/shibboleth", "Kinki", "Shiga University of Medical Science", "Shiga University of Medical Science", "滋賀医科大学"],
-		SAML1SSOurl:"https://sumsidp.shiga-med.ac.jp/idp/profile/Shibboleth/SSO"
+		name:"Shiga University of Medical Science (new IdP)",
+		search:["https://mfa-idp.shiga-med.ac.jp/idp/shibboleth", "Kinki", "Shiga University of Medical Science (new IdP)", "Shiga University of Medical Science (new IdP)", "滋賀医科大学 (新IdP)"],
+		SAML1SSOurl:"https://mfa-idp.shiga-med.ac.jp/idp/profile/Shibboleth/SSO"
 		},
 	"https://idp.kobe-tokiwa.ac.jp/idp/shibboleth":{
 		type:"kinki",
@@ -1324,12 +1324,6 @@ var wayf_idps = {
 		search:["https://idp.wakayama-u.ac.jp/idp/shibboleth", "Kinki", "Wakayama University", "Wakayama University", "和歌山大学"],
 		SAML1SSOurl:"https://idp.wakayama-u.ac.jp/idp/profile/Shibboleth/SSO"
 		},
-	"https://idp.21c.osakafu-u.ac.jp/idp/shibboleth":{
-		type:"kinki",
-		name:"Osaka Prefecture University",
-		search:["https://idp.21c.osakafu-u.ac.jp/idp/shibboleth", "Kinki", "Osaka Prefecture University", "Osaka Prefecture University", "大阪府立大学"],
-		SAML1SSOurl:"https://idp.21c.osakafu-u.ac.jp/idp/profile/Shibboleth/SSO"
-		},
 	"https://dc-shibsv.shiga-u.ac.jp/idp/shibboleth/":{
 		type:"kinki",
 		name:"Shiga University",
@@ -1390,11 +1384,11 @@ var wayf_idps = {
 		search:["https://idp.omu.ac.jp/idp/shibboleth", "Kinki", "Osaka Metropolitan University", "Osaka Metropolitan University", "大阪公立大学"],
 		SAML1SSOurl:"https://idp.omu.ac.jp/idp/profile/Shibboleth/SSO"
 		},
-	"https://mfa-idp.shiga-med.ac.jp/idp/shibboleth":{
+	"https://sumsidp.shiga-med.ac.jp/idp/shibboleth":{
 		type:"kinki",
-		name:"Shiga University of Medical Science (in prep)",
-		search:["https://mfa-idp.shiga-med.ac.jp/idp/shibboleth", "Kinki", "Shiga University of Medical Science (in prep)", "Shiga University of Medical Science (in prep)", "滋賀医科大学 (移行中 新IdP)"],
-		SAML1SSOurl:"https://mfa-idp.shiga-med.ac.jp/idp/profile/Shibboleth/SSO"
+		name:"Shiga University of Medical Science",
+		search:["https://sumsidp.shiga-med.ac.jp/idp/shibboleth", "Kinki", "Shiga University of Medical Science", "Shiga University of Medical Science", "滋賀医科大学"],
+		SAML1SSOurl:"https://sumsidp.shiga-med.ac.jp/idp/profile/Shibboleth/SSO"
 		},
 	"https://bukkyouniv.ex-tic.com/auth/gakunin/saml2/assertions":{
 		type:"kinki",
@@ -2506,7 +2500,7 @@ function decodeBase64(input) {
 			+ '&amp;shire=' + encodeURIComponent(wayf_sp_samlACURL)
 			+ '&amp;target=' + encodeURIComponent(wayf_return_url);
 			
-			form_start = '<form id="IdPList" name="IdPList" method="post" target="_parent" onSubmit="return submitForm()" action="' + wayf_authReq_URL + '&amp;time=1704836175'
+			form_start = '<form id="IdPList" name="IdPList" method="post" target="_parent" onSubmit="return submitForm()" action="' + wayf_authReq_URL + '&amp;time=1706066951'
 			+ '">';
 		}
 		
@@ -4722,17 +4716,17 @@ function decodeBase64(input) {
 				dispDefault = 'Kobe City University of Foreign Studies';
 			}
 			pushIncSearchList('https://idp.kobe-cufs.ac.jp/idp/shibboleth');
-		}		if (last_idp == 'https://sumsidp.shiga-med.ac.jp/idp/shibboleth'){
-			dispDefault = 'Shiga University of Medical Science';
-		}		if (isAllowedType('https://sumsidp.shiga-med.ac.jp/idp/shibboleth','kinki') && isAllowedIdP('https://sumsidp.shiga-med.ac.jp/idp/shibboleth')){
+		}		if (last_idp == 'https://mfa-idp.shiga-med.ac.jp/idp/shibboleth'){
+			dispDefault = 'Shiga University of Medical Science (new IdP)';
+		}		if (isAllowedType('https://mfa-idp.shiga-med.ac.jp/idp/shibboleth','kinki') && isAllowedIdP('https://mfa-idp.shiga-med.ac.jp/idp/shibboleth')){
 			if (
 				"-" == "-" 
 				&& typeof(wayf_default_idp) != "undefined"
-				&& wayf_default_idp == "https://sumsidp.shiga-med.ac.jp/idp/shibboleth"
+				&& wayf_default_idp == "https://mfa-idp.shiga-med.ac.jp/idp/shibboleth"
 				){
-				dispDefault = 'Shiga University of Medical Science';
+				dispDefault = 'Shiga University of Medical Science (new IdP)';
 			}
-			pushIncSearchList('https://sumsidp.shiga-med.ac.jp/idp/shibboleth');
+			pushIncSearchList('https://mfa-idp.shiga-med.ac.jp/idp/shibboleth');
 		}		if (last_idp == 'https://idp.kobe-tokiwa.ac.jp/idp/shibboleth'){
 			dispDefault = 'Kobe Tokiwa University';
 		}		if (isAllowedType('https://idp.kobe-tokiwa.ac.jp/idp/shibboleth','kinki') && isAllowedIdP('https://idp.kobe-tokiwa.ac.jp/idp/shibboleth')){
@@ -4887,17 +4881,6 @@ function decodeBase64(input) {
 				dispDefault = 'Wakayama University';
 			}
 			pushIncSearchList('https://idp.wakayama-u.ac.jp/idp/shibboleth');
-		}		if (last_idp == 'https://idp.21c.osakafu-u.ac.jp/idp/shibboleth'){
-			dispDefault = 'Osaka Prefecture University';
-		}		if (isAllowedType('https://idp.21c.osakafu-u.ac.jp/idp/shibboleth','kinki') && isAllowedIdP('https://idp.21c.osakafu-u.ac.jp/idp/shibboleth')){
-			if (
-				"-" == "-" 
-				&& typeof(wayf_default_idp) != "undefined"
-				&& wayf_default_idp == "https://idp.21c.osakafu-u.ac.jp/idp/shibboleth"
-				){
-				dispDefault = 'Osaka Prefecture University';
-			}
-			pushIncSearchList('https://idp.21c.osakafu-u.ac.jp/idp/shibboleth');
 		}		if (last_idp == 'https://dc-shibsv.shiga-u.ac.jp/idp/shibboleth/'){
 			dispDefault = 'Shiga University';
 		}		if (isAllowedType('https://dc-shibsv.shiga-u.ac.jp/idp/shibboleth/','kinki') && isAllowedIdP('https://dc-shibsv.shiga-u.ac.jp/idp/shibboleth/')){
@@ -5008,17 +4991,17 @@ function decodeBase64(input) {
 				dispDefault = 'Osaka Metropolitan University';
 			}
 			pushIncSearchList('https://idp.omu.ac.jp/idp/shibboleth');
-		}		if (last_idp == 'https://mfa-idp.shiga-med.ac.jp/idp/shibboleth'){
-			dispDefault = 'Shiga University of Medical Science (in prep)';
-		}		if (isAllowedType('https://mfa-idp.shiga-med.ac.jp/idp/shibboleth','kinki') && isAllowedIdP('https://mfa-idp.shiga-med.ac.jp/idp/shibboleth')){
+		}		if (last_idp == 'https://sumsidp.shiga-med.ac.jp/idp/shibboleth'){
+			dispDefault = 'Shiga University of Medical Science';
+		}		if (isAllowedType('https://sumsidp.shiga-med.ac.jp/idp/shibboleth','kinki') && isAllowedIdP('https://sumsidp.shiga-med.ac.jp/idp/shibboleth')){
 			if (
 				"-" == "-" 
 				&& typeof(wayf_default_idp) != "undefined"
-				&& wayf_default_idp == "https://mfa-idp.shiga-med.ac.jp/idp/shibboleth"
+				&& wayf_default_idp == "https://sumsidp.shiga-med.ac.jp/idp/shibboleth"
 				){
-				dispDefault = 'Shiga University of Medical Science (in prep)';
+				dispDefault = 'Shiga University of Medical Science';
 			}
-			pushIncSearchList('https://mfa-idp.shiga-med.ac.jp/idp/shibboleth');
+			pushIncSearchList('https://sumsidp.shiga-med.ac.jp/idp/shibboleth');
 		}		if (last_idp == 'https://bukkyouniv.ex-tic.com/auth/gakunin/saml2/assertions'){
 			dispDefault = 'Bukkyo University';
 		}		if (isAllowedType('https://bukkyouniv.ex-tic.com/auth/gakunin/saml2/assertions','kinki') && isAllowedIdP('https://bukkyouniv.ex-tic.com/auth/gakunin/saml2/assertions')){

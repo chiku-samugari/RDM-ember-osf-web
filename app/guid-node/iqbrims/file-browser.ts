@@ -167,7 +167,7 @@ export default class IQBRIMSFileBrowser extends EmberObject {
 
     @task
     prepareDefaultStorageFiles = task(function *(this: IQBRIMSFileBrowser, workingDirectory: File) {
-        let storageFiles: [File] = yield workingDirectory.get('files');
+        let storageFiles: [File] = yield workingDirectory.loadAll('files');
         let files = storageFiles.filter(f => f.name === this.folderName);
         if (files.length === 0) {
             yield this.createTargetDirectory.perform(workingDirectory);
@@ -177,7 +177,7 @@ export default class IQBRIMSFileBrowser extends EmberObject {
         }
         const targetDirectory = files[0];
         this.set('targetDirectory', targetDirectory);
-        const fileList: [File] = yield targetDirectory.get('files');
+        const fileList: [File] = yield targetDirectory.loadAll('files');
         const allFiles = fileList.filter(this.filterFiles);
         const indexFiles = fileList.filter(f => !this.filterFiles(f));
         this.set('indexFile', indexFiles.length > 0 ? indexFiles[0] : null);
@@ -208,7 +208,7 @@ export default class IQBRIMSFileBrowser extends EmberObject {
         const targetDirectory = files[0];
         this.set('gdTargetDirectory', targetDirectory);
         this.set('gdLoading', false);
-        const fileList: [File] = yield targetDirectory.get('files');
+        const fileList: [File] = yield targetDirectory.loadAll('files');
         const allFiles = fileList.filter(this.filterFiles);
         this.set('gdAllFiles', allFiles);
     });

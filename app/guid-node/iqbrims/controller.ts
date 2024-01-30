@@ -85,7 +85,7 @@ export default class GuidNodeIQBRIMS extends Controller {
 
     @task
     moveFilesInFolder = task(function *(this: GuidNodeIQBRIMS, folder: File) {
-        const files: [File] = yield folder.files;
+        const files: [File] = yield folder.loadAll('files');
         const path = `/${folder.name}/`;
         yield all(files.map(f => this.moveOnCurrentProjectTask.perform(f, 'iqbrims', path)));
     });
@@ -131,7 +131,7 @@ export default class GuidNodeIQBRIMS extends Controller {
         }
         const defaultStorage: File = yield defaultStorageProviders[0].get('rootFolder');
         this.set('defaultStorage', defaultStorage);
-        let storageFiles: [File] = yield defaultStorage.get('files');
+        let storageFiles: [File] = yield defaultStorage.loadAll('files');
         let files = storageFiles.filter(f => f.name === this.workingFolderName);
         if (files.length === 0) {
             yield this.createWorkingDirectory.perform(defaultStorageProviders[0]);

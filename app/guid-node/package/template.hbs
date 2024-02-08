@@ -15,19 +15,10 @@
                     @logEnabled={{this.logEnabled}}
                 />
             {{/if}}
-            {{#if this.phaseProjectInfo}}
-                <GuidNode::Package::-Components::ProjectInfo
-                    @node={{this.node}}
-                    @creatorName={{this.creatorName}}
-                    @creatorAffiliationName={{this.creatorAffiliationName}}
-                    @category={{this.category}}
-                    @projectDescription={{this.projectDescription}}
-                    @license={{this.license}}
-                />
-            {{/if}}
             {{#if this.phaseExportTarget}}
                 <GuidNode::Package::-Components::ExportTarget
                     @node={{this.node}}
+                    @destinationProvider={{this.destinationProvider}}
                 />
             {{/if}}
         {{/unless}}

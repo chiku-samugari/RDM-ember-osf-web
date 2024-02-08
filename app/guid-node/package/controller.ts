@@ -50,11 +50,7 @@ export default class GuidNodePackage extends Controller {
     commentEnabled = true;
     logEnabled = true;
 
-    editingCreatorName?: string;
-    editingCreatorAffiliationName?: string;
-    editingCategory?: string;
-    editingProjectDescription?: string;
-    editingLicense?: string;
+    destinationProvider = '';
 
     phase = 0;
 
@@ -64,13 +60,8 @@ export default class GuidNodePackage extends Controller {
     }
 
     @computed('phase')
-    get phaseProjectInfo() {
-        return this.phase === 1;
-    }
-
-    @computed('phase')
     get phaseExportTarget() {
-        return this.phase === 2;
+        return this.phase === 1;
     }
 
     @task
@@ -97,100 +88,6 @@ export default class GuidNodePackage extends Controller {
             });
     }
 
-    @computed('node', 'editingCreatorName')
-    get creatorName() {
-        if (this.editingCreatorName !== undefined) {
-            return this.editingCreatorName;
-        }
-        if (!this.node) {
-            return '';
-        }
-        return this.node.get('creator').get('fullName');
-    }
-
-    set creatorName(value: string) {
-        if (this.creatorName === value) {
-            return;
-        }
-        this.set('editingCreatorName', value);
-    }
-
-    @computed('node', 'editingCreatorAffiliationName')
-    get creatorAffiliationName() {
-        if (this.editingCreatorAffiliationName !== undefined) {
-            return this.editingCreatorAffiliationName;
-        }
-        if (!this.node) {
-            return '';
-        }
-        const employment = this.node.get('creator').get('employment');
-        if (!employment) {
-            return '';
-        }
-        return employment[0].institution;
-    }
-
-    set creatorAffiliationName(value: string) {
-        if (this.creatorAffiliationName === value) {
-            return;
-        }
-        this.set('editingCreatorAffiliationName', value);
-    }
-
-    @computed('node', 'editingCategory')
-    get category() {
-        if (this.editingCategory !== undefined) {
-            return this.editingCategory;
-        }
-        if (!this.node) {
-            return '';
-        }
-        return this.node.get('category').toString();
-    }
-
-    set category(value: string) {
-        if (this.category === value) {
-            return;
-        }
-        this.set('editingCategory', value);
-    }
-
-    @computed('node', 'editingProjectDescription')
-    get projectDescription() {
-        if (this.editingProjectDescription !== undefined) {
-            return this.editingProjectDescription;
-        }
-        if (!this.node) {
-            return '';
-        }
-        return this.node.get('description');
-    }
-
-    set projectDescription(value: string) {
-        if (this.projectDescription === value) {
-            return;
-        }
-        this.set('editingProjectDescription', value);
-    }
-
-    @computed('node', 'editingLicense')
-    get license() {
-        if (this.editingLicense !== undefined) {
-            return this.editingLicense;
-        }
-        if (!this.node) {
-            return '';
-        }
-        return this.node.get('license').get('name');
-    }
-
-    set license(value: string) {
-        if (this.license === value) {
-            return;
-        }
-        this.set('editingLicense', value);
-    }
-
     async performExport() {
         if (!this.node) {
             throw new Error('Node not loaded');
@@ -215,15 +112,6 @@ export default class GuidNodePackage extends Controller {
                 'Content-Type': 'application/json',
             },
             data: JSON.stringify({
-                node: {
-                    creator: {
-                        name: this.creatorName,
-                        affiliation: this.creatorAffiliationName,
-                    },
-                    description: this.projectDescription,
-                    license: this.license,
-                    category: this.category,
-                },
                 addons: {
                     weko: {
                         enable: false,
@@ -240,6 +128,9 @@ export default class GuidNodePackage extends Controller {
                 },
                 log: {
                     enable: this.logEnabled,
+                },
+                destination: {
+                    provider: this.destinationProvider,
                 },
             }),
         });
@@ -259,7 +150,7 @@ export default class GuidNodePackage extends Controller {
         if (progress.state === 'SUCCESS') {
             this.set('exporting', false);
             if (progress.info && progress.info.file_url) {
-                window.location.href = progress.info.file_url;
+                window.location.href = `${progress.info.file_url}#edit-metadata`;
             }
             return;
         }

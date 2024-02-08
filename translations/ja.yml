@@ -1865,4 +1865,3 @@ metadata:
             license: 'ライセンス'
         export_target:
             description: 'エクスポート先を選択してください。'
-            weko: 'WEKO'

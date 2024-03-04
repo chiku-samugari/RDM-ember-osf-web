@@ -97,8 +97,8 @@ module('Acceptance | guid-node/iqbrims', hooks => {
                     name,
                     dateModified: new Date(2022, 6, 17),
                     parentFolder: tempFolder,
-                    files: [],
                 },
+                'asFolder',
             );
         }
         osfstorage.rootFolder.update({
@@ -156,8 +156,8 @@ module('Acceptance | guid-node/iqbrims', hooks => {
                     name,
                     dateModified: new Date(2022, 6, 17),
                     parentFolder: tempFolder,
-                    files: [],
                 },
+                'asFolder',
             );
         }
         osfstorage.rootFolder.update({
@@ -217,8 +217,8 @@ module('Acceptance | guid-node/iqbrims', hooks => {
                     name,
                     dateModified: new Date(2022, 6, 17),
                     parentFolder: tempFolder,
-                    files: [],
                 },
+                'asFolder',
             );
         }
         osfstorage.rootFolder.update({
@@ -278,8 +278,8 @@ module('Acceptance | guid-node/iqbrims', hooks => {
                     name,
                     dateModified: new Date(2022, 6, 17),
                     parentFolder: tempFolder,
-                    files: [],
                 },
+                'asFolder',
             );
         }
         osfstorage.rootFolder.update({
@@ -339,8 +339,8 @@ module('Acceptance | guid-node/iqbrims', hooks => {
                     name,
                     dateModified: new Date(2022, 6, 17),
                     parentFolder: tempFolder,
-                    files: [],
                 },
+                'asFolder',
             );
         }
         osfstorage.rootFolder.update({
@@ -398,8 +398,8 @@ module('Acceptance | guid-node/iqbrims', hooks => {
                     name,
                     dateModified: new Date(2022, 6, 17),
                     parentFolder: tempFolder,
-                    files: [],
                 },
+                'asFolder',
             );
         }
         osfstorage.rootFolder.update({
@@ -457,8 +457,8 @@ module('Acceptance | guid-node/iqbrims', hooks => {
                     name,
                     dateModified: new Date(2022, 6, 17),
                     parentFolder: tempFolder,
-                    files: [],
                 },
+                'asFolder',
             );
         }
         osfstorage.rootFolder.update({

@@ -1,0 +1,118 @@
+<div local-class='package_editor'>
+    <div local-class='package_label'>
+        {{this.label}}
+    </div>
+    <div local-class='release_group'>
+        <div local-class='release_label'>
+            {{t 'binderhub.deployment.release'}}
+            <span>
+                {{fa-icon 'info-circle'}}
+                <BsTooltip>
+                    {{t 'binderhub.deployment.tooltip.release' }}
+                </BsTooltip>
+            </span>
+        </div>
+        <div local-class='release'>
+            {{#if (and this.releaseEditing this.node.userHasWritePermission)}}
+                <input
+                    name='release_name'
+                    class='input-release-name'
+                    placeholder={{t 'binderhub.deployment.placeholders.release'}}
+                    value={{this.release}}
+                    onkeyup={{action this.releaseKeyDown target=this}}
+                    type='text'
+                >
+                <button
+                    data-test-named-item-confirm
+                    type='button'
+                    class='btn btn-default'
+                    local-class='package_item_confirm'
+                    {{action this.confirmReleaseEdit target=this}}
+                >
+                    <i class='fa fa-check' />
+                </button>
+                <button
+                    data-test-named-item-cancel
+                    type='button'
+                    class='btn btn-default'
+                    local-class='package_item_cancel'
+                    {{action (mut this.releaseEditing) false}}
+                >
+                    <i class='fa fa-times' />
+                </button>
+            {{else}}
+                {{this.release}}
+                <button
+                    data-test-mpm-release-edit
+                    class='btn btn-link'
+                    local-class='edit_release_name'
+                    {{action (mut this.releaseEditing) true}}
+                >
+                    <i class='fa fa-edit'></i>
+                </button>
+            {{/if}}
+        </div>
+    </div>
+    <div local-class='products_group'>
+        <div local-class='products_label'>
+            {{t 'binderhub.deployment.products'}}
+            <span>
+                {{fa-icon 'info-circle'}}
+                <BsTooltip>
+                    {{t 'binderhub.deployment.tooltip.products' }}
+                </BsTooltip>
+            </span>
+        </div>
+        <div local-class='products_list'>
+            {{#each this.products as |pkg index|}}
+                {{#if (and (eq this.editing 'editing') (eq index this.editingIndex))}}
+                    <GuidNode::Binderhub::-Components::NamedItemEditor
+                        @name={{this.editingName}}
+                        @onConfirm={{action this.confirmEdit}}
+                        @onCancel={{action this.cancelEdit}}
+                    />
+                {{else}}
+                    <div local-class='package_item'>
+                        {{#if this.node.userHasWritePermission}}
+                            <button
+                                data-test-mpm-product-edit-item={{index}}
+                                {{action this.editProduct index target=this}}
+                            >
+                                {{pkg}}
+                            </button>
+                            <button
+                                data-test-mpm-product-delete-item={{index}}
+                                {{action this.removeProduct index target=this}}
+                            >
+                                <i class='fa fa-times' />
+                            </button>
+                        {{else}}
+                            {{pkg}}
+                        {{/if}}
+                    </div>
+                {{/if}}
+            {{/each}}
+            {{#if (and (eq this.editing 'editing') (eq this.editingIndex -1))}}
+                <GuidNode::Binderhub::-Components::NamedItemEditor
+                    @name={{this.editingName}}
+                    @onConfirm={{action this.confirmAdd}}
+                    @onCancel={{action this.cancelAdd}}
+                />
+            {{else}}
+                {{#if (and this.node.userHasWritePermission (not (eq this.editing 'editing')))}}
+                    <div local-class='package_add'>
+                        <button
+                            data-test-mpm-product-add
+                            type='button'
+                            class='btn btn-default'
+                            {{action this.addProduct target=this}}
+                        >
+                            <i class='fa fa-plus' />
+                            {{t 'binderhub.deployment.add_package'}}
+                        </button>
+                    </div>
+                {{/if}}
+            {{/if}}
+        </div>
+    </div>
+</div>

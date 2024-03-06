@@ -289,6 +289,7 @@ module('Acceptance | guid-node/binderhub', hooks => {
         assert.dom('[data-test-package-editor="conda"]').exists();
         assert.dom('[data-test-package-editor="pip"]').doesNotExist();
         assert.dom('[data-test-package-editor="rmran"]').doesNotExist();
+        assert.dom('[data-test-package-editor="mpm"]').doesNotExist();
 
         assert.equal(
             wbFileAjaxStub.callCount,
@@ -357,7 +358,7 @@ module('Acceptance | guid-node/binderhub', hooks => {
                         url: '#repo2docker#r-base',
                         name: 'Test Repo2Docker',
                         description: 'dummy description',
-                        packages: ['conda', 'rmran'],
+                        packages: ['conda', 'rmran', 'mpm'],
                     },
                 ],
             },
@@ -437,6 +438,7 @@ module('Acceptance | guid-node/binderhub', hooks => {
         assert.dom('[data-test-package-editor="conda"]').exists();
         assert.dom('[data-test-package-editor="pip"]').doesNotExist();
         assert.dom('[data-test-package-editor="rmran"]').exists();
+        assert.dom('[data-test-package-editor="mpm"]').exists();
 
         assert.equal(
             wbFileAjaxStub.callCount,
@@ -974,6 +976,259 @@ module('Acceptance | guid-node/binderhub', hooks => {
         assert.dom('[data-test-package-editor="conda"] button[data-test-package-edit-item]').exists();
         assert.dom('[data-test-package-editor="pip"] button[data-test-package-edit-item="0"]').exists();
         assert.dom('[data-test-package-editor="pip"] button[data-test-package-edit-item="1"]').doesNotExist();
+
+        sandbox.restore();
+    });
+
+    test('already configured, mpm on repo2docker', async assert => {
+        const node = server.create('node', {
+            id: 'i9bri',
+            currentUserPermissions: [Permission.Write],
+        });
+        server.create('binderhub-config', {
+            id: node.id,
+            binderhubs: [{
+                default: true,
+                url: 'http://localhost:8585/',
+                authorize_url: 'http://localhost/authorize',
+                token: {
+                    access_token: 'TESTBHTOKEN',
+                    token_type: 'Bearer',
+                    expires_at: null,
+                },
+                jupyterhub_url: 'http://localhost:30123/',
+            }],
+            jupyterhubs: [{
+                url: 'http://localhost:30123/',
+                api_url: 'http://localhost:30123/hub/api/',
+                authorize_url: 'http://localhost/authorize',
+                token: {
+                    user: 'testuser',
+                    access_token: 'TESTJHTOKEN',
+                    token_type: 'Bearer',
+                    expires_at: null,
+                },
+            }],
+            node_binderhubs: [
+                {
+                    binderhub_url: 'http://localhost:8585/',
+                    jupyterhub_url: 'http://localhost:30123/',
+                },
+            ],
+            user_binderhubs: [],
+            deployment: {
+                images: [
+                    {
+                        url: '#repo2docker#r-base',
+                        name: 'Test Repo2Docker',
+                        description: 'dummy description',
+                        packages: ['conda', 'pip', 'rmran', 'mpm'],
+                    },
+                ],
+            },
+            launcher: {
+                endpoints: [
+                    {
+                        id: 'fake',
+                        name: 'Fake',
+                        path: 'Fake',
+                    },
+                ],
+            },
+        });
+        const osfstorage = server.create('file-provider',
+            { node, name: 'osfstorage' });
+        const binderFolder = server.create('file', { target: node }, 'asFolder');
+        binderFolder.update({
+            name: '.binder',
+        });
+        server.create('file',
+            {
+                target: node,
+                name: 'a',
+                dateModified: new Date(2019, 3, 3),
+                parentFolder: binderFolder,
+            });
+        server.create('file',
+            {
+                target: node,
+                name: 'environment.yml',
+                dateModified: new Date(2019, 2, 2),
+                parentFolder: binderFolder,
+            });
+        server.create('file',
+            {
+                target: node,
+                name: 'mpm.yml',
+                dateModified: new Date(2023, 3, 6),
+                parentFolder: binderFolder,
+            });
+        osfstorage.rootFolder.update({
+            files: [binderFolder],
+        });
+        const sandbox = sinon.createSandbox();
+        const ajaxStub = sandbox.stub(BinderHubConfigModel.prototype, 'jupyterhubAPIAJAX');
+        ajaxStub.resolves({
+            kind: 'user',
+            name: 'testuser',
+            servers: {},
+        });
+        const wbFileAjaxStub = sandbox.stub(AbstractFile.prototype, 'wbAuthenticatedAJAX');
+        const rootFolders = {
+            data: [
+                createFolderResponse({
+                    kind: 'folder',
+                    provider: 'osfstorage',
+                    name: '.binder',
+                    path: '/.binder',
+                }),
+            ],
+        };
+        const binderFolders = {
+            data: [
+                createFileResponse({
+                    kind: 'file',
+                    provider: 'osfstorage',
+                    name: 'a',
+                    path: '/.binder/a',
+                }),
+                createFileResponse({
+                    kind: 'file',
+                    provider: 'osfstorage',
+                    name: 'environment.yml',
+                    path: '/.binder/environment.yml',
+                }),
+                createFileResponse({
+                    kind: 'file',
+                    provider: 'osfstorage',
+                    name: 'mpm.yml',
+                    path: '/.binder/mpm.yml',
+                }),
+            ],
+        };
+        wbFileAjaxStub
+            .onFirstCall()
+            .resolves(rootFolders)
+            .onSecondCall()
+            .resolves(binderFolders);
+        wbFileAjaxStub.resolves(binderFolders);
+        const getContentsStub = sandbox.stub(AbstractFile.prototype, 'getContents');
+        const environmentToStringStub = sinon.stub();
+        environmentToStringStub.returns('# rdm-binderhub:hash:bb2a9dd68272d5f92e93acfbcfbbd267\n'
+            + 'name: "#repo2docker#r-base"\ndependencies:\n- r-base\n');
+        const mpmToStringStub = sinon.stub();
+        mpmToStringStub.returns('# rdm-binderhub:hash:34225c26e8a8c8c720f5c580e4a3d7f5\nrelease: R2023b\n'
+            + 'products:\n- Simulink\n');
+        getContentsStub
+            .onFirstCall()
+            .resolves({ toString: environmentToStringStub })
+            .onSecondCall()
+            .resolves({ toString: mpmToStringStub });
+        const updateContentsStub = sandbox.stub(AbstractFile.prototype, 'updateContents');
+        const url = `/${node.id}/binderhub`;
+
+        await visit(url);
+        assert.equal(currentURL(), url, `We are on ${url}`);
+        assert.equal(currentRouteName(), 'guid-node.binderhub', 'We are at guid-node.binderhub');
+        await percySnapshot(assert);
+        assert.dom('[data-test-servers-header]').exists();
+        assert.dom('[data-test-binderhub-header]').exists();
+        assert.dom('[data-test-jupyterhub-selection-option]').exists({ count: 1 });
+        assert.dom('[data-test-binderhub-launch]').exists();
+        assert.dom('[data-test-image-change="#repo2docker#r-base"]').exists();
+        assert.dom('[data-test-image-selected="#repo2docker#r-base"]').exists();
+        assert.dom('[data-test-image-selection]').doesNotExist();
+        assert.dom('[data-test-package-editor="apt"]').exists();
+        assert.dom('[data-test-package-editor="conda"]').exists();
+        assert.dom('[data-test-package-editor="pip"]').exists();
+        assert.dom('[data-test-package-editor="rmran"]').exists();
+        assert.dom('[data-test-package-editor="mpm"]').exists();
+
+        assert.ok(
+            getContentsStub.calledTwice,
+            'BinderHub retrieves environment.yml and mpm.yml data',
+        );
+        assert.ok(
+            ajaxStub.calledOnceWithExactly('http://localhost:30123/', 'users/testuser?include_stopped_servers=1', null),
+            'BinderHub calls JupyterHub REST API',
+        );
+        assert.dom('[data-test-package-editor="mpm"] button[data-test-package-edit-item]').doesNotExist();
+
+        await click('[data-test-package-editor="mpm"] [data-test-mpm-product-add]');
+
+        assert.dom('[data-test-package-editor="mpm"] input[name="package_name"]').exists();
+        assert.dom('[data-test-package-editor="mpm"] button[data-test-named-item-confirm]').exists();
+        await fillIn('[data-test-package-editor="mpm"] input[name="package_name"]', 'testpackage');
+        await click('[data-test-package-editor="mpm"] button[data-test-named-item-confirm]');
+
+        assert.equal(
+            getContentsStub.callCount,
+            2,
+            'BinderHub retrieves environment.yml and mpm.yml data',
+        );
+        assert.equal(
+            wbFileAjaxStub.callCount,
+            4,
+            'WaterButler API has been called a specified number of times',
+        );
+        assert.equal(
+            wbFileAjaxStub.firstCall.args[0].url,
+            'http://localhost:8000/v2/nodes/i9bri/files/osfstorage/upload',
+        );
+        assert.equal(
+            wbFileAjaxStub.secondCall.args[0].url,
+            'http://localhost:7777/osfstorage/.binder',
+        );
+        assert.equal(
+            wbFileAjaxStub.thirdCall.args[0].url,
+            'http://localhost:7777/osfstorage/.binder',
+        );
+        assert.equal(
+            wbFileAjaxStub.getCall(3).args[0].url,
+            'http://localhost:7777/osfstorage/.binder',
+        );
+        assert.equal(
+            updateContentsStub.callCount,
+            4,
+            'BinderHub updates environment.yml and mpm.yml data',
+        );
+        assert.equal(
+            updateContentsStub.getCall(2).args[0],
+            '# rdm-binderhub:hash:bb2a9dd68272d5f92e93acfbcfbbd267\n'
+                + 'name: "#repo2docker#r-base"\ndependencies:\n- r-base\n',
+            'BinderHub updates environment.yml data',
+        );
+        assert.equal(
+            updateContentsStub.getCall(3).args[0],
+            '# rdm-binderhub:hash:f9880f2fae49f7e942eaeb8e1d2a350c\nrelease: R2023b\n'
+                + 'products:\n- Simulink\n- testpackage',
+            'BinderHub updates mpm.yml data',
+        );
+
+        assert.dom('[data-test-package-editor="mpm"] button[data-test-mpm-product-edit-item]').exists();
+
+        await click('[data-test-package-editor="mpm"] button[data-test-mpm-product-delete-item="0"]');
+
+        assert.equal(
+            updateContentsStub.callCount,
+            6,
+            'BinderHub updates environment.yml and mpm.yml data',
+        );
+        assert.equal(
+            updateContentsStub.getCall(4).args[0],
+            '# rdm-binderhub:hash:bb2a9dd68272d5f92e93acfbcfbbd267\n'
+                + 'name: "#repo2docker#r-base"\ndependencies:\n- r-base\n',
+            'BinderHub updates environment.yml data',
+        );
+        assert.equal(
+            updateContentsStub.getCall(5).args[0],
+            '# rdm-binderhub:hash:9ca1426351536ebf8bec446e98f9daf3\nrelease: R2023b\n'
+                + 'products:\n- testpackage',
+            'BinderHub updates mpm.yml data',
+        );
+
+        assert.dom('[data-test-package-editor="mpm"] button[data-test-mpm-product-edit-item="0"]').exists();
+        assert.dom('[data-test-package-editor="mpm"] button[data-test-mpm-product-edit-item="1"]').doesNotExist();
 
         sandbox.restore();
     });

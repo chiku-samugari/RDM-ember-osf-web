@@ -147,6 +147,18 @@
                             </div>
                         {{/if}}
                     {{/if}}
+                    {{#if this.mpmSupported}}
+                        <GuidNode::Binderhub::-Components::MpmPackageEditor
+                            data-test-package-editor='mpm'
+                            @node={{this.node}}
+                            @label='MPM (MATLAB Package Manager)'
+                            @config={{this.mpmConfig}}
+                            @onUpdate={{action this.mpmUpdated}}
+                            @editing={{if (eq this.editingPackage 'mpm') 'editing'}}
+                            @onEditingStart={{action (mut this.editingPackage) 'mpm'}}
+                            @onEditingEnd={{action (mut this.editingPackage) ''}}
+                        />
+                    {{/if}}
                 </div>
                 <h3>
                     {{t 'binderhub.deployment.postinstallscript'}}

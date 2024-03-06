@@ -1,0 +1,77 @@
+.release_group {
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+.products_group {
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+.release_label {
+    margin: auto 1em auto 0;
+}
+
+.products_label {
+    margin: auto 1em;
+}
+
+.package_editor {
+    display: flex;
+    padding: 0.4em;
+    flex-wrap: wrap;
+}
+
+.package_label {
+    margin: auto 1em auto 0;
+    font-weight: bold;
+}
+
+.package_item {
+    margin: auto 1em auto 0;
+    border-radius: 0.85em;
+    border: 1px solid #ccc;
+    padding: 0 1em;
+    background: #f8f8f8;
+}
+
+.package_item button {
+    border: 0;
+    background: transparent;
+    padding: 0;
+}
+
+.package_add {
+    margin: auto;
+}
+
+.package_add button {
+    border-radius: 0.85em;
+    font-size: 0.9em;
+    padding: 2px 1em;
+}
+
+.products_list {
+    display: flex;
+}
+
+.edit_release_name {
+    color: #000;
+}
+
+.package_item_confirm {
+    border-style: none;
+    background: none;
+    color: #28a745;
+}
+
+.package_item_cancel {
+    border-style: none;
+    background: none;
+    color: #888;
+}
+
+.package_help {
+    border-style: none;
+    background: none;
+}

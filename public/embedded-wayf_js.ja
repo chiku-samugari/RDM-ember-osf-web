@@ -182,7 +182,7 @@ var wayf_idps = {
 		type:"tohoku",
 		name:"東北大学",
 		search:["https://idp.auth.tohoku.ac.jp/idp/shibboleth", "東北", "東北大学", "Tohoku University", "東北大学"],
-		SAML1SSOurl:"https://idp.auth.tohoku.ac.jp/idp/profile/Shibboleth/SSO"
+		SAML1SSOurl:"https://no.saml1.sso.url.defined.com/error"
 		},
 	"https://kidp.tsuruoka-nct.ac.jp/idp/shibboleth":{
 		type:"tohoku",
@@ -832,6 +832,42 @@ var wayf_idps = {
 		search:["https://sso.reitaku-u.ac.jp/idp/shibboleth", "関東", "麗澤大学", "Reitaku University", "麗澤大学"],
 		SAML1SSOurl:"https://sso.reitaku-u.ac.jp/idp/profile/Shibboleth/SSO"
 		},
+	"https://tmdu.ex-tic.com/auth/gakunin/saml2/assertions":{
+		type:"kanto",
+		name:"東京医科歯科大学(新)",
+		search:["https://tmdu.ex-tic.com/auth/gakunin/saml2/assertions", "関東", "東京医科歯科大学(新)", "Tokyo Medical and Dental University(New)", "東京医科歯科大学(新)"],
+		SAML1SSOurl:"https://no.saml1.sso.url.defined.com/error"
+		},
+	"https://gakunin.hosei.ac.jp/idp/shibboleth":{
+		type:"kanto",
+		name:"法政大学",
+		search:["https://gakunin.hosei.ac.jp/idp/shibboleth", "関東", "法政大学", "HOSEI University", "法政大学"],
+		SAML1SSOurl:"https://gakunin.hosei.ac.jp/idp/profile/Shibboleth/SSO"
+		},
+	"https://jaxagakunin.ex-tic.com/auth/gakunin/saml2/assertions":{
+		type:"kanto",
+		name:"宇宙航空研究開発機構",
+		search:["https://jaxagakunin.ex-tic.com/auth/gakunin/saml2/assertions", "関東", "宇宙航空研究開発機構", "Japan Aerospace Exploration Agency", "宇宙航空研究開発機構"],
+		SAML1SSOurl:"https://no.saml1.sso.url.defined.com/error"
+		},
+	"https://tmgknn.ex-tic.com/auth/gakunin/saml2/assertions":{
+		type:"kanto",
+		name:"東京都立多摩総合医療センター",
+		search:["https://tmgknn.ex-tic.com/auth/gakunin/saml2/assertions", "関東", "東京都立多摩総合医療センター", "Tokyo Metropolitan Tama Medical Center", "東京都立多摩総合医療センター"],
+		SAML1SSOurl:"https://no.saml1.sso.url.defined.com/error"
+		},
+	"https://asia.ex-tic.com/auth/gakunin/saml2/assertions":{
+		type:"kanto",
+		name:"亜細亜大学",
+		search:["https://asia.ex-tic.com/auth/gakunin/saml2/assertions", "関東", "亜細亜大学", "Asia University", "亜細亜大学"],
+		SAML1SSOurl:"https://no.saml1.sso.url.defined.com/error"
+		},
+	"https://jiu.ex-tic.com/auth/gakunin/saml2/assertions":{
+		type:"kanto",
+		name:"城西国際大学",
+		search:["https://jiu.ex-tic.com/auth/gakunin/saml2/assertions", "関東", "城西国際大学", "Josai International University", "城西国際大学"],
+		SAML1SSOurl:"https://no.saml1.sso.url.defined.com/error"
+		},
 	"https://fed.mie-u.ac.jp/idp":{
 		type:"chubu",
 		name:"三重大学",
@@ -1126,6 +1162,12 @@ var wayf_idps = {
 		search:["https://idp.gifu-cn.ac.jp/idp/shibboleth", "中部", "岐阜県立看護大学", "Gifu College of Nursing", "岐阜県立看護大学"],
 		SAML1SSOurl:"https://idp.gifu-cn.ac.jp/idp/profile/Shibboleth/SSO"
 		},
+	"https://hamamed.ex-tic.com/auth/gakunin/saml2/assertions":{
+		type:"chubu",
+		name:"浜松医科大学",
+		search:["https://hamamed.ex-tic.com/auth/gakunin/saml2/assertions", "中部", "浜松医科大学", "Hamamatsu University School of Medicine", "浜松医科大学"],
+		SAML1SSOurl:"https://no.saml1.sso.url.defined.com/error"
+		},
 	"https://authidp1.iimc.kyoto-u.ac.jp/idp/shibboleth":{
 		type:"kinki",
 		name:"京都大学",
@@ -1419,6 +1461,18 @@ var wayf_idps = {
 		name:"京都市立芸術大学",
 		search:["https://kcua.ex-tic.com/auth/gakunin/saml2/assertions", "近畿", "京都市立芸術大学", "Kyoto City University of Arts", "京都市立芸術大学"],
 		SAML1SSOurl:"https://no.saml1.sso.url.defined.com/error"
+		},
+	"https://idp.hyogo-u.ac.jp/idp/shibboleth":{
+		type:"kinki",
+		name:"兵庫教育大学",
+		search:["https://idp.hyogo-u.ac.jp/idp/shibboleth", "近畿", "兵庫教育大学", "Hyogo University of Teacher Education", "兵庫教育大学"],
+		SAML1SSOurl:"https://idp.hyogo-u.ac.jp/idp/profile/Shibboleth/SSO"
+		},
+	"https://idp.wakayama-med.ac.jp/idp/shibboleth":{
+		type:"kinki",
+		name:"和歌山県立医科大学",
+		search:["https://idp.wakayama-med.ac.jp/idp/shibboleth", "近畿", "和歌山県立医科大学", "Wakayama Medical University", "和歌山県立医科大学"],
+		SAML1SSOurl:"https://idp.wakayama-med.ac.jp/idp/profile/Shibboleth/SSO"
 		},
 	"https://idp.hiroshima-u.ac.jp/idp/shibboleth":{
 		type:"chugoku",
@@ -2500,7 +2554,7 @@ function decodeBase64(input) {
 			+ '&amp;shire=' + encodeURIComponent(wayf_sp_samlACURL)
 			+ '&amp;target=' + encodeURIComponent(wayf_return_url);
 			
-			form_start = '<form id="IdPList" name="IdPList" method="post" target="_parent" onSubmit="return submitForm()" action="' + wayf_authReq_URL + '&amp;time=1706066951'
+			form_start = '<form id="IdPList" name="IdPList" method="post" target="_parent" onSubmit="return submitForm()" action="' + wayf_authReq_URL + '&amp;time=1709689610'
 			+ '">';
 		}
 		
@@ -3979,6 +4033,72 @@ function decodeBase64(input) {
 				dispDefault = '麗澤大学';
 			}
 			pushIncSearchList('https://sso.reitaku-u.ac.jp/idp/shibboleth');
+		}		if (last_idp == 'https://tmdu.ex-tic.com/auth/gakunin/saml2/assertions'){
+			dispDefault = '東京医科歯科大学(新)';
+		}		if (isAllowedType('https://tmdu.ex-tic.com/auth/gakunin/saml2/assertions','kanto') && isAllowedIdP('https://tmdu.ex-tic.com/auth/gakunin/saml2/assertions')){
+			if (
+				"-" == "-" 
+				&& typeof(wayf_default_idp) != "undefined"
+				&& wayf_default_idp == "https://tmdu.ex-tic.com/auth/gakunin/saml2/assertions"
+				){
+				dispDefault = '東京医科歯科大学(新)';
+			}
+			pushIncSearchList('https://tmdu.ex-tic.com/auth/gakunin/saml2/assertions');
+		}		if (last_idp == 'https://gakunin.hosei.ac.jp/idp/shibboleth'){
+			dispDefault = '法政大学';
+		}		if (isAllowedType('https://gakunin.hosei.ac.jp/idp/shibboleth','kanto') && isAllowedIdP('https://gakunin.hosei.ac.jp/idp/shibboleth')){
+			if (
+				"-" == "-" 
+				&& typeof(wayf_default_idp) != "undefined"
+				&& wayf_default_idp == "https://gakunin.hosei.ac.jp/idp/shibboleth"
+				){
+				dispDefault = '法政大学';
+			}
+			pushIncSearchList('https://gakunin.hosei.ac.jp/idp/shibboleth');
+		}		if (last_idp == 'https://jaxagakunin.ex-tic.com/auth/gakunin/saml2/assertions'){
+			dispDefault = '宇宙航空研究開発機構';
+		}		if (isAllowedType('https://jaxagakunin.ex-tic.com/auth/gakunin/saml2/assertions','kanto') && isAllowedIdP('https://jaxagakunin.ex-tic.com/auth/gakunin/saml2/assertions')){
+			if (
+				"-" == "-" 
+				&& typeof(wayf_default_idp) != "undefined"
+				&& wayf_default_idp == "https://jaxagakunin.ex-tic.com/auth/gakunin/saml2/assertions"
+				){
+				dispDefault = '宇宙航空研究開発機構';
+			}
+			pushIncSearchList('https://jaxagakunin.ex-tic.com/auth/gakunin/saml2/assertions');
+		}		if (last_idp == 'https://tmgknn.ex-tic.com/auth/gakunin/saml2/assertions'){
+			dispDefault = '東京都立多摩総合医療センター';
+		}		if (isAllowedType('https://tmgknn.ex-tic.com/auth/gakunin/saml2/assertions','kanto') && isAllowedIdP('https://tmgknn.ex-tic.com/auth/gakunin/saml2/assertions')){
+			if (
+				"-" == "-" 
+				&& typeof(wayf_default_idp) != "undefined"
+				&& wayf_default_idp == "https://tmgknn.ex-tic.com/auth/gakunin/saml2/assertions"
+				){
+				dispDefault = '東京都立多摩総合医療センター';
+			}
+			pushIncSearchList('https://tmgknn.ex-tic.com/auth/gakunin/saml2/assertions');
+		}		if (last_idp == 'https://asia.ex-tic.com/auth/gakunin/saml2/assertions'){
+			dispDefault = '亜細亜大学';
+		}		if (isAllowedType('https://asia.ex-tic.com/auth/gakunin/saml2/assertions','kanto') && isAllowedIdP('https://asia.ex-tic.com/auth/gakunin/saml2/assertions')){
+			if (
+				"-" == "-" 
+				&& typeof(wayf_default_idp) != "undefined"
+				&& wayf_default_idp == "https://asia.ex-tic.com/auth/gakunin/saml2/assertions"
+				){
+				dispDefault = '亜細亜大学';
+			}
+			pushIncSearchList('https://asia.ex-tic.com/auth/gakunin/saml2/assertions');
+		}		if (last_idp == 'https://jiu.ex-tic.com/auth/gakunin/saml2/assertions'){
+			dispDefault = '城西国際大学';
+		}		if (isAllowedType('https://jiu.ex-tic.com/auth/gakunin/saml2/assertions','kanto') && isAllowedIdP('https://jiu.ex-tic.com/auth/gakunin/saml2/assertions')){
+			if (
+				"-" == "-" 
+				&& typeof(wayf_default_idp) != "undefined"
+				&& wayf_default_idp == "https://jiu.ex-tic.com/auth/gakunin/saml2/assertions"
+				){
+				dispDefault = '城西国際大学';
+			}
+			pushIncSearchList('https://jiu.ex-tic.com/auth/gakunin/saml2/assertions');
 		}		if (last_idp == 'https://fed.mie-u.ac.jp/idp'){
 			dispDefault = '三重大学';
 		}		if (isAllowedType('https://fed.mie-u.ac.jp/idp','chubu') && isAllowedIdP('https://fed.mie-u.ac.jp/idp')){
@@ -4518,6 +4638,17 @@ function decodeBase64(input) {
 				dispDefault = '岐阜県立看護大学';
 			}
 			pushIncSearchList('https://idp.gifu-cn.ac.jp/idp/shibboleth');
+		}		if (last_idp == 'https://hamamed.ex-tic.com/auth/gakunin/saml2/assertions'){
+			dispDefault = '浜松医科大学';
+		}		if (isAllowedType('https://hamamed.ex-tic.com/auth/gakunin/saml2/assertions','chubu') && isAllowedIdP('https://hamamed.ex-tic.com/auth/gakunin/saml2/assertions')){
+			if (
+				"-" == "-" 
+				&& typeof(wayf_default_idp) != "undefined"
+				&& wayf_default_idp == "https://hamamed.ex-tic.com/auth/gakunin/saml2/assertions"
+				){
+				dispDefault = '浜松医科大学';
+			}
+			pushIncSearchList('https://hamamed.ex-tic.com/auth/gakunin/saml2/assertions');
 		}		if (last_idp == 'https://authidp1.iimc.kyoto-u.ac.jp/idp/shibboleth'){
 			dispDefault = '京都大学';
 		}		if (isAllowedType('https://authidp1.iimc.kyoto-u.ac.jp/idp/shibboleth','kinki') && isAllowedIdP('https://authidp1.iimc.kyoto-u.ac.jp/idp/shibboleth')){
@@ -5057,6 +5188,28 @@ function decodeBase64(input) {
 				dispDefault = '京都市立芸術大学';
 			}
 			pushIncSearchList('https://kcua.ex-tic.com/auth/gakunin/saml2/assertions');
+		}		if (last_idp == 'https://idp.hyogo-u.ac.jp/idp/shibboleth'){
+			dispDefault = '兵庫教育大学';
+		}		if (isAllowedType('https://idp.hyogo-u.ac.jp/idp/shibboleth','kinki') && isAllowedIdP('https://idp.hyogo-u.ac.jp/idp/shibboleth')){
+			if (
+				"-" == "-" 
+				&& typeof(wayf_default_idp) != "undefined"
+				&& wayf_default_idp == "https://idp.hyogo-u.ac.jp/idp/shibboleth"
+				){
+				dispDefault = '兵庫教育大学';
+			}
+			pushIncSearchList('https://idp.hyogo-u.ac.jp/idp/shibboleth');
+		}		if (last_idp == 'https://idp.wakayama-med.ac.jp/idp/shibboleth'){
+			dispDefault = '和歌山県立医科大学';
+		}		if (isAllowedType('https://idp.wakayama-med.ac.jp/idp/shibboleth','kinki') && isAllowedIdP('https://idp.wakayama-med.ac.jp/idp/shibboleth')){
+			if (
+				"-" == "-" 
+				&& typeof(wayf_default_idp) != "undefined"
+				&& wayf_default_idp == "https://idp.wakayama-med.ac.jp/idp/shibboleth"
+				){
+				dispDefault = '和歌山県立医科大学';
+			}
+			pushIncSearchList('https://idp.wakayama-med.ac.jp/idp/shibboleth');
 		}		if (last_idp == 'https://idp.hiroshima-u.ac.jp/idp/shibboleth'){
 			dispDefault = '広島大学';
 		}		if (isAllowedType('https://idp.hiroshima-u.ac.jp/idp/shibboleth','chugoku') && isAllowedIdP('https://idp.hiroshima-u.ac.jp/idp/shibboleth')){

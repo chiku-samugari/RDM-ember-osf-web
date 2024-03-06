@@ -151,7 +151,8 @@
                         <GuidNode::Binderhub::-Components::MpmPackageEditor
                             data-test-package-editor='mpm'
                             @node={{this.node}}
-                            @label='MPM (MATLAB Package Manager)'
+                            @label='MATLAB (mpm)'
+                            @url={{t 'binderhub.deployment.info_urls.mpm'}}
                             @config={{this.mpmConfig}}
                             @onUpdate={{action this.mpmUpdated}}
                             @editing={{if (eq this.editingPackage 'mpm') 'editing'}}

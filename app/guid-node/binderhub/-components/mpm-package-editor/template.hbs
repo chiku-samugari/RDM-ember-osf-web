@@ -1,16 +1,15 @@
 <div local-class='package_editor'>
     <div local-class='package_label'>
         {{this.label}}
+        {{#if this.url}}
+            <a href={{this.url}} target='_blank' rel='noreferrer'>
+                {{fa-icon 'info-circle'}}
+            </a>
+        {{/if}}
     </div>
     <div local-class='release_group'>
         <div local-class='release_label'>
             {{t 'binderhub.deployment.release'}}
-            <span>
-                {{fa-icon 'info-circle'}}
-                <BsTooltip>
-                    {{t 'binderhub.deployment.tooltip.release' }}
-                </BsTooltip>
-            </span>
         </div>
         <div local-class='release'>
             {{#if (and this.releaseEditing this.node.userHasWritePermission)}}
@@ -56,12 +55,6 @@
     <div local-class='products_group'>
         <div local-class='products_label'>
             {{t 'binderhub.deployment.products'}}
-            <span>
-                {{fa-icon 'info-circle'}}
-                <BsTooltip>
-                    {{t 'binderhub.deployment.tooltip.products' }}
-                </BsTooltip>
-            </span>
         </div>
         <div local-class='products_list'>
             {{#each this.products as |pkg index|}}

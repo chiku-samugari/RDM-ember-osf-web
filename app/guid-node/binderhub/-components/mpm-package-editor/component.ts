@@ -13,6 +13,8 @@ export default class MpmPackageEditor extends Component {
 
     label: string = this.label;
 
+    url: string | null = this.url;
+
     config: MpmConfig | null = this.config;
 
     editing: string = '';

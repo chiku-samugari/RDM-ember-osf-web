@@ -1808,18 +1808,17 @@ binderhub:
             set -x
             ...
         save_post_build: '保存'
-        mran_version_setting_error: 'MRANにバージョン番号を指定することはできません。'
+        mran_version_setting_error: 'CRANにバージョン番号を指定することはできません。'
         reset_dockerfile_confirm_dialog_title: 'リセット: '
         reset_dockerfile_confirm_dialog_body: 'リセットしたファイルは元に戻すことはできません。続行しますか？'
-        release: 'リリース名'
+        release: 'リリース'
         products: 'アドオン'
+        info_urls:
+            mpm: 'https://rcosdp.github.io/CS-repo2docker/MATLAB.html'
         placeholders:
             package_name: '名前'
             package_version: 'バージョン'
-            release: 'リリース名 (R2023b)'
-        tooltip:
-            release: 'インストールするMATLABリリース名 (R2023bなど)'
-            products: 'インストールするアドオン (Simulink, Statistics_and_Machine_Learning_Toolboxなど)'
+            release: 'R2023b'
     build:
         launch: '起動'
         status: 'ビルド状況'

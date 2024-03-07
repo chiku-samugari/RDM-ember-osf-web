@@ -130,7 +130,9 @@ export default class Dashboard extends Controller {
             if (response) {
                 this.set('canCreateNewProject', response.can_create_new_project);
             }
-        } catch (e) {}
+        } catch (e) {
+            this.set('canCreateNewProject', true);
+        }
     });
 
     @alias('currentUser.user') user!: User;

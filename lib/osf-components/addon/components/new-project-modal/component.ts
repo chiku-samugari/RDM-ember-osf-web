@@ -148,7 +148,7 @@ export default class NewProjectModal extends Component {
             this.afterProjectCreated(node);
         } catch (error) {
             this.toast.error(this.intl.t('new_project.create_failed_header'));
-            var errorMessage = this.intl.t('new_project.create_failed_msg');
+            let errorMessage = this.intl.t('new_project.create_failed_msg');
             const errorObj = error.errors.firstObject;
             if (errorObj && errorObj.status) {
                 if (errorObj.status === 403) {

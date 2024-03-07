@@ -240,6 +240,8 @@ new_project:
     creating: プロジェクトを保存中...
     create_failed_header: プロジェクトを作成できませんでした
     create_failed_msg: '不明なエラーが発生しました。 後でもう一度やり直してください。'
+    forbidden: 'プロジェクトに対する操作権限がありません。'
+    limited: '作成したプロジェクト数が作成可能なプロジェクトの数以上であるために、新規プロジェクトを作成できません。'
 banners:
     prereg:
         description: 'あなたの次の研究を改善してください。 Prereg Challengeに参加すれば$ 1,000を獲得できます。'

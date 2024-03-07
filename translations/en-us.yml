@@ -240,6 +240,8 @@ new_project:
     creating: 'Saving your project...'
     create_failed_header: 'Couldn''t create your project'
     create_failed_msg: 'There was an unknown error. Please try again later.'
+    forbidden: 'You do not have permission to operate a project.'
+    limited: 'The new project cannot be created due to the created project number is greater than or equal the project number can create.'
 banners:
     prereg:
         description: 'Improve your next study. Enter the Prereg Challenge and you could win $1,000.'

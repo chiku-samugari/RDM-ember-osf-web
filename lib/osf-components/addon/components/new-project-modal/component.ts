@@ -56,6 +56,7 @@ export default class NewProjectModal extends Component {
     regions: Region[] = [];
     running: boolean = false;
     createError: boolean = false;
+    createErrorMessage?: string;
 
     makeProjectAffiliate: boolean = projectAffiliate;
 
@@ -147,6 +148,16 @@ export default class NewProjectModal extends Component {
             this.afterProjectCreated(node);
         } catch (error) {
             this.toast.error(this.intl.t('new_project.create_failed_header'));
+            var errorMessage = this.intl.t('new_project.create_failed_msg');
+            const errorObj = error.errors.firstObject;
+            if (errorObj && errorObj.status) {
+                if (errorObj.status === 403) {
+                    errorMessage = this.intl.t('new_project.forbidden');
+                } else if (errorObj.status === 400 && errorObj.type === 1) {
+                    errorMessage = this.intl.t('new_project.limited');
+                }
+            }
+            this.set('createErrorMessage', errorMessage);
             this.set('createError', true);
         }
     });

@@ -31,6 +31,7 @@
                                         @onClick={{action this.openModal}}
                                         @type='success'
                                         @class='m-t-md f-w-xl'
+                                        @disabled={{not this.canCreateNewProject}}
                                     >
                                         {{t 'dashboard.create_new_project_button'}}
                                     </OsfButton>

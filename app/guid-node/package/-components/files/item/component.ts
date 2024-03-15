@@ -6,9 +6,10 @@ import moment from 'moment';
 
 import { layout } from 'ember-osf-web/decorators/component';
 import { SelectionManager } from 'ember-osf-web/guid-node/package/selection';
-import File from 'ember-osf-web/models/file';
 import Analytics from 'ember-osf-web/services/analytics';
-import { FilesManager } from 'osf-components/components/files/manager/component';
+import { WaterButlerFile } from 'ember-osf-web/utils/waterbutler/base';
+
+import { WaterButlerFilesManager } from '../manager/component';
 
 import styles from './styles';
 import template from './template';
@@ -17,9 +18,9 @@ import template from './template';
 export default class FileBrowserItem extends Component {
     @service analytics!: Analytics;
 
-    filesManager!: FilesManager;
+    filesManager!: WaterButlerFilesManager;
     selectionManager?: SelectionManager;
-    item!: File;
+    item!: WaterButlerFile;
 
     didReceiveAttrs() {
         assert('Files::Item requires @filesManager!', Boolean(this.filesManager));
@@ -30,8 +31,7 @@ export default class FileBrowserItem extends Component {
         if (this.filesManager.inRootFolder) {
             return false;
         }
-
-        return this.item.id === this.filesManager.currentFolder.id;
+        return this.item.path === this.filesManager.currentFolder.path;
     }
 
     @computed('isCurrentFolder', 'filesManager.currentFolder')
@@ -48,10 +48,11 @@ export default class FileBrowserItem extends Component {
         if (!this.selectionManager) {
             return true;
         }
-        if (!this.item.parentFolder) {
+        const parentFolder = this.filesManager.getParentFolder(this.item);
+        if (!parentFolder) {
             return true;
         }
-        return this.selectionManager.isChecked(this.item.parentFolder);
+        return this.selectionManager.isChecked(parentFolder);
     }
 
     get checked() {
@@ -72,7 +73,7 @@ export default class FileBrowserItem extends Component {
 
     @action
     onClick() {
-        if (this.item.isFolder) {
+        if (!this.item.isFile) {
             if (this.isCurrentFolder) {
                 this.analytics.trackFromElement(this.element, {
                     name: 'Go to parent folder',

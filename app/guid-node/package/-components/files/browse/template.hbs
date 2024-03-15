@@ -56,25 +56,5 @@
                 </AnimatedContainer>
             {{/if}}
         </div>
-
-        {{#if this.shouldShowLoadMoreButton}}
-            <div local-class='load-more'>
-                {{#if @filesManager.loadingMore}}
-                    <LoadingIndicator @inline={{true}} @dark={{true}} />
-                {{else}}
-                    <OsfButton
-                        data-test-load-more-items
-                        local-class='load-more-button'
-                        class='btn-block'
-                        aria-label={{t 'osf-components.files-widget.load_more'}}
-                        tabindex='0'
-                        @type='link'
-                        @onClick={{@filesManager.loadMore}}
-                    >
-                        <FaIcon @icon='chevron-down' @fixedWidth={{true}} />
-                    </OsfButton>
-                {{/if}}
-            </div>
-        {{/if}}
     </div>
 {{/if}}

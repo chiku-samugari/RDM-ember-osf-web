@@ -1,4 +1,5 @@
 import Controller from '@ember/controller';
+import EmberError from '@ember/error';
 import { action, computed } from '@ember/object';
 import { reads } from '@ember/object/computed';
 import { later } from '@ember/runloop';
@@ -8,6 +9,7 @@ import { task } from 'ember-concurrency-decorators';
 import config from 'ember-get-config';
 import Intl from 'ember-intl/services/intl';
 import { SelectionManager } from 'ember-osf-web/guid-node/package/selection';
+import FileProviderModel from 'ember-osf-web/models/file-provider';
 import Node from 'ember-osf-web/models/node';
 import CurrentUser from 'ember-osf-web/services/current-user';
 import StatusMessages from 'ember-osf-web/services/status-messages';
@@ -88,6 +90,28 @@ export default class GuidNodePackage extends Controller {
             });
     }
 
+    getDefaultStorage(allProviders: FileProviderModel[]): FileProviderModel {
+        const providers = allProviders.filter(f => f.name === 'osfstorage');
+        if (providers.length > 0) {
+            return providers[0];
+        }
+        const instProviders = allProviders.filter(f => f.forInstitutions);
+        if (instProviders.length === 0) {
+            throw new EmberError('No default storages');
+        }
+        // Sort storages by name
+        instProviders.sort((a, b) => {
+            if (a.name < b.name) {
+                return -1;
+            }
+            if (a.name > b.name) {
+                return 1;
+            }
+            return 0;
+        });
+        return instProviders[0];
+    }
+
     async performExport() {
         if (!this.node) {
             throw new Error('Node not loaded');
@@ -102,6 +126,16 @@ export default class GuidNodePackage extends Controller {
             materialized,
             enable: this.selectionManager.checked[materialized],
         }));
+        const allProviders = await this.node.loadAll('files');
+        const defaultStorage = await this.getDefaultStorage(allProviders);
+        const addons: any = {
+            weko: {
+                enable: false,
+            },
+        };
+        addons[defaultStorage.name] = {
+            files,
+        };
         const resp = await this.currentUser.authenticatedAJAX({
             url,
             type: 'PUT',
@@ -112,14 +146,7 @@ export default class GuidNodePackage extends Controller {
                 'Content-Type': 'application/json',
             },
             data: JSON.stringify({
-                addons: {
-                    weko: {
-                        enable: false,
-                    },
-                    osfstorage: {
-                        files,
-                    },
-                },
+                addons,
                 wiki: {
                     enable: this.wikiEnabled,
                 },

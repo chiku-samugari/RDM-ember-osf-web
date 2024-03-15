@@ -22,7 +22,7 @@
                 {{on 'keypress' (action this.onKeyPress)}}
             >
                 <FaIcon @icon='angle-left' @fixedWidth={{true}} />
-                <span local-class='filename'>{{this.item.itemName}}</span>
+                <span local-class='filename'>{{this.item.name}}</span>
             </div>
         </div>
     {{else}}
@@ -44,13 +44,13 @@
                 {{on 'keypress' (action this.onKeyPress)}}
             >
                 <FileIcon @item={{this.item}} />
-                <span data-test-file-name local-class='filename'>{{this.item.itemName}}</span>
+                <span data-test-file-name local-class='filename'>{{this.item.name}}</span>
             </div>
         </div>
-        {{#unless this.item.isFolder}}
+        {{#if this.item.isFile}}
             <time local-class='date-modified' data-test-file-date-modified>
                 {{this.date}}
             </time>
-        {{/unless}}
+        {{/if}}
     {{/if}}
 </div>

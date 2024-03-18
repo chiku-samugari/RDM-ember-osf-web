@@ -27,6 +27,7 @@
             {{#unless this.phaseFiles}}
                 <OsfButton data-test-previous-button
                             @type='success'
+                            @disabled={{this.exporting}}
                             @onClick={{action this.goToPrevious}}>
                     {{t 'metadata.package.previous_button'}}
                 </OsfButton>
@@ -36,11 +37,15 @@
                             @type='success'
                             @disabled={{this.exporting}}
                             @onClick={{action this.export}}>
+                    {{#if this.exporting}}
+                        <FaIcon @icon='spinner' @pulse={{true}} @size={{1}} />
+                    {{/if}}
                     {{t 'metadata.package.export_button'}}
                 </OsfButton>
             {{else}}
                 <OsfButton data-test-next-button
                             @type='success'
+                            @disabled={{this.exporting}}
                             @onClick={{action this.goToNext}}>
                     {{t 'metadata.package.next_button'}}
                 </OsfButton>

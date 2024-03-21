@@ -137,6 +137,8 @@
             {{#if (and this.showExportCsvLink this.exportCsvUrl)}}
                 <div local-class='NodeCard__exportCsvLink'>
                     <RegistrationReportExportButton
+                        @metadataType='registration'
+                        @metadataId={{@node.id}}
                         @metadataSchema={{@metadataSchema}}
                         @registrationSchemaId={{this.registrationSchemaId}}
                         @exportCsvUrl={{this.exportCsvUrl}}

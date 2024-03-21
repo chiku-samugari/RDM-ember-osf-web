@@ -1,4 +1,3 @@
-import ArrayProxy from '@ember/array/proxy';
 import Component from '@ember/component';
 import EmberError from '@ember/error';
 import { action, computed } from '@ember/object';
@@ -8,10 +7,9 @@ import DS from 'ember-data';
 import Intl from 'ember-intl/services/intl';
 import { requiredAction } from 'ember-osf-web/decorators/component';
 import BinderHubConfigModel, { Image } from 'ember-osf-web/models/binderhub-config';
-import FileModel from 'ember-osf-web/models/file';
 import Node from 'ember-osf-web/models/node';
 import CurrentUser from 'ember-osf-web/services/current-user';
-import getHref from 'ember-osf-web/utils/get-href';
+import { WaterButlerFile } from 'ember-osf-web/utils/waterbutler/base';
 import md5 from 'js-md5';
 
 const REPO2DOCKER_IMAGE_ID = '#repo2docker';
@@ -114,19 +112,19 @@ export default class ProjectEditor extends Component {
 
     binderHubConfig: DS.PromiseObject<BinderHubConfigModel> & BinderHubConfigModel = this.binderHubConfig;
 
-    configFolder: FileModel = this.configFolder;
+    configFolder: WaterButlerFile = this.configFolder;
 
-    dockerfileModel: FileModel | null = this.dockerfileModel;
+    dockerfileModel: WaterButlerFile | null = this.dockerfileModel;
 
-    environmentModel: FileModel | null = this.environmentModel;
+    environmentModel: WaterButlerFile | null = this.environmentModel;
 
-    requirementsModel: FileModel | null = this.requirementsModel;
+    requirementsModel: WaterButlerFile | null = this.requirementsModel;
 
-    aptModel: FileModel | null = this.aptModel;
+    aptModel: WaterButlerFile | null = this.aptModel;
 
-    installRModel: FileModel | null = this.installRModel;
+    installRModel: WaterButlerFile | null = this.installRModel;
 
-    postBuildModel: FileModel | null = this.postBuildModel;
+    postBuildModel: WaterButlerFile | null = this.postBuildModel;
 
     showResetDockerfileConfirmDialog = false;
 
@@ -157,10 +155,10 @@ export default class ProjectEditor extends Component {
     @requiredAction onError!: (exception: any, message: string) => void;
 
     didReceiveAttrs() {
-        if (!this.configFolder || this.configFolder.get('path') === this.loadingPath) {
+        if (!this.configFolder || this.configFolder.path === this.loadingPath) {
             return;
         }
-        this.loadingPath = this.configFolder.get('path');
+        this.loadingPath = this.configFolder.path;
         later(async () => {
             try {
                 await this.loadCurrentConfig();
@@ -980,14 +978,14 @@ export default class ProjectEditor extends Component {
         if (reload) {
             configFolder = await configFolder.reload();
         }
-        const files = await this.configFolder.get('files');
+        const files = await this.configFolder.files;
         if (!files) {
             return null;
         }
         return files;
     }
 
-    async getFile(name: string, files: ArrayProxy<FileModel> | null) {
+    async getFile(name: string, files: WaterButlerFile[] | null) {
         if (files === null) {
             return null;
         }
@@ -999,7 +997,7 @@ export default class ProjectEditor extends Component {
         return envFile;
     }
 
-    async loadCurrentFile(file: ConfigurationFile, files: ArrayProxy<FileModel> | null) {
+    async loadCurrentFile(file: ConfigurationFile, files: WaterButlerFile[] | null) {
         const envFile = await this.getFile(file.name, files);
         if (!envFile) {
             this.set(file.modelProperty, null);
@@ -1019,7 +1017,7 @@ export default class ProjectEditor extends Component {
     }
 
     async saveCurrentFile(
-        file: ConfigurationFile, files: ArrayProxy<FileModel> | null,
+        file: ConfigurationFile, files: WaterButlerFile[] | null,
         props: { [key: string]: string; },
     ) {
         const content: string | undefined = props[file.property];
@@ -1033,11 +1031,7 @@ export default class ProjectEditor extends Component {
             if (!envFile) {
                 return false;
             }
-            await this.currentUser.authenticatedAJAX({
-                url: `${getHref(envFile.links.delete)}`,
-                type: 'DELETE',
-                xhrFields: { withCredentials: true },
-            });
+            await envFile.delete();
             return true;
         }
         if (!envFile) {
@@ -1075,12 +1069,7 @@ export default class ProjectEditor extends Component {
         if (!fileModel) {
             throw new EmberError('Illegal config');
         }
-        const links = fileModel.get('links');
-        await this.currentUser.authenticatedAJAX({
-            url: getHref(links.delete),
-            type: 'DELETE',
-            xhrFields: { withCredentials: true },
-        });
+        await fileModel.delete();
         this.set(configFile.modelProperty, null);
         this.set(configFile.property, '');
     }
@@ -1211,7 +1200,7 @@ export default class ProjectEditor extends Component {
         if (!fileModel) {
             throw new EmberError('Illegal config');
         }
-        const fileUrl = fileModel.get('links').html as string;
+        const fileUrl = fileModel.htmlURL;
         window.open(fileUrl, '_blank');
     }
 

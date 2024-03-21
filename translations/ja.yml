@@ -1841,6 +1841,7 @@ metadata:
         export: 'エクスポート'
     registration-card:
         export: 'エクスポート'
+        exporting: 'エクスポート中'
         export-dialog:
             title: '報告書フォーマットの選択'
             description: '出力したい報告書のフォーマットを選択してください。'

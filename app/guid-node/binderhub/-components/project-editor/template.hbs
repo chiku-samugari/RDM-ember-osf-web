@@ -134,7 +134,7 @@
                         <GuidNode::Binderhub::-Components::PackageEditor
                             data-test-package-editor='rmran'
                             @node={{this.node}}
-                            @label='R (MRAN)'
+                            @label='R (CRAN)'
                             @packages={{this.rMranPackages}}
                             @onUpdate={{action this.rMranUpdated}}
                             @editing={{if (eq this.editingPackage 'rmran') 'editing'}}
@@ -146,6 +146,19 @@
                                 {{t 'binderhub.deployment.mran_version_setting_error'}}
                             </div>
                         {{/if}}
+                    {{/if}}
+                    {{#if this.mpmSupported}}
+                        <GuidNode::Binderhub::-Components::MpmPackageEditor
+                            data-test-package-editor='mpm'
+                            @node={{this.node}}
+                            @label='MATLAB (mpm)'
+                            @url={{t 'binderhub.deployment.info_urls.mpm'}}
+                            @config={{this.mpmConfig}}
+                            @onUpdate={{action this.mpmUpdated}}
+                            @editing={{if (eq this.editingPackage 'mpm') 'editing'}}
+                            @onEditingStart={{action (mut this.editingPackage) 'mpm'}}
+                            @onEditingEnd={{action (mut this.editingPackage) ''}}
+                        />
                     {{/if}}
                 </div>
                 <h3>

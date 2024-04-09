@@ -22,6 +22,7 @@ enum DockerfileProperty {
     RMran,
     RCran,
     RGitHub,
+    Mpm,
     PostBuild,
     NoChanges,
 }
@@ -55,6 +56,47 @@ function parsePipPackageId(id: string) {
     return parseCondaPackageId(id);
 }
 
+function parseMpmConfig(content: string|undefined|null) {
+    const lines = (content || '').split('\n');
+    let release = null;
+    for (const line of lines) {
+        const m = line.match(/\s*release\s*:\s*(\S+)\s*$/);
+        if (!m) {
+            continue;
+        }
+        // eslint-disable-next-line prefer-destructuring
+        release = m[1];
+    }
+    let section = '';
+    let deps: string[] | null = null;
+    for (const line of lines) {
+        if (line.trim().startsWith('#')) {
+            continue;
+        }
+        const sectionm = line.match(/\s*(\S+):\s*$/);
+        if (sectionm) {
+            // eslint-disable-next-line prefer-destructuring
+            section = sectionm[1];
+            continue;
+        }
+        if (section !== 'products') {
+            continue;
+        }
+        const itemm = line.match(/\s*-\s*(\S+)\s*$/);
+        if (!itemm) {
+            continue;
+        }
+        if (!deps) {
+            deps = [];
+        }
+        deps.push(itemm[1]);
+    }
+    return {
+        release,
+        products: deps,
+    };
+}
+
 function getRCranScript(packageId: string[]) {
     const name = packageId[0];
     const version = packageId[1] || '';
@@ -74,6 +116,12 @@ function getRMranScript(packageId: string[]) {
     return `install.packages("${name}")`;
 }
 
+function getMpmScript(release: string|null, products: string[]|null) {
+    const releaseLine = release ? `release: ${release}\n` : '';
+    const content = `${releaseLine}products:\n`;
+    return content + (products || []).map(item => `- ${item}`).join('\n');
+}
+
 function removeQuotes(item: string) {
     const m = item.match(/^\s*"(.*)"\s*/);
     if (!m) {
@@ -84,12 +132,12 @@ function removeQuotes(item: string) {
 
 interface ConfigurationFile {
     name: string;
-    property: 'dockerfile' | 'environment' | 'requirements' | 'apt' | 'installR' | 'postBuild';
+    property: 'dockerfile' | 'environment' | 'requirements' | 'apt' | 'installR' | 'mpm' | 'postBuild';
     modelProperty: 'dockerfileModel' | 'environmentModel' | 'requirementsModel' | 'aptModel' | 'installRModel' |
-        'postBuildModel';
+        'mpmModel' | 'postBuildModel';
     changedProperty: 'dockerfileManuallyChanged' | 'environmentManuallyChanged' |
         'requirementsManuallyChanged' | 'aptManuallyChanged' | 'installRManuallyChanged' |
-        'postBuildManuallyChanged';
+        'mpmManuallyChanged' | 'postBuildManuallyChanged';
 }
 
 interface ImageURL {
@@ -124,6 +172,8 @@ export default class ProjectEditor extends Component {
 
     installRModel: WaterButlerFile | null = this.installRModel;
 
+    mpmModel: WaterButlerFile | null = this.mpmModel;
+
     postBuildModel: WaterButlerFile | null = this.postBuildModel;
 
     showResetDockerfileConfirmDialog = false;
@@ -143,6 +193,8 @@ export default class ProjectEditor extends Component {
     apt: string | undefined = undefined;
 
     installR: string | undefined = undefined;
+
+    mpm: string | undefined = undefined;
 
     postBuild: string | undefined = undefined;
 
@@ -233,6 +285,16 @@ export default class ProjectEditor extends Component {
             return false;
         }
         const content = this.get('installR');
+        return this.verifyHashHeader(content);
+    }
+
+    @computed('mpm', 'environment')
+    get mpmManuallyChanged() {
+        const env = this.get('environment');
+        if (!env) {
+            return false;
+        }
+        const content = this.get('mpm');
         return this.verifyHashHeader(content);
     }
 
@@ -424,6 +486,27 @@ export default class ProjectEditor extends Component {
         return `# rdm-binderhub:hash:${checksum}\n${content}`;
     }
 
+    getUpdatedMpm(key: DockerfileProperty, value: string) {
+        // Update mpm.yml with MD5 hash
+        const url = key === DockerfileProperty.From ? value : this.selectedImageUrl;
+        if (this.parseImageURL(url).url !== REPO2DOCKER_IMAGE_ID) {
+            return '';
+        }
+        const image = this.findImageByUrl(url);
+        if (!image.packages || !image.packages.includes('mpm')) {
+            return '';
+        }
+        const config = key === DockerfileProperty.Mpm
+            ? parseMpmConfig(value)
+            : this.mpmConfig;
+        if (config === null || (config.release === null && config.products === null)) {
+            return '';
+        }
+        const content = getMpmScript(config.release, config.products);
+        const checksum = md5(content.trim());
+        return `# rdm-binderhub:hash:${checksum}\n${content}`;
+    }
+
     getUpdatedPostBuild(key: DockerfileProperty, value: string): string {
         if (key === DockerfileProperty.PostBuild) {
             return value;
@@ -437,7 +520,6 @@ export default class ProjectEditor extends Component {
             return;
         }
         const props = this.getUpdatedProperties(key, value);
-
         later(async () => {
             try {
                 await this.saveCurrentConfig(props);
@@ -552,6 +634,15 @@ export default class ProjectEditor extends Component {
             return false;
         }
         return image.packages.includes('rmran');
+    }
+
+    @computed('selectedImage')
+    get mpmSupported() {
+        const image = this.get('selectedImage');
+        if (image === null || !image.packages) {
+            return false;
+        }
+        return image.packages.includes('mpm');
     }
 
     @computed('dockerfileStatements', 'aptLines')
@@ -895,6 +986,18 @@ export default class ProjectEditor extends Component {
             .filter(item => item.length > 0 && !item.startsWith('#'));
     }
 
+    @computed('mpm')
+    get mpmConfig() {
+        if (this.mpmManuallyChanged) {
+            return null;
+        }
+        const content = this.get('mpm');
+        if (!content) {
+            return null;
+        }
+        return parseMpmConfig(content);
+    }
+
     @computed('node')
     get nodeFilesLink() {
         if (!this.node) {
@@ -953,6 +1056,12 @@ export default class ProjectEditor extends Component {
                 changedProperty: 'installRManuallyChanged',
             },
             {
+                name: 'mpm.yml',
+                property: 'mpm',
+                modelProperty: 'mpmModel',
+                changedProperty: 'mpmManuallyChanged',
+            },
+            {
                 name: 'postBuild',
                 property: 'postBuild',
                 modelProperty: 'postBuildModel',
@@ -964,7 +1073,7 @@ export default class ProjectEditor extends Component {
     @computed(
         'dockerfileManuallyChanged', 'environmentManuallyChanged',
         'requirementsManuallyChanged', 'aptManuallyChanged',
-        'installRManuallyChanged', 'postBuildManuallyChanged',
+        'installRManuallyChanged', 'mpmManuallyChanged', 'postBuildManuallyChanged',
     )
     get dirtyConfigurationFiles(): ConfigurationFile[] {
         return this.get('configurationFiles').filter(file => this.get(file.changedProperty));
@@ -1097,6 +1206,7 @@ export default class ProjectEditor extends Component {
         props.requirements = '';
         props.apt = this.getUpdatedApt(key, value);
         props.installR = this.getUpdatedInstallR(key, value);
+        props.mpm = this.getUpdatedMpm(key, value);
         props.postBuild = this.getUpdatedPostBuild(key, value);
         return props;
     }
@@ -1157,6 +1267,14 @@ export default class ProjectEditor extends Component {
         this.updateFiles(
             DockerfileProperty.RMran,
             packages.map(pkg => getCondaPackageId(pkg)).join(' '),
+        );
+    }
+
+    @action
+    mpmUpdated(this: ProjectEditor, config: {release: string | null, products: string[] | null}) {
+        this.updateFiles(
+            DockerfileProperty.Mpm,
+            getMpmScript(config.release, config.products),
         );
     }
 

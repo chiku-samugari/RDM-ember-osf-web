@@ -1843,8 +1843,8 @@ metadata:
         export: 'エクスポート'
         exporting: 'エクスポート中'
         export-dialog:
-            title: '報告書フォーマットの選択'
-            description: '出力したい報告書のフォーマットを選択してください。'
+            title: 'エクスポート形式の選択'
+            description: '出力したいエクスポート形式を選択してください。'
     package:
         page_title: 'プロジェクトのエクスポート'
         header: 'プロジェクトのエクスポート'
@@ -1857,12 +1857,5 @@ metadata:
             wiki: 'Wiki'
             comment: 'コメント'
             log: '操作ログ'
-        project_info:
-            description: 'プロジェクトの情報を確認/修正してください。'
-            creator: '作成者'
-            creator_affiliation: '作成者の所属機関'
-            category: 'カテゴリー'
-            project_description: 'プロジェクトの説明'
-            license: 'ライセンス'
         export_target:
             description: 'エクスポート先を選択してください。'

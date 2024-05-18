@@ -1843,26 +1843,19 @@ metadata:
         export: 'Export'
         exporting: 'Exporting'
         export-dialog:
-            title: 'Select a report format'
-            description: 'Select the report format you want to output.'
+            title: 'Select the export format'
+            description: 'Select the export format you want to output.'
     package:
         page_title: 'Export Project'
         header: 'Export Project'
         export_button: 'Export'
         next_button: 'Next'
-        previous_button: 'Previous'
+        previous_button: 'Back'
         files:
-            description: 'Select the file/folder to be exported.'
-            notice: 'Account information for external storage is not exported.'
+            description: 'Select the files/folders to be exported.'
+            notice: 'Account information for external storages will not be included.'
             wiki: 'Wiki'
-            comment: 'Comment'
+            comment: 'Comments'
             log: 'Action Logs'
-        project_info:
-            description: 'Review/modify your project information.'
-            creator: 'Creator'
-            creator_affiliation: 'Affiliation of the creator'
-            category: 'Category'
-            project_description: 'Description of Project'
-            license: 'License Information'
         export_target:
-            description: 'Select the destination for export.'
+            description: 'Select a destination.'

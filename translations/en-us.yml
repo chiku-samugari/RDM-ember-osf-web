@@ -640,7 +640,7 @@ node:
     metadata:
         new_report_modal:
             title: Select metadata schema
-            info: 'Select the schema of the project metadata you wish to create from the following:<ul><li>Metadata can be filled in with items defined in the schema.</li><li>You can register metadata for files included in this project in the metadata.</li><li>Files compliant with the report format can be downloaded from the metadata and used for the application.</li></ul>'
+            info: 'The default is 「Metadata registration of publicly funded research data」.<ul><li>Please select only those who apply to 「Moonshot2 Mibyo Database - Metadata」</li></ul>Select the schema of the project metadata you wish to create from the following:<ul><li>Metadata can be filled in with items defined in the schema.</li><li>You can register metadata for files included in this project in the metadata.</li><li>Files compliant with the report format can be downloaded from the metadata and used for the application.</li></ul>'
             note: '*Metadata forms will be constantly added as the number of corresponding projects and institutions grows in the future.'
             create: 'Create Metadata'
         page_title: '{nodeTitle} Metadata'

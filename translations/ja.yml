@@ -247,6 +247,8 @@ banners:
     view_only:
         warning: 'GakuNin RDMを表示専用リンクから表示しているため、表示する権限があるデータが制限される場合があります。'
         view_normally: このページを離れます。
+    login_availability:
+        error: 'ログインできません。'
 move_to_project:
     create_new_project: 新規の公開プロジェクトを作成
     connect_to_existing: '既存のGakuNin RDMプロジェクトへファイルを接続する'

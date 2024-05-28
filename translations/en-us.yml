@@ -247,6 +247,8 @@ banners:
     view_only:
         warning: 'You are viewing GakuNin RDM through a view-only link, which may limit the data you have permission to see.'
         view_normally: 'Leave this view'
+    login_availability:
+        error: 'Login availability is not available.'
 move_to_project:
     create_new_project: 'Create new public project'
     connect_to_existing: 'Connect file to existing GakuNin RDM project'

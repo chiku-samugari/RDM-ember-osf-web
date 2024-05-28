@@ -1,3 +1,12 @@
 <main data-analytics-scope='Home'>
+    {{#if this.loginNotAvailable}}
+        <BsAlert
+            @type='danger'
+            @dismissible={{true}}
+            style='margin-bottom: 0'
+        >
+            {{t 'banners.login_availability.error'}}
+        </BsAlert>
+    {{/if}}
     <Home::-Components::HeroBanner />
 </main>

@@ -45,6 +45,7 @@ export default class GuidNodePackage extends Controller {
 
     loading = true;
     exporting = false;
+    opening = false;
 
     selectionManager = new SelectionManager();
 
@@ -175,9 +176,11 @@ export default class GuidNodePackage extends Controller {
         });
         const progress = resp as ExportingProgress;
         if (progress.state === 'SUCCESS') {
-            this.set('exporting', false);
             if (progress.info && progress.info.file_url) {
+                this.set('opening', true);
                 window.location.href = `${progress.info.file_url}#edit-metadata`;
+            } else {
+                this.set('exporting', false);
             }
             return;
         }

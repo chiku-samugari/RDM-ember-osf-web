@@ -1854,6 +1854,7 @@ metadata:
         page_title: 'プロジェクトのエクスポート'
         header: 'プロジェクトのエクスポート'
         export_button: 'エクスポート'
+        opening_button: 'ファイルを開いています...'
         next_button: '次へ'
         previous_button: '前へ'
         files:

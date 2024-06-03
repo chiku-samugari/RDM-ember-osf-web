@@ -40,7 +40,11 @@
                     {{#if this.exporting}}
                         <FaIcon @icon='spinner' @pulse={{true}} @size={{1}} />
                     {{/if}}
-                    {{t 'metadata.package.export_button'}}
+                    {{#if this.opening}}
+                        {{t 'metadata.package.opening_button'}}
+                    {{else}}
+                        {{t 'metadata.package.export_button'}}
+                    {{/if}}
                 </OsfButton>
             {{else}}
                 <OsfButton data-test-next-button

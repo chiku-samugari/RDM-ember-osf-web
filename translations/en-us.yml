@@ -1854,6 +1854,7 @@ metadata:
         page_title: 'Export Project'
         header: 'Export Project'
         export_button: 'Export'
+        opening_button: 'Opening the file...'
         next_button: 'Next'
         previous_button: 'Back'
         files:

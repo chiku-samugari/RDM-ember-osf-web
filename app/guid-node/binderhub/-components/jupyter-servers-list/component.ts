@@ -164,13 +164,7 @@ export default class JupyterServersList extends Component {
 
     @computed('servers', 'serversLink')
     get loading(): boolean {
-        if (this.servers !== null) {
-            return false;
-        }
-        if (this.serversLink !== null) {
-            return false;
-        }
-        return true;
+        return this.servers === null && this.serversLink === null;
     }
 
     @computed('servers')

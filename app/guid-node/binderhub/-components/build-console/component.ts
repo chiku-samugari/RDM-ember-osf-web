@@ -2,19 +2,22 @@ import Component from '@ember/component';
 import EmberError from '@ember/error';
 import { action, computed } from '@ember/object';
 import { htmlSafe } from '@ember/template';
-import DS from 'ember-data';
 import { requiredAction } from 'ember-osf-web/decorators/component';
 import AnsiUp from 'ember-osf-web/guid-node/binderhub/-components/build-console/ansi_up';
 import {
     getContext, getJupyterHubServerURL, SelectableBinderhub, updateContext,
     validateBinderHubToken,
 } from 'ember-osf-web/guid-node/binderhub/-components/jupyter-servers-list/component';
-import { BootstrapPath, BuildMessage } from 'ember-osf-web/guid-node/binderhub/controller';
+import {
+    BootstrapPath,
+    BuildMessage,
+    isBinderHubConfigFulfilled,
+} from 'ember-osf-web/guid-node/binderhub/controller';
 import BinderHubConfigModel from 'ember-osf-web/models/binderhub-config';
 import $ from 'jquery';
 
 export default class BuildConsole extends Component {
-    binderHubConfig: DS.PromiseObject<BinderHubConfigModel> & BinderHubConfigModel = this.binderHubConfig;
+    binderHubConfig!: BinderHubConfigModel;
 
     initialized: boolean = false;
 
@@ -35,7 +38,8 @@ export default class BuildConsole extends Component {
     @requiredAction renewToken!: (binderhubUrl: string) => void;
 
     @requiredAction requestBuild!: (
-        binderhubUrl: string, path: BootstrapPath | null,
+        binderhubUrl: string,
+        path: BootstrapPath | null,
         callback: (result: BuildMessage) => void,
     ) => void;
 
@@ -67,11 +71,10 @@ export default class BuildConsole extends Component {
         if (this.selectedBinderhubUrl && this.checkSelectable(this.selectedBinderhubUrl)) {
             return this.selectedBinderhubUrl;
         }
-        if (!this.binderHubConfig || !this.binderHubConfig.get('isFulfilled')) {
+        if (!isBinderHubConfigFulfilled(this)) {
             throw new EmberError('Illegal state');
         }
-        const binderhub = this.binderHubConfig.get('defaultBinderhub');
-        return binderhub.url;
+        return this.binderHubConfig.get('defaultBinderhub').url;
     }
 
     @computed('binderHubConfig', 'selectedBinderhubUrlForJupyterHub')
@@ -79,32 +82,29 @@ export default class BuildConsole extends Component {
         if (this.selectedBinderhubUrlForJupyterHub && this.checkSelectable(this.selectedBinderhubUrlForJupyterHub)) {
             return this.selectedBinderhubUrlForJupyterHub;
         }
-        if (!this.binderHubConfig || !this.binderHubConfig.get('isFulfilled')) {
+        if (!isBinderHubConfigFulfilled(this)) {
             throw new EmberError('Illegal state');
         }
-        const binderhub = this.binderHubConfig.get('defaultBinderhub');
-        return binderhub.url;
+        return this.binderHubConfig.get('defaultBinderhub').url;
     }
 
     @computed('binderHubConfig')
     get selectableBinderhubs(): SelectableBinderhub[] {
-        if (!this.binderHubConfig || !this.binderHubConfig.get('isFulfilled')) {
+        if (!isBinderHubConfigFulfilled(this)) {
             return [];
         }
         const nodeBinderhubs = this.binderHubConfig.get('node_binderhubs');
         const userBinderhubs = this.binderHubConfig.get('user_binderhubs');
-        const nodeCands = (nodeBinderhubs || [])
-            .map(hub => ({
-                binderhub_url: hub.binderhub_url,
-                name: hub.binderhub_url,
-            }));
-        const userCands = (userBinderhubs || [])
-            .filter(hub => nodeCands
-                .every(nodeHub => nodeHub.binderhub_url !== hub.binderhub_url))
-            .map(hub => ({
-                binderhub_url: hub.binderhub_url,
-                name: `${hub.binderhub_url} (User)`,
-            }));
+        const nodeCands = (nodeBinderhubs || []).map(hub => ({
+            binderhub_url: hub.binderhub_url,
+            name: hub.binderhub_url,
+        }));
+        const userCands = (userBinderhubs || []).filter(
+            hub => nodeCands.every(nodeHub => !this.urlEquals(hub.binderhub_url, nodeHub.binderhub_url)),
+        ).map(hub => ({
+            binderhub_url: hub.binderhub_url,
+            name: `${hub.binderhub_url} (User)`,
+        }));
         return nodeCands.concat(userCands);
     }
 
@@ -145,10 +145,10 @@ export default class BuildConsole extends Component {
 
     @action
     launch(this: BuildConsole, path: BootstrapPath | null) {
-        if (!this.binderHubConfig || !this.binderHubConfig.get('isFulfilled')) {
+        if (!isBinderHubConfigFulfilled(this)) {
             throw new EmberError('Illegal config');
         }
-        const config = this.binderHubConfig.content as BinderHubConfigModel;
+        const config = this.binderHubConfig;
         const binderhub = config.findBinderHubByURL(this.get('defaultBinderhubUrl'));
         if (!binderhub || !validateBinderHubToken(binderhub)) {
             this.set('notAuthorized', true);
@@ -219,7 +219,7 @@ export default class BuildConsole extends Component {
     }
 
     validateTokens() {
-        if (!this.binderHubConfig || !this.binderHubConfig.get('isFulfilled')) {
+        if (!isBinderHubConfigFulfilled(this)) {
             return true;
         }
         if (!this.validateToken(this.get('defaultBinderhubUrl'))) {
@@ -232,11 +232,10 @@ export default class BuildConsole extends Component {
     }
 
     validateToken(binderhubUrl: string) {
-        if (!this.binderHubConfig || !this.binderHubConfig.get('isFulfilled')) {
+        if (!isBinderHubConfigFulfilled(this)) {
             return true;
         }
-        const config = this.binderHubConfig.content as BinderHubConfigModel;
-        const binderhub = config.findBinderHubByURL(binderhubUrl);
+        const binderhub = this.binderHubConfig.findBinderHubByURL(binderhubUrl);
         if (!binderhub || validateBinderHubToken(binderhub)) {
             return true;
         }

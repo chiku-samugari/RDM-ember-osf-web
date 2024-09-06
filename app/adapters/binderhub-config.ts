@@ -17,10 +17,10 @@ export default class BinderHubConfigAdapter extends OsfAdapter {
         _: string | undefined,
         id: string | null,
         __: DS.Snapshot | null,
-        ___: string,
-        ____?: {},
+        requestType: string,
+        query?: {},
     ): string {
-        const nodeUrl = super.buildURL('node', null, null, 'findRecord', {});
+        const nodeUrl = super.buildURL('node', null, null, requestType, query);
         const url = nodeUrl.replace(/\/nodes\/$/, '/project/');
         return `${url}${id}/binderhub/config`;
     }

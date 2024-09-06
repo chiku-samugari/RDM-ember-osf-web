@@ -82,9 +82,9 @@ export default class BinderHubConfigModel extends OsfModel {
 
     @computed('binderhubs')
     get defaultBinderhub() {
-        const binderhubs = this.get('binderhubs');
-        const result = binderhubs
-            .filter(binderhub => binderhub.default);
+        const result = this.get('binderhubs').filter(
+            binderhub => binderhub.default,
+        );
         if (result.length === 0) {
             throw new EmberError('Default BinderHub not defined');
         }
@@ -92,9 +92,9 @@ export default class BinderHubConfigModel extends OsfModel {
     }
 
     findBinderHubByURL(binderhubUrl: string): BinderHub | null {
-        const binderhubs = this.get('binderhubs');
-        const result = binderhubs
-            .filter(binderhub => this.urlEquals(binderhub.url, binderhubUrl));
+        const result = this.get('binderhubs').filter(
+            binderhub => this.urlEquals(binderhub.url, binderhubUrl),
+        );
         if (result.length === 0) {
             return null;
         }
@@ -106,8 +106,9 @@ export default class BinderHubConfigModel extends OsfModel {
         if (!jupyterhubs) {
             return null;
         }
-        const result = jupyterhubs
-            .filter(jupyterhub => this.urlEquals(jupyterhub.url, jupyterhubUrl));
+        const result = jupyterhubs.filter(
+            jupyterhub => this.urlEquals(jupyterhub.url, jupyterhubUrl),
+        );
         if (result.length === 0) {
             return null;
         }
@@ -115,15 +116,15 @@ export default class BinderHubConfigModel extends OsfModel {
     }
 
     findBinderHubCandidateByBinderHubURL(binderhubUrl: string): BinderHubCandidate | null {
-        const nbinderhubs = this.get('node_binderhubs');
-        const nresult = nbinderhubs
-            .filter(binderhub => this.urlEquals(binderhub.binderhub_url, binderhubUrl));
+        const nresult = this.get('node_binderhubs').filter(
+            binderhub => this.urlEquals(binderhub.binderhub_url, binderhubUrl),
+        );
         if (nresult.length > 0) {
             return nresult[0];
         }
-        const ubinderhubs = this.get('user_binderhubs');
-        const uresult = ubinderhubs
-            .filter(binderhub => this.urlEquals(binderhub.binderhub_url, binderhubUrl));
+        const uresult = this.get('user_binderhubs').filter(
+            binderhub => this.urlEquals(binderhub.binderhub_url, binderhubUrl),
+        );
         if (uresult.length > 0) {
             return uresult[0];
         }
@@ -131,15 +132,15 @@ export default class BinderHubConfigModel extends OsfModel {
     }
 
     findBinderHubCandidateByJupyterHubURL(jupyterhubUrl: string): BinderHubCandidate | null {
-        const nbinderhubs = this.get('node_binderhubs');
-        const nresult = nbinderhubs
-            .filter(binderhub => this.urlEquals(binderhub.jupyterhub_url, jupyterhubUrl));
+        const nresult = this.get('node_binderhubs').filter(
+            binderhub => this.urlEquals(binderhub.jupyterhub_url, jupyterhubUrl),
+        );
         if (nresult.length > 0) {
             return nresult[0];
         }
-        const ubinderhubs = this.get('user_binderhubs');
-        const uresult = ubinderhubs
-            .filter(binderhub => this.urlEquals(binderhub.jupyterhub_url, jupyterhubUrl));
+        const uresult = this.get('user_binderhubs').filter(
+            binderhub => this.urlEquals(binderhub.jupyterhub_url, jupyterhubUrl),
+        );
         if (uresult.length > 0) {
             return uresult[0];
         }

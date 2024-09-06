@@ -43,6 +43,14 @@ export interface BootstrapPath {
     pathType: string;
 }
 
+interface BinderHubContext {
+    binderHubConfig: BinderHubConfigModel;
+}
+
+export function isBinderHubConfigFulfilled(context: BinderHubContext): boolean {
+    return !!context.binderHubConfig;
+}
+
 export default class GuidNodeBinderHub extends Controller {
     queryParams = ['bh', 'jh'];
 
@@ -52,7 +60,7 @@ export default class GuidNodeBinderHub extends Controller {
     @service analytics!: Analytics;
     @service currentUser!: CurrentUser;
 
-    @reads('model.taskInstance.value')
+    @reads('model.node.taskInstance.value')
     node?: Node;
 
     isPageDirty = false;
@@ -77,9 +85,9 @@ export default class GuidNodeBinderHub extends Controller {
 
     loggedOutDomains: string[] | null = null;
 
-    @computed('config.isFulfilled')
+    @computed('config')
     get loading(): boolean {
-        return !this.config || !this.config.get('isFulfilled');
+        return !this.config;
     }
 
     @action
@@ -87,8 +95,7 @@ export default class GuidNodeBinderHub extends Controller {
         if (!this.config) {
             throw new EmberError('Illegal config');
         }
-        const config = this.config.content as BinderHubConfigModel;
-        const binderhub = config.findBinderHubByURL(binderhubUrl);
+        const binderhub = this.config.findBinderHubByURL(binderhubUrl);
         if (!binderhub) {
             throw new EmberError('Illegal config');
         }
@@ -103,8 +110,7 @@ export default class GuidNodeBinderHub extends Controller {
         if (!this.config) {
             throw new EmberError('Illegal config');
         }
-        const config = this.config.content as BinderHubConfigModel;
-        const jupyterhub = config.findJupyterHubByURL(jupyterhubUrl);
+        const jupyterhub = this.config.findJupyterHubByURL(jupyterhubUrl);
         if (jupyterhub) {
             if (!jupyterhub.authorize_url) {
                 throw new EmberError('Illegal config');
@@ -113,7 +119,7 @@ export default class GuidNodeBinderHub extends Controller {
             return;
         }
         // Maybe BinderHub not authorized
-        const binderhubCand = config.findBinderHubCandidateByJupyterHubURL(jupyterhubUrl);
+        const binderhubCand = this.config.findBinderHubCandidateByJupyterHubURL(jupyterhubUrl);
         if (!binderhubCand) {
             throw new EmberError('Illegal config');
         }
@@ -125,8 +131,7 @@ export default class GuidNodeBinderHub extends Controller {
         if (!this.config) {
             throw new EmberError('Illegal config');
         }
-        const config = this.config.content as BinderHubConfigModel;
-        const jupyterhub = config.findJupyterHubByURL(jupyterhubUrl);
+        const jupyterhub = this.config.findJupyterHubByURL(jupyterhubUrl);
         if (!jupyterhub) {
             // Already logout
             return;
@@ -245,8 +250,7 @@ export default class GuidNodeBinderHub extends Controller {
         if (!buildPath) {
             throw new EmberError('Illegal state');
         }
-        const config = this.config.content as BinderHubConfigModel;
-        const binderhub = config.findBinderHubByURL(binderhubUrl);
+        const binderhub = this.config.findBinderHubByURL(binderhubUrl);
         let additional = '';
         if (this.currentUser && this.currentUser.currentUserId) {
             additional += `&userctx=${this.currentUser.currentUserId}`;
@@ -353,16 +357,13 @@ export default class GuidNodeBinderHub extends Controller {
         }
     }
 
-    @computed('node')
-    get config(): DS.PromiseObject<BinderHubConfigModel> | undefined {
+    @computed('model.binderHubConfig')
+    get config(): BinderHubConfigModel {
         if (this.configCache) {
-            return this.configCache;
+            return this.configCache.content!;
         }
-        if (!this.node) {
-            return undefined;
-        }
-        this.configCache = this.store.findRecord('binderhub-config', this.node.id);
-        return this.configCache!;
+        this.configCache = this.model.binderHubConfig;
+        return this.model.binderHubConfig!;
     }
 
     @action
@@ -381,8 +382,10 @@ export default class GuidNodeBinderHub extends Controller {
 
     @action
     build(
-        this: GuidNodeBinderHub, binderhubUrl: string,
-        path: BootstrapPath | null, callback: (result: BuildMessage) => void,
+        this: GuidNodeBinderHub,
+        binderhubUrl: string,
+        path: BootstrapPath | null,
+        callback: (result: BuildMessage) => void,
     ) {
         this.set('buildLog', []);
         later(async () => {

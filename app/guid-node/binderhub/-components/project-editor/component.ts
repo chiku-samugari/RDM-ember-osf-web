@@ -3,9 +3,9 @@ import EmberError from '@ember/error';
 import { action, computed } from '@ember/object';
 import { later } from '@ember/runloop';
 import { inject as service } from '@ember/service';
-import DS from 'ember-data';
 import Intl from 'ember-intl/services/intl';
 import { requiredAction } from 'ember-osf-web/decorators/component';
+import { isBinderHubConfigFulfilled } from 'ember-osf-web/guid-node/binderhub/controller';
 import BinderHubConfigModel, { Image } from 'ember-osf-web/models/binderhub-config';
 import Node from 'ember-osf-web/models/node';
 import CurrentUser from 'ember-osf-web/services/current-user';
@@ -158,7 +158,7 @@ export default class ProjectEditor extends Component {
 
     node?: Node | null = null;
 
-    binderHubConfig: DS.PromiseObject<BinderHubConfigModel> & BinderHubConfigModel = this.binderHubConfig;
+    binderHubConfig!: BinderHubConfigModel;
 
     configFolder: WaterButlerFile = this.configFolder;
 
@@ -234,7 +234,7 @@ export default class ProjectEditor extends Component {
 
     @computed('binderHubConfig.deployment')
     get deployment() {
-        if (!this.binderHubConfig || !this.binderHubConfig.get('isFulfilled')) {
+        if (!isBinderHubConfigFulfilled(this)) {
             return null;
         }
         return this.binderHubConfig.get('deployment');
@@ -579,7 +579,7 @@ export default class ProjectEditor extends Component {
         return this.findImageByUrl(url);
     }
 
-    findImageByUrl(url: string | null) {
+    findImageByUrl(url: string | null): Image {
         const deployment = this.get('deployment');
         if (!deployment) {
             throw new EmberError('Illegal config');

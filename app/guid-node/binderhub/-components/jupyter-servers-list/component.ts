@@ -438,14 +438,11 @@ export default class JupyterServersList extends Component {
     }
 
     isTarget(server: JupyterServer) {
-        if (!this.node) {
-            return false;
+        if (this.node) {
+            const m = server.name.match(/^(.+)-([a-z0-9]+)-(.+)$/);
+            return m && m[1] === this.node.id;
         }
-        const m = server.name.match(/^(.+)-([a-z0-9]+)-(.+)$/);
-        if (!m) {
-            return false;
-        }
-        return m[1] === this.node.id;
+        return false;
     }
 
     @action

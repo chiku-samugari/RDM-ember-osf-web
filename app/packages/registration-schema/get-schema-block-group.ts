@@ -38,6 +38,29 @@ export function getSchemaBlockGroups(blocks: SchemaBlock[] | undefined) {
             case 'contributors-input':
             case 'single-select-input':
             case 'multi-select-input':
+            case 'japan-grant-number-input':
+            case 'funding-stream-code-input':
+            case 'jgn-program-name-ja-input':
+            case 'jgn-program-name-en-input':
+            case 'e-rad-award-funder-input':
+            case 'e-rad-award-number-input':
+            case 'e-rad-award-title-ja-input':
+            case 'e-rad-award-title-en-input':
+            case 'e-rad-award-field-input':
+            case 'e-rad-researcher-number-input':
+            case 'e-rad-researcher-name-ja-input':
+            case 'e-rad-researcher-name-en-input':
+            case 'e-rad-bunnya-input':
+            case 'file-metadata-input':
+            case 'date-input':
+            case 'file-capacity-input':
+            case 'file-creators-input':
+            case 'file-url-input':
+            case 'file-institution-ja-input':
+            case 'file-institution-en-input':
+            case 'file-institution-id-input':
+            case 'file-data-number-input':
+
                 assert('input block with no registrationResponseKey!', !isEmpty(block.registrationResponseKey));
                 assert('question with multiple input blocks!', !schemaBlockGroup.inputBlock);
                 assert('non-unique response key used',

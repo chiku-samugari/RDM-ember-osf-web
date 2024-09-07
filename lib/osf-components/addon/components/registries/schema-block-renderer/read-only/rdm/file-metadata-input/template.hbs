@@ -1,0 +1,53 @@
+{{#if this.fileEntries}}
+    <table local-class='file-metadata-input-files'>
+        <thead>
+            <tr>
+                <th class='col-md-4'>
+                    {{t 'metadata.file-metadata-input.columns.title'}}
+                </th>
+                <th class='col-md-3'>
+                    {{t 'metadata.file-metadata-input.columns.path'}}
+                </th>
+                <th class='col-md-5'>
+                    {{t 'metadata.file-metadata-input.columns.manager'}}
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each this.fileEntries as |fileEntry|}}
+                <tr>
+                    <td class='col-md-4'>
+                        {{#if fileEntry.url}}
+                            <a href='{{fileEntry.url}}' target='_blank' rel='noopener'>
+                                {{fileEntry.title}}
+                            </a>
+                        {{else}}
+                            {{fileEntry.title}}
+                        {{/if}}
+                    </td>
+                    <td class='col-md-3'>
+                        {{fileEntry.path}}
+                    </td>
+                    <td class='col-md-5'>
+                        {{#if fileEntry.manager}}
+                            {{fileEntry.manager}}
+                        {{else}}
+                            {{t 'metadata.file-metadata-input.no_manager'}}
+                        {{/if}}
+                    </td>
+                </tr>
+            {{/each}}
+        </tbody>
+    </table>
+{{else}}
+    <div local-class='file-metadata-input-container'>
+        {{t 'metadata.file-metadata-input.no_metadata'}}
+    </div>
+{{/if}}
+{{#if @changeset}}
+    <ValidationErrors
+      local-class='ValidationErrors'
+      @changeset={{@changeset}}
+      @key={{@schemaBlock.registrationResponseKey}}
+    />
+{{/if}}

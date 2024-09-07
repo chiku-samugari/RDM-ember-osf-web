@@ -60,7 +60,7 @@
                     data-analytics-name='Upload'
                     local-class='action-button'
                     @bubble={{true}}
-                    @class='dz-upload-button'
+                    @class='{{this.dzUploadButtonClass}}'
                     @disabled={{this.isUploading}}
                 >
                     {{fa-icon 'upload'}}
@@ -435,7 +435,7 @@
     @id={{@dropZoneId}}
     @clickable={{this.clickable}}
 >
-    <div class='file-browser-list' local-class='file-browser-list'>
+    <div class={{this.dzFileBrowserListClass}} local-class='file-browser-list'>
         <div local-class='shade {{unless this.dropping 'transparent'}}'>
             <div local-class='upload-drop'>
                 <div local-class='upload-text'>{{fa-icon 'upload' size=5}}</div>

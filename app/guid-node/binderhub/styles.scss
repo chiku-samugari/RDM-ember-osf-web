@@ -1,0 +1,28 @@
+@media screen and (max-width: 768px) {
+    .BinderHub {
+        margin: 0;
+        padding: 0;
+    }
+}
+
+.BinderHub__header {
+    margin-bottom: 0.5em;
+}
+
+.BinderHub__buttons {
+    margin-top: 1em;
+    margin-bottom: 2em;
+}
+
+.BinderHub__panel {
+    margin: 1em;
+}
+
+.BinderHub__connection_alert {
+    display: flex;
+    align-items: center;
+}
+
+.BinderHub__connection_alert button {
+    margin-left: auto;
+}

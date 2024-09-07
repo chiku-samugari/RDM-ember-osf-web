@@ -10,6 +10,9 @@ import Theme from 'ember-osf-web/services/theme';
 import OsfModalState from 'osf-components/services/osf-modal-state';
 
 const {
+    OSF: {
+        pageName,
+    },
     featureFlagNames: {
         verifyEmailModals,
     },
@@ -20,6 +23,8 @@ export default class Application extends Controller {
     @service theme!: Theme;
     @service features!: Features;
     @service osfModalState!: OsfModalState;
+
+    title: string = pageName;
 
     queryParams = [{
         viewOnlyToken: {

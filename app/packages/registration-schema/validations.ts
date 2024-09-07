@@ -1,7 +1,7 @@
 import { assert } from '@ember/debug';
 import { set } from '@ember/object';
 import { ValidationObject, ValidatorFunction } from 'ember-changeset-validations';
-import { validatePresence } from 'ember-changeset-validations/validators';
+import { validateFormat, validatePresence } from 'ember-changeset-validations/validators';
 
 import DraftRegistration, { DraftMetadataProperties } from 'ember-osf-web/models/draft-registration';
 import NodeModel, { NodeLicense } from 'ember-osf-web/models/node';
@@ -39,6 +39,11 @@ function getErrorType(groupType?: string) {
 export function buildValidation(groups: SchemaBlockGroup[], node?: NodeModel) {
     const ret: ValidationObject<RegistrationResponse> = {};
     groups.forEach((group: SchemaBlockGroup) => {
+        // ignore GRDM file specific fields
+        if (group.registrationResponseKey
+            && group.registrationResponseKey.match(/^__responseKey_grdm-file:.+$/)) {
+            return;
+        }
         // only validating groups with actual inputs and not groups that are headings/labels only
         if (group.inputBlock) {
             const validationForResponse: ValidatorFunction[] = [];
@@ -48,6 +53,16 @@ export function buildValidation(groups: SchemaBlockGroup[], node?: NodeModel) {
             if (group.groupType === 'file-input') {
                 validationForResponse.push(
                     validateFileList(responseKey as string, node),
+                );
+            }
+            if (inputBlock.pattern) {
+                const key = (group.registrationResponseKey || '').substr('__responseKey_'.length);
+                validationForResponse.push(
+                    validateFormat({
+                        allowBlank: !inputBlock.required,
+                        regex: new RegExp(inputBlock.pattern),
+                        type: `invalid_format_${key}`,
+                    }),
                 );
             }
             // TODO: remove check for contributors-input

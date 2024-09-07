@@ -8,6 +8,8 @@ import { OsfLinkRouterStub } from '../../helpers/osf-link-router-stub';
 
 enum NavCondition {
     HasParent,
+    IQBRIMSEnabled,
+    BinderHubEnabled,
     IsRegistration = 'isRegistration',
     IsPublic = 'public',
     UserCanRead = 'userHasReadPermission',
@@ -20,6 +22,8 @@ enum NavLink {
     ParentNode,
     ThisNode,
     Files = 'files',
+    IQBRIMS = 'iqbrims',
+    BinderHub = 'binderhub',
     Wiki = 'wiki',
     Analytics = 'analytics',
     Registrations = 'registrations',
@@ -51,7 +55,8 @@ export class FakeNode {
         for (const condition of conditions) {
             if (condition === NavCondition.HasParent) {
                 this.parentId = faker.random.uuid();
-            } else {
+            } else if (condition !== NavCondition.IQBRIMSEnabled
+                && condition !== NavCondition.BinderHubEnabled) {
                 this[condition] = true;
             }
         }
@@ -116,7 +121,6 @@ module('Integration | Component | node-navbar', () => {
                 links: [
                     NavLink.ThisNode,
                     NavLink.Files,
-                    NavLink.Registrations,
                 ],
             },
             {
@@ -132,7 +136,6 @@ module('Integration | Component | node-navbar', () => {
                     NavLink.ParentNode,
                     NavLink.ThisNode,
                     NavLink.Files,
-                    NavLink.Registrations,
                 ],
             },
             {
@@ -140,8 +143,6 @@ module('Integration | Component | node-navbar', () => {
                 links: [
                     NavLink.ThisNode,
                     NavLink.Files,
-                    NavLink.Analytics,
-                    NavLink.Registrations,
                 ],
             },
             {
@@ -153,8 +154,6 @@ module('Integration | Component | node-navbar', () => {
                     NavLink.ParentNode,
                     NavLink.ThisNode,
                     NavLink.Files,
-                    NavLink.Analytics,
-                    NavLink.Registrations,
                 ],
             },
             {
@@ -166,8 +165,6 @@ module('Integration | Component | node-navbar', () => {
                 links: [
                     NavLink.ThisNode,
                     NavLink.Files,
-                    NavLink.Analytics,
-                    NavLink.Registrations,
                     NavLink.Contributors,
                     NavLink.Addons,
                     NavLink.Settings,
@@ -181,8 +178,6 @@ module('Integration | Component | node-navbar', () => {
                 links: [
                     NavLink.ThisNode,
                     NavLink.Files,
-                    NavLink.Analytics,
-                    NavLink.Registrations,
                     NavLink.Contributors,
                     NavLink.Settings,
                 ],
@@ -200,8 +195,6 @@ module('Integration | Component | node-navbar', () => {
                     NavLink.ThisNode,
                     NavLink.Files,
                     NavLink.Wiki,
-                    NavLink.Analytics,
-                    NavLink.Registrations,
                     NavLink.Contributors,
                     NavLink.Addons,
                     NavLink.Settings,
@@ -218,7 +211,6 @@ module('Integration | Component | node-navbar', () => {
                     NavLink.ThisNode,
                     NavLink.Files,
                     NavLink.Wiki,
-                    NavLink.Analytics,
                     NavLink.Contributors,
                 ],
             },
@@ -234,7 +226,6 @@ module('Integration | Component | node-navbar', () => {
                     NavLink.ThisNode,
                     NavLink.Files,
                     NavLink.Wiki,
-                    NavLink.Analytics,
                     NavLink.Contributors,
                     NavLink.Settings,
                 ],
@@ -250,7 +241,6 @@ module('Integration | Component | node-navbar', () => {
                     NavLink.ThisNode,
                     NavLink.Files,
                     NavLink.Wiki,
-                    NavLink.Registrations,
                     NavLink.Settings,
                 ],
             },
@@ -266,7 +256,26 @@ module('Integration | Component | node-navbar', () => {
                     NavLink.ThisNode,
                     NavLink.Files,
                     NavLink.Wiki,
-                    NavLink.Analytics,
+                ],
+            },
+            {
+                conditions: [
+                    NavCondition.IQBRIMSEnabled,
+                ],
+                links: [
+                    NavLink.ThisNode,
+                    NavLink.Files,
+                    NavLink.IQBRIMS,
+                ],
+            },
+            {
+                conditions: [
+                    NavCondition.BinderHubEnabled,
+                ],
+                links: [
+                    NavLink.ThisNode,
+                    NavLink.Files,
+                    NavLink.BinderHub,
                 ],
             },
         ];
@@ -277,8 +286,15 @@ module('Integration | Component | node-navbar', () => {
 
                 const node = new FakeNode(testCase.conditions);
                 this.set('node', node);
+                const iqbrimsEnabled = testCase.conditions.filter(c => c === NavCondition.IQBRIMSEnabled);
+                this.set('iqbrimsEnabled', iqbrimsEnabled.length > 0);
+                const binderhubEnabled = testCase.conditions.filter(c => c === NavCondition.BinderHubEnabled);
+                this.set('binderhubEnabled', binderhubEnabled.length > 0);
 
-                await render(hbs`{{node-navbar node=this.node renderInPlace=true}}`);
+                await render(
+                    hbs`{{node-navbar node=this.node iqbrimsEnabled=this.iqbrimsEnabled
+                        binderhubEnabled=this.binderhubEnabled renderInPlace=true}}`,
+                );
 
                 assert.dom('[data-test-node-navbar-link]').exists({ count: testCase.links.length });
 

@@ -17,12 +17,9 @@
                 </div>
             {{/if}}
             <Registries::RegistrationFormNavigationDropdown
-                @showMetadata={{true}}
+                @showMetadata={{false}}
                 @schemaBlocks={{draftManager.schemaBlocks}}
-            />
-            <Registries::ReviewMetadataRenderer
-                @metadataChangeset={{draftManager.metadataChangeset}}
-                @draftRegistration={{draftManager.draftRegistration}}
+                @pageManagers={{draftManager.pageManagers}}
             />
             <Registries::ReviewFormRenderer
                 @draftManager={{draftManager}}

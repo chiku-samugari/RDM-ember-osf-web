@@ -141,8 +141,14 @@ Router.map(function() {
     this.route('guid-node', { path: '--node/:guid' }, function() {
         this.mount('analytics-page', { as: 'analytics' });
         this.route('forks');
+        this.route('iqbrims');
+        this.route('binderhub');
+        this.route('metadata');
         this.route('registrations');
         this.route('drafts', { path: '/drafts/:draftId' }, function() {
+            this.route('register');
+        });
+        this.route('reports', { path: '/reports/:draftId' }, function() {
             this.route('register');
         });
     });

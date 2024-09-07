@@ -1,0 +1,48 @@
+.jupyter-link {
+    padding: 0;
+}
+
+.jupyterhub-server-menu {
+    display: flex;
+}
+
+.jupyterhub-selector {
+    margin-left: auto;
+}
+
+.toolbar-button {
+    display: flex;
+    margin-bottom: -2.5em;
+}
+
+.refresh-button {
+    margin-left: auto;
+    border-style: none;
+    background: none;
+}
+
+.no-jupyter-servers {
+    text-align: center;
+}
+
+.jupyter-server td {
+    vertical-align: middle !important;
+}
+
+.jupyterhub-server-submenu {
+    display: flex;
+}
+
+.jupyterhub-servers {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.jupyterhub-user {
+    margin-left: auto;
+}
+
+.max-servers-exceeded {
+    color: #f00;
+}

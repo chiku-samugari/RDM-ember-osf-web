@@ -5,6 +5,13 @@ import Intl from 'ember-intl/services/intl';
 import pathJoin from 'ember-osf-web/utils/path-join';
 import toArray from 'ember-osf-web/utils/to-array';
 
+const {
+    organization,
+    OSF: {
+        longBrand,
+    },
+} = config;
+
 export type Content = string | number | null | undefined;
 
 export type DataContent = Content | Content[];
@@ -60,6 +67,9 @@ export default class MetaTags extends Service {
     @service router!: any;
     @service headTags!: HeadTagsService;
 
+    organization: string = organization;
+    brand: string = longBrand;
+
     /**
      * Get meta tag definitions.
      *
@@ -78,9 +88,9 @@ export default class MetaTags extends Service {
             imageType: 'image/png',
             imageWidth: 1200,
             imageHeight: 630,
-            imageAlt: this.get('intl').t('home.brand'),
-            siteName: this.get('intl').t('home.brand'),
-            institution: this.get('intl').t('general.cos'),
+            imageAlt: this.get('intl').t('home.brand', { brand: this.brand }),
+            siteName: this.get('intl').t('home.brand', { brand: this.brand }),
+            institution: this.get('intl').t('general.cos', { organization: this.organization }),
             fbAppId: config.FB_APP_ID,
             twitterSite: config.social.twitter.viaHandle,
             twitterCreator: config.social.twitter.viaHandle,

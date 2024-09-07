@@ -1,0 +1,173 @@
+{{! using unsafeTitle here to avoid double encoding because the title helper does its own }}
+{{title (t 'node.metadata.page_title' nodeTitle=this.node.unsafeTitle)}}
+<div
+  data-test-metadata-container
+  data-analytics-scope='Metadata'
+  class='container'
+  local-class='MetadataContainer'
+>
+    <div class='row'>
+        <div class='col-xs-9 col-sm-8'>
+            <BsTab
+              data-analytics-scope='Reports Tab'
+              @activeId={{this.activeTab}}
+              @onChange={{action this.changeTab}}
+              as |tab|
+            >
+                <tab.pane
+                  @id='reports'
+                  @title={{t 'node.metadata.reports'}}
+                >
+                    <div class='row' local-class='ReportsPane' data-test-reports-pane>
+                        <NodeList
+                            @modelTaskInstance={{this.model.taskInstance}}
+                            @relationshipName='registrations'
+                            @showTags={{true}}
+                            @disableNodeLink={{true}}
+                            @showExportCsvLink={{true}}
+                            @metadataSchema={{this.metadataSchema}}
+                            @showStatus={{false}}
+                            as |nl|
+                        >
+                            <nl.empty>
+                                <p>
+                                    {{t 'node.metadata.no_reports'}}
+                                    {{#if (and this.node.currentUserIsContributor (not this.node.userHasAdminPermission))}}
+                                        {{t 'node.metadata.only_admins_can_initiate'}}
+                                    {{/if}}
+                                </p>
+                                {{#if this.node.userHasAdminPermission}}
+                                    <p>{{t 'node.metadata.start_new'}}</p>
+                                {{/if}}
+                            </nl.empty>
+                        </NodeList>
+                    </div>
+                </tab.pane>
+                {{#if this.node.userHasAdminPermission}}
+                    <tab.pane
+                      data-analytics-scope='Drafts tab'
+                      @id='drafts'
+                      @title={{t 'node.metadata.draft_reports'}}
+                    >
+                        <div class='row' local-class='ReportsPane' data-test-draft-reports-pane>
+                            <PaginatedList::HasMany
+                                data-analytics-scope='Project Reports'
+                                @modelTaskInstance={{this.model.taskInstance}}
+                                @relationshipName='draftRegistrations'
+                                @bindReload={{action (mut this.reloadDrafts)}}
+                                @query={{this.draftsQueryParams}}
+                                as |list|
+                            >
+                                <list.item as |draftRegistration|>
+                                    <DraftRegistrationCard
+                                        @draftRegistration={{draftRegistration}}
+                                        @metadataSchema={{this.metadataSchema}}
+                                        @onDelete={{action list.doReload 1}}
+                                    />
+                                </list.item>
+
+                                <list.empty>
+                                    <p>{{t 'node.metadata.no_reports'}}</p>
+                                    <p>{{t 'node.metadata.start_new'}}</p>
+                                </list.empty>
+                            </PaginatedList::HasMany>
+                        </div>
+                    </tab.pane>
+                {{/if}}
+            </BsTab>
+        </div>
+        {{#if this.node.userHasAdminPermission}}
+            <div class='col-xs-3 col-sm-4'>
+                <OsfButton
+                    data-test-new-metadata-button
+                    data-analytics-name='Open new report modal'
+                    @type='success'
+                    @onClick={{action (mut this.newModalOpen) true}}
+                >
+                    {{t 'node.metadata.new'}}
+                </OsfButton>
+                <BsModal
+                    data-test-new-metadata-modal
+                    @size='lg'
+                    @open={{this.newModalOpen}}
+                    @onSubmit={{action this.createDraft}}
+                    @onHidden={{action this.closeNewModal}}
+                    as |modal|
+                >
+                    <modal.header data-test-new-report-modal-header>
+                        <h4 class='NewReportModal__header'>{{t 'node.metadata.new_report_modal.title'}}</h4>
+                    </modal.header>
+                    <modal.body data-test-new-report-modal-body data-analytics-scope='Node - Metadata - New report modal'>
+                        <p class='NewReportModal__info'>{{t 'node.metadata.new_report_modal.info' htmlSafe=true}}</p>
+                        <div class='NewReportModal__schema-list'>
+                            {{#if this.getRegistrationSchemas.isRunning}}
+                                <ContentPlaceholders as |placeholder|>
+                                    {{placeholder.list items=8}}
+                                </ContentPlaceholders>
+                            {{else}}
+                                <ul>
+                                    {{#each this.schemas as |schema|}}
+                                        <li data-test-new-report-modal-schema={{schema.name}}>
+                                            <RadioButton
+                                                @value={{schema}}
+                                                @groupValue={{this.selectedSchema}}
+                                                @changed={{action this.schemaChanged}}
+                                            >
+                                                <div>
+                                                    {{schema.name}}
+                                                    <span>
+                                                        {{fa-icon 'info-circle'}}
+                                                        <BsTooltip>
+                                                            {{schema.schema.description}}
+                                                        </BsTooltip>
+                                                    </span>
+                                                </div>
+                                            </RadioButton>
+                                        </li>
+                                    {{/each}}
+                                </ul>
+                            {{/if}}
+                        </div>
+                        <p class='NewReportModal__info'>{{t 'node.metadata.new_report_modal.note'}}</p>
+                    </modal.body>
+                    <modal.footer
+                      data-test-new-report-modal-footer
+                      data-analytics-scope='Node - Metadata - New report modal footer'
+                    >
+                        <OsfButton
+                            data-test-new-report-modal-cancel-button
+                            data-analytics-name='Close new report modal'
+                            @onClick={{action modal.close}}
+                        >
+                            {{t 'general.cancel'}}
+                        </OsfButton>
+                        <OsfButton
+                            data-test-new-report-modal-create-report-button
+                            data-analytics-name='Create report'
+                            @onClick={{action modal.submit}}
+                            @type='info'
+                        >
+                            {{t 'node.metadata.new_report_modal.create'}}
+                        </OsfButton>
+                    </modal.footer>
+                </BsModal>
+            </div>
+        {{/if}}
+    </div>
+
+
+
+    {{#if this.isComponentRootAdmin}}
+        <div class='row'>
+            {{t 'node.metadata.report_entire_project' rootNodeTitle=this.node.root.title}}
+            <OsfLink
+                data-analytics-name='Go to report'
+                @route='guid-node.metadata'
+                @models={{array this.node.root.id}}
+            >
+                {{t 'node.metadata.here'~}}
+            </OsfLink>
+            {{~t 'general.period'}}
+        </div>
+    {{/if}}
+</div>

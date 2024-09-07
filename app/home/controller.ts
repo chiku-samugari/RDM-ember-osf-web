@@ -7,8 +7,24 @@ import config from 'ember-get-config';
 
 const { featureFlagNames: { ABTesting } } = config;
 
+const {
+    organization,
+    OSF: {
+        longBrand,
+        simplePage,
+    },
+} = config;
+
 export default class Home extends Controller {
     @service features!: Features;
+
+    organization: string = organization;
+    brand: string = longBrand;
+    useSimplePage: boolean = simplePage;
+
+    get heroStyle(): string {
+        return simplePage ? 'height: 600px !important;' : 'min-height: auto;';
+    }
 
     @alias(`features.${camelize(ABTesting.homePageHeroTextVersionB)}`)
     shouldShowVersionB!: boolean;

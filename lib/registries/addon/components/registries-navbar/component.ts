@@ -4,6 +4,7 @@ import { and } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
 import Media from 'ember-responsive';
 
+import emberConfig from 'ember-get-config';
 import { layout, requiredAction } from 'ember-osf-web/decorators/component';
 import defaultTo from 'ember-osf-web/utils/default-to';
 import { AuthBase } from 'osf-components/components/osf-navbar/auth-dropdown/component';
@@ -13,6 +14,12 @@ import config from 'registries/config/environment';
 import template from './template';
 
 const { externalLinks } = config;
+
+const {
+    OSF: {
+        pageName,
+    },
+} = emberConfig;
 
 @tagName('')
 @layout(template)
@@ -27,6 +34,8 @@ export default class RegistriesNavbar extends AuthBase {
     donateRoute: string = defaultTo(this.donateRoute, externalLinks.donate);
 
     searchDropdownOpen: boolean = false;
+
+    title: string = pageName;
 
     @action
     _onSearch(query: string) {

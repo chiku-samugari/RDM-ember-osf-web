@@ -5,6 +5,17 @@ import BaseFileItem, { BaseFileLinks } from './base-file-item';
 import FileModel from './file';
 import NodeModel from './node';
 
+import { OsfLinks } from './osf-model';
+
+export interface FileProviderLinks extends OsfLinks {
+    info: Link;
+    move: Link;
+    upload: Link;
+    delete: Link;
+    download?: Link;
+    new_folder?: Link; // eslint-disable-line camelcase
+}
+
 export interface FileProviderLinks extends BaseFileLinks {
     storage_addons: Link; // eslint-disable-line camelcase
 }
@@ -16,6 +27,7 @@ export default class FileProviderModel extends BaseFileItem {
     @attr('fixstring') name!: string;
     @attr('string') path!: string;
     @attr('fixstring') provider!: string;
+    @attr('boolean') forInstitutions?: boolean;
 
     @belongsTo('file')
     rootFolder!: DS.PromiseObject<FileModel> & FileModel;

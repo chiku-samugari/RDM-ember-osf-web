@@ -14,7 +14,7 @@ module.exports = () => ({
      * @type {Array?}
      * @default "null"
      */
-    locales: ['en-us'],
+    locales: ['en-us', 'ja'],
 
     /**
      * Merges the fallback locale's translations into all other locales as a

@@ -62,6 +62,9 @@ export default class FileBrowser extends Component {
     @requiredAction addFile!: (fileId: string) => void;
     @requiredAction deleteFiles!: (files: File[]) => void;
 
+    dzUploadButtonClass: string = 'dz-upload-button';
+    dzFileBrowserListClass: string = 'file-browser-list';
+
     clickHandler?: JQuery.EventHandlerBase<HTMLElement, JQuery.Event>;
     dismissPop?: () => void;
     canEdit: boolean = defaultTo(this.canEdit, false);
@@ -81,6 +84,7 @@ export default class FileBrowser extends Component {
     isMoving = false;
     loaded = true;
     uploading: MutableArray<any> = A([]);
+    uploadingProcessCount = 0;
     currentModal = modals.None;
     popupOpen: boolean = false;
     items: File[] | null = null;
@@ -92,6 +96,8 @@ export default class FileBrowser extends Component {
     isChildNode?: boolean;
     isProjectSelectorValid: boolean = false;
     sort: string = '';
+    uploadedTasks: MutableArray<() => Promise<void>> = A([]);
+    customBuildUrl: ((files: File[]) => void) | null = null;
 
     dropzoneOptions = {
         createImageThumbnails: false,
@@ -173,8 +179,8 @@ export default class FileBrowser extends Component {
         }
 
         return [
-            '.dz-upload-button',
-            this.hasItems ? '' : '.file-browser-list',
+            `.${this.dzUploadButtonClass}`,
+            this.hasItems ? '' : `.${this.dzFileBrowserListClass}`,
         ].filter(item => item.length);
     }
 
@@ -238,6 +244,7 @@ export default class FileBrowser extends Component {
     // dropzone listeners
     @action
     addedFile(_: any, __: any, file: any) {
+        this.uploadingProcessCount++;
         this.uploading.pushObject(file);
     }
 
@@ -248,6 +255,7 @@ export default class FileBrowser extends Component {
 
     @action
     error(_: any, __: any, file: any, response: any) {
+        this.uploadingProcessCount--;
         this.uploading.removeObject(file);
         this.toast.error(response.message_long || response.message || response);
     }
@@ -255,12 +263,30 @@ export default class FileBrowser extends Component {
     @action
     async success(_: any, __: any, file: any, response: any) {
         this.analytics.track('file', 'upload', 'Quick Files - Upload');
-        await this.addFile(response.data.id.replace(/^.*\//, ''));
-        this.uploading.removeObject(file);
+        this.uploadingProcessCount--;
+        this.uploadedTasks.pushObject(async () => {
+            await this.addFile(response.data.id.replace(/^.*\//, ''));
+            this.uploading.removeObject(file);
+        });
+        await this.processAdded();
+    }
+
+    async processAdded() {
+        if (this.uploadingProcessCount > 0 || this.uploadedTasks.length === 0) {
+            return;
+        }
+        const uploadedTask = this.uploadedTasks.shiftObject();
+        await uploadedTask();
+        if (this.uploadedTasks.length > 0) {
+            await this.processAdded();
+        }
     }
 
     @action
     buildUrl(files: File[]) {
+        if (this.customBuildUrl) {
+            return this.customBuildUrl(files);
+        }
         const { name } = files[0];
         const existingFile = this.items && this.items.findBy('itemName', name);
 

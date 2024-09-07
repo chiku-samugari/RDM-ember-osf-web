@@ -26,15 +26,25 @@ interface ServiceLink {
     name: string;
     route?: string;
     href?: string;
+    disabled?: boolean;
 }
 
 export const OSF_SERVICES: ServiceLink[] = [
     { name: OSFService.HOME, route: 'home' },
     { name: OSFService.PREPRINTS, href: `${osfURL}preprints/` },
-    { name: OSFService.REGISTRIES, route: 'registries' },
+    { name: OSFService.REGISTRIES, route: 'registries', disabled: true },
     { name: OSFService.MEETINGS, route: 'meetings' },
     { name: OSFService.INSTITUTIONS, route: 'institutions' },
 ];
+
+const {
+    OSF: {
+        pageName,
+    },
+    navbar: {
+        useDropdown,
+    },
+} = config;
 
 @layout(template, styles)
 export default class OsfNavbar extends Component {
@@ -48,6 +58,9 @@ export default class OsfNavbar extends Component {
     activeService: OSFService = defaultTo(this.activeService, OSFService.HOME);
     services: ServiceLink[] = defaultTo(this.services, OSF_SERVICES);
 
+    title: string = pageName;
+    useNavDropdown: boolean = useDropdown;
+
     @computed('activeService', 'router.currentRouteName')
     get _activeService() {
         let { activeService } = this;
@@ -55,6 +68,9 @@ export default class OsfNavbar extends Component {
         const { currentRouteName } = this.router;
         if (activeService === OSFService.HOME && currentRouteName) {
             for (const osfService of OSF_SERVICES) {
+                if (osfService.disabled) {
+                    continue;
+                }
                 if (!osfService.route) {
                     continue;
                 }

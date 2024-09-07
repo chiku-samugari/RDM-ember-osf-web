@@ -13,8 +13,9 @@ import NodeModel from 'ember-osf-web/models/node';
 import SchemaBlock from 'ember-osf-web/models/schema-block';
 import captureException, { getApiErrorMessage } from 'ember-osf-web/utils/capture-exception';
 
+import MetadataNodeEradModel from 'ember-osf-web/models/metadata-node-erad';
+import MetadataNodeProjectModel from 'ember-osf-web/models/metadata-node-project';
 import {
-    buildMetadataValidations,
     getPages,
     PageManager,
     RegistrationResponse,
@@ -24,6 +25,11 @@ import buildChangeset from 'ember-osf-web/utils/build-changeset';
 export default class DraftRegistrationManager {
     // Required
     draftRegistrationAndNodeTask!: TaskInstance<{draftRegistration: DraftRegistration, node: NodeModel}>;
+    metadataNodeTask!: TaskInstance<{
+        metadataNodeErad: MetadataNodeEradModel,
+        metadataNodeProject: MetadataNodeProjectModel,
+    }>;
+    initializePageManagersTask!: TaskInstance<void>;
 
     // Private
     @service intl!: Intl;
@@ -38,13 +44,20 @@ export default class DraftRegistrationManager {
 
     @alias('draftRegistration.id') draftId!: string;
     @or('onPageInput.isRunning', 'onMetadataInput.isRunning') autoSaving!: boolean;
-    @or('initializePageManagers.isRunning', 'initializeMetadataChangeset.isRunning') initializing!: boolean;
+    @or(
+        'initializePageManagers.isRunning',
+        'initializeMetadataChangeset.isRunning',
+        'initializeMetadataNode.isRunning',
+    ) initializing!: boolean;
     @not('registrationResponsesIsValid') hasInvalidResponses!: boolean;
     @filterBy('pageManagers', 'isVisited', true) visitedPages!: PageManager[];
     @notEmpty('visitedPages') hasVisitedPages!: boolean;
 
     draftRegistration!: DraftRegistration;
     node!: NodeModel;
+
+    metadataNodeErad!: MetadataNodeEradModel;
+    metadataNodeProject!: MetadataNodeProjectModel;
 
     @computed('pageManagers.{[],@each.pageIsValid}')
     get registrationResponsesIsValid() {
@@ -91,9 +104,15 @@ export default class DraftRegistrationManager {
     @task
     initializeMetadataChangeset = task(function *(this: DraftRegistrationManager) {
         const { draftRegistration } = yield this.draftRegistrationAndNodeTask;
-        const metadataValidations = buildMetadataValidations();
-        const metadataChangeset = buildChangeset(draftRegistration, metadataValidations);
+        const metadataChangeset = buildChangeset(draftRegistration, {});
         set(this, 'metadataChangeset', metadataChangeset);
+    });
+
+    @task
+    initializeMetadataNode = task(function *(this: DraftRegistrationManager) {
+        const { metadataNodeErad, metadataNodeProject } = yield this.metadataNodeTask;
+        set(this, 'metadataNodeErad', metadataNodeErad);
+        set(this, 'metadataNodeProject', metadataNodeProject);
     });
 
     @task({ restartable: true })
@@ -153,10 +172,18 @@ export default class DraftRegistrationManager {
         }
     });
 
-    constructor(draftRegistrationAndNodeTask: TaskInstance<{draftRegistration: DraftRegistration, node: NodeModel}>) {
+    constructor(
+        draftRegistrationAndNodeTask: TaskInstance<{draftRegistration: DraftRegistration, node: NodeModel}>,
+        metadataNodeTask: TaskInstance<{
+            metadataNodeErad: MetadataNodeEradModel,
+            metadataNodeProject: MetadataNodeProjectModel,
+        }>,
+    ) {
         set(this, 'draftRegistrationAndNodeTask', draftRegistrationAndNodeTask);
-        this.initializePageManagers.perform();
+        set(this, 'metadataNodeTask', metadataNodeTask);
+        this.initializePageManagersTask = this.initializePageManagers.perform();
         this.initializeMetadataChangeset.perform();
+        this.initializeMetadataNode.perform();
     }
 
     @action
@@ -218,5 +245,20 @@ export default class DraftRegistrationManager {
                     );
                 });
         }
+    }
+
+    getResponseKeyByBlockType(blockType: string) {
+        const block = this.schemaBlocks.find(b => b.blockType === blockType);
+        if (block == null || block.registrationResponseKey == null) {
+            throw new Error(`Not found blockType: ${blockType}`);
+        }
+        return block.registrationResponseKey;
+    }
+
+    setChangesetValue(valuePath: string, value: any) {
+        this.pageManagers
+            .forEach(pageManager => {
+                pageManager.setChangesetValue(valuePath, value);
+            });
     }
 }

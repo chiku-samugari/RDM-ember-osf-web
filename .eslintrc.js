@@ -3,7 +3,6 @@
 module.exports = {
     globals: {
         server: true,
-        additionalHtml: true,
     },
     root: true,
     parser: '@typescript-eslint/parser',

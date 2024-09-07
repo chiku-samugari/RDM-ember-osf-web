@@ -13,5 +13,4 @@ export default class ValidatedText<M extends DS.Model> extends BaseValidatedComp
     // Additional arguments
     password: boolean = defaultTo(this.password, false);
     onKeyUp?: () => void; // Action
-    onChange?: () => void; // Action
 }

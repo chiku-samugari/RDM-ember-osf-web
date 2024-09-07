@@ -9,9 +9,6 @@ import { Permission } from 'ember-osf-web/models/osf-model';
 import { click, setupOSFApplicationTest } from 'ember-osf-web/tests/helpers';
 
 const {
-    OSF: {
-        simplePage,
-    },
     dashboard: {
         noteworthyNode,
         popularNode,
@@ -53,9 +50,6 @@ module('Acceptance | dashboard', hooks => {
     });
 
     test('institutions carousel', async assert => {
-        if (simplePage) {
-            return;
-        }
         server.create('user', 'loggedIn');
         const institutions = server.createList('institution', 20);
 
@@ -74,9 +68,6 @@ module('Acceptance | dashboard', hooks => {
     });
 
     test('popular projects and new/noteworthy titles', async assert => {
-        if (simplePage) {
-            return;
-        }
         server.create('user', 'loggedIn');
         const nodes = server.createList('node', 10, {}, 'withContributors');
         server.create('node', {
@@ -160,72 +151,6 @@ module('Acceptance | dashboard', hooks => {
         assert.dom('[data-analytics-name="load_nodes"]')
             .doesNotExist('The control to load more projects is gone after all projects are loaded');
         await percySnapshot(assert);
-    });
-
-    test('quota fields', async function(assert) {
-        const currentUser = server.create('user',
-            {
-                familyName: 'TestUser',
-                givenName: 'TestUser',
-                fullName: 'TestUser',
-            },
-            'loggedIn');
-        const nodeOne = server.create(
-            'node',
-            {
-                title: 'title1',
-                dateModified: '2017-10-19T12:05:10.571Z',
-                creator: currentUser,
-                quotaThreshold: 0.8,
-                quotaRate: 0.9,
-            },
-        );
-        const nodeTwo = server.create(
-            'node',
-            {
-                title: 'title2',
-                dateModified: '2017-10-19T12:05:10.571Z',
-                creator: currentUser,
-                quotaThreshold: 0.8,
-                quotaRate: 1.3,
-            },
-        );
-        const nodeThree = server.create(
-            'node',
-            {
-                title: 'title3',
-                dateModified: '2017-10-19T12:05:10.571Z',
-                creator: currentUser,
-                quotaThreshold: 0.8,
-                quotaRate: 0.3,
-            },
-        );
-        server.create(
-            'contributor',
-            { node: nodeOne, users: currentUser, index: 0, permission: Permission.Admin, bibliographic: true },
-        );
-        server.create(
-            'contributor',
-            { node: nodeTwo, users: currentUser, index: 0, permission: Permission.Admin, bibliographic: true },
-        );
-        server.create(
-            'contributor',
-            { node: nodeThree, users: currentUser, index: 0, permission: Permission.Admin, bibliographic: true },
-        );
-        await visit('/dashboard');
-        assert.dom('img[alt*="Missing translation"]').doesNotExist();
-
-        const projectAdmins = this.element.querySelectorAll('.di-admin');
-        assert.equal(projectAdmins.length, 3, 'Correct number of project admin elements');
-        // assert.dom(projectAdmins[0]).hasText('TestUser', 'Correct project admin name shown');
-        // assert.dom(projectAdmins[1]).hasText('TestUser', 'Correct project admin name shown');
-        // assert.dom(projectAdmins[2]).hasText('TestUser', 'Correct project admin name shown');
-
-        const projectNotices = this.element.querySelectorAll('.di-notice');
-        assert.equal(projectNotices.length, 3, 'Correct number of quota notice elements');
-        assert.dom(projectNotices[0]).includesText('Used more than 80%', 'Correct quota notice shown');
-        assert.dom(projectNotices[1]).includesText('Surpassed max quota', 'Correct quota notice shown');
-        assert.dom(projectNotices[2]).hasText('', 'Correct quota notice shown');
     });
 
     test('sorting projects', async function(assert) {

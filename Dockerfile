@@ -6,7 +6,6 @@ RUN yarn --frozen-lockfile
 
 COPY ./ ./
 
-ARG NODE_OPTIONS='--max-old-space-size=4096'
 ARG ASSETS_BRANCH='master'
 ARG GIT_COMMIT=
 

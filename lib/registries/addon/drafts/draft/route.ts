@@ -5,11 +5,8 @@ import { inject as service } from '@ember/service';
 import { task } from 'ember-concurrency-decorators';
 import DS from 'ember-data';
 
-import { TaskInstance } from 'ember-concurrency';
 import requireAuth from 'ember-osf-web/decorators/require-auth';
 import DraftRegistration from 'ember-osf-web/models/draft-registration';
-import MetadataNodeEradModel from 'ember-osf-web/models/metadata-node-erad';
-import MetadataNodeProjectModel from 'ember-osf-web/models/metadata-node-project';
 import NodeModel from 'ember-osf-web/models/node';
 import Analytics from 'ember-osf-web/services/analytics';
 import DraftRegistrationManager from 'registries/drafts/draft/draft-registration-manager';
@@ -44,28 +41,10 @@ export default class DraftRegistrationRoute extends Route {
         }
     });
 
-    @task
-    loadMetadataNode = task(function *(
-        this: DraftRegistrationRoute,
-        draftRegistrationAndNodeTask: TaskInstance<{draftRegistration: DraftRegistration, node: NodeModel}>,
-    ) {
-        const { node } = yield draftRegistrationAndNodeTask;
-        const metadataNodeErad: MetadataNodeEradModel = yield this.store.findRecord('metadata-node-erad', node.id);
-        const metadataNodeProject: MetadataNodeProjectModel = yield this.store.findRecord(
-            'metadata-node-project',
-            node.id,
-        );
-        return { metadataNodeErad, metadataNodeProject };
-    });
-
     model(params: { id: string }): DraftRouteModel {
         const { id: draftId } = params;
         const draftRegistrationAndNodeTask = this.loadDraftRegistrationAndNode.perform(draftId);
-        const metadataNodeTask = this.loadMetadataNode.perform(draftRegistrationAndNodeTask);
-        const draftRegistrationManager = new DraftRegistrationManager(
-            draftRegistrationAndNodeTask,
-            metadataNodeTask,
-        );
+        const draftRegistrationManager = new DraftRegistrationManager(draftRegistrationAndNodeTask);
         const navigationManager = new NavigationManager(draftRegistrationManager);
         return {
             navigationManager,

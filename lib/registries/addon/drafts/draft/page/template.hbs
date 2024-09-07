@@ -16,8 +16,6 @@
                 <Registries::PageRenderer
                     @pageManager={{navManager.currentPageManager}}
                     @onInput={{perform draftManager.onPageInput navManager.currentPageManager}}
-                    @draftManager={{draftManager}}
-                    @onMetadataInput={{perform draftManager.onMetadataInput}}
                     @node={{this.node}}
                 />
             {{/if}}

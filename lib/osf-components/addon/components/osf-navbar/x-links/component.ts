@@ -13,19 +13,6 @@ import template from './template';
 
 const osfURL = config.OSF.url;
 
-const {
-    support: {
-        serviceUrl,
-    },
-    navbar: {
-        useQuickfiles,
-        useRegistrations,
-        useSearch,
-        useSupport,
-        useDonate,
-    },
-} = config;
-
 @layout(template)
 @tagName('') // Don't wrap this component in a div
 export default class XLinks extends Component {
@@ -33,39 +20,18 @@ export default class XLinks extends Component {
     @service session!: Session;
     @service currentUser!: CurrentUser;
 
-    serviceSupportURL: string = serviceUrl;
     searchURL: string = defaultTo(this.searchURL, `${osfURL}search/`);
     myProjectsURL: string = defaultTo(this.myProjectsURL, `${osfURL}myprojects/`);
     myRegistrationsURL: string = defaultTo(this.myRegistrationsURL, `${osfURL}myprojects/#registrations`);
     onLinkClicked: () => void = defaultTo(this.onLinkClicked, () => null);
 
-    useNavQuickfiles: boolean = useQuickfiles;
-    useNavRegistrations: boolean = useRegistrations;
-    useNavSearch: boolean = useSearch;
-    useNavSupport: boolean = useSupport;
-    useNavDonate: boolean = useDonate;
-
-    @computed('this.serviceSupportURL')
-    get serviceSupportTarget() {
-        if (/^https?:\/\//.test(this.serviceSupportURL)) {
-            return '_blank';
-        }
-        return '_self';
-    }
-
-    @computed('router.currentRouteName', 'this.serviceSupportURL')
+    @computed('router.currentRouteName')
     get supportURL() {
-        if (this.onInstitutions) {
-            return 'https://openscience.zendesk.com/hc/en-us/categories/360001550913';
-        }
-        if (this.serviceSupportURL) {
-            return this.serviceSupportURL;
-        }
-        return 'support';
+        return this.onInstitutions ? 'https://openscience.zendesk.com/hc/en-us/categories/360001550913' : 'support';
     }
 
     @computed('router.currentRouteName')
     get onInstitutions() {
-        return this.router.currentRouteName === 'institutions.index';
+        return this.router.currentRouteName === 'institutions';
     }
 }

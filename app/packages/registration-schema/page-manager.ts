@@ -42,13 +42,6 @@ export class PageManager {
         }
     }
 
-    setChangesetValue(valuePath: string, value: any) {
-        if (this.changeset) {
-            this.changeset.set(valuePath, value);
-            this.changeset.validate();
-        }
-    }
-
     @computed('changeset.isValid')
     get pageIsValid() {
         if (this.changeset) {

@@ -34,19 +34,15 @@
                             {{@node.title}}
                         {{/node-navbar/link}}
                         {{node-navbar/link node=@node useLinkTo=false destination='files'}}
-
-                        {{#if this.iqbrimsEnabled }}
-                            {{node-navbar/link node=@node useLinkTo=false destination='iqbrims'}}
-                        {{/if}}
                         {{#if @node.wikiEnabled}}
                             {{node-navbar/link node=@node useLinkTo=false destination='wiki'}}
                         {{/if}}
-                        {{#if this.metadataEnabled }}
-                            {{node-navbar/link node=@node useLinkTo=false destination='metadata'}}
+                        {{#if (or @node.public @node.currentUserIsContributor)}}
+                            {{node-navbar/link node=@node useLinkTo=true destination='analytics'}}
                         {{/if}}
-                        {{#if this.binderhubEnabled }}
-                            {{node-navbar/link node=@node useLinkTo=false destination='binderhub'}}
-                        {{/if}}
+                        {{#unless @node.isRegistration}}
+                            {{node-navbar/link node=@node useLinkTo=true destination='registrations'}}
+                        {{/unless}}
                         {{#if @node.currentUserIsContributor}}
                             {{node-navbar/link node=@node useLinkTo=false destination='contributors'}}
                         {{/if}}

@@ -2,14 +2,14 @@
 <p
     ...attributes
     local-class='DisplayText'>
-    {{~this.localizedDisplayText~}}
+    {{~@schemaBlock.displayText~}}
     {{~#if (and @isRequired (not @readonly))~}}
         <span local-class='Required'>*</span>
     {{~/if~}}
 </p>
 {{#if @isEditableForm}}
     <p local-class='HelpText'>
-        {{~this.localizedHelpText~}}
+        {{~@schemaBlock.helpText~}}
     </p>
     {{#if @schemaBlock.exampleText}}
         <OsfButton

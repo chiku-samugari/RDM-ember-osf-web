@@ -21,17 +21,6 @@ import template from './template';
 
 const { OSF: { url: baseUrl } } = config;
 
-const {
-    support: {
-        globalUrl,
-    },
-    navbar: {
-        useGlobalSupport,
-        useSignup,
-        useEmbeddedDS,
-    },
-} = config;
-
 export class AuthBase extends Component {
     @service analytics!: Analytics;
     @service currentUser!: CurrentUser;
@@ -53,15 +42,10 @@ export class AuthBase extends Component {
 
     campaign?: string;
 
-    globalSupportURL: string = globalUrl;
     profileURL: string = defaultTo(this.profileURL, pathJoin(baseUrl, 'profile'));
     settingsURL: string = defaultTo(this.settingsURL, pathJoin(baseUrl, 'settings'));
     signUpURL: string = defaultTo(this.signUpURL, pathJoin(baseUrl, 'register'));
     onLinkClicked?: () => void;
-
-    useNavGlobalSupport: boolean = useGlobalSupport;
-    useNavSignUp: boolean = useSignup;
-    useNavEmbeddedDS: boolean = useEmbeddedDS;
 
     @computed('router.currentURL')
     get signUpNext() {
@@ -81,19 +65,6 @@ export class AuthBase extends Component {
         }
 
         return params;
-    }
-
-    @computed('this.globalSupportURL')
-    get replaceGlobalSupportUrl() {
-        return this.globalSupportURL !== '';
-    }
-
-    @computed('this.globalSupportURL')
-    get globalSupportTarget() {
-        if (/^https?:\/\//.test(this.globalSupportURL)) {
-            return '_blank';
-        }
-        return '_self';
     }
 
     @action

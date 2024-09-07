@@ -49,6 +49,20 @@
         {{t 'registries.drafts.draft.form.back'}}
     </OsfLink>
 {{/if}}
+{{#if @navManager.isFirstPage}}
+    <OsfLink
+        data-test-goto-metadata
+        data-analytics-name='Back to metadata'
+        local-class='BackButton'
+        class='btn btn-default'
+        @type='button'
+        @route='registries.drafts.draft.metadata'
+        @models={{array @draftManager.draftId}}
+    >
+        <FaIcon @icon='arrow-left' @fixedWidth={{true}} />
+        {{t 'registries.drafts.draft.metadata.page_label'}}
+    </OsfLink>
+{{/if}}
 
 {{#if @draftManager.lastSaveFailed}}
     <span local-class='SaveFailed'>

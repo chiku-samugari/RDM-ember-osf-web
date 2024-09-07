@@ -2,7 +2,6 @@ import Component from '@ember/component';
 import { computed } from '@ember/object';
 import { alias } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
-import { htmlSafe } from '@ember/string';
 import moment from 'moment';
 
 import { layout } from 'ember-osf-web/decorators/component';
@@ -24,28 +23,5 @@ export default class DashboardItem extends Component {
     @computed('node.dateModified')
     get date(): string | undefined {
         return this.node ? moment(this.node.dateModified).format('YYYY-MM-DD h:mm A') : undefined;
-    }
-
-    @computed('node.{quotaThreshold,quotaRate}')
-    get quotaNotice() {
-        if (this.node) {
-            if (this.node.quotaRate > 1) {
-                return htmlSafe('<b>Warning</b><div>Surpassed max quota</div>');
-            }
-            if (this.node.quotaRate > this.node.quotaThreshold) {
-                const threshold = Math.round(this.node.quotaThreshold * 100);
-                return htmlSafe(`<b>Alert</b><div>Used more than ${threshold}%</div>`);
-            }
-        }
-        return htmlSafe('');
-    }
-
-    @computed('node.creator')
-    get administrator(): string | undefined {
-        return this.node
-            ? this.node.creator.get('familyName')
-            || this.node.creator.get('givenName')
-            || this.node.creator.get('fullName')
-            : undefined;
     }
 }

@@ -1,5 +1,5 @@
 {{title (t 'dashboard.page_title')}}
-<div data-analytics-scope='Dashboard' style='flex: 1 0 auto; display: flex; flex-direction: column;'>
+<div data-analytics-scope='Dashboard'>
     {{#if this.modalOpen}}
         {{#if this.showNewNodeNavigation}}
             <NewProjectNavigationModal
@@ -55,10 +55,10 @@
                                                     >
                                                 </div>
                                             </div>
-                                            <p class='text-center f-w-lg'>{{t 'dashboard.quicksearch.other_links' htmlSafe=true useSearch=this.useSearch}}</p>
+                                            <p class='text-center f-w-lg'>{{t 'dashboard.quicksearch.other_links' htmlSafe=true}}</p>
                                             <div local-class='quick-search-table'>
                                                 <div class='row m-t-md' local-class='node-col-headers'>
-                                                    <div class='col-sm-3 col-md-3'>
+                                                    <div class='col-sm-3 col-md-6'>
                                                         <div local-class='quick-search-col'>
                                                             <span>{{t 'general.title'}}</span>
                                                             <SortButton
@@ -69,7 +69,7 @@
                                                             />
                                                         </div>
                                                     </div>
-                                                    <div class='col-sm-2 col-md-2'>
+                                                    <div class='col-sm-3 col-md-3'>
                                                         <div local-class='quick-search-col'>
                                                             <span>{{t 'general.contributors'}}</span>
                                                         </div>
@@ -83,16 +83,6 @@
                                                                 @sortBy='last_logged'
                                                                 @class='sort_button'
                                                             />
-                                                        </div>
-                                                    </div>
-                                                    <div class='col-sm-2 col-md-2'>
-                                                        <div local-class='quick-search-col'>
-                                                            <span>{{t 'general.proj_admin'}}</span>
-                                                        </div>
-                                                    </div>
-                                                    <div class='col-sm-2 col-md-2'>
-                                                        <div local-class='quick-search-col'>
-                                                            <span>{{t 'general.quota_notice'}}</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -174,77 +164,107 @@
             </div>
         </div>
     </div>
-    {{#if (not this.useSimplePage)}}
-        <div class='hidden-xs' local-class='bg-web institutions-panel'>
-            <div class='container'>
-                <div class='row'>
-                    <div class='col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2'>
-                        <InstitutionCarousel
-                            data-test-institution-carousel
-                            @institutions={{this.institutions}}
-                        />
+    <div class='hidden-xs' local-class='bg-web institutions-panel'>
+        <div class='container'>
+            <div class='row'>
+                <div class='col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2'>
+                    <InstitutionCarousel
+                        data-test-institution-carousel
+                        @institutions={{this.institutions}}
+                    />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div local-class='newAndNoteworthy'>
+        <div class='container'>
+            <div class='row'>
+                <div class='col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2'>
+                    <h3>{{t 'dashboard.noteworthy.description'}}</h3>
+                </div>
+            </div>
+            <div class='row'>
+                <div class='col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2'>
+                    <div>
+                        <div class='row'>
+                            <div class='col-xs-12 col-md-6'>
+                                <div data-test-noteworthy-list local-class='public-projects-box'>
+                                    <h4 class='m-b-md'>{{t 'dashboard.noteworthy.new_and_noteworthy'}}</h4>
+                                    {{#if this.failedLoading-noteworthy}}
+                                        {{t 'dashboard.noteworthy.failed_noteworthy'}}
+                                    {{else}}
+                                        {{#if this.noteworthy.length}}
+                                            {{#each this.noteworthy as | project | }}
+                                                <NoteworthyAndPopularProject
+                                                    data-test-noteworthy-project={{project.id}}
+                                                    @project={{project}}
+                                                />
+                                            {{/each}}
+                                        {{else}}
+                                            <LoadingIndicator />
+                                        {{/if}}
+                                    {{/if}}
+                                </div>
+                            </div>
+                            <div class='col-xs-12 col-md-6'>
+                                <div data-test-popular-list local-class='public-projects-box'>
+                                    <h4 class='m-b-md'>{{t 'dashboard.noteworthy.most_popular'}}</h4>
+                                    {{#if this.failedLoading-popular}}
+                                        {{t 'dashboard.noteworthy.failed_popular'}}
+                                    {{else}}
+                                        {{#if this.popular.length}}
+                                            {{#each this.popular as | project | }}
+                                                <NoteworthyAndPopularProject
+                                                    data-test-popular-project={{project.id}}
+                                                    @project={{project}}
+                                                />
+                                            {{/each}}
+                                        {{else}}
+                                            <LoadingIndicator />
+                                        {{/if}}
+                                    {{/if}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class='row'>
+                            <div class='text-center col-sm-12'>
+                                <OsfLink
+                                    data-analytics-name='noteworthy_search'
+                                    class='btn btn-default m-v-lg'
+                                    @href='/search/?q=*'
+                                >
+                                    {{t 'dashboard.noteworthy.search_more'}}
+                                </OsfLink>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div local-class='newAndNoteworthy'>
-            <div class='container'>
-                <div class='row'>
-                    <div class='col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2'>
-                        <h3>{{t 'dashboard.noteworthy.description'}}</h3>
-                    </div>
-                </div>
-                <div class='row'>
-                    <div class='col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2'>
-                        <div>
-                            <div class='row'>
-                                <div class='col-xs-12 col-md-6'>
-                                    <div data-test-noteworthy-list local-class='public-projects-box'>
-                                        <h4 class='m-b-md'>{{t 'dashboard.noteworthy.new_and_noteworthy'}}</h4>
-                                        {{#if this.failedLoading-noteworthy}}
-                                            {{t 'dashboard.noteworthy.failed_noteworthy'}}
-                                        {{else}}
-                                            {{#if this.noteworthy.length}}
-                                                {{#each this.noteworthy as | project | }}
-                                                    <NoteworthyAndPopularProject
-                                                        data-test-noteworthy-project={{project.id}}
-                                                        @project={{project}}
-                                                    />
-                                                {{/each}}
-                                            {{else}}
-                                                <LoadingIndicator />
-                                            {{/if}}
-                                        {{/if}}
-                                    </div>
+    </div>
+    <div local-class='bg-web meetings'>
+        <div class='container'>
+            <div class='row'>
+                <div class='col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2'>
+                    <div class='p-v-sm'>
+                        <div class='row'>
+                            <div class='col-md-8'>
+                                <div class='conference-centering'>
+                                    <h3>{{t 'dashboard.meetings.title'}}</h3>
                                 </div>
-                                <div class='col-xs-12 col-md-6'>
-                                    <div data-test-popular-list local-class='public-projects-box'>
-                                        <h4 class='m-b-md'>{{t 'dashboard.noteworthy.most_popular'}}</h4>
-                                        {{#if this.failedLoading-popular}}
-                                            {{t 'dashboard.noteworthy.failed_popular'}}
-                                        {{else}}
-                                            {{#if this.popular.length}}
-                                                {{#each this.popular as | project | }}
-                                                    <NoteworthyAndPopularProject
-                                                        data-test-popular-project={{project.id}}
-                                                        @project={{project}}
-                                                    />
-                                                {{/each}}
-                                            {{else}}
-                                                <LoadingIndicator />
-                                            {{/if}}
-                                        {{/if}}
-                                    </div>
+                                <div class='conference-centering m-t-lg'>
+                                    <p class='text-bigger'>{{t 'dashboard.meetings.description'}}</p>
                                 </div>
                             </div>
-                            <div class='row'>
-                                <div class='text-center col-sm-12'>
+                            <div class='col-md-4 text-center'>
+                                <div>
                                     <OsfLink
-                                        data-analytics-name='noteworthy_search'
-                                        class='btn btn-default m-v-lg'
-                                        @href='/search/?q=*'
+                                        data-analytics-name='meetings_button'
+                                        class='btn btn-banner btn-success btn-lg btn-success-high-contrast m-v-xl f-w-xl'
+                                        local-class='btn-banner'
+                                        @href='/meetings/'
                                     >
-                                        {{t 'dashboard.noteworthy.search_more'}}
+                                        {{t 'dashboard.meetings.button'}}
                                     </OsfLink>
                                 </div>
                             </div>
@@ -253,31 +273,31 @@
                 </div>
             </div>
         </div>
-        <div local-class='bg-web meetings'>
-            <div class='container'>
-                <div class='row'>
-                    <div class='col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2'>
-                        <div class='p-v-sm'>
-                            <div class='row'>
-                                <div class='col-md-8'>
-                                    <div class='conference-centering'>
-                                        <h3>{{t 'dashboard.meetings.title'}}</h3>
-                                    </div>
-                                    <div class='conference-centering m-t-lg'>
-                                        <p class='text-bigger'>{{t 'dashboard.meetings.description'}}</p>
-                                    </div>
+    </div>
+    <div local-class='preprints'>
+        <div class='container'>
+            <div class='row'>
+                <div class='col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2'>
+                    <div class='p-v-sm'>
+                        <div class='row'>
+                            <div class='col-md-8'>
+                                <div class='conference-centering'>
+                                    <h3>{{t 'dashboard.preprints.title'}}</h3>
                                 </div>
-                                <div class='col-md-4 text-center'>
-                                    <div>
-                                        <OsfLink
-                                            data-analytics-name='meetings_button'
-                                            class='btn btn-banner btn-success btn-lg btn-success-high-contrast m-v-xl f-w-xl'
-                                            local-class='btn-banner'
-                                            @href='/meetings/'
-                                        >
-                                            {{t 'dashboard.meetings.button'}}
-                                        </OsfLink>
-                                    </div>
+                                <div class='conference-centering m-t-lg'>
+                                    <p class='text-bigger'>{{t 'dashboard.preprints.description'}}</p>
+                                </div>
+                            </div>
+                            <div class='col-md-4 text-center'>
+                                <div>
+                                    <OsfLink
+                                        data-analytics-name='preprints_button'
+                                        local-class='btn-banner'
+                                        class='btn btn-banner btn-success btn-lg btn-success-high-contrast m-v-xl f-w-xl'
+                                        @href='/preprints/'
+                                    >
+                                        {{t 'dashboard.preprints.button'}}
+                                    </OsfLink>
                                 </div>
                             </div>
                         </div>
@@ -285,37 +305,5 @@
                 </div>
             </div>
         </div>
-        <div local-class='preprints'>
-            <div class='container'>
-                <div class='row'>
-                    <div class='col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2'>
-                        <div class='p-v-sm'>
-                            <div class='row'>
-                                <div class='col-md-8'>
-                                    <div class='conference-centering'>
-                                        <h3>{{t 'dashboard.preprints.title'}}</h3>
-                                    </div>
-                                    <div class='conference-centering m-t-lg'>
-                                        <p class='text-bigger'>{{t 'dashboard.preprints.description'}}</p>
-                                    </div>
-                                </div>
-                                <div class='col-md-4 text-center'>
-                                    <div>
-                                        <OsfLink
-                                            data-analytics-name='preprints_button'
-                                            local-class='btn-banner'
-                                            class='btn btn-banner btn-success btn-lg btn-success-high-contrast m-v-xl f-w-xl'
-                                            @href='/preprints/'
-                                        >
-                                            {{t 'dashboard.preprints.button'}}
-                                        </OsfLink>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    {{/if}}
+    </div>
 </div>

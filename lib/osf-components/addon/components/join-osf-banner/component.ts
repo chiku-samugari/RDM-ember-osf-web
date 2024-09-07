@@ -13,7 +13,6 @@ import template from './template';
 
 const {
     OSF: {
-        pageName,
         localStorageKeys: {
             joinBannerDismissed: dismissedKey,
         },
@@ -28,8 +27,6 @@ export default class JoinOsfBanner extends Component {
     dismissed: boolean = false;
     storage = window.localStorage;
     previouslyDismissed = this.storage.getItem(dismissedKey) !== null;
-
-    title: string = pageName;
 
     @or('session.isAuthenticated', 'previouslyDismissed')
     hideBanner!: boolean;

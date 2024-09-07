@@ -2,9 +2,7 @@ import { tagName } from '@ember-decorators/component';
 import Component from '@ember/component';
 import { assert } from '@ember/debug';
 import { computed } from '@ember/object';
-import { inject as service } from '@ember/service';
 
-import Intl from 'ember-intl/services/intl';
 import { layout } from 'ember-osf-web/decorators/component';
 import defaultTo from 'ember-osf-web/utils/default-to';
 
@@ -14,7 +12,6 @@ import template from './template';
 @tagName('')
 @layout(template, styles)
 export default class Label extends Component {
-    @service intl!: Intl;
     // Required parameters
     label!: string;
 
@@ -34,26 +31,10 @@ export default class Label extends Component {
         return this.hasCount && !this.isCollapsed;
     }
 
-    @computed('label')
-    get localizedLabel() {
-        return this.getLocalizedText(this.label);
-    }
-
     didReceiveAttrs() {
         assert(
             'OsfLayout::RegistriesSideNav::Label: @label is required for this component to render',
             Boolean(this.label),
         );
-    }
-
-    getLocalizedText(text: string) {
-        if (!text.includes('|')) {
-            return text;
-        }
-        const texts = text.split('|');
-        if (this.intl.locale.includes('ja')) {
-            return texts[0];
-        }
-        return texts[1];
     }
 }

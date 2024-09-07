@@ -17,15 +17,9 @@ import CurrentUser from 'ember-osf-web/services/current-user';
 
 // TODO pull these from the database
 const {
-    OSF: {
-        simplePage,
-    },
     dashboard: {
         noteworthyNode,
         popularNode,
-    },
-    navbar: {
-        useSearch,
     },
 } = config;
 
@@ -52,8 +46,6 @@ export default class Dashboard extends Controller {
     nodes?: QueryHasManyResult<Node>;
     noteworthy!: QueryHasManyResult<Node>;
     popular!: QueryHasManyResult<Node>;
-    useSimplePage: boolean = simplePage;
-    useSearch: string = useSearch ? 'true' : 'false';
 
     @task({ restartable: true })
     setupTask = task(function *(this: Dashboard) {

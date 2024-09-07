@@ -1,8 +1,4 @@
 .hero {
-    display: flex;
-    flex-direction: column;
-    flex: 1 0 auto;
-
     color: #fff;
     text-align: center;
     background: url('/assets/images/new-home/hero-home-banner.jpg') center center no-repeat;
@@ -35,8 +31,7 @@
     
     h2 {
         font-size: 32px;
-        margin: 22px auto;
-        margin-bottom: 22px;
+        margin: 22px auto 0;
         max-width: 646px;
         font-weight: 400;
     }
@@ -80,8 +75,7 @@
         
         h2 {
             font-size: 24px;
-            margin: 22px auto;
-            margin-bottom: 22px;
+            margin: 22px auto 0;
             max-width: 490px;
         }
 

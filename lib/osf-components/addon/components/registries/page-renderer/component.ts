@@ -6,7 +6,6 @@ import { layout } from 'ember-osf-web/decorators/component';
 import { assert } from '@ember/debug';
 import NodeModel from 'ember-osf-web/models/node';
 import { PageManager } from 'ember-osf-web/packages/registration-schema/page-manager';
-import DraftRegistrationManager from 'registries/drafts/draft/draft-registration-manager';
 import styles from './styles';
 import template from './template';
 
@@ -15,12 +14,10 @@ import template from './template';
 export default class PageRenderer extends Component {
     // Required param
     pageManager!: PageManager;
-    draftManager!: DraftRegistrationManager;
     node!: NodeModel;
 
     init() {
         super.init();
         assert('A pageManger is needed for page-renderer', Boolean(this.pageManager));
-        assert('A draftManager is needed for page-renderer', Boolean(this.draftManager));
     }
 }

@@ -152,45 +152,6 @@ export default class FileModel extends BaseFileItem {
             }),
         }).then(() => this.reload());
     }
-
-    createFile(name: string, data: string): Promise<null> {
-        return this.currentUser.authenticatedAJAX({
-            url: `${getHref(this.links.upload)}?name=${name}`,
-            type: 'PUT',
-            xhrFields: { withCredentials: true },
-            data,
-        }).then(() => this.reload());
-    }
-
-    moveOnCurrentProject(newProvider: string, newPath: string): Promise<null> {
-        return new Promise<null>((resolve, reject) => {
-            this.currentUser.authenticatedAJAX({
-                url: getHref(this.links.move),
-                type: 'POST',
-                xhrFields: { withCredentials: true },
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                data: JSON.stringify({
-                    action: 'move',
-                    path: newPath,
-                    provider: newProvider,
-                    conflict: 'replace',
-                }),
-            }).then(() => {
-                this.reload();
-                resolve();
-            }).catch(error => {
-                if (error.status === 410) {
-                    // Gone
-                    this.reload();
-                    resolve();
-                } else {
-                    reject(error);
-                }
-            });
-        });
-    }
 }
 
 declare module 'ember-data/types/registries/model' {

@@ -42,7 +42,7 @@
                 </p>
             </small>
             <div class='row'>
-                <div class='col-md-9'>
+                <div class='col-md-10'>
                     <OsfLink
                         data-analytics-name='Edit'
                         class='btn btn-default'
@@ -89,12 +89,15 @@
                         </modal.footer>
                     </BsModal>
                 </div>
-                <div class='col-md-2'>
-                    <RegistrationReportExportButton
-                        @metadataSchema={{@metadataSchema}}
-                        @registrationSchemaId={{this.registrationSchemaId}}
-                        @exportCsvUrl={{this.exportCsvUrl}}
-                    />
+                <div class='col-md-1'>
+                    <OsfLink
+                        data-analytics-name='Review'
+                        class='btn btn-default'
+                        @route='registries.drafts.draft.review'
+                        @models={{array this.draftRegistration.id}}
+                    >
+                        {{t 'osf-components.draft-registration-card.review'}}
+                    </OsfLink>
                 </div>
             </div>
         {{else}}

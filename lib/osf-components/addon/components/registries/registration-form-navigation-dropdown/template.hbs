@@ -59,15 +59,15 @@
                         </li>
                     {{/each}}
                 {{/if}}
-                {{#each this.localizedBlocksWithAnchor as |block|}}
-                    <li local-class='{{block.model.blockType}}' data-test-list-item='{{block.model.blockType}}'>
+                {{#each this.blocksWithAnchor as |block|}}
+                    <li local-class='{{block.blockType}}' data-test-list-item='{{block.blockType}}'>
                         <OsfLink
-                            data-test-page-anchor={{block.model.elementId}}
-                            data-analytics-name='Go to {{block.model.blockType}}: {{block.localizedDisplayText}}'
-                            @href='#{{block.model.elementId}}'
+                            data-test-page-anchor={{block.elementId}}
+                            data-analytics-name='Go to {{block.blockType}}: {{block.displayText}}'
+                            @href='#{{block.elementId}}'
                             @onClick={{action dd.close}}
                         >
-                            {{block.localizedDisplayText}}
+                            {{block.displayText}}
                         </OsfLink>
                     </li>
                 {{/each}}

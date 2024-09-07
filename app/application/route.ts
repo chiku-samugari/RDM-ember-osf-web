@@ -26,40 +26,6 @@ export default class ApplicationRoute extends Route.extend(
     };
 
     beforeModel() {
-        return this.intl.setLocale(this.getBrowserLocale());
-    }
-
-    getBrowserLocale() {
-        const defaultLocale = 'en-us';
-        // Works in Chrome and Firefox (editable in settings)
-        if (navigator.languages && navigator.languages.length) {
-            for (const lang of navigator.languages) {
-                const locale = this.retrieveLocale(lang);
-                if (locale !== null) {
-                    return locale;
-                }
-            }
-        // Backup for Safari (uses system settings)
-        } else if (navigator.language) {
-            const locale = this.retrieveLocale(navigator.language);
-            if (locale !== null) {
-                return locale;
-            }
-        }
-        return defaultLocale;
-    }
-
-    retrieveLocale(browserLanguage: string): string | null {
-        const localeMatched = this.intl.locales
-            .filter(locale => locale.toLowerCase() === browserLanguage.toLowerCase());
-        if (localeMatched.length > 0) {
-            return localeMatched[0];
-        }
-        const langMatched = this.intl.locales
-            .filter(locale => locale.split('-')[0].toLowerCase() === browserLanguage.split('-')[0].toLowerCase());
-        if (langMatched.length > 0) {
-            return langMatched[0];
-        }
-        return null;
+        return this.intl.setLocale('en-us');
     }
 }

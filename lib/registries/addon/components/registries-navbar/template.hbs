@@ -26,7 +26,7 @@
                     data-analytics-name='Toggle'
                     @classNames={{local-class 'Service Dropdown'}}
                 >
-                    <span>{{t 'general.OSF' title=this.title}}</span>
+                    <span>{{t 'general.OSF'}}</span>
                     <strong>{{t 'general.services.registries'}}</strong>
                     {{nav.icon (if dropdown.isOpen 'caret-up' 'caret-down')}}
                 </dropdown.toggle>
@@ -156,22 +156,22 @@
                         </menu.item>
                         <menu.item role='menuitem'>
                             <OsfLink
-                                data-test-ad-settings
-                                data-analytics-name='Settings'
-                                @href={{this.settingsURL}}
-                            >
-                                <FaIcon @icon='cog' @fixedWidth={{true}} />
-                                {{t 'general.settings'}}
-                            </OsfLink>
-                        </menu.item>
-                        <menu.item role='menuitem'>
-                            <OsfLink
                                 data-test-ad-support
                                 data-analytics-name='Support'
                                 @route='support'
                             >
                                 <FaIcon @icon='life-ring' @fixedWidth={{true}} />
                                 {{t 'auth_dropdown.osf_support'}}
+                            </OsfLink>
+                        </menu.item>
+                        <menu.item role='menuitem'>
+                            <OsfLink
+                                data-test-ad-settings
+                                data-analytics-name='Settings'
+                                @href={{this.settingsURL}}
+                            >
+                                <FaIcon @icon='cog' @fixedWidth={{true}} />
+                                {{t 'general.settings'}}
                             </OsfLink>
                         </menu.item>
                     {{else}}

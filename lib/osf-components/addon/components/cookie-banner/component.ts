@@ -17,10 +17,6 @@ const {
             cookieConsent: consentCookie,
         },
     },
-    signUpPolicy: {
-        termsLink,
-        privacyPolicyLink,
-    },
 } = config;
 
 @layout(template, styles)
@@ -29,8 +25,6 @@ export default class CookieBanner extends Component {
     @service session!: Session;
 
     showBanner = !this.session.isAuthenticated && !this.cookies.exists(consentCookie);
-    termsLink: string = termsLink;
-    privacyPolicyLink: string = privacyPolicyLink;
 
     @action
     accept() {

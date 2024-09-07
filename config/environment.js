@@ -13,7 +13,6 @@ try {
 }
 
 const {
-    ORGANIZATION: organization = 'Center for Open Science',
     A11Y_AUDIT = 'true',
     ASSETS_PREFIX: assetsPrefix = '/ember_osf_web/',
     BACKEND: backend = 'local',
@@ -38,8 +37,6 @@ const {
         'registrations',
     ],
     OAUTH_SCOPES: scope,
-    OSF_PAGE_NAME: pageName = 'OSF',
-    OSF_LONG_BRAND: longBrand = 'Open Science Framework',
     OSF_STATUS_COOKIE: statusCookie = 'osf_status',
     OSF_COOKIE_DOMAIN: cookieDomain = 'localhost',
     OSF_URL: url = 'http://localhost:5000/',
@@ -63,24 +60,12 @@ const {
     SHARE_SEARCH_URL: shareSearchUrl = 'https://staging-share.osf.io/api/v2/search/creativeworks/_search',
     SOURCEMAPS_ENABLED: sourcemapsEnabled = true,
     SHOW_DEV_BANNER = false,
-    NAV_DROPDOWN_ENABLED = true,
-    NAV_QUICKFILES_ENABLED = true,
-    NAV_REGISTRATIONS_ENABLED = true,
-    NAV_SEARCH_ENABLED = true,
-    NAV_SUPPORT_ENABLED = true,
-    NAV_GLOBAL_SUPPORT_ENABLED = false,
-    NAV_DONATE_ENABLED = true,
-    NAV_SIGNUP_ENABLED = true,
-    NAV_EMBEDDEDDS_ENABLED = false,
-    USE_SIMPLE_PAGE = false,
-    MAKE_PROJECT_AFFILIATE = true,
 } = { ...process.env, ...localConfig };
 
 module.exports = function(environment) {
     const devMode = environment !== 'production';
 
     const ENV = {
-        organization,
         modulePrefix: 'ember-osf-web',
         environment,
         lintOnBuild,
@@ -159,15 +144,12 @@ module.exports = function(environment) {
             },
         },
         OSF: {
-            pageName,
-            longBrand,
             clientId,
             scope,
             apiNamespace: 'v2', // URL suffix (after host)
             backend,
             redirectUri,
             url,
-            webApiNamespace: 'api/v1',
             apiUrl,
             apiVersion,
             apiHeaders: {
@@ -206,8 +188,6 @@ module.exports = function(environment) {
                 action: 'data-analytics-action',
             },
             doiUrlPrefix: 'https://doi.org/',
-            simplePage: Boolean(USE_SIMPLE_PAGE),
-            projectAffiliate: Boolean(MAKE_PROJECT_AFFILIATE),
         },
         social: {
             twitter: {
@@ -232,8 +212,6 @@ module.exports = function(environment) {
             github: 'https://www.github.com/centerforopenscience',
         },
         support: {
-            globalUrl: '',
-            serviceUrl: '',
             preregUrl: 'https://cos.io/prereg/',
             statusPageUrl: 'https://status.cos.io',
             faqPageUrl: 'https://openscience.zendesk.com/hc/en-us/articles/360019737894',
@@ -308,17 +286,6 @@ module.exports = function(environment) {
         home: {
             youtubeId: '2TV21gOzfhw',
         },
-        navbar: {
-            useDropdown: Boolean(NAV_DROPDOWN_ENABLED),
-            useQuickfiles: Boolean(NAV_QUICKFILES_ENABLED),
-            useRegistrations: Boolean(NAV_REGISTRATIONS_ENABLED),
-            useSearch: Boolean(NAV_SEARCH_ENABLED),
-            useSupport: Boolean(NAV_SUPPORT_ENABLED),
-            useGlobalSupport: Boolean(NAV_GLOBAL_SUPPORT_ENABLED),
-            useDonate: Boolean(NAV_DONATE_ENABLED),
-            useSignup: Boolean(NAV_SIGNUP_ENABLED),
-            useEmbeddedDS: Boolean(NAV_EMBEDDEDDS_ENABLED),
-        },
         secondaryNavbarId: '__secondaryOSFNavbar__',
         engines: {
             // App Engines should always be enabled in production builds
@@ -348,10 +315,6 @@ module.exports = function(environment) {
         defaultProvider: 'osf',
         pageTitle: {
             prepend: false,
-        },
-        dsconfig: {
-            settingFile: '/ember_osf_web/dsconfig_js',
-            wayfScript: '/ember_osf_web/embedded-wayf_js',
         },
     };
 

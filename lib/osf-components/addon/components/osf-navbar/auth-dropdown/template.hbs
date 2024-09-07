@@ -37,6 +37,16 @@
             </ddm.item>
             <ddm.item role='menuitem'>
                 <OsfLink
+                    data-test-ad-support
+                    data-analytics-name='Support'
+                    @route='support'
+                >
+                    <i class='fa fa-life-ring fa-lg p-r-xs'></i>
+                    {{t 'auth_dropdown.osf_support'}}
+                </OsfLink>
+            </ddm.item>
+            <ddm.item role='menuitem'>
+                <OsfLink
                     data-test-ad-settings
                     data-analytics-name='Settings'
                     @href={{this.settingsURL}}
@@ -45,25 +55,6 @@
                     {{t 'general.settings'}}
                 </OsfLink>
             </ddm.item>
-            {{#if this.useNavGlobalSupport}}
-                <ddm.item role='menuitem'>
-                    {{#if this.replaceGlobalSupportUrl}}
-                        <a href='{{this.globalSupportURL}}' onclick={{action '_onLinkClicked' 'Navbar - Support'}} target='{{this.globalSupportTarget}}'>
-                            <i class='fa fa-life-ring fa-lg p-r-xs'></i>
-                            {{t 'auth_dropdown.osf_support'}}
-                        </a>
-                    {{else}}
-                        <OsfLink
-                            data-test-ad-support
-                            data-analytics-name='Support'
-                            @route='support'
-                        >
-                            <i class='fa fa-life-ring fa-lg p-r-xs'></i>
-                            {{t 'auth_dropdown.osf_support'}}
-                        </OsfLink>
-                    {{/if}}
-                </ddm.item>
-            {{/if}}
             <ddm.item role='menuitem'>
                 <OsfButton
                     data-test-ad-logout
@@ -81,32 +72,25 @@
 {{else}}
     <li class='sign-in'>
         <div>
-            {{#if this.useNavSignUp}}
-                <OsfLink
-                    data-test-ad-sign-up-button
-                    data-analytics-name='SignUp'
-                    class='btn btn-success btn-top-signup m-l-sm m-r-xs'
-                    @route='register'
-                    @queryParams={{this.signUpQueryParams}}
-                >
-                    {{t 'auth_dropdown.sign_up'}}
-                </OsfLink>
-            {{/if}}
-            {{#if (not this.useNavEmbeddedDS)}}
-                <OsfButton
-                    data-test-sign-in-button
-                    data-analytics-name='SignIn'
-                    class='btn-top-login'
-                    @onClick={{action this.login}}
-                    @size='xs'
-                    @type='info'
-                >
-                    {{t 'auth_dropdown.sign_in'}}
-                </OsfButton>
-            {{else}}
-                <div id='embDS' />
-                {{embedded-ds 'embDS'}}
-            {{/if}}
+            <OsfLink
+                data-test-ad-sign-up-button
+                data-analytics-name='SignUp'
+                class='btn btn-success btn-top-signup m-l-sm m-r-xs'
+                @route='register'
+                @queryParams={{this.signUpQueryParams}}
+            >
+                {{t 'auth_dropdown.sign_up'}}
+            </OsfLink>
+            <OsfButton
+                data-test-sign-in-button
+                data-analytics-name='SignIn'
+                class='btn-top-login'
+                @onClick={{action this.login}}
+                @size='xs'
+                @type='info'
+            >
+                {{t 'auth_dropdown.sign_in'}}
+            </OsfButton>
         </div>
     </li>
 {{/if}}

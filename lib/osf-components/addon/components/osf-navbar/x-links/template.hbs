@@ -6,7 +6,6 @@
         hidden=(or
             this.onInstitutions
             (not this.session.isAuthenticated)
-            (not this.useNavQuickfiles)
         )
         tagName='li'
         text=(t 'navbar.my_quick_files')
@@ -23,10 +22,7 @@
     myregistrations=(component 'osf-navbar/x-links/hyper-link'
         this.myRegistrationsURL
         analyticsLabel='My_registrations'
-        hidden=(or
-            (not this.session.isAuthenticated)
-            (not this.useNavRegistrations)
-        )
+        hidden=(not this.session.isAuthenticated)
         tagName='li'
         text=(t 'navbar.my_registrations')
         onClicked=this.onLinkClicked
@@ -34,10 +30,6 @@
     search=(component 'osf-navbar/x-links/hyper-link'
         this.searchURL
         analyticsLabel='Search'
-        hidden=(or
-            (not this.session.isAuthenticated)
-            (not this.useNavSearch)
-        )
         tagName='li'
         text=(t 'navbar.search')
         onClicked=this.onLinkClicked
@@ -45,17 +37,14 @@
     support=(component 'osf-navbar/x-links/hyper-link'
         this.supportURL
         analyticsLabel='Support'
-        hidden=(not this.useNavSupport)
         tagName='li'
         text=(t 'navbar.support')
         onClicked=this.onLinkClicked
-        target=this.serviceSupportTarget
     )
     donate=(component 'osf-navbar/x-links/hyper-link'
         'https://cos.io/donate'
         analyticsLabel='Donate'
         classNames='navbar-donate-button'
-        hidden=(not this.useNavDonate)
         tagName='li'
         text=(t 'navbar.donate')
         onClicked=this.onLinkClicked

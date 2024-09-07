@@ -33,6 +33,16 @@
                 />
             {{/if}}
             <layout.leftNav as |leftNav|>
+                <PageLink
+                    @link={{component leftNav.link}}
+                    @draftId={{draftManager.draftId}}
+                    @pageName='metadata'
+                    @route='registries.drafts.draft.metadata'
+                    @currentPageName={{navManager.currentRoute}}
+                    @label='{{t 'registries.drafts.draft.metadata.page_label'}}'
+                    @navMode={{leftNav.leftGutterMode}}
+                    @metadataIsValid={{draftManager.metadataIsValid}}
+                />
                 {{#each draftManager.pageManagers as |pageManager index|}}
                     <PageLink
                         @link={{component leftNav.link}}

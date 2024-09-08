@@ -6,53 +6,18 @@
         <div>
             {{t 'binderhub.deployment.description'}}
         </div>
-        <BsDropdown
-            data-test-binderhub-list
-            local-class='build_dropdown'
-            data-analytics-scope='BinderHub dropdown'
-            as |dropdown|
-        >
-            <button
-                data-test-binderhub-launch
-                type='button'
-                class='btn btn-default'
-                local-class='build_launch_button'
-                {{action this.launch}}
+        <button
+            data-test-binderhub-launch
+            type='button'
+            class='btn btn-default'
+            local-class='build_launch_button'
+            {{action this.launch}}
             >
-                {{t
-                    'binderhub.build.launch_new_enviornment'
-                    binderhubUrl=this.defaultBinderhubUrl
-                }}
-            </button>
-            <dropdown.toggle
-                data-test-binderhub
-                data-analytics-name='Toggle'
-                local-class='build_launch_toggle'
-                @classNames='btn btn-default'
-            >
-                {{fa-icon (if dropdown.isOpen 'caret-up' 'caret-down')}}
-            </dropdown.toggle>
-
-            <dropdown.menu
-                @align='right'
-                local-class='build_binderhub_dropdown_menu dropdown_menu'
-                as |menu|
-            >
-                {{#each this.selectableBinderhubs as |item|}}
-                    <menu.item role='menuitem'>
-                        <OsfButton
-                            @type='link'
-                            @onClick={{action this.binderhubChanged item.binderhub_url}}
-                        >
-                            {{#if (eq this.defaultBinderhubUrl item.binderhub_url)}}
-                                {{fa-icon 'check'}}
-                            {{/if}}
-                            <span local-class='build_binderhub_dropdown_entry'>{{item.name}}</span>
-                        </OsfButton>
-                    </menu.item>
-                {{/each}}
-            </dropdown.menu>
-        </BsDropdown>
+            {{t
+            'binderhub.build.launch_new_enviornment'
+            binderhubUrl=this.defaultBinderhubUrl
+            }}
+        </button>
     </div>
     {{#if this.buildLogVisible}}
         <div local-class='build_console_button'>

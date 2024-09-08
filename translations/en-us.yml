@@ -1820,7 +1820,7 @@ binderhub:
     build:
         launch: 'Launch'
         status: 'Build status'
-        launch_new_enviornment: 'Launch a new environment: {binderhubUrl}'
+        launch_new_enviornment: 'Launch a new environment'
     error:
         binderhub_auth_error: 'You need to connect it to the BinderHub. Please reauthenticate.'
         binderhub_build_error: 'An error occurred while connecting to the BinderHub.'

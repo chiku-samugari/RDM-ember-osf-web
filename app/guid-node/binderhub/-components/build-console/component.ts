@@ -6,7 +6,7 @@ import DS from 'ember-data';
 import { requiredAction } from 'ember-osf-web/decorators/component';
 import AnsiUp from 'ember-osf-web/guid-node/binderhub/-components/build-console/ansi_up';
 import {
-    getContext, getJupyterHubServerURL, SelectableBinderhub, updateContext,
+    getContext, getJupyterHubServerURL, SelectableBinderhub,
     validateBinderHubToken,
 } from 'ember-osf-web/guid-node/binderhub/-components/jupyter-servers-list/component';
 import { BootstrapPath, BuildMessage } from 'ember-osf-web/guid-node/binderhub/controller';
@@ -135,12 +135,6 @@ export default class BuildConsole extends Component {
             return false;
         }
         return true;
-    }
-
-    @action
-    binderhubChanged(this: BuildConsole, binderhubUrl: string) {
-        this.set('selectedBinderhubUrl', binderhubUrl);
-        updateContext('bh', binderhubUrl);
     }
 
     @action

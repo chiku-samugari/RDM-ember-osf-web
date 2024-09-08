@@ -344,8 +344,7 @@ export default class JupyterServersList extends Component {
         this.set('namedServerLimit', null);
         later(async () => {
             const servers = await this.loadServers(jupyterhubUrl);
-            const homeUrl = addPathSegment(jupyterhubUrl, 'hub/home');
-            this.set('serversLink', homeUrl);
+            this.set('serversLink', addPathSegment(jupyterhubUrl, 'hub/home'));
             this.set('allServers', servers !== null ? servers.entries : null);
             this.set('namedServerLimit', servers !== null ? servers.namedServerLimit : null);
         }, 0);
@@ -413,12 +412,10 @@ export default class JupyterServersList extends Component {
         if (!jupyterhub || !jupyterhub.token || !validateJupyterHubToken(jupyterhub)) {
             throw new EmberError('Not authorized');
         }
-        const response = await this.jupyterhubAPIAJAX(
+        const { servers, named_server_limit: limit } = await this.jupyterhubAPIAJAX(
             jupyterhubUrl,
             `users/${jupyterhub.token.user}?include_stopped_servers=1`,
-        );
-        const result = response as JupyterUser;
-        const { servers } = result;
+        ) as JupyterUser;
         if (servers === undefined || servers === null) {
             throw new EmberError('Unexpected object');
         }
@@ -427,13 +424,11 @@ export default class JupyterServersList extends Component {
             .filter(key => key.length > 0);
         serverNames.sort();
         return {
-            namedServerLimit: result.named_server_limit !== undefined ? result.named_server_limit : null,
-            entries: serverNames
-                .map(serverName => servers[serverName] as JupyterServer)
-                .map(server => ({
-                    ownerUrl: jupyterhubUrl,
-                    entry: server,
-                })),
+            namedServerLimit: limit !== undefined ? limit : null,
+            entries: serverNames.map(serverName => ({
+                ownerUrl: jupyterhubUrl,
+                entry: servers[serverName] as JupyterServer,
+            })),
         };
     }
 

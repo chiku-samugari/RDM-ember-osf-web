@@ -5,12 +5,6 @@
         {{t 'binderhub.loading'}}
     {{else}}
         <div local-class='BinderHub__editor'>
-            <h2
-                data-test-servers-header
-                local-class='BinderHub__header'
-            >
-                {{t 'binderhub.jupyter_servers_list.header'}}
-            </h2>
             <BsAlert
                 @type='danger'
                 @dismissible={{false}}
@@ -19,7 +13,7 @@
             >
                 {{t 'binderhub.error.jupyterhub_api_error'}}
             </BsAlert>
-            <div local-class='BinderHub__panel'>
+            <div local-class='BinderHub__section'>
                 <GuidNode::Binderhub::-Components::JupyterServersList
                     @node={{this.node}}
                     @binderHubConfig={{this.config}}

@@ -1774,7 +1774,7 @@ binderhub:
         header: '新しい解析環境'
     loading: 'BinderHub設定を読み込んでいます...'
     servers:
-        host: 'ホスト: '
+        host: 'ホスト'
         username: 'ユーザー: '
         server_exists: 'このプロジェクトから作った解析環境が {servers} 個あります。'
         server_not_exists: 'このプロジェクトから作った解析環境はありません。'

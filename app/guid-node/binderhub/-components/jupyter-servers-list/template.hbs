@@ -15,27 +15,50 @@
             {{t 'binderhub.error.reconnect_jupyterhub'}}
         </button>
     </BsAlert>
+    <div local-class='jupyterhub-server-menu'>
+        <span local-class='jupyterhub_servers_host_label'>
+            {{t 'binderhub.servers.host'}}
+        </span>
+        <BsDropdown data-test-jupyterhub-selection as |dd|>
+            <dd.button>
+                {{this.defaultBinderhubUrl}}
+                <span class='caret'></span>
+            </dd.button>
+            <dd.menu
+                local-class='dropdown_menu'
+                as |menu|>
+                {{#each this.selectableBinderhubs as |item|}}
+                    <menu.item data-test-jupyterhub-selection-option role='menuitem'>
+                        <OsfButton
+                            @type='link'
+                            @onClick={{action this.binderhubChanged item.binderhub_url}}
+                        >
+                            {{#if (eq this.defaultBinderhubUrl item.binderhub_url)}}
+                                {{#fa-stack as |s|}}
+                                    {{s.stack-1x 'fw'}}
+                                    {{s.stack-1x 'check'}}
+                                {{/fa-stack}}
+                            {{else}}
+                                {{#fa-stack as |s|}}
+                                    {{s.stack-1x 'fw'}}
+                                {{/fa-stack}}
+                            {{/if}}
+                            <span>{{item.name}}</span>
+                        </OsfButton>
+                    </menu.item>
+                {{/each}}
+            </dd.menu>
+        </BsDropdown>
+    </div>
+    <h2
+        data-test-servers-header
+        local-class='BinderHub__header'
+        >
+        {{t 'binderhub.jupyter_servers_list.header'}}
+    </h2>
     {{#if this.loading}}
         {{t 'binderhub.loading'}}
     {{else}}
-        <div local-class='jupyterhub-server-menu'>
-            <div local-class='jupyterhub-selector'>
-                {{t 'binderhub.servers.host'}}
-                <select
-                    data-test-jupyterhub-selection
-                    onchange={{action this.binderhubChanged value='target.value'}}
-                >
-                    {{#each this.selectableBinderhubs as |item|}}
-                        <option
-                            data-test-jupyterhub-selection-option
-                            selected={{if (eq this.defaultBinderhubUrl item.binderhub_url) 'selected'}}
-                            value='{{item.binderhub_url}}'>
-                            {{item.name}}
-                        </option>
-                    {{/each}}
-                </select>
-            </div>
-        </div>
         {{#if (not this.apiLoaded)}}
             <a href={{this.serversLink}} target='_blank' rel='noopener'>
                 {{t 'binderhub.servers.server_hub_home'}}

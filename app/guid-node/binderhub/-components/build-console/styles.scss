@@ -50,7 +50,12 @@
     border-style: none;
 }
 
+.build_launcher {
+    display: flex;
+}
+
 .build_launch_button {
-    border-right-style: none;
-    border-radius: 2px 0 0 2px;
+    margin-left: auto;
+    background-color: #28aa40 !important;
+    color: #fff;
 }

@@ -2,22 +2,15 @@
     <h3>
         {{t 'binderhub.deployment.header'}}
     </h3>
+    {{t 'binderhub.deployment.description'}}
     <div local-class='build_launcher'>
-        <div>
-            {{t 'binderhub.deployment.description'}}
-        </div>
-        <button
+        <BsButton
             data-test-binderhub-launch
-            type='button'
-            class='btn btn-default'
             local-class='build_launch_button'
-            {{action this.launch}}
+            @onClick={{action this.launch}}
             >
-            {{t
-            'binderhub.build.launch_new_enviornment'
-            binderhubUrl=this.defaultBinderhubUrl
-            }}
-        </button>
+            {{t 'binderhub.build.launch_new_enviornment'}}
+        </BsButton>
     </div>
     {{#if this.buildLogVisible}}
         <div local-class='build_console_button'>

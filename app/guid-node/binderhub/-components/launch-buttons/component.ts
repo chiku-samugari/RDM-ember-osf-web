@@ -7,7 +7,10 @@ import {
     BootstrapPath,
     isBinderHubConfigFulfilled,
 } from 'ember-osf-web/guid-node/binderhub/controller';
-import BinderHubConfigModel from 'ember-osf-web/models/binderhub-config';
+import BinderHubConfigModel, {
+    Endpoint,
+    Launcher,
+} from 'ember-osf-web/models/binderhub-config';
 
 export default class LaunchButtons extends Component {
     binderHubConfig: DS.PromiseObject<BinderHubConfigModel> & BinderHubConfigModel = this.binderHubConfig;
@@ -15,7 +18,7 @@ export default class LaunchButtons extends Component {
     @requiredAction onClick!: (path: BootstrapPath | null) => void;
 
     @computed('binderHubConfig.launcher')
-    get launcher() {
+    get launcher(): Launcher | null {
         if (!isBinderHubConfigFulfilled(this)) {
             return null;
         }
@@ -23,7 +26,7 @@ export default class LaunchButtons extends Component {
     }
 
     @action
-    launch(this: LaunchButtons, endpointId: string) {
+    launch(this: LaunchButtons, endpointId: string): void {
         if (!this.onClick) {
             return;
         }
@@ -37,7 +40,7 @@ export default class LaunchButtons extends Component {
         } : null);
     }
 
-    getEndpointById(endpointId: string) {
+    getEndpointById(endpointId: string): Endpoint | null {
         if (!this.launcher) {
             return null;
         }

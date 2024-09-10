@@ -6,6 +6,7 @@ import { inject as service } from '@ember/service';
 import DS from 'ember-data';
 import Intl from 'ember-intl/services/intl';
 import { requiredAction } from 'ember-osf-web/decorators/component';
+import { isBinderHubConfigFulfilled } from 'ember-osf-web/guid-node/binderhub/controller';
 import BinderHubConfigModel, { Image } from 'ember-osf-web/models/binderhub-config';
 import Node from 'ember-osf-web/models/node';
 import CurrentUser from 'ember-osf-web/services/current-user';
@@ -234,7 +235,7 @@ export default class ProjectEditor extends Component {
 
     @computed('binderHubConfig.deployment')
     get deployment() {
-        if (!this.binderHubConfig || !this.binderHubConfig.get('isFulfilled')) {
+        if (!isBinderHubConfigFulfilled(this)) {
             return null;
         }
         return this.binderHubConfig.get('deployment');

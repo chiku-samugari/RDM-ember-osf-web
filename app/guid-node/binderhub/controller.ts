@@ -43,6 +43,14 @@ export interface BootstrapPath {
     pathType: string;
 }
 
+interface BinderHubContext {
+    binderHubConfig: DS.PromiseObject<BinderHubConfigModel> & BinderHubConfigModel;
+}
+
+export function isBinderHubConfigFulfilled(context: BinderHubContext): boolean {
+    return context.binderHubConfig && context.binderHubConfig.get('isFulfilled');
+}
+
 export default class GuidNodeBinderHub extends Controller {
     queryParams = ['bh', 'jh'];
 

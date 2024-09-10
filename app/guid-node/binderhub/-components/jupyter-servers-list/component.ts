@@ -4,7 +4,10 @@ import { action, computed } from '@ember/object';
 import { later } from '@ember/runloop';
 import DS from 'ember-data';
 import { requiredAction } from 'ember-osf-web/decorators/component';
-import { BootstrapPath } from 'ember-osf-web/guid-node/binderhub/controller';
+import {
+    BootstrapPath,
+    isBinderHubConfigFulfilled,
+} from 'ember-osf-web/guid-node/binderhub/controller';
 import BinderHubConfigModel, { BinderHub, JupyterHub } from 'ember-osf-web/models/binderhub-config';
 import Node from 'ember-osf-web/models/node';
 import { addPathSegment } from 'ember-osf-web/utils/url-parts';
@@ -221,7 +224,7 @@ export default class JupyterServersList extends Component {
 
     @computed('binderHubConfig', 'defaultBinderhubUrl')
     get defaultJupyterhubUrl(): string {
-        if (!this.binderHubConfig || !this.binderHubConfig.get('isFulfilled')) {
+        if (!isBinderHubConfigFulfilled(this)) {
             throw new EmberError('Illegal state');
         }
         const config = this.binderHubConfig.content as BinderHubConfigModel;
@@ -238,7 +241,7 @@ export default class JupyterServersList extends Component {
         if (this.selectedBinderhubUrl && this.checkSelectable(this.selectedBinderhubUrl)) {
             return this.selectedBinderhubUrl;
         }
-        if (!this.binderHubConfig || !this.binderHubConfig.get('isFulfilled')) {
+        if (!isBinderHubConfigFulfilled(this)) {
             throw new EmberError('Illegal state');
         }
         const binderhub = this.binderHubConfig.get('defaultBinderhub');
@@ -247,7 +250,7 @@ export default class JupyterServersList extends Component {
 
     @computed('defaultJupyterhubUrl')
     get defaultJupyterhub() {
-        if (!this.binderHubConfig || !this.binderHubConfig.get('isFulfilled')) {
+        if (!isBinderHubConfigFulfilled(this)) {
             return null;
         }
         const config = this.binderHubConfig.content as BinderHubConfigModel;
@@ -274,7 +277,7 @@ export default class JupyterServersList extends Component {
 
     @computed('binderHubConfig')
     get selectableBinderhubs(): SelectableBinderhub[] {
-        if (!this.binderHubConfig || !this.binderHubConfig.get('isFulfilled')) {
+        if (!isBinderHubConfigFulfilled(this)) {
             return [];
         }
         const nodeBinderhubs = this.binderHubConfig.get('node_binderhubs');
@@ -299,7 +302,7 @@ export default class JupyterServersList extends Component {
         if (!this.initialized) {
             return false;
         }
-        if (!this.binderHubConfig || !this.binderHubConfig.get('isFulfilled')) {
+        if (!isBinderHubConfigFulfilled(this)) {
             return false;
         }
         if (this.requestNotAuthorized) {
@@ -351,7 +354,7 @@ export default class JupyterServersList extends Component {
     }
 
     validateToken() {
-        if (!this.binderHubConfig || !this.binderHubConfig.get('isFulfilled')) {
+        if (!isBinderHubConfigFulfilled(this)) {
             return false;
         }
         const config = this.binderHubConfig.content as BinderHubConfigModel;
@@ -380,7 +383,7 @@ export default class JupyterServersList extends Component {
     }
 
     async jupyterhubAPIAJAX(jupyterhubUrl: string, apiPath: string, ajaxOptions: JQuery.AjaxSettings | null = null) {
-        if (!this.binderHubConfig || !this.binderHubConfig.get('isFulfilled')) {
+        if (!isBinderHubConfigFulfilled(this)) {
             throw new EmberError('Illegal config');
         }
         this.set('requestNotAuthorized', false);
@@ -400,7 +403,7 @@ export default class JupyterServersList extends Component {
     }
 
     async loadServers(jupyterhubUrl: string): Promise<JupyterServerResponse | null> {
-        if (!this.binderHubConfig || !this.binderHubConfig.get('isFulfilled')) {
+        if (!isBinderHubConfigFulfilled(this)) {
             throw new EmberError('Illegal config');
         }
         const config = this.binderHubConfig.content as BinderHubConfigModel;
@@ -497,8 +500,7 @@ export default class JupyterServersList extends Component {
 
     @action
     deleteServer(this: JupyterServersList) {
-        if (!this.showDeleteConfirmDialogTarget || !this.binderHubConfig
-            || !this.binderHubConfig.get('isFulfilled')) {
+        if (!this.showDeleteConfirmDialogTarget || !isBinderHubConfigFulfilled(this)) {
             throw new EmberError('Illegal state');
         }
         const binderHubConfig = this.get('binderHubConfig');

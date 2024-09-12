@@ -97,18 +97,16 @@ export default class BuildConsole extends Component {
         }
         const nodeBinderhubs = this.binderHubConfig.get('node_binderhubs');
         const userBinderhubs = this.binderHubConfig.get('user_binderhubs');
-        const nodeCands = (nodeBinderhubs || [])
-            .map(hub => ({
-                binderhub_url: hub.binderhub_url,
-                name: hub.binderhub_url,
-            }));
-        const userCands = (userBinderhubs || [])
-            .filter(hub => nodeCands
-                .every(nodeHub => nodeHub.binderhub_url !== hub.binderhub_url))
-            .map(hub => ({
-                binderhub_url: hub.binderhub_url,
-                name: `${hub.binderhub_url} (User)`,
-            }));
+        const nodeCands = (nodeBinderhubs || []).map(hub => ({
+            binderhub_url: hub.binderhub_url,
+            name: hub.binderhub_url,
+        }));
+        const userCands = (userBinderhubs || []).filter(
+            hub => nodeCands.every(nodeHub => !this.urlEquals(hub.binderhub_url, nodeHub.binderhub_url)),
+        ).map(hub => ({
+            binderhub_url: hub.binderhub_url,
+            name: `${hub.binderhub_url} (User)`,
+        }));
         return nodeCands.concat(userCands);
     }
 

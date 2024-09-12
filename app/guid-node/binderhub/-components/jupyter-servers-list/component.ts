@@ -103,7 +103,6 @@ export function validateJupyterHubToken(jupyterhub: JupyterHub) {
 export function updateContext(key: string, value: string) {
     const params = new URLSearchParams(window.location.search);
     params.set(key, value);
-    window.history.pushState('', '', `?${params.toString()}`);
 }
 
 export function getContext(key: string) {

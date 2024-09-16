@@ -51,6 +51,36 @@ export function isBinderHubConfigFulfilled(context: BinderHubContext): boolean {
     return context.binderHubConfig && context.binderHubConfig.get('isFulfilled');
 }
 
+export function getJupyterHubServerURL(
+    originalUrl: string,
+    token: string | undefined,
+    targetPath: BootstrapPath | null,
+) {
+    // redirect a user to a running server with a token
+    let url = originalUrl;
+    if (targetPath && targetPath.path) {
+        // strip trailing /
+        url = url.replace(/\/$/, '');
+        // trim leading '/'
+        let path = targetPath.path.replace(/(^\/)/g, '');
+        if (targetPath.pathType === 'file') {
+            // trim trailing / on file paths
+            path = path.replace(/(\/$)/g, '');
+            // /tree is safe because it allows redirect to files
+            // need more logic here if we support things other than notebooks
+            url = `${url}/tree/${encodeURI(path)}`;
+        } else {
+            // pathType === 'url'
+            url = `${url}/${path}`;
+        }
+    }
+    if (!token) {
+        return url;
+    }
+    const sep = url.includes('?') ? '&' : '?';
+    return `${url}${sep}token=${encodeURIComponent(token)}`;
+}
+
 function normalizeUrl(url: string): string {
     const m = url.match(/^(.+)\/+$/);
     if (!m) {

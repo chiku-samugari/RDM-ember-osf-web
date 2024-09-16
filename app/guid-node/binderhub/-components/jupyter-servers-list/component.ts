@@ -6,6 +6,7 @@ import DS from 'ember-data';
 import { requiredAction } from 'ember-osf-web/decorators/component';
 import {
     BootstrapPath,
+    getJupyterHubServerURL,
     isBinderHubConfigFulfilled,
     urlEquals,
 } from 'ember-osf-web/guid-node/binderhub/controller';
@@ -49,36 +50,6 @@ export interface SelectableBinderhub {
     binderhub_url: string;
 }
 /* eslint-enable camelcase */
-
-export function getJupyterHubServerURL(
-    originalUrl: string,
-    token: string | undefined,
-    targetPath: BootstrapPath | null,
-) {
-    // redirect a user to a running server with a token
-    let url = originalUrl;
-    if (targetPath && targetPath.path) {
-        // strip trailing /
-        url = url.replace(/\/$/, '');
-        // trim leading '/'
-        let path = targetPath.path.replace(/(^\/)/g, '');
-        if (targetPath.pathType === 'file') {
-            // trim trailing / on file paths
-            path = path.replace(/(\/$)/g, '');
-            // /tree is safe because it allows redirect to files
-            // need more logic here if we support things other than notebooks
-            url = `${url}/tree/${encodeURI(path)}`;
-        } else {
-            // pathType === 'url'
-            url = `${url}/${path}`;
-        }
-    }
-    if (!token) {
-        return url;
-    }
-    const sep = url.includes('?') ? '&' : '?';
-    return `${url}${sep}token=${encodeURIComponent(token)}`;
-}
 
 export function validateBinderHubToken(binderhub: BinderHub) {
     if (!binderhub.authorize_url) {

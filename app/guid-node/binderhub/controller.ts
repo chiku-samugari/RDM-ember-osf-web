@@ -389,8 +389,10 @@ export default class GuidNodeBinderHub extends Controller {
 
     @action
     build(
-        this: GuidNodeBinderHub, binderhubUrl: string,
-        path: BootstrapPath | null, callback: (result: BuildMessage) => void,
+        this: GuidNodeBinderHub,
+        binderhubUrl: string,
+        path: BootstrapPath | null,
+        callback: (result: BuildMessage) => void,
     ) {
         this.set('buildLog', []);
         later(async () => {

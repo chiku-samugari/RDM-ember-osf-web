@@ -39,7 +39,8 @@ export default class BuildConsole extends Component {
     @requiredAction renewToken!: (binderhubUrl: string) => void;
 
     @requiredAction requestBuild!: (
-        binderhubUrl: string, path: BootstrapPath | null,
+        binderhubUrl: string,
+        path: BootstrapPath | null,
         callback: (result: BuildMessage) => void,
     ) => void;
 

@@ -11,8 +11,9 @@ import {
     isBinderHubConfigFulfilled,
     SelectableBinderhub,
     urlEquals,
+    validateBinderHubToken,
 } from 'ember-osf-web/guid-node/binderhub/controller';
-import BinderHubConfigModel, { BinderHub, JupyterHub } from 'ember-osf-web/models/binderhub-config';
+import BinderHubConfigModel, { JupyterHub } from 'ember-osf-web/models/binderhub-config';
 import Node from 'ember-osf-web/models/node';
 import { addPathSegment } from 'ember-osf-web/utils/url-parts';
 
@@ -47,16 +48,6 @@ interface JupyterServerResponse {
     entries: JupyterServerEntry[];
 }
 /* eslint-enable camelcase */
-
-export function validateBinderHubToken(binderhub: BinderHub) {
-    if (!binderhub.authorize_url) {
-        return true;
-    }
-    if (!binderhub.token || (binderhub.token.expires_at && binderhub.token.expires_at * 1000 <= Date.now())) {
-        return false;
-    }
-    return true;
-}
 
 export function validateJupyterHubToken(jupyterhub: JupyterHub) {
     if (!jupyterhub.authorize_url) {

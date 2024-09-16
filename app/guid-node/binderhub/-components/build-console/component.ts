@@ -6,9 +6,6 @@ import DS from 'ember-data';
 import { requiredAction } from 'ember-osf-web/decorators/component';
 import AnsiUp from 'ember-osf-web/guid-node/binderhub/-components/build-console/ansi_up';
 import {
-    validateBinderHubToken,
-} from 'ember-osf-web/guid-node/binderhub/-components/jupyter-servers-list/component';
-import {
     BootstrapPath,
     BuildMessage,
     getContext,
@@ -16,6 +13,7 @@ import {
     isBinderHubConfigFulfilled,
     SelectableBinderhub,
     urlEquals,
+    validateBinderHubToken,
 } from 'ember-osf-web/guid-node/binderhub/controller';
 import BinderHubConfigModel from 'ember-osf-web/models/binderhub-config';
 import $ from 'jquery';

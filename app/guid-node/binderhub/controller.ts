@@ -9,7 +9,7 @@ import { inject as service } from '@ember/service';
 import DS from 'ember-data';
 
 import Intl from 'ember-intl/services/intl';
-import BinderHubConfigModel from 'ember-osf-web/models/binderhub-config';
+import BinderHubConfigModel, { BinderHub } from 'ember-osf-web/models/binderhub-config';
 import FileProviderModel from 'ember-osf-web/models/file-provider';
 import Node from 'ember-osf-web/models/node';
 import Analytics from 'ember-osf-web/services/analytics';
@@ -53,6 +53,16 @@ interface BinderHubContext {
 
 export function isBinderHubConfigFulfilled(context: BinderHubContext): boolean {
     return context.binderHubConfig && context.binderHubConfig.get('isFulfilled');
+}
+
+export function validateBinderHubToken(binderhub: BinderHub) {
+    if (!binderhub.authorize_url) {
+        return true;
+    }
+    if (!binderhub.token || (binderhub.token.expires_at && binderhub.token.expires_at * 1000 <= Date.now())) {
+        return false;
+    }
+    return true;
 }
 
 export function getContext(key: string) {

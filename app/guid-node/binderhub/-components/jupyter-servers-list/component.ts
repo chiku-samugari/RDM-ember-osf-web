@@ -9,6 +9,7 @@ import {
     getContext,
     getJupyterHubServerURL,
     isBinderHubConfigFulfilled,
+    SelectableBinderhub,
     urlEquals,
 } from 'ember-osf-web/guid-node/binderhub/controller';
 import BinderHubConfigModel, { BinderHub, JupyterHub } from 'ember-osf-web/models/binderhub-config';
@@ -44,11 +45,6 @@ interface JupyterServerEntry {
 interface JupyterServerResponse {
     namedServerLimit: number | null;
     entries: JupyterServerEntry[];
-}
-
-export interface SelectableBinderhub {
-    name: string;
-    binderhub_url: string;
 }
 /* eslint-enable camelcase */
 

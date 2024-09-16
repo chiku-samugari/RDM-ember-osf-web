@@ -35,6 +35,11 @@ export interface BuildMessage {
     url?: string;
     token?: string;
 }
+
+export interface SelectableBinderhub {
+    name: string;
+    binderhub_url: string;
+}
 /* eslint-enable camelcase */
 
 export interface BootstrapPath {

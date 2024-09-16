@@ -6,6 +6,7 @@ import DS from 'ember-data';
 import { requiredAction } from 'ember-osf-web/decorators/component';
 import {
     BootstrapPath,
+    getContext,
     getJupyterHubServerURL,
     isBinderHubConfigFulfilled,
     urlEquals,
@@ -75,11 +76,6 @@ export function validateJupyterHubToken(jupyterhub: JupyterHub) {
 export function updateContext(key: string, value: string) {
     const params = new URLSearchParams(window.location.search);
     params.set(key, value);
-}
-
-export function getContext(key: string) {
-    const params = new URLSearchParams(window.location.search);
-    return params.get(key);
 }
 
 export default class JupyterServersList extends Component {

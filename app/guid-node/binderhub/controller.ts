@@ -9,7 +9,6 @@ import { inject as service } from '@ember/service';
 import DS from 'ember-data';
 
 import Intl from 'ember-intl/services/intl';
-import { getContext } from 'ember-osf-web/guid-node/binderhub/-components/jupyter-servers-list/component';
 import BinderHubConfigModel from 'ember-osf-web/models/binderhub-config';
 import FileProviderModel from 'ember-osf-web/models/file-provider';
 import Node from 'ember-osf-web/models/node';
@@ -49,6 +48,11 @@ interface BinderHubContext {
 
 export function isBinderHubConfigFulfilled(context: BinderHubContext): boolean {
     return context.binderHubConfig && context.binderHubConfig.get('isFulfilled');
+}
+
+export function getContext(key: string) {
+    const params = new URLSearchParams(window.location.search);
+    return params.get(key);
 }
 
 export function getJupyterHubServerURL(

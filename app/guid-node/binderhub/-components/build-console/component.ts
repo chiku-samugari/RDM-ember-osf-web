@@ -6,12 +6,13 @@ import DS from 'ember-data';
 import { requiredAction } from 'ember-osf-web/decorators/component';
 import AnsiUp from 'ember-osf-web/guid-node/binderhub/-components/build-console/ansi_up';
 import {
-    getContext, SelectableBinderhub,
+    SelectableBinderhub,
     validateBinderHubToken,
 } from 'ember-osf-web/guid-node/binderhub/-components/jupyter-servers-list/component';
 import {
     BootstrapPath,
     BuildMessage,
+    getContext,
     getJupyterHubServerURL,
     isBinderHubConfigFulfilled,
     urlEquals,

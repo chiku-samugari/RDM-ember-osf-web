@@ -345,7 +345,7 @@ export default class OsfModel extends Model {
      *
      * Example:
      * ```ts
-     * const contributors = await node.sparseHasMany(
+     * const contributors = await node.sparseHasMany({
      *     'contributors',
      *     { contributor: ['users'], user: ['fullName'] },
      *     { queryParams: { 'page[size]': 100 } },
@@ -353,7 +353,7 @@ export default class OsfModel extends Model {
      *
      * contributors.sparseModels.forEach(contrib => {
      *     console.log(contrib.users.fullName);
-     * );
+     * });
      * ```
      */
     async sparseHasMany<T extends OsfModel>(

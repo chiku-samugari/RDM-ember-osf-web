@@ -51,6 +51,18 @@ export function isBinderHubConfigFulfilled(context: BinderHubContext): boolean {
     return context.binderHubConfig && context.binderHubConfig.get('isFulfilled');
 }
 
+function normalizeUrl(url: string): string {
+    const m = url.match(/^(.+)\/+$/);
+    if (!m) {
+        return url;
+    }
+    return m[1];
+}
+
+export function urlEquals(url1: string, url2: string): boolean {
+    return normalizeUrl(url1) === normalizeUrl(url2);
+}
+
 export default class GuidNodeBinderHub extends Controller {
     queryParams = ['bh', 'jh'];
 

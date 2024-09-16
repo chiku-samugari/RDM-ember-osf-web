@@ -7,6 +7,7 @@ import { requiredAction } from 'ember-osf-web/decorators/component';
 import {
     BootstrapPath,
     isBinderHubConfigFulfilled,
+    urlEquals,
 } from 'ember-osf-web/guid-node/binderhub/controller';
 import BinderHubConfigModel, { BinderHub, JupyterHub } from 'ember-osf-web/models/binderhub-config';
 import Node from 'ember-osf-web/models/node';
@@ -258,7 +259,7 @@ export default class JupyterServersList extends Component {
         }
         const jupyterhubUrl = this.defaultJupyterhubUrl;
         const jupyterhubs = config.jupyterhubs
-            .filter(jupyterhub => this.urlEquals(jupyterhub.url, jupyterhubUrl));
+            .filter(jupyterhub => urlEquals(jupyterhub.url, jupyterhubUrl));
         if (jupyterhubs.length === 0) {
             return null;
         }
@@ -286,7 +287,7 @@ export default class JupyterServersList extends Component {
             name: hub.binderhub_url,
         }));
         const userCands = (userBinderhubs || []).filter(
-            hub => nodeCands.every(nodeHub => !this.urlEquals(hub.binderhub_url, nodeHub.binderhub_url)),
+            hub => nodeCands.every(nodeHub => !urlEquals(hub.binderhub_url, nodeHub.binderhub_url)),
         ).map(hub => ({
             binderhub_url: hub.binderhub_url,
             name: `${hub.binderhub_url} (User)`,
@@ -323,19 +324,7 @@ export default class JupyterServersList extends Component {
 
     checkSelectable(url: string) {
         return this.selectableBinderhubs
-            .filter(hub => this.urlEquals(hub.binderhub_url, url)).length > 0;
-    }
-
-    urlEquals(url1: string, url2: string): boolean {
-        return this.normalizeUrl(url1) === this.normalizeUrl(url2);
-    }
-
-    normalizeUrl(url: string): string {
-        const m = url.match(/^(.+)\/+$/);
-        if (!m) {
-            return url;
-        }
-        return m[1];
+            .filter(hub => urlEquals(hub.binderhub_url, url)).length > 0;
     }
 
     performLoadServers(jupyterhubUrl: string) {

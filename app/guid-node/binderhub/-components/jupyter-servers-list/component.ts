@@ -198,8 +198,7 @@ export default class JupyterServersList extends Component {
         if (!isBinderHubConfigFulfilled(this)) {
             throw new EmberError('Illegal state');
         }
-        const binderhub = this.binderHubConfig.get('defaultBinderhub');
-        return binderhub.url;
+        return this.binderHubConfig.get('defaultBinderhub').url;
     }
 
     @computed('defaultJupyterhubUrl')
@@ -414,9 +413,7 @@ export default class JupyterServersList extends Component {
 
     @action
     openServerWithPath(this: JupyterServersList, server: JupyterServerEntry, path: BootstrapPath | null) {
-        const binderHubConfig = this.get('binderHubConfig');
-        const config = binderHubConfig.content as BinderHubConfigModel;
-        const jupyterhub = config.findJupyterHubByURL(server.ownerUrl);
+        const jupyterhub = this.get('binderHubConfig').findJupyterHubByURL(server.ownerUrl);
         if (!jupyterhub) {
             throw new EmberError('Illegal config');
         }
@@ -427,9 +424,7 @@ export default class JupyterServersList extends Component {
 
     @action
     openServer(this: JupyterServersList, server: JupyterServerEntry) {
-        const binderHubConfig = this.get('binderHubConfig');
-        const config = binderHubConfig.content as BinderHubConfigModel;
-        const jupyterhub = config.findJupyterHubByURL(server.ownerUrl);
+        const jupyterhub = this.get('binderHubConfig').findJupyterHubByURL(server.ownerUrl);
         if (!jupyterhub) {
             throw new EmberError('Illegal config');
         }
@@ -443,9 +438,9 @@ export default class JupyterServersList extends Component {
         if (!this.showDeleteConfirmDialogTarget || !isBinderHubConfigFulfilled(this)) {
             throw new EmberError('Illegal state');
         }
-        const binderHubConfig = this.get('binderHubConfig');
-        const config = binderHubConfig.content as BinderHubConfigModel;
-        const jupyterhub = config.findJupyterHubByURL(this.showDeleteConfirmDialogTarget.ownerUrl);
+        const jupyterhub = this.get('binderHubConfig').findJupyterHubByURL(
+            this.showDeleteConfirmDialogTarget.ownerUrl,
+        );
         if (!jupyterhub || !jupyterhub.token || !validateJupyterHubToken(jupyterhub)) {
             throw new EmberError('Not authorized');
         }

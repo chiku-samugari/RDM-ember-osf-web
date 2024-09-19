@@ -2,7 +2,6 @@ import Component from '@ember/component';
 import EmberError from '@ember/error';
 import { action, computed } from '@ember/object';
 import { htmlSafe } from '@ember/template';
-import DS from 'ember-data';
 import { requiredAction } from 'ember-osf-web/decorators/component';
 import AnsiUp from 'ember-osf-web/guid-node/binderhub/-components/build-console/ansi_up';
 import {
@@ -19,7 +18,7 @@ import BinderHubConfigModel from 'ember-osf-web/models/binderhub-config';
 import $ from 'jquery';
 
 export default class BuildConsole extends Component {
-    binderHubConfig: DS.PromiseObject<BinderHubConfigModel> & BinderHubConfigModel = this.binderHubConfig;
+    binderHubConfig!: BinderHubConfigModel;
 
     initialized: boolean = false;
 
@@ -76,8 +75,7 @@ export default class BuildConsole extends Component {
         if (!isBinderHubConfigFulfilled(this)) {
             throw new EmberError('Illegal state');
         }
-        const binderhub = this.binderHubConfig.get('defaultBinderhub');
-        return binderhub.url;
+        return this.binderHubConfig.get('defaultBinderhub').url;
     }
 
     @computed('binderHubConfig', 'selectedBinderhubUrlForJupyterHub')
@@ -88,8 +86,7 @@ export default class BuildConsole extends Component {
         if (!isBinderHubConfigFulfilled(this)) {
             throw new EmberError('Illegal state');
         }
-        const binderhub = this.binderHubConfig.get('defaultBinderhub');
-        return binderhub.url;
+        return this.binderHubConfig.get('defaultBinderhub').url;
     }
 
     @computed('binderHubConfig')
@@ -146,7 +143,7 @@ export default class BuildConsole extends Component {
         if (!isBinderHubConfigFulfilled(this)) {
             throw new EmberError('Illegal config');
         }
-        const config = this.binderHubConfig.content as BinderHubConfigModel;
+        const config = this.binderHubConfig;
         const binderhub = config.findBinderHubByURL(this.get('defaultBinderhubUrl'));
         if (!binderhub || !validateBinderHubToken(binderhub)) {
             this.set('notAuthorized', true);
@@ -221,8 +218,7 @@ export default class BuildConsole extends Component {
         if (!isBinderHubConfigFulfilled(this)) {
             return true;
         }
-        const config = this.binderHubConfig.content as BinderHubConfigModel;
-        const binderhub = config.findBinderHubByURL(binderhubUrl);
+        const binderhub = this.binderHubConfig.findBinderHubByURL(binderhubUrl);
         if (!binderhub || validateBinderHubToken(binderhub)) {
             return true;
         }

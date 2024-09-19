@@ -1,5 +1,5 @@
 {{! using unsafeTitle here to avoid double encoding because the title helper does its own }}
-{{title (t 'binderhub.page_title' nodeTitle=this.model.taskInstance.value.unsafeTitle)}}
+{{title (t 'binderhub.page_title' nodeTitle=this.node.unsafeTitle)}}
 <div class='container' local-class='BinderHub'>
     {{#if this.loading}}
         {{t 'binderhub.loading'}}
@@ -15,8 +15,8 @@
             </BsAlert>
             <div local-class='BinderHub__section'>
                 <GuidNode::Binderhub::-Components::JupyterServersList
-                    @node={{this.node}}
-                    @binderHubConfig={{this.config}}
+                    @node={{this.model.node}}
+                    @binderHubConfig={{this.model.binderHubConfig}}
                     @loggedOutDomains={{this.loggedOutDomains}}
                     @renewToken={{action this.renewJupyterHubToken}}
                     @logout={{action this.logoutJupyterHub}}
@@ -32,14 +32,14 @@
             </h2>
             <div local-class='BinderHub__panel'>
                 <GuidNode::Binderhub::-Components::ProjectEditor
-                    @node={{this.node}}
-                    @binderHubConfig={{this.config}}
+                    @node={{this.model.node}}
+                    @binderHubConfig={{this.model.binderHubConfig}}
                     @configFolder={{this.configFolder}}
                     @onError={{action this.projectError}}
                 />
             </div>
             <GuidNode::Binderhub::-Components::BuildConsole
-                @binderHubConfig={{this.config}}
+                @binderHubConfig={{this.model.binderHubConfig}}
                 @renewToken={{action this.renewBinderHubToken}}
                 @requestBuild={{action this.build}}
                 @buildLog={{this.buildLog}}

@@ -1,7 +1,6 @@
 import Component from '@ember/component';
 import EmberError from '@ember/error';
 import { action, computed } from '@ember/object';
-import DS from 'ember-data';
 import { requiredAction } from 'ember-osf-web/decorators/component';
 import {
     BootstrapPath,
@@ -13,7 +12,7 @@ import BinderHubConfigModel, {
 } from 'ember-osf-web/models/binderhub-config';
 
 export default class LaunchButtons extends Component {
-    binderHubConfig: DS.PromiseObject<BinderHubConfigModel> & BinderHubConfigModel = this.binderHubConfig;
+    binderHubConfig!: BinderHubConfigModel;
 
     @requiredAction onClick!: (path: BootstrapPath | null) => void;
 

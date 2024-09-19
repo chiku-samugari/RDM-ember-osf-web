@@ -48,11 +48,11 @@ export interface BootstrapPath {
 }
 
 interface BinderHubContext {
-    binderHubConfig: DS.PromiseObject<BinderHubConfigModel> & BinderHubConfigModel;
+    binderHubConfig: BinderHubConfigModel;
 }
 
 export function isBinderHubConfigFulfilled(context: BinderHubContext): boolean {
-    return context.binderHubConfig && context.binderHubConfig.get('isFulfilled');
+    return !!context.binderHubConfig;
 }
 
 export function validateBinderHubToken(binderhub: BinderHub) {
@@ -121,7 +121,7 @@ export default class GuidNodeBinderHub extends Controller {
     @service analytics!: Analytics;
     @service currentUser!: CurrentUser;
 
-    @reads('model.taskInstance.value')
+    @reads('model.node.taskInstance.value')
     node?: Node;
 
     isPageDirty = false;
@@ -146,9 +146,9 @@ export default class GuidNodeBinderHub extends Controller {
 
     loggedOutDomains: string[] | null = null;
 
-    @computed('config.isFulfilled')
+    @computed('config')
     get loading(): boolean {
-        return !this.config || !this.config.get('isFulfilled');
+        return !this.config;
     }
 
     @action

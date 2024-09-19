@@ -2,7 +2,6 @@ import Component from '@ember/component';
 import EmberError from '@ember/error';
 import { action, computed } from '@ember/object';
 import { later } from '@ember/runloop';
-import DS from 'ember-data';
 import { requiredAction } from 'ember-osf-web/decorators/component';
 import {
     BootstrapPath,
@@ -66,7 +65,7 @@ export function updateContext(key: string, value: string) {
 }
 
 export default class JupyterServersList extends Component {
-    binderHubConfig: DS.PromiseObject<BinderHubConfigModel> & BinderHubConfigModel = this.binderHubConfig;
+    binderHubConfig!: BinderHubConfigModel;
 
     @requiredAction renewToken!: (jupyterhubUrl: string) => void;
 
@@ -181,9 +180,9 @@ export default class JupyterServersList extends Component {
         if (!isBinderHubConfigFulfilled(this)) {
             throw new EmberError('Illegal state');
         }
-        const config = this.binderHubConfig.content as BinderHubConfigModel;
-        const binderhubUrl = this.get('defaultBinderhubUrl');
-        const binderhub = config.findBinderHubCandidateByBinderHubURL(binderhubUrl);
+        const binderhub = this.binderHubConfig.findBinderHubCandidateByBinderHubURL(
+            this.get('defaultBinderhubUrl'),
+        );
         if (!binderhub) {
             throw new EmberError('Illegal state');
         }
@@ -206,7 +205,7 @@ export default class JupyterServersList extends Component {
         if (!isBinderHubConfigFulfilled(this)) {
             return null;
         }
-        const config = this.binderHubConfig.content as BinderHubConfigModel;
+        const config = this.binderHubConfig;
         if (!config.jupyterhubs) {
             return null;
         }
@@ -260,8 +259,7 @@ export default class JupyterServersList extends Component {
             return true;
         }
         const jupyterhubUrl = this.defaultJupyterhubUrl;
-        const config = this.binderHubConfig.content as BinderHubConfigModel;
-        const jupyterhub = config.findJupyterHubByURL(jupyterhubUrl);
+        const jupyterhub = this.binderHubConfig.findJupyterHubByURL(jupyterhubUrl);
         if (this.loggedOutDomains !== null && this.loggedOutDomains.includes(jupyterhubUrl)) {
             return true;
         }
@@ -296,7 +294,7 @@ export default class JupyterServersList extends Component {
         if (!isBinderHubConfigFulfilled(this)) {
             return false;
         }
-        const config = this.binderHubConfig.content as BinderHubConfigModel;
+        const config = this.binderHubConfig;
         const binderhub = config.findBinderHubByURL(this.get('defaultBinderhubUrl'));
         if (!binderhub) {
             return false;
@@ -326,9 +324,8 @@ export default class JupyterServersList extends Component {
             throw new EmberError('Illegal config');
         }
         this.set('requestNotAuthorized', false);
-        const config = this.binderHubConfig.content as BinderHubConfigModel;
         try {
-            return await config.jupyterhubAPIAJAX(jupyterhubUrl, apiPath, ajaxOptions);
+            return await this.binderHubConfig.jupyterhubAPIAJAX(jupyterhubUrl, apiPath, ajaxOptions);
         } catch (e) {
             if (e.status === 403) {
                 this.set('requestNotAuthorized', true);
@@ -345,8 +342,7 @@ export default class JupyterServersList extends Component {
         if (!isBinderHubConfigFulfilled(this)) {
             throw new EmberError('Illegal config');
         }
-        const config = this.binderHubConfig.content as BinderHubConfigModel;
-        const jupyterhub = config.findJupyterHubByURL(jupyterhubUrl);
+        const jupyterhub = this.binderHubConfig.findJupyterHubByURL(jupyterhubUrl);
         if (jupyterhub && !jupyterhub.authorize_url) {
             // Non-API
             return null;

@@ -3,7 +3,6 @@ import EmberError from '@ember/error';
 import { action, computed } from '@ember/object';
 import { later } from '@ember/runloop';
 import { inject as service } from '@ember/service';
-import DS from 'ember-data';
 import Intl from 'ember-intl/services/intl';
 import { requiredAction } from 'ember-osf-web/decorators/component';
 import { isBinderHubConfigFulfilled } from 'ember-osf-web/guid-node/binderhub/controller';
@@ -159,7 +158,7 @@ export default class ProjectEditor extends Component {
 
     node?: Node | null = null;
 
-    binderHubConfig: DS.PromiseObject<BinderHubConfigModel> & BinderHubConfigModel = this.binderHubConfig;
+    binderHubConfig!: BinderHubConfigModel;
 
     configFolder: WaterButlerFile = this.configFolder;
 

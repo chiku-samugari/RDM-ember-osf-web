@@ -2,7 +2,7 @@ import ArrayProxy from '@ember/array/proxy';
 import Controller from '@ember/controller';
 import EmberError from '@ember/error';
 import { action, computed } from '@ember/object';
-import { reads } from '@ember/object/computed';
+import { readOnly } from '@ember/object/computed';
 import { later } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 
@@ -121,7 +121,7 @@ export default class GuidNodeBinderHub extends Controller {
     @service analytics!: Analytics;
     @service currentUser!: CurrentUser;
 
-    @reads('model.node.taskInstance.value')
+    @readOnly('model.node.taskInstance.value')
     node?: Node;
 
     isPageDirty = false;

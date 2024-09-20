@@ -112,6 +112,25 @@ export function urlEquals(url1: string, url2: string): boolean {
     return normalizeUrl(url1) === normalizeUrl(url2);
 }
 
+function getURLWithContext(url: string) {
+    // TODO: The function `getContext` newly creates `URLSearchParams`
+    // object, so use it multiple times in a row should be avoided.
+    // Since these query parameter is planned to be unified as one in
+    // very near future, just leave it as-is for now.
+    const bh = getContext('bh');
+    const jh = getContext('jh');
+    const ourl = new URL(url);
+    const osearch = new URLSearchParams(ourl.search);
+    if (bh) {
+        osearch.set('bh', bh);
+    }
+    if (jh) {
+        osearch.set('jh', jh);
+    }
+    ourl.search = `?${osearch.toString()}`;
+    return ourl.href;
+}
+
 export default class GuidNodeBinderHub extends Controller {
     queryParams = ['bh', 'jh'];
 
@@ -164,7 +183,7 @@ export default class GuidNodeBinderHub extends Controller {
         if (!binderhub.authorize_url) {
             throw new EmberError('Illegal config');
         }
-        window.location.href = this.getURLWithContext(binderhub.authorize_url);
+        window.location.href = getURLWithContext(binderhub.authorize_url);
     }
 
     @action
@@ -178,7 +197,7 @@ export default class GuidNodeBinderHub extends Controller {
             if (!jupyterhub.authorize_url) {
                 throw new EmberError('Illegal config');
             }
-            window.location.href = this.getURLWithContext(jupyterhub.authorize_url);
+            window.location.href = getURLWithContext(jupyterhub.authorize_url);
             return;
         }
         // Maybe BinderHub not authorized
@@ -459,21 +478,6 @@ export default class GuidNodeBinderHub extends Controller {
         later(async () => {
             await this.performBuild(binderhubUrl, false, path, callback);
         }, 0);
-    }
-
-    getURLWithContext(url: string) {
-        const bh = getContext('bh');
-        const jh = getContext('jh');
-        const ourl = new URL(url);
-        const osearch = new URLSearchParams(ourl.search);
-        if (bh) {
-            osearch.set('bh', bh);
-        }
-        if (jh) {
-            osearch.set('jh', jh);
-        }
-        ourl.search = `?${osearch.toString()}`;
-        return ourl.href;
     }
 
     async wbAuthenticatedAJAX(ajaxOptions: JQuery.AjaxSettings) {

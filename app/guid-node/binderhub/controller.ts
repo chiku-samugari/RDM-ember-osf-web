@@ -175,8 +175,7 @@ export default class GuidNodeBinderHub extends Controller {
         if (!this.config) {
             throw new EmberError('Illegal config');
         }
-        const config = this.config.content as BinderHubConfigModel;
-        const binderhub = config.findBinderHubByURL(binderhubUrl);
+        const binderhub = this.config.findBinderHubByURL(binderhubUrl);
         if (!binderhub) {
             throw new EmberError('Illegal config');
         }
@@ -191,8 +190,7 @@ export default class GuidNodeBinderHub extends Controller {
         if (!this.config) {
             throw new EmberError('Illegal config');
         }
-        const config = this.config.content as BinderHubConfigModel;
-        const jupyterhub = config.findJupyterHubByURL(jupyterhubUrl);
+        const jupyterhub = this.config.findJupyterHubByURL(jupyterhubUrl);
         if (jupyterhub) {
             if (!jupyterhub.authorize_url) {
                 throw new EmberError('Illegal config');
@@ -201,7 +199,7 @@ export default class GuidNodeBinderHub extends Controller {
             return;
         }
         // Maybe BinderHub not authorized
-        const binderhubCand = config.findBinderHubCandidateByJupyterHubURL(jupyterhubUrl);
+        const binderhubCand = this.config.findBinderHubCandidateByJupyterHubURL(jupyterhubUrl);
         if (!binderhubCand) {
             throw new EmberError('Illegal config');
         }
@@ -213,8 +211,7 @@ export default class GuidNodeBinderHub extends Controller {
         if (!this.config) {
             throw new EmberError('Illegal config');
         }
-        const config = this.config.content as BinderHubConfigModel;
-        const jupyterhub = config.findJupyterHubByURL(jupyterhubUrl);
+        const jupyterhub = this.config.findJupyterHubByURL(jupyterhubUrl);
         if (!jupyterhub) {
             // Already logout
             return;
@@ -333,8 +330,7 @@ export default class GuidNodeBinderHub extends Controller {
         if (!buildPath) {
             throw new EmberError('Illegal state');
         }
-        const config = this.config.content as BinderHubConfigModel;
-        const binderhub = config.findBinderHubByURL(binderhubUrl);
+        const binderhub = this.config.findBinderHubByURL(binderhubUrl);
         let additional = '';
         if (this.currentUser && this.currentUser.currentUserId) {
             additional += `&userctx=${this.currentUser.currentUserId}`;
@@ -441,15 +437,12 @@ export default class GuidNodeBinderHub extends Controller {
         }
     }
 
-    @computed('node')
-    get config(): DS.PromiseObject<BinderHubConfigModel> | undefined {
+    @computed('model.binderHubConfig')
+    get config(): BinderHubConfigModel {
         if (this.configCache) {
             return this.configCache;
         }
-        if (!this.node) {
-            return undefined;
-        }
-        this.configCache = this.store.findRecord('binderhub-config', this.node.id);
+        this.configCache = this.model.binderHubConfig;
         return this.configCache!;
     }
 

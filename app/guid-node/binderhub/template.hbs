@@ -5,6 +5,11 @@
         {{t 'binderhub.loading'}}
     {{else}}
         <div local-class='BinderHub__editor'>
+            <GuidNode::Binderhub::-Components::HostSelector
+                @selectedHostURL={{this.selectedHostURL}}
+                @selectableBinderhubs={{this.selectableBinderhubs}}
+                @onHostSelect={{action this.selectHostURL}}
+            />
             <BsAlert
                 @type='danger'
                 @dismissible={{false}}
@@ -17,6 +22,7 @@
                 <GuidNode::Binderhub::-Components::JupyterServersList
                     @node={{this.model.node}}
                     @binderHubConfig={{this.model.binderHubConfig}}
+                    @currentBinderHubURL={{this.currentBinderHubURL}}
                     @loggedOutDomains={{this.loggedOutDomains}}
                     @renewToken={{action this.renewJupyterHubToken}}
                     @logout={{action this.logoutJupyterHub}}
@@ -40,6 +46,7 @@
             </div>
             <GuidNode::Binderhub::-Components::BuildConsole
                 @binderHubConfig={{this.model.binderHubConfig}}
+                @currentBinderHubURL={{this.currentBinderHubURL}}
                 @renewToken={{action this.renewBinderHubToken}}
                 @requestBuild={{action this.build}}
                 @buildLog={{this.buildLog}}

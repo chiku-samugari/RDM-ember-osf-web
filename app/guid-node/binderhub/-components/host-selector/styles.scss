@@ -1,0 +1,28 @@
+.jupyterhub-server-menu {
+    display: flex;
+    margin: 20px 0 0;
+}
+
+.jupyterhub-selector {
+    padding: 20px 0 0;
+}
+
+.jupyterhub_servers_host_label {
+    padding: 5.5px 6px;
+}
+
+.dropdown_menu {
+    background-color: #f8f8f8;
+    border-radius: 2px;
+
+    & > li > button {
+        color: #000;
+        width: 100%;
+        text-align: justify;
+    }
+
+    & > li > button:hover {
+        color: #fff;
+        background-color: #1e90ff;
+    }
+}

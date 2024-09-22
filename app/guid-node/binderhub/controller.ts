@@ -65,7 +65,7 @@ export function validateBinderHubToken(binderhub: BinderHub) {
     return true;
 }
 
-export function getContext(key: string) {
+function getContext(key: string) {
     const params = new URLSearchParams(window.location.search);
     return params.get(key);
 }
@@ -112,27 +112,22 @@ export function urlEquals(url1: string, url2: string): boolean {
     return normalizeUrl(url1) === normalizeUrl(url2);
 }
 
-function getURLWithContext(url: string) {
-    // TODO: The function `getContext` newly creates `URLSearchParams`
-    // object, so use it multiple times in a row should be avoided.
-    // Since these query parameter is planned to be unified as one in
-    // very near future, just leave it as-is for now.
-    const bh = getContext('bh');
-    const jh = getContext('jh');
+function getURLWithContext(url: string): string {
+    const host = getContext('host');
     const ourl = new URL(url);
-    const osearch = new URLSearchParams(ourl.search);
-    if (bh) {
-        osearch.set('bh', bh);
+    if (host) {
+        ourl.searchParams.set('host', host);
     }
-    if (jh) {
-        osearch.set('jh', jh);
-    }
-    ourl.search = `?${osearch.toString()}`;
     return ourl.href;
 }
 
+function updateContext(key: string, value: string) {
+    const params = new URLSearchParams(window.location.search);
+    params.set(key, value);
+}
+
 export default class GuidNodeBinderHub extends Controller {
-    queryParams = ['bh', 'jh'];
+    queryParams = ['host'];
 
     @service toast!: Toast;
     @service intl!: Intl;
@@ -156,6 +151,8 @@ export default class GuidNodeBinderHub extends Controller {
     binderHubBuildError = false;
 
     buildPhase: string | null = null;
+
+    selectedHostURL?: URL;
 
     bh: string | null = null;
 
@@ -444,6 +441,65 @@ export default class GuidNodeBinderHub extends Controller {
         }
         this.configCache = this.model.binderHubConfig;
         return this.configCache!;
+    }
+
+    @computed('config')
+    get selectableBinderhubs(): SelectableBinderhub[] {
+        if (!isBinderHubConfigFulfilled(this.model)) {
+            return [];
+        }
+        const nodeBinderhubs = this.config.get('node_binderhubs');
+        const userBinderhubs = this.config.get('user_binderhubs');
+        const nodeCands = (nodeBinderhubs || []).map(hub => ({
+            binderhub_url: hub.binderhub_url,
+            name: hub.binderhub_url,
+        }));
+        const userCands = (userBinderhubs || []).filter(
+            hub => nodeCands.every(
+                nodeHub => !urlEquals(hub.binderhub_url, nodeHub.binderhub_url),
+            ),
+        ).map(hub => ({
+            binderhub_url: hub.binderhub_url,
+            name: `${hub.binderhub_url} (User)`,
+        }));
+        return nodeCands.concat(userCands);
+    }
+
+    isAvailableBinderHubURLString(url: URL): boolean {
+        return this.selectableBinderhubs.filter(
+            hub => urlEquals(hub.binderhub_url, urlString),
+        ).length < 0;
+    }
+
+    @computed('model.binderHubConfig', 'selectedHostURL')
+    get currentBinderHubURL(): URL {
+        if (!isBinderHubConfigFulfilled(this.model)) {
+            throw new EmberError('Inappropriate BinderHub configuration. [GuidNodeBinderHub.currentBinderHubURL]');
+        }
+        if (this.selectedHostURL && this.isAvailableBinderHubURLString(this.selectedHostURL)) {
+            return selectedHostURL;
+        }
+        return new URL(this.model.binderHubConfig.get('defaultBinderhub'));
+    }
+
+    @action
+    selectHostURL(this: GuidNodeBinderHub, hostURLString: string) {
+        try {
+            const hostURL = new URL(hostURLString);
+            if (!this.isAvailableBinderHubURLString(hostURL)) {
+                throw new EmberError('Illegal Input. Input hostURL seems wired.');
+            }
+            this.set('selectedHostURL', hostURL);
+            updateContext('host', hostURL.toString());
+        } catch (e: unknown) {
+            if (e instanceof TypeError) {
+                throw new EmberError('Malformed URL string is submitted. [GuidNodeBinderHub.selectHostURL]');
+            } else if (e instanceof EmberError) {
+                throw e;
+            } else {
+                throw new EmberError('Unknown Error [GuidNodeBinderHub.selectHostURL]');
+            }
+        }
     }
 
     @action

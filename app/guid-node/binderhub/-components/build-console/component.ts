@@ -9,7 +9,6 @@ import {
     BuildMessage,
     getJupyterHubServerURL,
     isBinderHubConfigFulfilled,
-    urlEquals,
     validateBinderHubToken,
 } from 'ember-osf-web/guid-node/binderhub/controller';
 import BinderHubConfigModel from 'ember-osf-web/models/binderhub-config';
@@ -28,7 +27,7 @@ export default class BuildConsole extends Component {
 
     buildPhase: string | null = this.buildPhase;
 
-    currentBinderHubURL?: URL;
+    currentBinderHubURL!: URL;
 
     notAuthorized: boolean = false;
 

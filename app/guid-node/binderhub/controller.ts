@@ -491,7 +491,7 @@ export default class GuidNodeBinderHub extends Controller {
             }
             this.set('selectedHostURL', hostURL);
             updateContext('host', hostURL.toString());
-        } catch (e: unknown) {
+        } catch (e) {
             if (e instanceof TypeError) {
                 throw new EmberError('Malformed URL string is submitted. [GuidNodeBinderHub.selectHostURL]');
             } else if (e instanceof EmberError) {

@@ -7,7 +7,6 @@ import {
     BootstrapPath,
     getJupyterHubServerURL,
     isBinderHubConfigFulfilled,
-    SelectableBinderhub,
     urlEquals,
     validateBinderHubToken,
 } from 'ember-osf-web/guid-node/binderhub/controller';
@@ -81,7 +80,7 @@ export default class JupyterServersList extends Component {
 
     oldBuildPhase: string | null = null;
 
-    currentBinderHubURL: URL;
+    currentBinderHubURL!: URL;
 
     requestNotAuthorized: boolean = false;
 

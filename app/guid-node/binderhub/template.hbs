@@ -6,9 +6,9 @@
     {{else}}
         <div local-class='BinderHub__editor'>
             <GuidNode::Binderhub::-Components::HostSelector
-                @selectedHostURL={{this.selectedHostURL}}
+                @selectedHostURL={{this.currentBinderHubURL}}
                 @selectableBinderhubs={{this.selectableBinderhubs}}
-                @onHostSelect={{action this.selectHostURL}}
+                @onHostSelect={{this.selectHostURL}}
             />
             <BsAlert
                 @type='danger'

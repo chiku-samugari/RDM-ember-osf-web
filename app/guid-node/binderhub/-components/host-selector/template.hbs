@@ -8,19 +8,19 @@
             </span>
             <BsDropdown data-test-jupyterhub-selection as |dd|>
                 <dd.button>
-                    {{this.selectedHostURL.href}}
+                    {{@selectedHostURL.href}}
                     <span class='caret'></span>
                 </dd.button>
                 <dd.menu
                     local-class='dropdown_menu'
                     as |menu|>
-                    {{#each this.selectableBinderhubs as |item|}}
+                    {{#each @selectableBinderhubs as |item|}}
                         <menu.item data-test-jupyterhub-selection-option role='menuitem'>
                             <OsfButton
                                 @type='link'
-                                @onClick={{action this.onHostSelect item.binderhub_url}}
+                                @onClick={{action @onHostSelect item.binderhub_url}}
                             >
-                                {{#if (eq this.selectedHostURL.href item.binderhub_url)}}
+                                {{#if (eq @selectedHostURL.href item.binderhub_url)}}
                                     {{#fa-stack as |s|}}
                                         {{s.stack-1x 'fw'}}
                                         {{s.stack-1x 'check'}}

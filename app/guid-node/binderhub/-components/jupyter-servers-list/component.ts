@@ -61,8 +61,6 @@ export default class JupyterServersList extends Component {
 
     @requiredAction renewToken!: (jupyterhubUrl: string) => void;
 
-    @requiredAction logout!: (jupyterhubUrl: string) => void;
-
     @requiredAction onError!: (exception: any) => void;
 
     initialized: boolean = false;
@@ -149,18 +147,6 @@ export default class JupyterServersList extends Component {
             return false;
         }
         return servers.length >= this.maxServers;
-    }
-
-    @computed('defaultJupyterhub')
-    get canLogout(): boolean {
-        const jupyterhub = this.defaultJupyterhub;
-        if (!jupyterhub) {
-            return false;
-        }
-        if (!jupyterhub.logout_url) {
-            return false;
-        }
-        return true;
     }
 
     @computed('binderHubConfig', 'currentBinderHubURL')
@@ -394,10 +380,5 @@ export default class JupyterServersList extends Component {
             const servers = await this.loadServers(server.ownerUrl);
             this.set('allServers', servers !== null ? servers.entries : null);
         }, 0);
-    }
-
-    @action
-    performLogout(this: JupyterServersList) {
-        this.logout(this.defaultJupyterhubUrl);
     }
 }

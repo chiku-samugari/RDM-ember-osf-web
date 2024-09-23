@@ -1772,6 +1772,7 @@ binderhub:
     page_title: '{nodeTitle} BinderHub'
     host_info:
         url: 'JupyterHub:'
+        username: 'ユーザー:'
         change_host: '変更'
     host_selector:
         dialogue_title: 'ホスト選択'
@@ -1785,7 +1786,6 @@ binderhub:
         header: '新しい解析環境'
     loading: 'BinderHub設定を読み込んでいます...'
     servers:
-        username: 'ユーザー: '
         server_exists: 'このプロジェクトから作った解析環境が {servers} 個あります。'
         server_not_exists: 'このプロジェクトから作った解析環境はありません。'
         max_servers_exceeded: '解析環境の数が上限に達しています。'

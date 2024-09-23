@@ -5,13 +5,31 @@
         {{t 'binderhub.loading'}}
     {{else}}
         <div local-class='BinderHub__editor'>
-            <GuidNode::Binderhub::-Components::HostSelector
-                local-class='host_selector'
-                @guid={{this.node.id}}
-                @selectedHost={{this.selectedHost}}
-                @availableHosts={{this.availableHosts}}
-                @onHostSelect={{this.selectHostURL}}
-            />
+            <div local-class='host_information'>
+                <GuidNode::Binderhub::-Components::HostSelector
+                    local-class='host_selector'
+                    @guid={{this.node.id}}
+                    @selectedHost={{this.selectedHost}}
+                    @availableHosts={{this.availableHosts}}
+                    @onHostSelect={{this.selectHostURL}}
+                />
+                <div local-class='host_user'>
+                    {{#if this.currentJupyterHubUser}}
+                        <GuidNode::Binderhub::-Components::UserInfo
+                            @userInfo={{this.currentJupyterHubUser}}
+                        />
+                    {{/if}}
+                    {{#if this.canLogout}}
+                        <GuidNode::Binderhub::-Components::LogoutButton
+                            @currentJupyterHubURL={{this.currentJupyterHubURL}}
+                            @logout={{action this.logoutJupyterHub}}
+                        />
+                    {{/if}}
+                </div>
+            </div>
+            <h2 data-test-servers-header local-class='BinderHub__header'>
+                {{t 'binderhub.jupyter_servers_list.header'}}
+            </h2>
             <BsAlert
                 @type='danger'
                 @dismissible={{false}}
@@ -20,14 +38,13 @@
             >
                 {{t 'binderhub.error.jupyterhub_api_error'}}
             </BsAlert>
-            <div local-class='BinderHub__section'>
+            <div local-class='BinderHub__panel'>
                 <GuidNode::Binderhub::-Components::JupyterServersList
                     @node={{this.node}}
                     @binderHubConfig={{this.model.binderHubConfig}}
                     @currentBinderHubURL={{this.currentBinderHubURL}}
                     @loggedOutDomains={{this.loggedOutDomains}}
                     @renewToken={{action this.renewJupyterHubToken}}
-                    @logout={{action this.logoutJupyterHub}}
                     @buildPhase={{this.buildPhase}}
                     @onError={{action this.requestError}}
                 />

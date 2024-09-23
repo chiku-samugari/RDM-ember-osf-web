@@ -5,6 +5,20 @@
     }
 }
 
+.host_information {
+    display: flex;
+    padding: 20px 0 0;
+}
+
+.host_selector {
+    margin-right: auto;
+}
+
+.host_user {
+    display: flex;
+    margin-left: auto;
+}
+
 .BinderHub__header {
     margin-bottom: 0.5em;
 }

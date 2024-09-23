@@ -18,7 +18,6 @@
 }
 
 .jupyterhub-server-submenu {
-    margin: 1em;
     display: flex;
 }
 
@@ -26,10 +25,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-}
-
-.jupyterhub-user {
-    margin-left: auto;
 }
 
 .max-servers-exceeded {

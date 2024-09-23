@@ -34,6 +34,7 @@ function createFolderResponse(attrs: Metadata) {
 }
 
 module('Acceptance | guid-node/binderhub', hooks => {
+    const guid = 'i9bri';
     // HS stands for HostSelector.
     const HS = {
         top: '[data-test-binderhub-host-selector]',
@@ -47,12 +48,21 @@ module('Acceptance | guid-node/binderhub', hooks => {
         notChecked: 'input[type="radio"]:not(:checked)',
     };
 
+    // JSL stands for JupyterServersList
+    const JSL = {
+        top: '[data-test-binderhub-jupyter-servers-list]',
+        launch: '[data-test-lab-launch-button]',
+        delete: '[data-test-delete-icon]',
+        ready: '.fa-play-circle',
+        building: '.fa-spinner',
+    };
+
     setupOSFApplicationTest(hooks);
     setupMirage(hooks);
 
     test('logged in', async assert => {
         const node = server.create('node', {
-            id: 'i9bri',
+            id: guid,
             currentUserPermissions: [Permission.Write],
         });
         server.create('binderhub-config', {
@@ -93,15 +103,6 @@ module('Acceptance | guid-node/binderhub', hooks => {
                         name: 'Test Image',
                         description: 'dummy description',
                         packages: ['conda'],
-                    },
-                ],
-            },
-            launcher: {
-                endpoints: [
-                    {
-                        id: 'fake',
-                        name: 'Fake',
-                        path: 'Fake',
                     },
                 ],
             },
@@ -162,6 +163,9 @@ module('Acceptance | guid-node/binderhub', hooks => {
         assert.dom(`${HS.dialogue}`).exists();
         await click(`${HS.dialogue} ${HS.cancel}`);
         assert.dom(`${HS.dialogue}`).doesNotExist();
+        assert.dom(`${JSL.top}`).exists();
+        assert.dom(`${JSL.top} ${JSL.launch}`).doesNotExist();
+        assert.dom(`${JSL.top} ${JSL.delete}`).doesNotExist();
         assert.dom('[data-test-jupyterhub-user]').hasText('testuser');
         assert.dom('[data-test-binderhub-launch]').exists();
         assert.dom('[data-test-image-selection="jupyter/test-image"]').exists();
@@ -177,7 +181,7 @@ module('Acceptance | guid-node/binderhub', hooks => {
         );
         assert.equal(
             wbFileAjaxStub.firstCall.args[0].url,
-            'http://localhost:8000/v2/nodes/i9bri/files/osfstorage/upload',
+            `http://localhost:8000/v2/nodes/${guid}/files/osfstorage/upload`,
         );
         assert.equal(
             wbFileAjaxStub.secondCall.args[0].url,
@@ -193,7 +197,7 @@ module('Acceptance | guid-node/binderhub', hooks => {
 
     test('We can chenge the host.', async function(assert) {
         const node = server.create('node', {
-            id: 'i9bri',
+            id: guid,
             currentUserPermissions: [Permission.Write],
         });
         server.create('binderhub-config', {
@@ -264,15 +268,6 @@ module('Acceptance | guid-node/binderhub', hooks => {
                     },
                 ],
             },
-            launcher: {
-                endpoints: [
-                    {
-                        id: 'fake',
-                        name: 'Fake',
-                        path: 'Fake',
-                    },
-                ],
-            },
         });
         server.create('file-provider', { node, name: 'osfstorage' });
         const sandbox = sinon.createSandbox();
@@ -287,11 +282,27 @@ module('Acceptance | guid-node/binderhub', hooks => {
                 'server-1': {
                     name: 'server-1',
                 },
-                'i9bri-osfstorage-1': {
-                    name: 'i9bri-osfstorage-1',
+                [`${guid}-osfstorage-abcdefgh`]: {
+                    name: `${guid}-osfstorage-abcdefgh`,
+                    last_activity: '2024-11-05T18:00:00.120774Z',
+                    started: null,
+                    pending: 'spawn',
+                    ready: false,
+                    stopped: true,
+                    url: `/user/testuser/${guid}-osfstorage-abcdefgh/`,
+                    user_options: null,
+                    progress_url: `/hub/api/users/testuser/servers/${guid}-osfstorage-abcdefgh/progress`,
                 },
-                'i9bri-osfstorage-2': {
-                    name: 'i9bri-osfstorage-2',
+                [`${guid}-osfstorage-ijklmnop`]: {
+                    name: `${guid}-osfstorage-ijklmnop`,
+                    last_activity: '2024-11-05T18:00:00.120774Z',
+                    started: null,
+                    pending: null,
+                    ready: true,
+                    stopped: false,
+                    url: `/user/testuser/${guid}-osfstorage-ijklmnop/`,
+                    user_options: null,
+                    progress_url: `/hub/api/users/testuser/servers/${guid}-osfstorage-ijklmnop/progress`,
                 },
             },
             named_server_limit: 10,
@@ -329,6 +340,11 @@ module('Acceptance | guid-node/binderhub', hooks => {
         await visit(url);
         assert.equal(currentURL(), url, `We are on ${url}`);
         assert.equal(currentRouteName(), 'guid-node.binderhub', 'We are at guid-node.binderhub');
+        assert.dom(`${JSL.top}`).exists();
+        assert.dom(`${JSL.top} ${JSL.launch}`).exists({ count: 2 });
+        assert.dom(`${JSL.top} ${JSL.launch} ${JSL.ready}`).exists({ count: 1 });
+        assert.dom(`${JSL.top} ${JSL.launch} ${JSL.building}`).exists({ count: 1 });
+        assert.dom(`${JSL.top} ${JSL.delete}`).exists({ count: 2 });
         assert.dom('[data-test-jupyterhub-user]').hasText('testuser');
         assert.dom('[data-test-binderhub-launch]').exists();
         assert.dom('[data-test-image-selection="jupyter/test-image"]').exists();
@@ -344,7 +360,7 @@ module('Acceptance | guid-node/binderhub', hooks => {
         );
         assert.equal(
             wbFileAjaxStub.firstCall.args[0].url,
-            'http://localhost:8000/v2/nodes/i9bri/files/osfstorage/upload',
+            `http://localhost:8000/v2/nodes/${guid}/files/osfstorage/upload`,
         );
         assert.equal(
             wbFileAjaxStub.secondCall.args[0].url,
@@ -382,6 +398,33 @@ module('Acceptance | guid-node/binderhub', hooks => {
             'BinderHub calls JupyterHub REST API',
         );
 
+        ajaxStub.resetHistory();
+        ajaxStub.resolves({
+            kind: 'user',
+            name: 'testuser',
+            servers: {
+                '': {
+                    name: '',
+                },
+                'server-1': {
+                    name: 'server-1',
+                },
+
+                [`${guid}-osfstorage-xyzuvabc`]: {
+                    name: `${guid}-osfstorage-xyzuvabc`,
+                    last_activity: '2024-11-05T18:00:00.120774Z',
+                    started: null,
+                    pending: null,
+                    ready: true,
+                    stopped: false,
+                    url: `/user/testuser/${guid}-osfstorage-xyzuvabc/`,
+                    user_options: null,
+                    progress_url: `/hub/api/users/testuser/servers/${guid}-osfstorage-xyzuvabc/progress`,
+                },
+            },
+            named_server_limit: 10,
+        });
+
         await click(`${HS.top} ${HS.open}`);
         await click(`${HS.dialogue} ${HS.option} ${HS.notChecked}`);
         await click(`${HS.dialogue} ${HS.ok}`);
@@ -396,12 +439,16 @@ module('Acceptance | guid-node/binderhub', hooks => {
                 'http://localhost:31415/',
             );
         }
+        assert.dom(`${JSL.top} ${JSL.launch}`).exists({ count: 1 });
+        assert.dom(`${JSL.top} ${JSL.launch} ${JSL.ready}`).exists({ count: 1 });
+        assert.dom(`${JSL.top} ${JSL.launch} ${JSL.building}`).doesNotExist();
+        assert.dom(`${JSL.top} ${JSL.delete}`).exists({ count: 1 });
         sandbox.restore();
     });
 
     test('already configured, Dockerfile', async assert => {
         const node = server.create('node', {
-            id: 'i9bri',
+            id: guid,
             currentUserPermissions: [Permission.Write],
         });
         server.create('binderhub-config', {
@@ -446,15 +493,6 @@ module('Acceptance | guid-node/binderhub', hooks => {
                         name: 'Test Image',
                         description: 'dummy description',
                         packages: ['conda'],
-                    },
-                ],
-            },
-            launcher: {
-                endpoints: [
-                    {
-                        id: 'fake',
-                        name: 'Fake',
-                        path: 'Fake',
                     },
                 ],
             },
@@ -523,6 +561,9 @@ module('Acceptance | guid-node/binderhub', hooks => {
         assert.dom(`${HS.dialogue}`).exists();
         await click(`${HS.dialogue} ${HS.cancel}`);
         assert.dom(`${HS.dialogue}`).doesNotExist();
+        assert.dom(`${JSL.top}`).exists();
+        assert.dom(`${JSL.top} ${JSL.launch}`).doesNotExist();
+        assert.dom(`${JSL.top} ${JSL.delete}`).doesNotExist();
         assert.dom('[data-test-binderhub-launch]').exists();
         assert.dom('[data-test-image-change="jupyter/scipy-notebook"]').exists();
         assert.dom('[data-test-image-selected="jupyter/scipy-notebook"]').exists();
@@ -540,7 +581,7 @@ module('Acceptance | guid-node/binderhub', hooks => {
         );
         assert.equal(
             wbFileAjaxStub.firstCall.args[0].url,
-            'http://localhost:8000/v2/nodes/i9bri/files/osfstorage/upload',
+            `http://localhost:8000/v2/nodes/${guid}/files/osfstorage/upload`,
         );
         assert.equal(
             wbFileAjaxStub.secondCall.args[0].url,
@@ -560,7 +601,7 @@ module('Acceptance | guid-node/binderhub', hooks => {
 
     test('already configured, repo2docker', async assert => {
         const node = server.create('node', {
-            id: 'i9bri',
+            id: guid,
             currentUserPermissions: [Permission.Write],
         });
         server.create('binderhub-config', {
@@ -601,15 +642,6 @@ module('Acceptance | guid-node/binderhub', hooks => {
                         name: 'Test Repo2Docker',
                         description: 'dummy description',
                         packages: ['conda', 'rmran', 'mpm'],
-                    },
-                ],
-            },
-            launcher: {
-                endpoints: [
-                    {
-                        id: 'fake',
-                        name: 'Fake',
-                        path: 'Fake',
                     },
                 ],
             },
@@ -683,6 +715,9 @@ module('Acceptance | guid-node/binderhub', hooks => {
         assert.dom(`${HS.dialogue}`).exists();
         await click(`${HS.dialogue} ${HS.cancel}`);
         assert.dom(`${HS.dialogue}`).doesNotExist();
+        assert.dom(`${JSL.top}`).exists();
+        assert.dom(`${JSL.top} ${JSL.launch}`).doesNotExist();
+        assert.dom(`${JSL.top} ${JSL.delete}`).doesNotExist();
         assert.dom('[data-test-binderhub-launch]').exists();
         assert.dom('[data-test-image-change="#repo2docker#r-base"]').exists();
         assert.dom('[data-test-image-selected="#repo2docker#r-base"]').exists();
@@ -700,7 +735,7 @@ module('Acceptance | guid-node/binderhub', hooks => {
         );
         assert.equal(
             wbFileAjaxStub.firstCall.args[0].url,
-            'http://localhost:8000/v2/nodes/i9bri/files/osfstorage/upload',
+            `http://localhost:8000/v2/nodes/${guid}/files/osfstorage/upload`,
         );
         assert.equal(
             wbFileAjaxStub.secondCall.args[0].url,
@@ -720,7 +755,7 @@ module('Acceptance | guid-node/binderhub', hooks => {
 
     test('already configured, pip on Dockerfile', async assert => {
         const node = server.create('node', {
-            id: 'i9bri',
+            id: guid,
             currentUserPermissions: [Permission.Write],
         });
         server.create('binderhub-config', {
@@ -767,15 +802,6 @@ module('Acceptance | guid-node/binderhub', hooks => {
                         name: 'Test Repo2Docker',
                         description: 'dummy description',
                         packages: ['conda', 'pip', 'rmran'],
-                    },
-                ],
-            },
-            launcher: {
-                endpoints: [
-                    {
-                        id: 'fake',
-                        name: 'Fake',
-                        path: 'Fake',
                     },
                 ],
             },
@@ -846,6 +872,9 @@ module('Acceptance | guid-node/binderhub', hooks => {
         assert.dom(`${HS.dialogue}`).exists();
         await click(`${HS.dialogue} ${HS.cancel}`);
         assert.dom(`${HS.dialogue}`).doesNotExist();
+        assert.dom(`${JSL.top}`).exists();
+        assert.dom(`${JSL.top} ${JSL.launch}`).doesNotExist();
+        assert.dom(`${JSL.top} ${JSL.delete}`).doesNotExist();
         assert.dom('[data-test-binderhub-launch]').exists();
         assert.dom('[data-test-image-change="jupyter/scipy-notebook"]').exists();
         assert.dom('[data-test-image-selected="jupyter/scipy-notebook"]').exists();
@@ -880,7 +909,7 @@ module('Acceptance | guid-node/binderhub', hooks => {
         );
         assert.equal(
             wbFileAjaxStub.firstCall.args[0].url,
-            'http://localhost:8000/v2/nodes/i9bri/files/osfstorage/upload',
+            `http://localhost:8000/v2/nodes/${guid}/files/osfstorage/upload`,
         );
         assert.equal(
             wbFileAjaxStub.secondCall.args[0].url,
@@ -989,7 +1018,7 @@ module('Acceptance | guid-node/binderhub', hooks => {
 
     test('already configured, pip on repo2docker', async assert => {
         const node = server.create('node', {
-            id: 'i9bri',
+            id: guid,
             currentUserPermissions: [Permission.Write],
         });
         server.create('binderhub-config', {
@@ -1030,15 +1059,6 @@ module('Acceptance | guid-node/binderhub', hooks => {
                         name: 'Test Repo2Docker',
                         description: 'dummy description',
                         packages: ['conda', 'pip', 'rmran'],
-                    },
-                ],
-            },
-            launcher: {
-                endpoints: [
-                    {
-                        id: 'fake',
-                        name: 'Fake',
-                        path: 'Fake',
                     },
                 ],
             },
@@ -1132,6 +1152,9 @@ module('Acceptance | guid-node/binderhub', hooks => {
         assert.dom(`${HS.dialogue}`).exists();
         await click(`${HS.dialogue} ${HS.cancel}`);
         assert.dom(`${HS.dialogue}`).doesNotExist();
+        assert.dom(`${JSL.top}`).exists();
+        assert.dom(`${JSL.top} ${JSL.launch}`).doesNotExist();
+        assert.dom(`${JSL.top} ${JSL.delete}`).doesNotExist();
         assert.dom('[data-test-binderhub-launch]').exists();
         assert.dom('[data-test-image-change="#repo2docker#r-base"]').exists();
         assert.dom('[data-test-image-selected="#repo2docker#r-base"]').exists();
@@ -1166,7 +1189,7 @@ module('Acceptance | guid-node/binderhub', hooks => {
         );
         assert.equal(
             wbFileAjaxStub.firstCall.args[0].url,
-            'http://localhost:8000/v2/nodes/i9bri/files/osfstorage/upload',
+            `http://localhost:8000/v2/nodes/${guid}/files/osfstorage/upload`,
         );
         assert.equal(
             wbFileAjaxStub.secondCall.args[0].url,
@@ -1257,7 +1280,7 @@ module('Acceptance | guid-node/binderhub', hooks => {
 
     test('already configured, mpm on repo2docker', async assert => {
         const node = server.create('node', {
-            id: 'i9bri',
+            id: guid,
             currentUserPermissions: [Permission.Write],
         });
         server.create('binderhub-config', {
@@ -1298,15 +1321,6 @@ module('Acceptance | guid-node/binderhub', hooks => {
                         name: 'Test Repo2Docker',
                         description: 'dummy description',
                         packages: ['conda', 'pip', 'rmran', 'mpm'],
-                    },
-                ],
-            },
-            launcher: {
-                endpoints: [
-                    {
-                        id: 'fake',
-                        name: 'Fake',
-                        path: 'Fake',
                     },
                 ],
             },
@@ -1420,6 +1434,9 @@ module('Acceptance | guid-node/binderhub', hooks => {
         assert.dom(`${HS.dialogue}`).exists();
         await click(`${HS.dialogue} ${HS.cancel}`);
         assert.dom(`${HS.dialogue}`).doesNotExist();
+        assert.dom(`${JSL.top}`).exists();
+        assert.dom(`${JSL.top} ${JSL.launch}`).doesNotExist();
+        assert.dom(`${JSL.top} ${JSL.delete}`).doesNotExist();
         assert.dom('[data-test-binderhub-launch]').exists();
         assert.dom('[data-test-image-change="#repo2docker#r-base"]').exists();
         assert.dom('[data-test-image-selected="#repo2docker#r-base"]').exists();
@@ -1459,7 +1476,7 @@ module('Acceptance | guid-node/binderhub', hooks => {
         );
         assert.equal(
             wbFileAjaxStub.firstCall.args[0].url,
-            'http://localhost:8000/v2/nodes/i9bri/files/osfstorage/upload',
+            `http://localhost:8000/v2/nodes/${guid}/files/osfstorage/upload`,
         );
         assert.equal(
             wbFileAjaxStub.secondCall.args[0].url,
@@ -1521,7 +1538,7 @@ module('Acceptance | guid-node/binderhub', hooks => {
 
     test('reached server limit', async assert => {
         const node = server.create('node', {
-            id: 'i9bri',
+            id: guid,
             currentUserPermissions: [Permission.Write],
         });
         server.create('binderhub-config', {
@@ -1569,15 +1586,6 @@ module('Acceptance | guid-node/binderhub', hooks => {
                     },
                 ],
             },
-            launcher: {
-                endpoints: [
-                    {
-                        id: 'fake',
-                        name: 'Fake',
-                        path: 'Fake',
-                    },
-                ],
-            },
         });
         server.create('file-provider',
             { node, name: 'osfstorage' });
@@ -1593,8 +1601,8 @@ module('Acceptance | guid-node/binderhub', hooks => {
                 'server-1': {
                     name: 'server-1',
                 },
-                'i9bri-osfstorage-1': {
-                    name: 'i9bri-osfstorage-1',
+                [`${guid}-osfstorage-1`]: {
+                    name: `${guid}-osfstorage-1`,
                 },
             },
         });
@@ -1653,6 +1661,9 @@ module('Acceptance | guid-node/binderhub', hooks => {
         assert.dom(`${HS.dialogue}`).exists();
         await click(`${HS.dialogue} ${HS.cancel}`);
         assert.dom(`${HS.dialogue}`).doesNotExist();
+        assert.dom(`${JSL.top}`).exists();
+        assert.dom(`${JSL.top} ${JSL.launch}`).exists({ count: 1 });
+        assert.dom(`${JSL.top} ${JSL.delete}`).exists({ count: 1 });
         assert.dom('[data-test-binderhub-launch]').exists();
 
         assert.dom('[data-test-server-list-item]').exists();
@@ -1675,8 +1686,8 @@ module('Acceptance | guid-node/binderhub', hooks => {
                 'server-1': {
                     name: 'server-1',
                 },
-                'i9bri-osfstorage-1': {
-                    name: 'i9bri-osfstorage-1',
+                [`${guid}-osfstorage-1`]: {
+                    name: `${guid}-osfstorage-1`,
                 },
             },
             named_server_limit: 3,
@@ -1704,11 +1715,11 @@ module('Acceptance | guid-node/binderhub', hooks => {
                 'server-1': {
                     name: 'server-1',
                 },
-                'i9bri-osfstorage-1': {
-                    name: 'i9bri-osfstorage-1',
+                [`${guid}-osfstorage-1`]: {
+                    name: `${guid}-osfstorage-1`,
                 },
-                'i9bri-osfstorage-2': {
-                    name: 'i9bri-osfstorage-2',
+                [`${guid}-osfstorage-2`]: {
+                    name: `${guid}-osfstorage-2`,
                 },
             },
             named_server_limit: 3,

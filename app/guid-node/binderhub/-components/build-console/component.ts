@@ -54,17 +54,6 @@ export default class BuildConsole extends Component {
         this.scrollToBottom();
     }
 
-    @computed('binderHubConfig', 'currentBinderHubURL')
-    get defaultBinderhubUrl() {
-        if (this.currentBinderHubURL) {
-            return this.currentBinderHubURL.toString();
-        }
-        if (!isBinderHubConfigFulfilled(this)) {
-            throw new EmberError('Illegal state');
-        }
-        return this.binderHubConfig.get('defaultBinderhub').url;
-    }
-
     @computed('buildLog')
     get buildLogLines(): string {
         if (!this.buildLog) {
@@ -99,7 +88,9 @@ export default class BuildConsole extends Component {
         if (!isBinderHubConfigFulfilled(this)) {
             throw new EmberError('Illegal config');
         }
-        const binderhub = this.binderHubConfig.findBinderHubByURL(this.get('defaultBinderhubUrl'));
+        const binderhub = this.binderHubConfig.findBinderHubByURL(
+            this.get('currentBinderHubURL').toString(),
+        );
         if (!binderhub || !validateBinderHubToken(binderhub)) {
             this.set('notAuthorized', true);
             throw new EmberError('Insufficient parameters');
@@ -114,23 +105,28 @@ export default class BuildConsole extends Component {
 
     @action
     authorize(this: BuildConsole) {
-        const url = this.get('defaultBinderhubUrl');
         if (!this.renewToken) {
             return;
         }
-        this.renewToken(url);
+        this.renewToken(this.get('currentBinderHubURL').toString());
     }
 
     performBuild(path: BootstrapPath | null) {
         if (!this.requestBuild) {
             return;
         }
-        this.requestBuild(this.get('defaultBinderhubUrl'), path, (result: BuildMessage) => {
-            if (result.phase !== 'ready') {
-                return;
-            }
-            this.performLaunch(result.url, result.token, path);
-        });
+        this.requestBuild(
+            this.get('currentBinderHubURL').toString(),
+            path,
+            (result: BuildMessage) => {
+                // TODO: is this callback called repeatedly until the
+                // `result.phase` get `'ready'`? It's worth to know.
+                if (result.phase !== 'ready') {
+                    return;
+                }
+                this.performLaunch(result.url, result.token, path);
+            },
+        );
     }
 
     performLaunch(originalUrl: string | undefined, token: string | undefined, targetPath: BootstrapPath | null) {
@@ -155,7 +151,7 @@ export default class BuildConsole extends Component {
         if (!isBinderHubConfigFulfilled(this)) {
             return true;
         }
-        if (!this.validateToken(this.get('defaultBinderhubUrl'))) {
+        if (!this.validateToken(this.get('currentBinderHubURL').toString())) {
             return false;
         }
         return true;

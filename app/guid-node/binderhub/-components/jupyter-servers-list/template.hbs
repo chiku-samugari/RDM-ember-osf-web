@@ -76,7 +76,7 @@
                         <th class='col-md-2'>{{t 'binderhub.servers.name'}}</th>
                         <th class='col-md-3'>{{t 'binderhub.servers.last_activity'}}</th>
                         <th class='col-md-2'>{{t 'binderhub.servers.launch'}}</th>
-                        <th class='col-md-2'>{{t 'binderhub.servers.delete'}}</th>
+                        <th>{{t 'binderhub.servers.delete'}}</th>
                     </tr>
                 </thead>
                 <tbody local-class='jupyter-server'>
@@ -91,15 +91,12 @@
                                         @onClick={{action this.openServerWithPath server}}
                                     />
                                 </td>
-                                <td class='col-md-2'>
-                                    <button
-                                        data-test-server-link
-                                        type='button'
-                                        class='btn btn-default'
-                                        {{action (mut this.showDeleteConfirmDialogTarget) server}}
-                                    >
-                                        {{fa-icon 'fa-trash'}}
-                                    </button>
+                                <td>
+                                    <div data-test-server-link>
+                                        {{fa-icon 'fa-trash' size=2
+                                        local-class='delete_icon'
+                                        click=(action (mut this.showDeleteConfirmDialogTarget) server)}}
+                                    </div>
                                 </td>
                             </tr>
                         {{/each}}

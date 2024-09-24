@@ -74,7 +74,7 @@
                 <thead>
                     <tr>
                         <th class='col-md-2'>{{t 'binderhub.servers.name'}}</th>
-                        <th class='col-md-3'>{{t 'binderhub.servers.last_activity'}}</th>
+                        <th class='col-md-2'>{{t 'binderhub.servers.last_activity'}}</th>
                         <th>{{t 'binderhub.servers.launch'}}</th>
                         <th>{{t 'binderhub.servers.delete'}}</th>
                     </tr>
@@ -84,7 +84,7 @@
                         {{#each this.servers as |server index|}}
                             <tr>
                                 <td class='col-md-2' data-test-server-list-item={{index}}>{{server.entry.name}}</td>
-                                <td class='col-md-3'> {{moment-format server.entry.last_activity 'YYYY-MM-DD hh:mm A'}}</td>
+                                <td class='col-md-2'>{{moment-format server.entry.last_activity 'YYYY-MM-DD hh:mm A'}}</td>
                                 <td>
                                     <GuidNode::Binderhub::-Components::LaunchButtons
                                         @binderHubConfig={{this.binderHubConfig}}

@@ -238,7 +238,7 @@ export default class GuidNodeBinderHub extends Controller {
             await configCache;
             this.configCache = configCache;
             this.notifyPropertyChange('config');
-            this.set('loggedOutDomains', (this.loggedOutDomains || []).concat(jupyterhubUrl));
+            this.set('loggedOutDomains', (this.loggedOutDomains || []).concat(jupyterhubUrl.toString()));
         }, 0);
     }
 

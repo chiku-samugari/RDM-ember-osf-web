@@ -1766,6 +1766,8 @@ iqbrims:
     uploader_comment: コメント
 binderhub:
     page_title: '{nodeTitle} BinderHub'
+    host_info:
+        username: 'ユーザー:'
     jupyter_servers_list:
         header: '私の解析環境'
         delete_confirm_dialog_title: '削除確認'
@@ -1775,7 +1777,6 @@ binderhub:
     loading: 'BinderHub設定を読み込んでいます...'
     servers:
         host: 'JupyterHub :'
-        username: 'ユーザー: '
         server_exists: 'このプロジェクトから作った解析環境が {servers} 個あります。'
         server_not_exists: 'このプロジェクトから作った解析環境はありません。'
         max_servers_exceeded: '解析環境の数が上限に達しています。'

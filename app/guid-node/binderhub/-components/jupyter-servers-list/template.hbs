@@ -42,14 +42,6 @@
                         {{t 'binderhub.servers.server_hub_home'}}
                     </a>
                 </div>
-                {{#if this.defaultJupyterhubUser}}
-                    <div local-class='jupyterhub-user'>
-                        {{t 'binderhub.servers.username'}}
-                        <span data-test-jupyterhub-user>
-                            {{this.defaultJupyterhubUser}}
-                        </span>
-                    </div>
-                {{/if}}
             </div>
             <div local-class='toolbar-button'>
                 <button

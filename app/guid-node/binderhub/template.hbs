@@ -10,6 +10,11 @@
                 @selectableBinderhubs={{this.selectableBinderhubs}}
                 @onHostSelect={{this.selectHostURL}}
             />
+            {{#if this.currentJupyterHubUser}}
+                <GuidNode::Binderhub::-Components::UserInfo
+                    @userInfo={{this.currentJupyterHubUser}}
+                />
+            {{/if}}
             {{#if this.canLogout}}
                 <GuidNode::Binderhub::-Components::LogoutButton
                     @currentJupyterHubURL={{this.currentJupyterHubURL}}

@@ -1766,6 +1766,8 @@ iqbrims:
     uploader_comment: 'Comment'
 binderhub:
     page_title: '{nodeTitle} BinderHub'
+    host_info:
+        username: 'User:'
     jupyter_servers_list:
         header: 'My environments'
         delete_confirm_dialog_title: 'Delete confirmation'
@@ -1775,7 +1777,6 @@ binderhub:
     loading: 'Loading BinderHub config...'
     servers:
         host: 'JupyterHub :'
-        username: 'User: '
         server_exists: '{servers} environment(s) created from this project.'
         server_not_exists: 'No environments created from this project.'
         max_servers_exceeded: 'The maximum number of environments has been reached.'

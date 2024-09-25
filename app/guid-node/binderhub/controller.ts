@@ -9,7 +9,10 @@ import { inject as service } from '@ember/service';
 import DS from 'ember-data';
 
 import Intl from 'ember-intl/services/intl';
-import BinderHubConfigModel, { BinderHub } from 'ember-osf-web/models/binderhub-config';
+import BinderHubConfigModel, {
+    BinderHub,
+    JupyterHub,
+} from 'ember-osf-web/models/binderhub-config';
 import FileProviderModel from 'ember-osf-web/models/file-provider';
 import Node from 'ember-osf-web/models/node';
 import Analytics from 'ember-osf-web/services/analytics';
@@ -530,11 +533,20 @@ export default class GuidNodeBinderHub extends Controller {
     }
 
     @computed('currentJupyterHubURL')
-    get currentJupyterHub() {
+    get currentJupyterHub(): JupyterHub | null {
         if (!isBinderHubConfigFulfilled(this.model)) {
             return null;
         }
         return this.config.findJupyterHubByURL(this.currentJupyterHubURL.toString());
+    }
+
+    @computed('currentJupyterHub')
+    get currentJupyterHubUser(): string {
+        const jupyterhub = this.currentJupyterHub;
+        if (!jupyterhub || !jupyterhub.token || !jupyterhub.token.user) {
+            return null;
+        }
+        return jupyterhub.token.user;
     }
 
     @action

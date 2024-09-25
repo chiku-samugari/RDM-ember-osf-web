@@ -10,6 +10,12 @@
                 @selectableBinderhubs={{this.selectableBinderhubs}}
                 @onHostSelect={{this.selectHostURL}}
             />
+            {{#if this.canLogout}}
+                <GuidNode::Binderhub::-Components::LogoutButton
+                    @currentJupyterHubURL={{this.currentJupyterHubURL}}
+                    @logout={{action this.logoutJupyterHub}}
+                />
+            {{/if}}
             <h2 data-test-servers-header local-class='BinderHub__header'>
                 {{t 'binderhub.jupyter_servers_list.header'}}
             </h2>
@@ -28,7 +34,6 @@
                     @currentBinderHubURL={{this.currentBinderHubURL}}
                     @loggedOutDomains={{this.loggedOutDomains}}
                     @renewToken={{action this.renewJupyterHubToken}}
-                    @logout={{action this.logoutJupyterHub}}
                     @buildPhase={{this.buildPhase}}
                     @onError={{action this.requestError}}
                 />

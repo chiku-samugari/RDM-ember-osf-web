@@ -7,7 +7,6 @@ import {
     BootstrapPath,
     getJupyterHubServerURL,
     isBinderHubConfigFulfilled,
-    urlEquals,
     validateBinderHubToken,
 } from 'ember-osf-web/guid-node/binderhub/controller';
 import BinderHubConfigModel, { JupyterHub } from 'ember-osf-web/models/binderhub-config';
@@ -61,8 +60,6 @@ export default class JupyterServersList extends Component {
     binderHubConfig!: BinderHubConfigModel;
 
     @requiredAction renewToken!: (jupyterhubUrl: string) => void;
-
-    @requiredAction logout!: (jupyterhubUrl: string) => void;
 
     @requiredAction onError!: (exception: any) => void;
 
@@ -150,18 +147,6 @@ export default class JupyterServersList extends Component {
             return false;
         }
         return servers.length >= this.maxServers;
-    }
-
-    @computed('defaultJupyterhub')
-    get canLogout(): boolean {
-        const jupyterhub = this.defaultJupyterhub;
-        if (!jupyterhub) {
-            return false;
-        }
-        if (!jupyterhub.logout_url) {
-            return false;
-        }
-        return true;
     }
 
     @computed('binderHubConfig', 'currentBinderHubURL')
@@ -401,10 +386,5 @@ export default class JupyterServersList extends Component {
             const servers = await this.loadServers(server.ownerUrl);
             this.set('allServers', servers !== null ? servers.entries : null);
         }, 0);
-    }
-
-    @action
-    performLogout(this: JupyterServersList) {
-        this.logout(this.defaultJupyterhubUrl);
     }
 }

@@ -48,14 +48,6 @@
                         <span data-test-jupyterhub-user>
                             {{this.defaultJupyterhubUser}}
                         </span>
-                        {{#if this.canLogout}}
-                            <OsfButton
-                                @type='link'
-                                @onClick={{action this.performLogout}}
-                            >
-                                {{t 'binderhub.servers.logout'}}
-                            </OsfButton>
-                        {{/if}}
                     </div>
                 {{/if}}
             </div>

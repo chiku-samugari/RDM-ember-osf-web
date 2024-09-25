@@ -204,11 +204,11 @@ export default class GuidNodeBinderHub extends Controller {
     }
 
     @action
-    logoutJupyterHub(this: GuidNodeBinderHub, jupyterhubUrl: string) {
+    logoutJupyterHub(this: GuidNodeBinderHub, jupyterhubUrl: URL) {
         if (!this.config) {
             throw new EmberError('Illegal config');
         }
-        const jupyterhub = this.config.findJupyterHubByURL(jupyterhubUrl);
+        const jupyterhub = this.config.findJupyterHubByURL(jupyterhubUrl.toString());
         if (!jupyterhub) {
             // Already logout
             return;
@@ -500,6 +500,41 @@ export default class GuidNodeBinderHub extends Controller {
                 throw new EmberError('Unknown Error [GuidNodeBinderHub.selectHostURL]');
             }
         }
+    }
+
+    // TODO: Eliminate double negation
+    @computed('currentJupyterHub.href')
+    get canLogout(): boolean {
+        const jupyterhub = this.currentJupyterHub;
+        if (!jupyterhub) {
+            return false;
+        }
+        if (!jupyterhub.logout_url) {
+            return false;
+        }
+        return true;
+    }
+
+    @computed('config', 'currentBinderHubURL')
+    get currentJupyterHubURL(): URL {
+        if (!isBinderHubConfigFulfilled(this.model)) {
+            throw new EmberError('BinderHubConfigModel is not ready. [GuidNodeBinderHub.currentJupyterHubURL]');
+        }
+        const binderhub = this.config.findBinderHubCandidateByBinderHubURL(
+            this.get('currentBinderHubURL').toString(),
+        );
+        if (!binderhub) {
+            throw new EmberError('Cannot find out current BinderHub. [GuidNodeBinderHub.currentJupyterHubURL]');
+        }
+        return new URL(binderhub.jupyterhub_url);
+    }
+
+    @computed('currentJupyterHubURL')
+    get currentJupyterHub() {
+        if (!isBinderHubConfigFulfilled(this.model)) {
+            return null;
+        }
+        return this.config.findJupyterHubByURL(this.currentJupyterHubURL.toString());
     }
 
     @action

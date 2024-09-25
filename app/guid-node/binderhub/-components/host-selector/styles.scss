@@ -1,14 +1,9 @@
-.jupyterhub-server-menu {
+.host_selector {
     display: flex;
-    margin: 20px 0 0;
 }
 
-.jupyterhub-selector {
-    padding: 20px 0 0;
-}
-
-.jupyterhub_servers_host_label {
-    padding: 5.5px 6px;
+.host_label {
+    align-content: center;
 }
 
 .dropdown_menu {

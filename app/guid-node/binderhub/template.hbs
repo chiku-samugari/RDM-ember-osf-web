@@ -5,22 +5,27 @@
         {{t 'binderhub.loading'}}
     {{else}}
         <div local-class='BinderHub__editor'>
-            <GuidNode::Binderhub::-Components::HostSelector
-                @selectedHostURL={{this.currentBinderHubURL}}
-                @selectableBinderhubs={{this.selectableBinderhubs}}
-                @onHostSelect={{this.selectHostURL}}
-            />
-            {{#if this.currentJupyterHubUser}}
-                <GuidNode::Binderhub::-Components::UserInfo
-                    @userInfo={{this.currentJupyterHubUser}}
+            <div local-class='host_information'>
+                <GuidNode::Binderhub::-Components::HostSelector
+                    local-class='host_selector'
+                    @selectedHostURL={{this.currentBinderHubURL}}
+                    @selectableBinderhubs={{this.selectableBinderhubs}}
+                    @onHostSelect={{this.selectHostURL}}
                 />
-            {{/if}}
-            {{#if this.canLogout}}
-                <GuidNode::Binderhub::-Components::LogoutButton
-                    @currentJupyterHubURL={{this.currentJupyterHubURL}}
-                    @logout={{action this.logoutJupyterHub}}
-                />
-            {{/if}}
+                <div local-class='host_user'>
+                    {{#if this.currentJupyterHubUser}}
+                        <GuidNode::Binderhub::-Components::UserInfo
+                            @userInfo={{this.currentJupyterHubUser}}
+                        />
+                    {{/if}}
+                    {{#if this.canLogout}}
+                        <GuidNode::Binderhub::-Components::LogoutButton
+                            @currentJupyterHubURL={{this.currentJupyterHubURL}}
+                            @logout={{action this.logoutJupyterHub}}
+                        />
+                    {{/if}}
+                </div>
+            </div>
             <h2 data-test-servers-header local-class='BinderHub__header'>
                 {{t 'binderhub.jupyter_servers_list.header'}}
             </h2>

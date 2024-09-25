@@ -1,9 +1,9 @@
-<div>
+<div ...attributes>
     {{#if this.loading}}
         {{t 'binderhub.loading'}}
     {{else}}
-        <div local-class='jupyterhub-server-menu'>
-            <span local-class='jupyterhub_servers_host_label'>
+        <div local-class='host_selector'>
+            <span local-class='host_label'>
                 {{t 'binderhub.servers.host'}}
             </span>
             <BsDropdown data-test-jupyterhub-selection as |dd|>

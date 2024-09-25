@@ -470,8 +470,8 @@ export default class GuidNodeBinderHub extends Controller {
 
     isAvailableBinderHubURLString(url: URL): boolean {
         return this.selectableBinderhubs.filter(
-            hub => urlEquals(hub.binderhub_url, urlString),
-        ).length < 0;
+            hub => urlEquals(hub.binderhub_url, url.toString()),
+        ).length > 0;
     }
 
     @computed('model.binderHubConfig', 'selectedHostURL')

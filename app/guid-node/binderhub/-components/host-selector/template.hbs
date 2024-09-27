@@ -14,7 +14,7 @@
                 <dd.menu
                     local-class='dropdown_menu'
                     as |menu|>
-                    {{#each @selectableBinderhubs as |item|}}
+                    {{#each @availableHosts as |item|}}
                         <menu.item data-test-jupyterhub-selection-option role='menuitem'>
                             <OsfButton
                                 @type='link'

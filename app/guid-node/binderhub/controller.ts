@@ -435,7 +435,7 @@ export default class GuidNodeBinderHub extends Controller {
     }
 
     @computed('config')
-    get selectableBinderhubs(): HostDescriptor[] {
+    get availableHosts(): HostDescriptor[] {
         if (!isBinderHubConfigFulfilled(this.model)) {
             return [];
         }
@@ -459,7 +459,7 @@ export default class GuidNodeBinderHub extends Controller {
     }
 
     isAvailableBinderHubURLString(url: URL): boolean {
-        return this.selectableBinderhubs.some(
+        return this.availableHosts.some(
             hub => hub.url.href === url.href,
         );
     }

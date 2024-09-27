@@ -41,7 +41,7 @@ export interface BuildMessage {
 
 export interface SelectableBinderhub {
     name: string;
-    binderhub_url: string;
+    url: URL;
 }
 /* eslint-enable camelcase */
 
@@ -101,18 +101,6 @@ export function getJupyterHubServerURL(
     }
     const sep = url.includes('?') ? '&' : '?';
     return `${url}${sep}token=${encodeURIComponent(token)}`;
-}
-
-function normalizeUrl(url: string): string {
-    const m = url.match(/^(.+)\/+$/);
-    if (!m) {
-        return url;
-    }
-    return m[1];
-}
-
-export function urlEquals(url1: string, url2: string): boolean {
-    return normalizeUrl(url1) === normalizeUrl(url2);
 }
 
 function getURLWithContext(url: string): string {
@@ -453,16 +441,18 @@ export default class GuidNodeBinderHub extends Controller {
         }
         const nodeBinderhubs = this.config.get('node_binderhubs');
         const userBinderhubs = this.config.get('user_binderhubs');
-        const nodeCands = (nodeBinderhubs || []).map(hub => ({
-            binderhub_url: hub.binderhub_url,
-            name: hub.binderhub_url,
-        }));
+        const nodeCands = (nodeBinderhubs || []).map(
+            hub => ({
+                url: new URL(hub.binderhub_url),
+                name: hub.binderhub_url,
+            }),
+        );
         const userCands = (userBinderhubs || []).filter(
             hub => nodeCands.every(
-                nodeHub => !urlEquals(hub.binderhub_url, nodeHub.binderhub_url),
+                nodeHub => (new URL(hub.binderhub_url)).href !== nodeHub.url.href,
             ),
         ).map(hub => ({
-            binderhub_url: hub.binderhub_url,
+            url: new URL(hub.binderhub_url),
             name: `${hub.binderhub_url} (User)`,
         }));
         return nodeCands.concat(userCands);
@@ -470,7 +460,7 @@ export default class GuidNodeBinderHub extends Controller {
 
     isAvailableBinderHubURLString(url: URL): boolean {
         return this.selectableBinderhubs.some(
-            hub => urlEquals(hub.binderhub_url, url.toString()),
+            hub => hub.url.href === url.href,
         );
     }
 

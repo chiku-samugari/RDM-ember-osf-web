@@ -143,7 +143,7 @@ export default class GuidNodeBinderHub extends Controller {
 
     buildPhase: string | null = null;
 
-    selectedHostURL?: URL;
+    selectedHost?: HostDescriptor;
 
     bh: string | null = null;
 
@@ -464,13 +464,13 @@ export default class GuidNodeBinderHub extends Controller {
         );
     }
 
-    @computed('model.binderHubConfig', 'selectedHostURL')
+    @computed('config', 'selectedHost')
     get currentBinderHubURL(): URL {
         if (!isBinderHubConfigFulfilled(this.model)) {
             throw new EmberError('Inappropriate BinderHub configuration. [GuidNodeBinderHub.currentBinderHubURL]');
         }
-        if (this.selectedHostURL && this.isAvailableHostURL(this.selectedHostURL)) {
-            return this.selectedHostURL;
+        if (this.selectedHost && this.isAvailableHostURL(this.selectedHost.url)) {
+            return this.selectedHost.url;
         }
         return new URL(this.config.get('defaultBinderhub').url);
     }
@@ -482,7 +482,7 @@ export default class GuidNodeBinderHub extends Controller {
             if (!this.isAvailableHostURL(hostURL)) {
                 throw new EmberError('Illegal Input. Input hostURL seems wired.');
             }
-            this.set('selectedHostURL', hostURL);
+            this.set('selectedHost', { url: hostURL, name: hostURL.toString() });
             updateContext('host', hostURL.toString());
         } catch (e) {
             if (e instanceof TypeError) {

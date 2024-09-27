@@ -472,7 +472,7 @@ export default class GuidNodeBinderHub extends Controller {
         if (this.selectedHostURL && this.isAvailableBinderHubURLString(this.selectedHostURL)) {
             return selectedHostURL;
         }
-        return new URL(this.model.binderHubConfig.get('defaultBinderhub'));
+        return new URL(this.config.get('defaultBinderhub').url);
     }
 
     @action

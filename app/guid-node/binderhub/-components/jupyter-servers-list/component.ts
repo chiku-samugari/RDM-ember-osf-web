@@ -310,10 +310,10 @@ export default class JupyterServersList extends Component {
         };
     }
 
-    isTarget(server: JupyterServer) {
+    isTarget(server: JupyterServer): boolean {
         if (this.node) {
             const m = server.name.match(/^(.+)-([a-z0-9]+)-(.+)$/);
-            return m && m[1] === this.node.id;
+            return m !== null && m[1] === this.node.id;
         }
         return false;
     }

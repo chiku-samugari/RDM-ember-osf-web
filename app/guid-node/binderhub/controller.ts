@@ -39,7 +39,7 @@ export interface BuildMessage {
     token?: string;
 }
 
-export interface SelectableBinderhub {
+export interface HostDescriptor {
     name: string;
     url: URL;
 }
@@ -435,7 +435,7 @@ export default class GuidNodeBinderHub extends Controller {
     }
 
     @computed('config')
-    get selectableBinderhubs(): SelectableBinderhub[] {
+    get selectableBinderhubs(): HostDescriptor[] {
         if (!isBinderHubConfigFulfilled(this.model)) {
             return [];
         }

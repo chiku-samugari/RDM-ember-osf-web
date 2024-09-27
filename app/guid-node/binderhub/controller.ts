@@ -439,22 +439,22 @@ export default class GuidNodeBinderHub extends Controller {
         if (!isBinderHubConfigFulfilled(this.model)) {
             return [];
         }
-        const nodeBinderhubs = this.config.get('node_binderhubs');
-        const userBinderhubs = this.config.get('user_binderhubs');
-        const nodeCands = (nodeBinderhubs || []).map(
+        const nodeCands = (this.config.get('node_binderhubs') || []).map(
             hub => ({
                 url: new URL(hub.binderhub_url),
                 name: hub.binderhub_url,
             }),
         );
-        const userCands = (userBinderhubs || []).filter(
-            hub => nodeCands.every(
-                nodeHub => (new URL(hub.binderhub_url)).href !== nodeHub.url.href,
-            ),
-        ).map(hub => ({
-            url: new URL(hub.binderhub_url),
-            name: `${hub.binderhub_url} (User)`,
-        }));
+        const userCands = (this.config.get('user_binderhubs') || []).reduce(
+            (acc: HostDescriptor[], item) => {
+                const url = new URL(item.binderhub_url);
+                if (nodeCands.every(nodeHub => url.href !== nodeHub.url.href)) {
+                    acc.push({ url, name: `${item.binderhub_url} (User)` });
+                }
+                return acc;
+            },
+            [],
+        );
         return nodeCands.concat(userCands);
     }
 

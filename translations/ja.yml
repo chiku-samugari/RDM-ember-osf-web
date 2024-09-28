@@ -1767,7 +1767,12 @@ iqbrims:
 binderhub:
     page_title: '{nodeTitle} BinderHub'
     host_info:
+        url: 'JupyterHub:'
         username: 'ユーザー:'
+        change_host: '変更'
+    host_selector:
+        dialogue_title: 'ホスト選択'
+        dialogue_explanation: '解析環境のホストを選択してください。'
     jupyter_servers_list:
         header: '私の解析環境'
         delete_confirm_dialog_title: '削除確認'
@@ -1776,7 +1781,6 @@ binderhub:
         header: '新しい解析環境'
     loading: 'BinderHub設定を読み込んでいます...'
     servers:
-        host: 'JupyterHub :'
         server_exists: 'このプロジェクトから作った解析環境が {servers} 個あります。'
         server_not_exists: 'このプロジェクトから作った解析環境はありません。'
         max_servers_exceeded: '解析環境の数が上限に達しています。'

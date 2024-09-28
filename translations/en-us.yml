@@ -1767,7 +1767,12 @@ iqbrims:
 binderhub:
     page_title: '{nodeTitle} BinderHub'
     host_info:
+        url: 'JupyterHub:'
         username: 'User:'
+        change_host: 'SELECT'
+    host_selector:
+        dialogue_title: 'Host Select'
+        dialogue_explanation: 'Please select the server host.'
     jupyter_servers_list:
         header: 'My environments'
         delete_confirm_dialog_title: 'Delete confirmation'
@@ -1776,7 +1781,6 @@ binderhub:
         header: 'New environment'
     loading: 'Loading BinderHub config...'
     servers:
-        host: 'JupyterHub :'
         server_exists: '{servers} environment(s) created from this project.'
         server_not_exists: 'No environments created from this project.'
         max_servers_exceeded: 'The maximum number of environments has been reached.'

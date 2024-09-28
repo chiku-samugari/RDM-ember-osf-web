@@ -1,41 +1,52 @@
 <div ...attributes>
-    {{#if this.loading}}
-        {{t 'binderhub.loading'}}
-    {{else}}
-        <div local-class='host_selector'>
-            <span local-class='host_label'>
-                {{t 'binderhub.servers.host'}}
-            </span>
-            <BsDropdown data-test-jupyterhub-selection as |dd|>
-                <dd.button>
-                    {{@selectedHostURL.href}}
-                    <span class='caret'></span>
-                </dd.button>
-                <dd.menu
-                    local-class='dropdown_menu'
-                    as |menu|>
-                    {{#each @availableHosts as |item|}}
-                        <menu.item data-test-jupyterhub-selection-option role='menuitem'>
-                            <OsfButton
-                                @type='link'
-                                @onClick={{action @onHostSelect item.url}}
-                            >
-                                {{#if (eq @selectedHostURL.href item.url)}}
-                                    {{#fa-stack as |s|}}
-                                        {{s.stack-1x 'fw'}}
-                                        {{s.stack-1x 'check'}}
-                                    {{/fa-stack}}
-                                {{else}}
-                                    {{#fa-stack as |s|}}
-                                        {{s.stack-1x 'fw'}}
-                                    {{/fa-stack}}
-                                {{/if}}
-                                <span>{{item.name}}</span>
-                            </OsfButton>
-                        </menu.item>
-                    {{/each}}
-                </dd.menu>
-            </BsDropdown>
-        </div>
-    {{/if}}
+    <div local-class='host_selector'>
+        <span local-class='host_label'>
+            {{t 'binderhub.host_info.url'}}
+        </span>
+        <strong local-class='host_url'>
+            {{@selectedHost.name}}
+        </strong>
+        <OsfButton @type='link' {{on 'click' (fn this.updateOpenBit true)}}>
+            {{t 'binderhub.host_info.change_host'}}
+        </OsfButton>
+    </div>
 </div>
+
+<BsModal @open={{this.selectDialogueOpenBit}} as |modal|>
+    <modal.header>
+        <h4>
+            {{t 'binderhub.host_selector.dialogue_title'}}
+        </h4>
+    </modal.header>
+    <modal.body>
+        {{t 'binderhub.host_selector.dialogue_explanation'}}
+        <form>
+            <fieldset>
+                {{#each @availableHosts as |item|}}
+                    <div>
+                        <label>
+                            <input type='radio' name='host' value={{item.url}}
+                                checked={{eq @selectedHost.url.href item.url.href}}
+                                {{on 'click' (fn this.pick item.url)}}
+                            >
+                            {{item.name}}
+                        </label>
+                    </div>
+                {{/each}}
+            </fieldset>
+        </form>
+    </modal.body>
+    <modal.footer>
+        <BsButton
+            {{on 'click' (fn this.updateOpenBit false)}}
+        >
+            {{t 'general.cancel'}}
+        </BsButton>
+        <BsButton
+            {{on 'click' this.applyPicked}}
+            @type='success'
+        >
+            {{t 'general.ok'}}
+        </BsButton>
+    </modal.footer>
+</BsModal>

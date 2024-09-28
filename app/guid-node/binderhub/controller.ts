@@ -570,6 +570,22 @@ export default class GuidNodeBinderHub extends Controller {
         const r = await this.currentUser.authenticatedAJAX(ajaxOptions);
         return r;
     }
+
+    /**
+     * Initialization in addition to Route.setupController. This method
+     * is assumed to be called in GuidNodeBinderHubRoute.setupController,
+     * after `super.setupController` is called and therefore, we can
+     * safely use `this.model`.
+     */
+    setup() {
+        const defaultBinderHubURL = new URL(this.config.get('defaultBinderhub').url);
+        this.set(
+            'selectedHost',
+            this.availableHosts.find(
+                host => host.url.href === defaultBinderHubURL.href,
+            ),
+        );
+    }
 }
 
 declare module '@ember/controller' {

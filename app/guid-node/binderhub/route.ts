@@ -4,6 +4,7 @@ import { inject as service } from '@ember/service';
 import ConfirmationMixin from 'ember-onbeforeunload/mixins/confirmation';
 
 import GuidNodeBinderHub from 'ember-osf-web/guid-node/binderhub/controller';
+import BinderHubConfigModel from 'ember-osf-web/models/binderhub-config';
 import Node from 'ember-osf-web/models/node';
 import { GuidRouteModel } from 'ember-osf-web/resolve-guid/guid-route';
 import Analytics from 'ember-osf-web/services/analytics';
@@ -39,5 +40,10 @@ export default class GuidNodeBinderHubRoute extends Route.extend(ConfirmationMix
     get isPageDirty() {
         const controller = this.controller as GuidNodeBinderHub;
         return () => controller.isPageDirty;
+    }
+
+    setupController(controller: GuidNodeBinderHub, model: {node: Node, config: BinderHubConfigModel}) {
+        super.setupController(controller, model);
+        controller.setup();
     }
 }

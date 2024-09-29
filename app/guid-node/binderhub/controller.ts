@@ -428,10 +428,10 @@ export default class GuidNodeBinderHub extends Controller {
     @computed('model.binderHubConfig')
     get config(): BinderHubConfigModel {
         if (this.configCache) {
-            return this.configCache;
+            return this.configCache.content!;
         }
         this.configCache = this.model.binderHubConfig;
-        return this.configCache!;
+        return this.model.binderHubConfig!;
     }
 
     @computed('config')

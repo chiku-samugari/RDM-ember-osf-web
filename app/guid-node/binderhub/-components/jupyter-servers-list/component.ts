@@ -168,17 +168,7 @@ export default class JupyterServersList extends Component {
         if (!isBinderHubConfigFulfilled(this)) {
             return null;
         }
-        const config = this.binderHubConfig;
-        if (!config.jupyterhubs) {
-            return null;
-        }
-        const jupyterhubUrl = this.defaultJupyterhubUrl;
-        const jupyterhubs = config.jupyterhubs
-            .filter(jupyterhub => urlEquals(jupyterhub.url, jupyterhubUrl));
-        if (jupyterhubs.length === 0) {
-            return null;
-        }
-        return jupyterhubs[0];
+        return this.binderHubConfig.findJupyterHubByURL(this.defaultJupyterhubUrl);
     }
 
     @computed('defaultJupyterhub')

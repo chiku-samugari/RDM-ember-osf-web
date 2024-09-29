@@ -1812,8 +1812,8 @@ binderhub:
             ...
         save_post_build: 'Save'
         mran_version_setting_error: 'The version number cannot be specified for CRAN.'
-        reset_dockerfile_confirm_dialog_title: 'Reset: '
-        reset_dockerfile_confirm_dialog_body: 'You cannot undo the files you have reset. Do you wish to continue?'
+        reset_configfile_confirm_dialog_title: 'Reset: '
+        reset_configfile_confirm_dialog_body: 'You cannot undo the files you have reset. Do you wish to continue?'
         release: 'Release'
         products: 'Add-ons'
         info_urls:

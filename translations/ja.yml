@@ -1812,8 +1812,8 @@ binderhub:
             ...
         save_post_build: '保存'
         mran_version_setting_error: 'CRANにバージョン番号を指定することはできません。'
-        reset_dockerfile_confirm_dialog_title: 'リセット: '
-        reset_dockerfile_confirm_dialog_body: 'リセットしたファイルは元に戻すことはできません。続行しますか？'
+        reset_configfile_confirm_dialog_title: 'リセット: '
+        reset_configfile_confirm_dialog_body: 'リセットしたファイルは元に戻すことはできません。続行しますか？'
         release: 'リリース'
         products: 'アドオン'
         info_urls:

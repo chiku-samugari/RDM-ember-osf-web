@@ -537,7 +537,8 @@ export default class ProjectEditor extends Component {
         const dockerfile = this.get('dockerfile');
         const environment = this.get('environment');
         if (dockerfile === undefined || environment === undefined) {
-            return null;
+            // TODO: This starts a redundant scan over the images.
+            return this.recommendedImage.url;
         }
         if (environment.length > 0) {
             return this.environmentImageURL;
@@ -591,6 +592,20 @@ export default class ProjectEditor extends Component {
         return images[0];
     }
 
+    @computed('deployment')
+    get recommendedImage(): Image {
+        const deployment = this.get('deployment');
+        if (!deployment || deployment.images.length === 0) {
+            throw new EmberError('Illegal config. No deployment images are offered.');
+        }
+        const recommendedImage = deployment.images.find(
+            ({ recommended }) => !!recommended,
+        );
+        if (!recommendedImage) {
+            throw new EmberError('Illegal config. No image is recommended.');
+        }
+        return recommendedImage;
+    }
     @computed('selectedImage')
     get condaSupported() {
         const image = this.get('selectedImage');

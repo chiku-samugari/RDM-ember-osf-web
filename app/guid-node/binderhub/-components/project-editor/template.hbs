@@ -1,4 +1,4 @@
-<div local-class='project_editor'>
+<div data-test-binderhub-project-editor local-class='project_editor'>
     {{#if this.loading}}
         {{t 'binderhub.loading'}}
     {{else}}
@@ -27,49 +27,63 @@
         {{else}}
             <h3>{{t 'binderhub.deployment.environment'}}</h3>
             {{#if (or this.node.userHasWritePermission this.selectedImageUrl)}}
-                {{#each this.selectableImages as |image|}}
-                    <div local-class='environment_candidate'>
-                        <div local-class='environment_info'>
-                            <div local-class='environment_name'>
-                                {{image.name}}
-                                {{#if (eq this.selectedImageUrl image.url)}}
-                                    <i
-                                        data-test-image-selected={{image.url}}
-                                        class='fa fa-check'
-                                    />
-                                {{/if}}
-                            </div>
-                            <div local-class='environment_description'>{{image.description}}</div>
-                        </div>
-                        <div local-class='environment_select'>
-                            {{#if this.node.userHasWritePermission}}
-                                {{#if (or (not this.selectedImageUrl) this.imageSelectable)}}
-                                    <button
-                                        data-test-image-selection={{image.url}}
-                                        type='button'
-                                        class='btn btn-default'
-                                        {{action this.selectImage image.url target=this}}
-                                    >
-                                        {{t 'binderhub.deployment.select_environment'}}
-                                    </button>
-                                {{else}}
-                                    <button
-                                        data-test-image-change={{image.url}}
-                                        type='button'
-                                        class='btn btn-default'
-                                        {{action (mut this.imageSelectable) true}}
-                                    >
-                                        {{t 'binderhub.deployment.change_environment'}}
-                                    </button>
-                                {{/if}}
-                            {{/if}}
-                        </div>
-                    </div>
-                {{/each}}
+                {{#if this.imageSelecting}}
+                    {{#each this.selectableImages.preferred as |image|}}
+                        <GuidNode::Binderhub::-Components::ProjectEditor::BasicImageEntry
+                            local-class='basic_image_entry'
+                            @image={{image}}
+                            @checked={{eq this.selectedImageUrl image.url}}
+                            @isSelectionAllowed={{this.node.userHasWritePermission}}
+                            @isSelecting={{true}}
+                            @onButtonClick={{fn this.selectImage image.url}}
+                        />
+                    {{/each}}
+                    <GuidNode::Binderhub::-Components::ProjectEditor::BasicImageEntry
+                        local-class='basic_image_entry'
+                        @image={{this.customImage}}
+                        @checked={{eq this.selectedImageUrl this.customImage.url}}
+                        @isSelectionAllowed={{this.node.userHasWritePermission}}
+                        @isSelecting={{true}}
+                        @onButtonClick={{fn this.selectCustomImage}}
+                    />
+                    <BsButton
+                        data-test-deprecated-image-separator
+                        local-class='deprecated_image_separator'
+                        onClick={{action this.flipDeprecatedImages}}
+                    >
+                        {{#if this.showDeprecated}}
+                            {{fa-icon 'chevron-down' local-class='deprecated_image_switch_icon'}}
+                        {{else}}
+                            {{fa-icon 'chevron-right' local-class='deprecated_image_switch_icon'}}
+                        {{/if}}
+                        {{t 'binderhub.deployment.deprecated_images_header'}}
+                    </BsButton>
+                    {{#if this.showDeprecated}}
+                        {{#each this.selectableImages.deprecated as |image|}}
+                            <GuidNode::Binderhub::-Components::ProjectEditor::BasicImageEntry
+                                local-class='basic_image_entry'
+                                @image={{image}}
+                                @checked={{eq this.selectedImageUrl image.url}}
+                                @isSelectionAllowed={{this.node.userHasWritePermission}}
+                                @isSelecting={{true}}
+                                @onButtonClick={{fn this.selectImage image.url}}
+                            />
+                        {{/each}}
+                    {{/if}}
+                {{else}}
+                    <GuidNode::Binderhub::-Components::ProjectEditor::BasicImageEntry
+                        local-class='basic_image_entry'
+                        @image={{this.modifiedSelectedImage}}
+                        @checked={{true}}
+                        @isSelectionAllowed={{this.node.userHasWritePermission}}
+                        @isSelecting={{false}}
+                        @onButtonClick={{this.startBaseImageSelection}}
+                    />
+                {{/if}}
             {{else}}
                 {{t 'binderhub.deployment.no_environment'}}
             {{/if}}
-            {{#if this.selectedImageUrl}}
+            {{#if this.isPackageEditorVisible}}
                 <h3>{{t 'binderhub.deployment.additionalpackages'}}</h3>
                 <div local-class='packages'>
                     <GuidNode::Binderhub::-Components::PackageEditor

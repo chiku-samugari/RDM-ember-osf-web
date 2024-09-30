@@ -1,0 +1,36 @@
+<div local-class='entry' ...attributes>
+    <div>
+        <div local-class='name'>
+            {{@image.name}}
+            {{#if @checked}}
+                <i class='fa fa-check'
+                   data-test-image-selected={{@image.url}}
+                />
+            {{/if}}
+        </div>
+        <div local-class='description'>{{@image.description}}</div>
+    </div>
+    <div local-class='select_button'>
+        {{#if @isSelectionAllowed}}
+            {{#if @isSelecting}}
+                <button
+                    data-test-image-selection={{@image.url}}
+                    type='button'
+                    class='btn btn-default'
+                    {{on 'click' @onButtonClick}}
+                    >
+                    {{t 'binderhub.deployment.select_environment'}}
+                </button>
+            {{else}}
+                <button
+                    data-test-image-change={{@image.url}}
+                    type='button'
+                    class='btn btn-default'
+                    {{on 'click' @onButtonClick}}
+                    >
+                    {{t 'binderhub.deployment.change_environment'}}
+                </button>
+            {{/if}}
+        {{/if}}
+    </div>
+</div>

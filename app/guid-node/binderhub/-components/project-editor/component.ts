@@ -555,20 +555,29 @@ export default class ProjectEditor extends Component {
         return fromStatement[1];
     }
 
-    @computed('selectedImage', 'deployment', 'imageSelecting')
-    get selectableImages() {
+    @computed('deployment')
+    get selectableImages(): { preferred: Image[], deprecated: Image[] } {
         const deployment = this.get('deployment');
         if (!deployment) {
-            return [];
+            throw new EmberError('Illegal config. No deployment images are offered.');
         }
-        const image: Image | null = this.get('selectedImage');
-        if (image === null) {
-            return this.modifyImagesForLocale(deployment.images);
-        }
-        if (this.get('imageSelecting')) {
-            return this.modifyImagesForLocale(deployment.images);
-        }
-        return [this.modifyImageForLocale(image)];
+        return deployment.images.reduce(({ preferred, deprecated }, image) => {
+            if (image.deprecated) {
+                return {
+                    preferred,
+                    deprecated: [...deprecated, this.modifyImageForLocale(image)],
+                };
+            }
+            return {
+                preferred: [...preferred, this.modifyImageForLocale(image)],
+                deprecated,
+            };
+        }, { preferred: [], deprecated: [] });
+    }
+
+    @computed('selectedImage')
+    get modifiedSelectedImage(): Image {
+        return this.modifyImageForLocale(this.get('selectedImage'));
     }
 
     @computed('selectedImageUrl', 'deployment')
@@ -583,7 +592,7 @@ export default class ProjectEditor extends Component {
     findImageByUrl(url: string | null): Image {
         const deployment = this.get('deployment');
         if (!deployment) {
-            throw new EmberError('Illegal config');
+            throw new EmberError('Illegal config. No deployment images are offered.');
         }
         const images = deployment.images.filter(image => image.url === url);
         if (images.length === 0) {
@@ -1351,10 +1360,6 @@ export default class ProjectEditor extends Component {
                 this.onError(exception, this.intl.t('binderhub.error.modify_files_error'));
             }
         }, 0);
-    }
-
-    modifyImagesForLocale(images: Image[]) {
-        return images.map(image => this.modifyImageForLocale(image));
     }
 
     modifyImageForLocale(baseImage: Image) {

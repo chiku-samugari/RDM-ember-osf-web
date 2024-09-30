@@ -1801,6 +1801,7 @@ binderhub:
         postinstallscript: '自動実行スクリプト'
         select_environment: '選択'
         change_environment: '変更'
+        deprecated_images_header: '過去のイメージ'
         add_package: '追加'
         view_dockerfile: '参照: '
         reset_dockerfile: 'リセット: '

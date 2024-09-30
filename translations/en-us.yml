@@ -1801,6 +1801,7 @@ binderhub:
         postinstallscript: 'Auto-Execution Script'
         select_environment: 'Select'
         change_environment: 'Change'
+        deprecated_images_header: 'Deprecated images'
         add_package: 'Add'
         view_dockerfile: 'View: '
         reset_dockerfile: 'Reset: '

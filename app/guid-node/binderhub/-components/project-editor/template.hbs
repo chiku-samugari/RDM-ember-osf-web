@@ -27,16 +27,45 @@
         {{else}}
             <h3>{{t 'binderhub.deployment.environment'}}<//h3>
             {{#if (or this.node.userHasWritePermission this.selectedImageUrl)}}
-                {{#each this.selectableImages as |image|}}
+                {{#if this.imageSelecting}}
+                    {{#each this.selectableImages.preferred as |image|}}
+                        <GuidNode::Binderhub::-Components::ProjectEditor::BasicImageEntry
+                            local-class='basic_image_entry'
+                            @image={{image}}
+                            @checked={{eq this.selectedImageUrl image.url}}
+                            @isSelectionAllowed={{this.node.userHasWritePermission}}
+                            @isSelecting={{true}}
+                            @onButtonClick={{fn this.selectImage image.url}}
+                        />
+                    {{/each}}
+                    <div local-class='deprecated_image_separator'>
+                        {{#if this.isDeprecatedImagesVisible}}
+                            {{fa-icon 'chevron-down'}}
+                        {{else}}
+                            {{fa-icon 'chevron-right'}}
+                        {{/if}}
+                        {{t 'binderhub.deployment.deprecated_images_header'}}
+                    </div>
+                    {{#each this.selectableImages.deprecated as |image|}}
+                        <GuidNode::Binderhub::-Components::ProjectEditor::BasicImageEntry
+                            local-class='basic_image_entry'
+                            @image={{image}}
+                            @checked={{eq this.selectedImageUrl image.url}}
+                            @isSelectionAllowed={{this.node.userHasWritePermission}}
+                            @isSelecting={{true}}
+                            @onButtonClick={{fn this.selectImage image.url}}
+                        />
+                    {{/each}}
+                {{else}}
                     <GuidNode::Binderhub::-Components::ProjectEditor::BasicImageEntry
                         local-class='basic_image_entry'
-                        @image={{image}}
-                        @checked={{eq this.selectedImageUrl image.url}}
+                        @image={{this.modifiedSelectedImage}}
+                        @checked={{true}}
                         @isSelectionAllowed={{this.node.userHasWritePermission}}
-                        @isSelecting={{or (not this.selectedImageUrl) this.imageSelecting}}
+                        @isSelecting={{false}}
                         @onButtonClick={{this.startBaseImageSelection}}
                     />
-                {{/each}}
+                {{/if}}
             {{else}}
                 {{t 'binderhub.deployment.no_environment'}}
             {{/if}}

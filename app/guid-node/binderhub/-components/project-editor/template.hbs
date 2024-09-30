@@ -43,7 +43,7 @@
                         </div>
                         <div local-class='environment_select'>
                             {{#if this.node.userHasWritePermission}}
-                                {{#if (or (not this.selectedImageUrl) this.imageSelectable)}}
+                                {{#if (or (not this.selectedImageUrl) this.imageSelecting)}}
                                     <button
                                         data-test-image-selection={{image.url}}
                                         type='button'
@@ -57,7 +57,7 @@
                                         data-test-image-change={{image.url}}
                                         type='button'
                                         class='btn btn-default'
-                                        {{action (mut this.imageSelectable) true}}
+                                        {{action (mut this.imageSelecting) true}}
                                     >
                                         {{t 'binderhub.deployment.change_environment'}}
                                     </button>

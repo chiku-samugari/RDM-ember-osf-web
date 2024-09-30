@@ -178,7 +178,7 @@ export default class ProjectEditor extends Component {
 
     showResetDockerfileConfirmDialog = false;
 
-    imageSelectable = false;
+    imageSelecting = false;
 
     postBuildOpen = false;
 
@@ -554,7 +554,7 @@ export default class ProjectEditor extends Component {
         return fromStatement[1];
     }
 
-    @computed('selectedImage', 'deployment', 'imageSelectable')
+    @computed('selectedImage', 'deployment', 'imageSelecting')
     get selectableImages() {
         const deployment = this.get('deployment');
         if (!deployment) {
@@ -564,7 +564,7 @@ export default class ProjectEditor extends Component {
         if (image === null) {
             return this.modifyImagesForLocale(deployment.images);
         }
-        if (this.get('imageSelectable')) {
+        if (this.get('imageSelecting')) {
             return this.modifyImagesForLocale(deployment.images);
         }
         return [this.modifyImageForLocale(image)];
@@ -1213,7 +1213,7 @@ export default class ProjectEditor extends Component {
 
     @action
     selectImage(this: ProjectEditor, url: string) {
-        this.set('imageSelectable', false);
+        this.set('imageSelecting', false);
         this.updateFiles(DockerfileProperty.From, url);
     }
 

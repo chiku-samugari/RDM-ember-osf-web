@@ -572,10 +572,10 @@ export default class ProjectEditor extends Component {
     }
 
     @computed('selectedImageUrl', 'deployment')
-    get selectedImage() {
+    get selectedImage(): Image {
         const url = this.get('selectedImageUrl');
         if (url === null) {
-            return null;
+            return this.recommendedImage;
         }
         return this.findImageByUrl(url);
     }

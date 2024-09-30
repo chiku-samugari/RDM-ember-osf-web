@@ -1212,6 +1212,11 @@ export default class ProjectEditor extends Component {
     }
 
     @action
+    startBaseImageSelection(this: ProjectEditor) {
+        this.set('imageSelecting', true);
+    }
+
+    @action
     selectImage(this: ProjectEditor, url: string) {
         this.set('imageSelecting', false);
         this.updateFiles(DockerfileProperty.From, url);

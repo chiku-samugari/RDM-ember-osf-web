@@ -28,43 +28,14 @@
             <h3>{{t 'binderhub.deployment.environment'}}<//h3>
             {{#if (or this.node.userHasWritePermission this.selectedImageUrl)}}
                 {{#each this.selectableImages as |image|}}
-                    <div local-class='environment_candidate'>
-                        <div local-class='environment_info'>
-                            <div local-class='environment_name'>
-                                {{image.name}}
-                                {{#if (eq this.selectedImageUrl image.url)}}
-                                    <i
-                                        data-test-image-selected={{image.url}}
-                                        class='fa fa-check'
-                                    />
-                                {{/if}}
-                            </div>
-                            <div local-class='environment_description'>{{image.description}}</div>
-                        </div>
-                        <div local-class='environment_select'>
-                            {{#if this.node.userHasWritePermission}}
-                                {{#if (or (not this.selectedImageUrl) this.imageSelecting)}}
-                                    <button
-                                        data-test-image-selection={{image.url}}
-                                        type='button'
-                                        class='btn btn-default'
-                                        {{action this.selectImage image.url target=this}}
-                                    >
-                                        {{t 'binderhub.deployment.select_environment'}}
-                                    </button>
-                                {{else}}
-                                    <button
-                                        data-test-image-change={{image.url}}
-                                        type='button'
-                                        class='btn btn-default'
-                                        {{action (mut this.imageSelecting) true}}
-                                    >
-                                        {{t 'binderhub.deployment.change_environment'}}
-                                    </button>
-                                {{/if}}
-                            {{/if}}
-                        </div>
-                    </div>
+                    <GuidNode::Binderhub::-Components::ProjectEditor::BasicImageEntry
+                        local-class='basic_image_entry'
+                        @image={{image}}
+                        @checked={{eq this.selectedImageUrl image.url}}
+                        @isSelectionAllowed={{this.node.userHasWritePermission}}
+                        @isSelecting={{or (not this.selectedImageUrl) this.imageSelecting}}
+                        @onButtonClick={{this.startBaseImageSelection}}
+                    />
                 {{/each}}
             {{else}}
                 {{t 'binderhub.deployment.no_environment'}}

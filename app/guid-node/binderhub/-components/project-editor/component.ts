@@ -580,7 +580,7 @@ export default class ProjectEditor extends Component {
         return this.findImageByUrl(url);
     }
 
-    findImageByUrl(url: string | null) {
+    findImageByUrl(url: string | null): Image {
         const deployment = this.get('deployment');
         if (!deployment) {
             throw new EmberError('Illegal config');

@@ -151,6 +151,12 @@ interface EnvironmentDependencies {
     pipPackages: string[];
 }
 
+enum ImageCategory {
+    CUSTOM = 'CUSTOM',
+    PREFERRED = 'PREFERRED',
+    DEPRECATED = 'DEPRECATED',
+}
+
 export default class ProjectEditor extends Component {
     @service currentUser!: CurrentUser;
 
@@ -178,7 +184,7 @@ export default class ProjectEditor extends Component {
 
     showResetDockerfileConfirmDialog = false;
 
-    imageSelectable = false;
+    imageSelecting = false;
 
     postBuildOpen = false;
 
@@ -204,6 +210,12 @@ export default class ProjectEditor extends Component {
 
     mranVersionSettingError = false;
 
+    customImage!: Image;
+
+    isInitialized: boolean = false;
+
+    showDeprecated: boolean = false;
+
     @requiredAction onError!: (exception: any, message: string) => void;
 
     didReceiveAttrs() {
@@ -211,17 +223,28 @@ export default class ProjectEditor extends Component {
             return;
         }
         this.loadingPath = this.configFolder.path;
+
+        this.set('customImage', {
+            url: 'custom',
+            name: this.intl.t('binderhub.deployment.custom_image_name'),
+            description: this.intl.t('binderhub.deployment.custom_image_description'),
+            packages: [],
+            deprecated: false,
+            recommended: false,
+        });
+
         later(async () => {
             try {
                 await this.loadCurrentConfig();
                 await this.mergeConfigurations();
+                this.set('isInitialized', true);
             } catch (exception) {
                 this.onError(exception, this.intl.t('binderhub.error.load_files_error'));
             }
         }, 0);
     }
 
-    @computed('configFolder', 'dockerfile')
+    @computed('configFolder', 'dockerfile', 'isInitialized')
     get loading(): boolean {
         if (!this.configFolder) {
             return true;
@@ -229,7 +252,7 @@ export default class ProjectEditor extends Component {
         if (this.dockerfile === undefined) {
             return true;
         }
-        return false;
+        return !this.isInitialized;
     }
 
     @computed('binderHubConfig.deployment')
@@ -323,6 +346,16 @@ export default class ProjectEditor extends Component {
             return true;
         }
         return script.trim().length === 0;
+    }
+
+    decideImageCategory(image: Image): ImageCategory {
+        if (image.url === this.customImage.url) {
+            return ImageCategory.CUSTOM;
+        }
+        if (image.deprecated) {
+            return ImageCategory.DEPRECATED;
+        }
+        return ImageCategory.PREFERRED;
     }
 
     getUpdatedDockerfile(key: DockerfileProperty, value: string) {
@@ -529,15 +562,23 @@ export default class ProjectEditor extends Component {
         }, 0);
     }
 
-    @computed('dockerfile', 'environment')
+    @computed(
+        'dockerfile', 'dockerfileModel', 'dockerfileManuallyChanged',
+        'environment', 'environmentModel',
+    )
     get selectedImageUrl() {
         if (this.manuallyChanged) {
             return null;
         }
+        if (this.get('dockerfileModel') == null && this.get('environmentModel') === null) {
+            // TODO: This starts a redundant scan over the images.
+            return this.recommendedImage.url;
+        }
         const dockerfile = this.get('dockerfile');
         const environment = this.get('environment');
         if (dockerfile === undefined || environment === undefined) {
-            return null;
+            // TODO: This starts a redundant scan over the images.
+            return this.recommendedImage.url;
         }
         if (environment.length > 0) {
             return this.environmentImageURL;
@@ -545,36 +586,45 @@ export default class ProjectEditor extends Component {
         const fromStatements = dockerfile.split('\n')
             .filter(line => line.match(/^FROM\s+\S+\s*/));
         if (fromStatements.length === 0) {
-            return null;
+            return this.get('customImage').url;
         }
         const fromStatement = fromStatements[0].match(/^FROM\s+(\S+)\s*/);
         if (!fromStatement) {
-            return null;
+            return this.get('customImage').url;
         }
         return fromStatement[1];
     }
 
-    @computed('selectedImage', 'deployment', 'imageSelectable')
-    get selectableImages() {
+    @computed('deployment')
+    get selectableImages(): { preferred: Image[], deprecated: Image[] } {
         const deployment = this.get('deployment');
         if (!deployment) {
-            return [];
+            throw new EmberError('Illegal config. No deployment images are offered.');
         }
-        const image: Image | null = this.get('selectedImage');
-        if (image === null) {
-            return this.modifyImagesForLocale(deployment.images);
-        }
-        if (this.get('imageSelectable')) {
-            return this.modifyImagesForLocale(deployment.images);
-        }
-        return [this.modifyImageForLocale(image)];
+        return deployment.images.reduce(({ preferred, deprecated }, image) => {
+            if (image.deprecated) {
+                return {
+                    preferred,
+                    deprecated: [...deprecated, this.modifyImageForLocale(image)],
+                };
+            }
+            return {
+                preferred: [...preferred, this.modifyImageForLocale(image)],
+                deprecated,
+            };
+        }, { preferred: [], deprecated: [] });
     }
 
-    @computed('selectedImageUrl', 'deployment')
-    get selectedImage() {
+    @computed('selectedImage')
+    get modifiedSelectedImage(): Image {
+        return this.modifyImageForLocale(this.get('selectedImage'));
+    }
+
+    @computed('selectedImageUrl', 'deployment', 'customImage')
+    get selectedImage(): Image {
         const url = this.get('selectedImageUrl');
         if (url === null) {
-            return null;
+            return this.recommendedImage;
         }
         return this.findImageByUrl(url);
     }
@@ -582,13 +632,34 @@ export default class ProjectEditor extends Component {
     findImageByUrl(url: string | null): Image {
         const deployment = this.get('deployment');
         if (!deployment) {
-            throw new EmberError('Illegal config');
+            throw new EmberError('Illegal config. No deployment images are offered.');
         }
-        const images = deployment.images.filter(image => image.url === url);
-        if (images.length === 0) {
+        const image = [...deployment.images, this.customImage].find(img => img.url === url);
+        if (!image) {
             throw new EmberError(`Undefined image: ${url}`);
         }
-        return images[0];
+        return image;
+    }
+
+    @computed('deployment')
+    get recommendedImage(): Image {
+        const deployment = this.get('deployment');
+        if (!deployment || deployment.images.length === 0) {
+            throw new EmberError('Illegal config. No deployment images are offered.');
+        }
+        const recommendedImage = deployment.images.find(
+            ({ recommended }) => !!recommended,
+        );
+        if (!recommendedImage) {
+            throw new EmberError('Illegal config. No image is recommended.');
+        }
+        return recommendedImage;
+    }
+
+    @computed('selectedImage')
+    get isPackageEditorVisible(): boolean {
+        const image = this.get('selectedImage');
+        return image && this.decideImageCategory(image) !== ImageCategory.CUSTOM;
     }
 
     @computed('selectedImage')
@@ -1212,9 +1283,33 @@ export default class ProjectEditor extends Component {
     }
 
     @action
+    flipDeprecatedImages(this: ProjectEditor) {
+        this.set('showDeprecated', !this.get('showDeprecated'));
+    }
+
+    @action
+    startBaseImageSelection(this: ProjectEditor) {
+        this.set('imageSelecting', true);
+        const image = this.get('selectedImage');
+        if (this.decideImageCategory(image) === ImageCategory.DEPRECATED) {
+            this.set('showDeprecated', true);
+        } else {
+            this.set('showDeprecated', false);
+        }
+    }
+
+    @action
     selectImage(this: ProjectEditor, url: string) {
-        this.set('imageSelectable', false);
+        this.set('imageSelecting', false);
+        this.set('showDeprecated', false);
         this.updateFiles(DockerfileProperty.From, url);
+    }
+
+    @action
+    selectCustomImage(this: ProjectEditor) {
+        this.set('imageSelecting', false);
+        this.set('showDeprecated', false);
+        this.updateFiles(DockerfileProperty.From, this.customImage.url);
     }
 
     @action
@@ -1331,10 +1426,6 @@ export default class ProjectEditor extends Component {
                 this.onError(exception, this.intl.t('binderhub.error.modify_files_error'));
             }
         }, 0);
-    }
-
-    modifyImagesForLocale(images: Image[]) {
-        return images.map(image => this.modifyImageForLocale(image));
     }
 
     modifyImageForLocale(baseImage: Image) {

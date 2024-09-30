@@ -40,6 +40,8 @@ export interface Image {
     description_en?: string;
     description_ja?: string;
     packages?: string[];
+    recommended?: boolean;
+    deprecated?: boolean;
 }
 
 export interface Deployment {

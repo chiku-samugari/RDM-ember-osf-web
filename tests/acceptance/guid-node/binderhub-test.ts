@@ -33,6 +33,10 @@ function createFolderResponse(attrs: Metadata) {
     };
 }
 
+function propertyWithValue(propertyName: string) {
+    return (url: string | null = null) => `[${propertyName}${url ? `="${url}"` : ''}]`;
+}
+
 module('Acceptance | guid-node/binderhub', hooks => {
     const guid = 'i9bri';
     // HS stands for HostSelector.
@@ -55,6 +59,20 @@ module('Acceptance | guid-node/binderhub', hooks => {
         delete: '[data-test-delete-icon]',
         ready: '.fa-play-circle',
         building: '.fa-spinner',
+    };
+
+    // PE stands for ProjectEditor
+    const PE = {
+        top: '[data-test-binderhub-project-editor]',
+        // Be aware that this `url` is not an actual URL. It is called
+        // URL in the project, anyway.
+        selection: propertyWithValue('data-test-image-selection'),
+        change: propertyWithValue('data-test-image-change'),
+        selected: propertyWithValue('data-test-image-selected'),
+        separator: '[data-test-deprecated-image-separator]',
+        closed: '.fa-chevron-right',
+        open: '.fa-chevron-down',
+        pkgEditor: propertyWithValue('data-test-package-editor'),
     };
 
     setupOSFApplicationTest(hooks);
@@ -103,6 +121,8 @@ module('Acceptance | guid-node/binderhub', hooks => {
                         name: 'Test Image',
                         description: 'dummy description',
                         packages: ['conda'],
+                        recommended: true,
+                        deprecated: false,
                     },
                 ],
             },
@@ -168,15 +188,20 @@ module('Acceptance | guid-node/binderhub', hooks => {
         assert.dom(`${JSL.top} ${JSL.delete}`).doesNotExist();
         assert.dom('[data-test-jupyterhub-user]').hasText('testuser');
         assert.dom('[data-test-binderhub-launch]').exists();
-        assert.dom('[data-test-image-selection="jupyter/test-image"]').exists();
-        assert.dom('[data-test-image-selected]').doesNotExist();
-        assert.dom('[data-test-package-editor="apt"]').doesNotExist();
-        assert.dom('[data-test-package-editor="conda"]').doesNotExist();
-        assert.dom('[data-test-package-editor="pip"]').doesNotExist();
+        assert.dom(`${PE.top} ${PE.selection()}`).doesNotExist();
+        assert.dom(`${PE.top} ${PE.change('jupyter/test-image')}`).exists();
+        assert.dom(`${PE.top} ${PE.selected('jupyter/test-image')}`).exists();
+        assert.dom(`${PE.top} ${PE.pkgEditor('apt')}`).exists();
+        assert.dom(`${PE.top} ${PE.pkgEditor('conda')}`).exists();
+        assert.dom(`${PE.top} ${PE.pkgEditor('pip')}`).doesNotExist();
+        assert.dom(`${PE.top} ${PE.pkgEditor('rcran')}`).doesNotExist();
+        assert.dom(`${PE.top} ${PE.pkgEditor('rgithub')}`).doesNotExist();
+        assert.dom(`${PE.top} ${PE.pkgEditor('rmran')}`).doesNotExist();
+        assert.dom(`${PE.top} ${PE.pkgEditor('mpm')}`).doesNotExist();
 
         assert.equal(
             wbFileAjaxStub.callCount,
-            2,
+            5,
             'WaterButler API has been called a specified number of times',
         );
         assert.equal(
@@ -195,7 +220,7 @@ module('Acceptance | guid-node/binderhub', hooks => {
         sandbox.restore();
     });
 
-    test('We can chenge the host.', async function(assert) {
+    test('We can change the host.', async function(assert) {
         const node = server.create('node', {
             id: guid,
             currentUserPermissions: [Permission.Write],
@@ -265,6 +290,8 @@ module('Acceptance | guid-node/binderhub', hooks => {
                         name: 'Test Image',
                         description: 'dummy description',
                         packages: ['conda'],
+                        recommended: true,
+                        deprecated: false,
                     },
                 ],
             },
@@ -347,15 +374,20 @@ module('Acceptance | guid-node/binderhub', hooks => {
         assert.dom(`${JSL.top} ${JSL.delete}`).exists({ count: 2 });
         assert.dom('[data-test-jupyterhub-user]').hasText('testuser');
         assert.dom('[data-test-binderhub-launch]').exists();
-        assert.dom('[data-test-image-selection="jupyter/test-image"]').exists();
-        assert.dom('[data-test-image-selected]').doesNotExist();
-        assert.dom('[data-test-package-editor="apt"]').doesNotExist();
-        assert.dom('[data-test-package-editor="conda"]').doesNotExist();
-        assert.dom('[data-test-package-editor="pip"]').doesNotExist();
+        assert.dom(`${PE.top} ${PE.selection()}`).doesNotExist();
+        assert.dom(`${PE.top} ${PE.change('jupyter/test-image')}`).exists();
+        assert.dom(`${PE.top} ${PE.selected('jupyter/test-image')}`).exists();
+        assert.dom(`${PE.top} ${PE.pkgEditor('apt')}`).exists();
+        assert.dom(`${PE.top} ${PE.pkgEditor('conda')}`).exists();
+        assert.dom(`${PE.top} ${PE.pkgEditor('pip')}`).doesNotExist();
+        assert.dom(`${PE.top} ${PE.pkgEditor('rcran')}`).doesNotExist();
+        assert.dom(`${PE.top} ${PE.pkgEditor('rgithub')}`).doesNotExist();
+        assert.dom(`${PE.top} ${PE.pkgEditor('rmran')}`).doesNotExist();
+        assert.dom(`${PE.top} ${PE.pkgEditor('mpm')}`).doesNotExist();
 
         assert.equal(
             wbFileAjaxStub.callCount,
-            2,
+            5,
             'WaterButler API has been called a specified number of times',
         );
         assert.equal(
@@ -493,6 +525,8 @@ module('Acceptance | guid-node/binderhub', hooks => {
                         name: 'Test Image',
                         description: 'dummy description',
                         packages: ['conda'],
+                        recommended: true,
+                        deprecated: false,
                     },
                 ],
             },
@@ -565,14 +599,16 @@ module('Acceptance | guid-node/binderhub', hooks => {
         assert.dom(`${JSL.top} ${JSL.launch}`).doesNotExist();
         assert.dom(`${JSL.top} ${JSL.delete}`).doesNotExist();
         assert.dom('[data-test-binderhub-launch]').exists();
-        assert.dom('[data-test-image-change="jupyter/scipy-notebook"]').exists();
-        assert.dom('[data-test-image-selected="jupyter/scipy-notebook"]').exists();
-        assert.dom('[data-test-image-selection]').doesNotExist();
-        assert.dom('[data-test-package-editor="apt"]').exists();
-        assert.dom('[data-test-package-editor="conda"]').exists();
-        assert.dom('[data-test-package-editor="pip"]').doesNotExist();
-        assert.dom('[data-test-package-editor="rmran"]').doesNotExist();
-        assert.dom('[data-test-package-editor="mpm"]').doesNotExist();
+        assert.dom(`${PE.top} ${PE.selection()}`).doesNotExist();
+        assert.dom(`${PE.top} ${PE.change('jupyter/scipy-notebook')}`).exists();
+        assert.dom(`${PE.top} ${PE.selected('jupyter/scipy-notebook')}`).exists();
+        assert.dom(`${PE.top} ${PE.pkgEditor('apt')}`).exists();
+        assert.dom(`${PE.top} ${PE.pkgEditor('conda')}`).exists();
+        assert.dom(`${PE.top} ${PE.pkgEditor('pip')}`).doesNotExist();
+        assert.dom(`${PE.top} ${PE.pkgEditor('rcran')}`).doesNotExist();
+        assert.dom(`${PE.top} ${PE.pkgEditor('rgithub')}`).doesNotExist();
+        assert.dom(`${PE.top} ${PE.pkgEditor('rmran')}`).doesNotExist();
+        assert.dom(`${PE.top} ${PE.pkgEditor('mpm')}`).doesNotExist();
 
         assert.equal(
             wbFileAjaxStub.callCount,
@@ -642,6 +678,8 @@ module('Acceptance | guid-node/binderhub', hooks => {
                         name: 'Test Repo2Docker',
                         description: 'dummy description',
                         packages: ['conda', 'rmran', 'mpm'],
+                        recommended: true,
+                        deprecated: false,
                     },
                 ],
             },
@@ -719,14 +757,16 @@ module('Acceptance | guid-node/binderhub', hooks => {
         assert.dom(`${JSL.top} ${JSL.launch}`).doesNotExist();
         assert.dom(`${JSL.top} ${JSL.delete}`).doesNotExist();
         assert.dom('[data-test-binderhub-launch]').exists();
-        assert.dom('[data-test-image-change="#repo2docker#r-base"]').exists();
-        assert.dom('[data-test-image-selected="#repo2docker#r-base"]').exists();
-        assert.dom('[data-test-image-selection]').doesNotExist();
-        assert.dom('[data-test-package-editor="apt"]').exists();
-        assert.dom('[data-test-package-editor="conda"]').exists();
-        assert.dom('[data-test-package-editor="pip"]').doesNotExist();
-        assert.dom('[data-test-package-editor="rmran"]').exists();
-        assert.dom('[data-test-package-editor="mpm"]').exists();
+        assert.dom(`${PE.top} ${PE.selection()}`).doesNotExist();
+        assert.dom(`${PE.top} ${PE.change('#repo2docker#r-base')}`).exists();
+        assert.dom(`${PE.top} ${PE.selected('#repo2docker#r-base')}`).exists();
+        assert.dom(`${PE.top} ${PE.pkgEditor('apt')}`).exists();
+        assert.dom(`${PE.top} ${PE.pkgEditor('conda')}`).exists();
+        assert.dom(`${PE.top} ${PE.pkgEditor('pip')}`).doesNotExist();
+        assert.dom(`${PE.top} ${PE.pkgEditor('rcran')}`).doesNotExist();
+        assert.dom(`${PE.top} ${PE.pkgEditor('rgithub')}`).doesNotExist();
+        assert.dom(`${PE.top} ${PE.pkgEditor('rmran')}`).exists();
+        assert.dom(`${PE.top} ${PE.pkgEditor('mpm')}`).exists();
 
         assert.equal(
             wbFileAjaxStub.callCount,
@@ -796,12 +836,16 @@ module('Acceptance | guid-node/binderhub', hooks => {
                         name: 'Test Image',
                         description: 'dummy description',
                         packages: ['conda', 'pip'],
+                        recommended: true,
+                        deprecated: false,
                     },
                     {
                         url: '#repo2docker#r-base',
                         name: 'Test Repo2Docker',
                         description: 'dummy description',
                         packages: ['conda', 'pip', 'rmran'],
+                        recommended: false,
+                        deprecated: false,
                     },
                 ],
             },
@@ -876,13 +920,16 @@ module('Acceptance | guid-node/binderhub', hooks => {
         assert.dom(`${JSL.top} ${JSL.launch}`).doesNotExist();
         assert.dom(`${JSL.top} ${JSL.delete}`).doesNotExist();
         assert.dom('[data-test-binderhub-launch]').exists();
-        assert.dom('[data-test-image-change="jupyter/scipy-notebook"]').exists();
-        assert.dom('[data-test-image-selected="jupyter/scipy-notebook"]').exists();
-        assert.dom('[data-test-image-selection]').doesNotExist();
-        assert.dom('[data-test-package-editor="apt"]').exists();
-        assert.dom('[data-test-package-editor="conda"]').exists();
-        assert.dom('[data-test-package-editor="pip"]').exists();
-        assert.dom('[data-test-package-editor="rmran"]').doesNotExist();
+        assert.dom(`${PE.top} ${PE.selection()}`).doesNotExist();
+        assert.dom(`${PE.top} ${PE.change('jupyter/scipy-notebook')}`).exists();
+        assert.dom(`${PE.top} ${PE.selected('jupyter/scipy-notebook')}`).exists();
+        assert.dom(`${PE.top} ${PE.pkgEditor('apt')}`).exists();
+        assert.dom(`${PE.top} ${PE.pkgEditor('conda')}`).exists();
+        assert.dom(`${PE.top} ${PE.pkgEditor('pip')}`).exists();
+        assert.dom(`${PE.top} ${PE.pkgEditor('rcran')}`).doesNotExist();
+        assert.dom(`${PE.top} ${PE.pkgEditor('rgithub')}`).doesNotExist();
+        assert.dom(`${PE.top} ${PE.pkgEditor('rmran')}`).doesNotExist();
+        assert.dom(`${PE.top} ${PE.pkgEditor('mpm')}`).doesNotExist();
 
         assert.ok(
             getContentsStub.calledOnceWithExactly(),
@@ -1059,6 +1106,8 @@ module('Acceptance | guid-node/binderhub', hooks => {
                         name: 'Test Repo2Docker',
                         description: 'dummy description',
                         packages: ['conda', 'pip', 'rmran'],
+                        recommended: true,
+                        deprecated: false,
                     },
                 ],
             },
@@ -1156,13 +1205,16 @@ module('Acceptance | guid-node/binderhub', hooks => {
         assert.dom(`${JSL.top} ${JSL.launch}`).doesNotExist();
         assert.dom(`${JSL.top} ${JSL.delete}`).doesNotExist();
         assert.dom('[data-test-binderhub-launch]').exists();
-        assert.dom('[data-test-image-change="#repo2docker#r-base"]').exists();
-        assert.dom('[data-test-image-selected="#repo2docker#r-base"]').exists();
-        assert.dom('[data-test-image-selection]').doesNotExist();
-        assert.dom('[data-test-package-editor="apt"]').exists();
-        assert.dom('[data-test-package-editor="conda"]').exists();
-        assert.dom('[data-test-package-editor="pip"]').exists();
-        assert.dom('[data-test-package-editor="rmran"]').exists();
+        assert.dom(`${PE.top} ${PE.selection()}`).doesNotExist();
+        assert.dom(`${PE.top} ${PE.change('#repo2docker#r-base')}`).exists();
+        assert.dom(`${PE.top} ${PE.selected('#repo2docker#r-base')}`).exists();
+        assert.dom(`${PE.top} ${PE.pkgEditor('apt')}`).exists();
+        assert.dom(`${PE.top} ${PE.pkgEditor('conda')}`).exists();
+        assert.dom(`${PE.top} ${PE.pkgEditor('pip')}`).exists();
+        assert.dom(`${PE.top} ${PE.pkgEditor('rcran')}`).doesNotExist();
+        assert.dom(`${PE.top} ${PE.pkgEditor('rgithub')}`).doesNotExist();
+        assert.dom(`${PE.top} ${PE.pkgEditor('rmran')}`).exists();
+        assert.dom(`${PE.top} ${PE.pkgEditor('mpm')}`).doesNotExist();
 
         assert.ok(
             getContentsStub.calledOnceWithExactly(),
@@ -1321,6 +1373,8 @@ module('Acceptance | guid-node/binderhub', hooks => {
                         name: 'Test Repo2Docker',
                         description: 'dummy description',
                         packages: ['conda', 'pip', 'rmran', 'mpm'],
+                        recommended: true,
+                        deprecated: false,
                     },
                 ],
             },
@@ -1438,14 +1492,16 @@ module('Acceptance | guid-node/binderhub', hooks => {
         assert.dom(`${JSL.top} ${JSL.launch}`).doesNotExist();
         assert.dom(`${JSL.top} ${JSL.delete}`).doesNotExist();
         assert.dom('[data-test-binderhub-launch]').exists();
-        assert.dom('[data-test-image-change="#repo2docker#r-base"]').exists();
-        assert.dom('[data-test-image-selected="#repo2docker#r-base"]').exists();
-        assert.dom('[data-test-image-selection]').doesNotExist();
-        assert.dom('[data-test-package-editor="apt"]').exists();
-        assert.dom('[data-test-package-editor="conda"]').exists();
-        assert.dom('[data-test-package-editor="pip"]').exists();
-        assert.dom('[data-test-package-editor="rmran"]').exists();
-        assert.dom('[data-test-package-editor="mpm"]').exists();
+        assert.dom(`${PE.top} ${PE.selection()}`).doesNotExist();
+        assert.dom(`${PE.top} ${PE.change('#repo2docker#r-base')}`).exists();
+        assert.dom(`${PE.top} ${PE.selected('#repo2docker#r-base')}`).exists();
+        assert.dom(`${PE.top} ${PE.pkgEditor('apt')}`).exists();
+        assert.dom(`${PE.top} ${PE.pkgEditor('conda')}`).exists();
+        assert.dom(`${PE.top} ${PE.pkgEditor('pip')}`).exists();
+        assert.dom(`${PE.top} ${PE.pkgEditor('rcran')}`).doesNotExist();
+        assert.dom(`${PE.top} ${PE.pkgEditor('rgithub')}`).doesNotExist();
+        assert.dom(`${PE.top} ${PE.pkgEditor('rmran')}`).exists();
+        assert.dom(`${PE.top} ${PE.pkgEditor('mpm')}`).exists();
 
         assert.ok(
             getContentsStub.calledTwice,
@@ -1583,6 +1639,8 @@ module('Acceptance | guid-node/binderhub', hooks => {
                         name: 'Test Image',
                         description: 'dummy description',
                         packages: ['conda'],
+                        recommended: true,
+                        deprecated: false,
                     },
                 ],
             },

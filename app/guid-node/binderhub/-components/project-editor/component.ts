@@ -204,6 +204,8 @@ export default class ProjectEditor extends Component {
 
     mranVersionSettingError = false;
 
+    isInitialized: boolean = false;
+
     @requiredAction onError!: (exception: any, message: string) => void;
 
     didReceiveAttrs() {
@@ -215,13 +217,14 @@ export default class ProjectEditor extends Component {
             try {
                 await this.loadCurrentConfig();
                 await this.mergeConfigurations();
+                this.set('isInitialized', true);
             } catch (exception) {
                 this.onError(exception, this.intl.t('binderhub.error.load_files_error'));
             }
         }, 0);
     }
 
-    @computed('configFolder', 'dockerfile')
+    @computed('configFolder', 'dockerfile', 'isInitialized')
     get loading(): boolean {
         if (!this.configFolder) {
             return true;
@@ -229,7 +232,7 @@ export default class ProjectEditor extends Component {
         if (this.dockerfile === undefined) {
             return true;
         }
-        return false;
+        return !this.isInitialized;
     }
 
     @computed('binderHubConfig.deployment')

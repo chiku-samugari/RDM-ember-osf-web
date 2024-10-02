@@ -5,7 +5,11 @@ import { later } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 import Intl from 'ember-intl/services/intl';
 import { requiredAction } from 'ember-osf-web/decorators/component';
-import { isBinderHubConfigFulfilled } from 'ember-osf-web/guid-node/binderhub/controller';
+import {
+    BootstrapPath,
+    BuildMessage,
+    isBinderHubConfigFulfilled,
+} from 'ember-osf-web/guid-node/binderhub/controller';
 import BinderHubConfigModel, { Image } from 'ember-osf-web/models/binderhub-config';
 import Node from 'ember-osf-web/models/node';
 import CurrentUser from 'ember-osf-web/services/current-user';
@@ -182,7 +186,7 @@ export default class ProjectEditor extends Component {
 
     postBuildModel: WaterButlerFile | null = this.postBuildModel;
 
-    showResetDockerfileConfirmDialog = false;
+    showDirtyFragileFileConfirmDialog = false;
 
     imageSelecting = false;
 
@@ -216,7 +220,29 @@ export default class ProjectEditor extends Component {
 
     showDeprecated: boolean = false;
 
+    editingDockerfileContent: string | undefined = undefined;
+
+    @requiredAction pagePolluter!: () => void;
+
+    @requiredAction pageCleanser!: () => void;
+
+    pendingImageUrl?: string;
+
     @requiredAction onError!: (exception: any, message: string) => void;
+
+    currentBinderHubURL!: URL;
+
+    buildLog: BuildMessage[] | null = null;
+
+    buildPhase: string | null = null;
+
+    @requiredAction renewBinderHubToken!: (binderhubUrl: string) => void;
+
+    @requiredAction requestBuild!: (
+        binderhubUrl: string,
+        path: BootstrapPath | null,
+        callback: (result: BuildMessage) => void,
+    ) => void;
 
     didReceiveAttrs() {
         if (!this.configFolder || this.configFolder.path === this.loadingPath) {
@@ -236,7 +262,14 @@ export default class ProjectEditor extends Component {
         later(async () => {
             try {
                 await this.loadCurrentConfig();
-                await this.mergeConfigurations();
+                if (this.selectedImageUrl !== this.get('customImage').url) {
+                    // All the configuration files should be left as-is
+                    // if the custom image is selected. Currently, we
+                    // cannot expect the introduction of other images
+                    // which requires the same avoiding and therefore
+                    // this ad-hoc workaround is adopted.
+                    await this.mergeConfigurations();
+                }
                 this.set('isInitialized', true);
             } catch (exception) {
                 this.onError(exception, this.intl.t('binderhub.error.load_files_error'));
@@ -263,14 +296,19 @@ export default class ProjectEditor extends Component {
         return this.binderHubConfig.get('deployment');
     }
 
-    @computed('dirtyConfigurationFiles')
-    get manuallyChanged() {
-        return this.get('dirtyConfigurationFiles').length > 0;
+    @computed('dirtyFragileConfigFiles')
+    get manuallyChanged(): boolean {
+        return this.get('dirtyFragileConfigFiles').length > 0;
     }
 
-    @computed('dirtyConfigurationFiles')
-    get dirtyConfigurationFilenames() {
-        return this.get('dirtyConfigurationFiles').map(file => file.name).join(', ');
+    @computed('dockerfileManuallyChanged', 'manuallyChanged')
+    get shouldResetConfigFiles(this: ProjectEditor) {
+        return !this.get('dockerfileManuallyChanged') && this.get('manuallyChanged');
+    }
+
+    @computed('dirtyFragileConfigFiles')
+    get dirtyFragileConfigurationFilenames() {
+        return this.get('dirtyFragileConfigFiles').map(file => file.name).join(', ');
     }
 
     @computed('dockerfile')
@@ -583,6 +621,10 @@ export default class ProjectEditor extends Component {
         if (environment.length > 0) {
             return this.environmentImageURL;
         }
+
+        if (this.checkEmptyScript(dockerfile) || this.verifyHashHeader(dockerfile)) {
+            return this.get('customImage').url;
+        }
         const fromStatements = dockerfile.split('\n')
             .filter(line => line.match(/^FROM\s+\S+\s*/));
         if (fromStatements.length === 0) {
@@ -654,6 +696,11 @@ export default class ProjectEditor extends Component {
             throw new EmberError('Illegal config. No image is recommended.');
         }
         return recommendedImage;
+    }
+
+    @computed('selectedImage')
+    get isDockerfileEditorVisible() {
+        return this.isInitialized && this.decideImageCategory(this.get('selectedImage')) === ImageCategory.CUSTOM;
     }
 
     @computed('selectedImage')
@@ -1141,13 +1188,43 @@ export default class ProjectEditor extends Component {
         ];
     }
 
+    /**
+     * A ConfigurationFile whose `name` property is identical to the
+     * given `id` is returned.
+     *
+     * @params {string} id - The name of the configuration file
+     * @return {ConfigurationFile}
+     */
+    findConfigurationFile(id: string): ConfigurationFile {
+        const info = this.get('configurationFiles').find(
+            ({ name }) => (name === id),
+        );
+        if (!info) {
+            throw new EmberError(`No ConfigurationFile entry named ${id}.`);
+        }
+        return info;
+    }
+
+    // The configuration files which is not assumed to be edited
+    // manually is called fragile.
+    @computed('configurationFiles')
+    get fragileConfigFiles(): ConfigurationFile[] {
+        return this.get('configurationFiles').reduce((acc, item) => {
+            if (item.name !== 'Dockerfile') {
+                acc.push(item);
+            }
+            return acc;
+        },
+        [] as ConfigurationFile[]);
+    }
+
     @computed(
-        'dockerfileManuallyChanged', 'environmentManuallyChanged',
+        'environmentManuallyChanged',
         'requirementsManuallyChanged', 'aptManuallyChanged',
         'installRManuallyChanged', 'mpmManuallyChanged', 'postBuildManuallyChanged',
     )
-    get dirtyConfigurationFiles(): ConfigurationFile[] {
-        return this.get('configurationFiles').filter(file => this.get(file.changedProperty));
+    get dirtyFragileConfigFiles(): ConfigurationFile[] {
+        return this.get('fragileConfigFiles').filter(file => this.get(file.changedProperty));
     }
 
     async getRootFiles(reload: boolean = false) {
@@ -1197,15 +1274,17 @@ export default class ProjectEditor extends Component {
     }
 
     async saveCurrentFile(
-        file: ConfigurationFile, files: WaterButlerFile[] | null,
+        file: ConfigurationFile,
+        files: WaterButlerFile[] | null,
         props: { [key: string]: string; },
+        allowEmpty: boolean,
     ) {
         const content: string | undefined = props[file.property];
         if (content === undefined) {
             throw new EmberError('Illegal config');
         }
         const envFile = await this.getFile(file.name, files);
-        if (this.checkEmptyScript(content)) {
+        if (!allowEmpty && this.checkEmptyScript(content)) {
             this.set(file.modelProperty, null);
             this.set(file.property, '');
             if (!envFile) {
@@ -1224,13 +1303,21 @@ export default class ProjectEditor extends Component {
         return false;
     }
 
-    async saveCurrentConfig(properties: { [key: string]: string; }) {
+    async saveCurrentConfig(
+        properties: { [key: string]: string; },
+        allowEmpty: ConfigurationFile[] = [],
+    ) {
         if (!this.configFolder) {
             throw new EmberError('Illegal config');
         }
         const files = await this.getRootFiles(true);
         const confFiles = this.configurationFiles;
-        const tasks = confFiles.map(file => this.saveCurrentFile(file, files, properties));
+        const tasks = confFiles.map(
+            file => this.saveCurrentFile(
+                file, files, properties,
+                allowEmpty.some(({ name }) => name === file.name),
+            ),
+        );
         const created = await Promise.all(tasks);
         if (!created.some(item => item)) {
             return;
@@ -1238,13 +1325,13 @@ export default class ProjectEditor extends Component {
         await this.loadCurrentConfig(true);
     }
 
-    async performResetDirtyFiles() {
-        const files = this.get('dirtyConfigurationFiles');
-        await Promise.all(files.map(file => this.performResetDirtyFile(file)));
+    async performResetDirtyFragileFiles() {
+        const files = this.get('dirtyFragileConfigFiles');
+        await Promise.all(files.map(file => this.performResetDirtyFragileFile(file)));
         window.location.reload();
     }
 
-    async performResetDirtyFile(configFile: ConfigurationFile) {
+    async performResetDirtyFragileFile(configFile: ConfigurationFile) {
         const fileModel = this.get(configFile.modelProperty);
         if (!fileModel) {
             throw new EmberError('Illegal config');
@@ -1300,16 +1387,64 @@ export default class ProjectEditor extends Component {
 
     @action
     selectImage(this: ProjectEditor, url: string) {
+        if (this.get('selectedImageUrl') !== this.get('customImage').url) {
+            this.set('imageSelecting', false);
+            this.set('showDeprecated', false);
+            this.set('pendingImageUrl', undefined);
+            this.updateFiles(DockerfileProperty.From, url);
+        } else {
+            this.set('pendingImageUrl', url);
+        }
+    }
+
+    @action
+    selectPendingImage(this: ProjectEditor) {
+        const url = this.get('pendingImageUrl');
+        if (!url) {
+            throw new EmberError('Malformed State. selectPendingImage is called but pendingImageUrl is undefined.');
+        }
+        this.updateFiles(DockerfileProperty.From, url);
         this.set('imageSelecting', false);
         this.set('showDeprecated', false);
-        this.updateFiles(DockerfileProperty.From, url);
+        this.set('pendingImageUrl', undefined);
+        this.pageCleanser();
     }
 
     @action
     selectCustomImage(this: ProjectEditor) {
         this.set('imageSelecting', false);
         this.set('showDeprecated', false);
-        this.updateFiles(DockerfileProperty.From, this.customImage.url);
+        if (this.get('selectedImageUrl') !== this.get('customImage').url) {
+            later(async () => (
+                this.saveCurrentConfig(
+                    this.buildDockerfileSetInstruction('', false),
+                    [this.findConfigurationFile('Dockerfile')],
+                )
+            ), 0);
+        }
+    }
+
+    /**
+     * It returns an Instruction that set the `.binderhub/Dockerfile`
+     * content to the given string, `dockerfileContent`, and removes
+     * other configuration files if `removeOthers` is `true`. Be aware
+     * that conflicting configuration files such as environment.yml are
+     * removed anyway.
+     *
+     * @param {string} dockerfileContent - the content set to Dockerfile.
+     * @param {boolean} removeOthers - remove or not other configuration files.
+     * @return {[key: string]: string; }} - an Instruction for this.saveCurrentFile method.
+     */
+    buildDockerfileSetInstruction(dockerfileContent: string, removeOthers: boolean) {
+        const instruction = this.get('configurationFiles').reduce(
+            (props, { property }) => (
+                Object.assign(props, { [property]: removeOthers ? '' : this.get(property) })
+            ),
+            {},
+        ) as { [key: string]: string; };
+        instruction[this.findConfigurationFile('Dockerfile').property] = dockerfileContent;
+        instruction[this.findConfigurationFile('environment.yml').property] = '';
+        return instruction;
     }
 
     @action
@@ -1373,6 +1508,38 @@ export default class ProjectEditor extends Component {
         );
     }
 
+    @action
+    editDockerfileContent(this: ProjectEditor, event: { target: HTMLInputElement }) {
+        this.set('editingDockerfileContent', event.target.value);
+        if (event.target.value !== this.get('dockerfile')) {
+            this.pagePolluter();
+        }
+    }
+
+    @action
+    saveDockerfile(this: ProjectEditor) {
+        later(async () => {
+            await this.performDockerfileSave();
+        }, 0);
+    }
+
+    @action
+    async performDockerfileSave(this: ProjectEditor) {
+        const content = this.get('editingDockerfileContent');
+        if (typeof content === 'undefined') {
+            return;
+        }
+        const info = this.findConfigurationFile('Dockerfile');
+        await this.saveCurrentFile(
+            info,
+            await this.getRootFiles(true),
+            { [info.property]: content },
+            true,
+        );
+        this.set('editingDockerfileContent', undefined);
+        this.pageCleanser();
+    }
+
     @computed('editingPostBuild')
     get editedPostBuild() {
         return this.editingPostBuild !== undefined && this.editingPostBuild !== this.postBuild;
@@ -1396,8 +1563,8 @@ export default class ProjectEditor extends Component {
     }
 
     @action
-    viewDirtyFiles(this: ProjectEditor) {
-        const files = this.get('dirtyConfigurationFiles');
+    viewDirtyFragileFiles(this: ProjectEditor) {
+        const files = this.get('dirtyFragileConfigFiles');
         if (files.length === 0) {
             throw new EmberError('Illegal config');
         }
@@ -1418,10 +1585,10 @@ export default class ProjectEditor extends Component {
     }
 
     @action
-    resetDirtyFiles(this: ProjectEditor) {
+    resetDirtyFragileFiles(this: ProjectEditor) {
         later(async () => {
             try {
-                await this.performResetDirtyFiles();
+                await this.performResetDirtyFragileFiles();
             } catch (exception) {
                 this.onError(exception, this.intl.t('binderhub.error.modify_files_error'));
             }

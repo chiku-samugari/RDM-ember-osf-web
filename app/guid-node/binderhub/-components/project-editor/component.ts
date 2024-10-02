@@ -648,6 +648,13 @@ export default class ProjectEditor extends Component {
         }
         return recommendedImage;
     }
+
+    @computed('selectedImage')
+    get isPackageEditorVisible(): boolean {
+        const image = this.get('selectedImage');
+        return image && this.decideImageCategory(image) !== ImageCategory.CUSTOM;
+    }
+
     @computed('selectedImage')
     get condaSupported() {
         const image = this.get('selectedImage');

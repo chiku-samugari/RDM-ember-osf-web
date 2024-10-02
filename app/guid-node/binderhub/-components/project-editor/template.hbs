@@ -82,7 +82,7 @@
             {{else}}
                 {{t 'binderhub.deployment.no_environment'}}
             {{/if}}
-            {{#if this.selectedImageUrl}}
+            {{#if this.isPackageEditorVisible}}
                 <h3>{{t 'binderhub.deployment.additionalpackages'}}</h3>
                 <div local-class='packages'>
                     <GuidNode::Binderhub::-Components::PackageEditor

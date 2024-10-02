@@ -263,14 +263,14 @@ export default class ProjectEditor extends Component {
         return this.binderHubConfig.get('deployment');
     }
 
-    @computed('dirtyConfigurationFiles')
-    get manuallyChanged() {
-        return this.get('dirtyConfigurationFiles').length > 0;
+    @computed('dirtyFragileConfigFiles')
+    get manuallyChanged(): boolean {
+        return this.get('dirtyFragileConfigFiles').length > 0;
     }
 
-    @computed('dirtyConfigurationFiles')
+    @computed('dirtyFragileConfigFiles')
     get dirtyConfigurationFilenames() {
-        return this.get('dirtyConfigurationFiles').map(file => file.name).join(', ');
+        return this.get('dirtyFragileConfigFiles').map(file => file.name).join(', ');
     }
 
     @computed('dockerfile')
@@ -1134,13 +1134,26 @@ export default class ProjectEditor extends Component {
         ];
     }
 
+    // The configuration files which is not assumed to be edited
+    // manually is called fragile.
+    @computed('configurationFiles')
+    get fragileConfigFiles(): ConfigurationFile[] {
+        return this.get('configurationFiles').reduce((acc, item) => {
+            if (item.name !== 'Dockerfile') {
+                acc.push(item);
+            }
+            return acc;
+        },
+        [] as ConfigurationFile[]);
+    }
+
     @computed(
-        'dockerfileManuallyChanged', 'environmentManuallyChanged',
+        'environmentManuallyChanged',
         'requirementsManuallyChanged', 'aptManuallyChanged',
         'installRManuallyChanged', 'mpmManuallyChanged', 'postBuildManuallyChanged',
     )
-    get dirtyConfigurationFiles(): ConfigurationFile[] {
-        return this.get('configurationFiles').filter(file => this.get(file.changedProperty));
+    get dirtyFragileConfigFiles(): ConfigurationFile[] {
+        return this.get('fragileConfigFiles').filter(file => this.get(file.changedProperty));
     }
 
     async getRootFiles(reload: boolean = false) {
@@ -1232,7 +1245,7 @@ export default class ProjectEditor extends Component {
     }
 
     async performResetDirtyFiles() {
-        const files = this.get('dirtyConfigurationFiles');
+        const files = this.get('dirtyFragileConfigFiles');
         await Promise.all(files.map(file => this.performResetDirtyFile(file)));
         window.location.reload();
     }
@@ -1390,7 +1403,7 @@ export default class ProjectEditor extends Component {
 
     @action
     viewDirtyFiles(this: ProjectEditor) {
-        const files = this.get('dirtyConfigurationFiles');
+        const files = this.get('dirtyFragileConfigFiles');
         if (files.length === 0) {
             throw new EmberError('Illegal config');
         }

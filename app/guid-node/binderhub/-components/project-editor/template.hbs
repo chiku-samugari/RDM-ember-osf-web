@@ -2,7 +2,7 @@
     {{#if this.loading}}
         {{t 'binderhub.loading'}}
     {{else}}
-        {{#if this.manuallyChanged}}
+        {{#if this.shouldResetConfigFiles}}
             {{t 'binderhub.deployment.unavailable'}}
             {{#if this.node.userHasWritePermission}}
                 <button

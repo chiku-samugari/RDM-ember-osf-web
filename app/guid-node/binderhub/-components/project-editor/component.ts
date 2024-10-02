@@ -268,6 +268,11 @@ export default class ProjectEditor extends Component {
         return this.get('dirtyFragileConfigFiles').length > 0;
     }
 
+    @computed('dockerfileManuallyChanged', 'manuallyChanged')
+    get shouldResetConfigFiles(this: ProjectEditor) {
+        return !this.get('dockerfileManuallyChanged') && this.get('manuallyChanged');
+    }
+
     @computed('dirtyFragileConfigFiles')
     get dirtyConfigurationFilenames() {
         return this.get('dirtyFragileConfigFiles').map(file => file.name).join(', ');

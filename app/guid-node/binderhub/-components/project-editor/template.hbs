@@ -25,7 +25,7 @@
                 </button>
             {{/if}}
         {{else}}
-            <h3>{{t 'binderhub.deployment.environment'}}<//h3>
+            <h3>{{t 'binderhub.deployment.environment'}}</h3>
             {{#if (or this.node.userHasWritePermission this.selectedImageUrl)}}
                 {{#if this.imageSelecting}}
                     {{#each this.selectableImages.preferred as |image|}}

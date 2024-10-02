@@ -46,24 +46,29 @@
                         @isSelecting={{true}}
                         @onButtonClick={{fn this.selectCustomImage}}
                     />
-                    <div local-class='deprecated_image_separator'>
-                        {{#if this.isDeprecatedImagesVisible}}
+                    <BsButton
+                        local-class='deprecated_image_separator'
+                        onClick={{action this.flipDeprecatedImages}}
+                    >
+                        {{#if this.showDeprecated}}
                             {{fa-icon 'chevron-down'}}
                         {{else}}
                             {{fa-icon 'chevron-right'}}
                         {{/if}}
                         {{t 'binderhub.deployment.deprecated_images_header'}}
-                    </div>
-                    {{#each this.selectableImages.deprecated as |image|}}
-                        <GuidNode::Binderhub::-Components::ProjectEditor::BasicImageEntry
-                            local-class='basic_image_entry'
-                            @image={{image}}
-                            @checked={{eq this.selectedImageUrl image.url}}
-                            @isSelectionAllowed={{this.node.userHasWritePermission}}
-                            @isSelecting={{true}}
-                            @onButtonClick={{fn this.selectImage image.url}}
-                        />
-                    {{/each}}
+                    </BsButton>
+                    {{#if this.showDeprecated}}
+                        {{#each this.selectableImages.deprecated as |image|}}
+                            <GuidNode::Binderhub::-Components::ProjectEditor::BasicImageEntry
+                                local-class='basic_image_entry'
+                                @image={{image}}
+                                @checked={{eq this.selectedImageUrl image.url}}
+                                @isSelectionAllowed={{this.node.userHasWritePermission}}
+                                @isSelecting={{true}}
+                                @onButtonClick={{fn this.selectImage image.url}}
+                            />
+                        {{/each}}
+                    {{/if}}
                 {{else}}
                     <GuidNode::Binderhub::-Components::ProjectEditor::BasicImageEntry
                         local-class='basic_image_entry'

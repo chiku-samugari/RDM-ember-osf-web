@@ -151,6 +151,12 @@ interface EnvironmentDependencies {
     pipPackages: string[];
 }
 
+enum ImageCategory {
+    CUSTOM = 'CUSTOM',
+    PREFERRED = 'PREFERRED',
+    DEPRECATED = 'DEPRECATED',
+}
+
 export default class ProjectEditor extends Component {
     @service currentUser!: CurrentUser;
 
@@ -207,6 +213,8 @@ export default class ProjectEditor extends Component {
     customImage!: Image;
 
     isInitialized: boolean = false;
+
+    showDeprecated: boolean = false;
 
     @requiredAction onError!: (exception: any, message: string) => void;
 
@@ -338,6 +346,16 @@ export default class ProjectEditor extends Component {
             return true;
         }
         return script.trim().length === 0;
+    }
+
+    decideImageCategory(image: Image): ImageCategory {
+        if (image.url === this.customImage.url) {
+            return ImageCategory.CUSTOM;
+        }
+        if (image.deprecated) {
+            return ImageCategory.DEPRECATED;
+        }
+        return ImageCategory.PREFERRED;
     }
 
     getUpdatedDockerfile(key: DockerfileProperty, value: string) {
@@ -1251,19 +1269,32 @@ export default class ProjectEditor extends Component {
     }
 
     @action
+    flipDeprecatedImages(this: ProjectEditor) {
+        this.set('showDeprecated', !this.get('showDeprecated'));
+    }
+
+    @action
     startBaseImageSelection(this: ProjectEditor) {
         this.set('imageSelecting', true);
+        const image = this.get('selectedImage');
+        if (this.decideImageCategory(image) === ImageCategory.DEPRECATED) {
+            this.set('showDeprecated', true);
+        } else {
+            this.set('showDeprecated', false);
+        }
     }
 
     @action
     selectImage(this: ProjectEditor, url: string) {
         this.set('imageSelecting', false);
+        this.set('showDeprecated', false);
         this.updateFiles(DockerfileProperty.From, url);
     }
 
     @action
     selectCustomImage(this: ProjectEditor) {
         this.set('imageSelecting', false);
+        this.set('showDeprecated', false);
         this.updateFiles(DockerfileProperty.From, this.customImage.url);
     }
 

@@ -204,6 +204,8 @@ export default class ProjectEditor extends Component {
 
     mranVersionSettingError = false;
 
+    customImage!: Image;
+
     isInitialized: boolean = false;
 
     @requiredAction onError!: (exception: any, message: string) => void;
@@ -213,6 +215,16 @@ export default class ProjectEditor extends Component {
             return;
         }
         this.loadingPath = this.configFolder.path;
+
+        this.set('customImage', {
+            url: 'custom',
+            name: this.intl.t('binderhub.deployment.custom_image_name'),
+            description: this.intl.t('binderhub.deployment.custom_image_description'),
+            packages: [],
+            deprecated: 'false',
+            recommended: 'false',
+        });
+
         later(async () => {
             try {
                 await this.loadCurrentConfig();
@@ -583,7 +595,7 @@ export default class ProjectEditor extends Component {
         return this.modifyImageForLocale(this.get('selectedImage'));
     }
 
-    @computed('selectedImageUrl', 'deployment')
+    @computed('selectedImageUrl', 'deployment', 'customImage')
     get selectedImage(): Image {
         const url = this.get('selectedImageUrl');
         if (url === null) {
@@ -597,11 +609,11 @@ export default class ProjectEditor extends Component {
         if (!deployment) {
             throw new EmberError('Illegal config. No deployment images are offered.');
         }
-        const images = deployment.images.filter(image => image.url === url);
-        if (images.length === 0) {
+        const image = [...deployment.images, this.customImage].find(img => img.url === url);
+        if (!image) {
             throw new EmberError(`Undefined image: ${url}`);
         }
-        return images[0];
+        return image;
     }
 
     @computed('deployment')
@@ -1247,6 +1259,12 @@ export default class ProjectEditor extends Component {
     selectImage(this: ProjectEditor, url: string) {
         this.set('imageSelecting', false);
         this.updateFiles(DockerfileProperty.From, url);
+    }
+
+    @action
+    selectCustomImage(this: ProjectEditor) {
+        this.set('imageSelecting', false);
+        this.updateFiles(DockerfileProperty.From, this.customImage.url);
     }
 
     @action

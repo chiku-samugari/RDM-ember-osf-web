@@ -38,6 +38,14 @@
                             @onButtonClick={{fn this.selectImage image.url}}
                         />
                     {{/each}}
+                    <GuidNode::Binderhub::-Components::ProjectEditor::BasicImageEntry
+                        local-class='basic_image_entry'
+                        @image={{this.customImage}}
+                        @checked={{eq this.selectedImageUrl this.customImage.url}}
+                        @isSelectionAllowed={{this.node.userHasWritePermission}}
+                        @isSelecting={{true}}
+                        @onButtonClick={{fn this.selectCustomImage}}
+                    />
                     <div local-class='deprecated_image_separator'>
                         {{#if this.isDeprecatedImagesVisible}}
                             {{fa-icon 'chevron-down'}}

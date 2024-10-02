@@ -1797,6 +1797,8 @@ binderhub:
         description: 'このプロジェクトのデフォルトストレージの内容がコピーされます。'
         launch: '起動'
         environment: '基本イメージ'
+        custom_image_name: 'Dockerfileを用いたカスタムイメージ'
+        custom_image_description: 'あなたがアップロードしたDockerfileを利用します。'
         additionalpackages: '追加パッケージ'
         postinstallscript: '自動実行スクリプト'
         select_environment: '選択'

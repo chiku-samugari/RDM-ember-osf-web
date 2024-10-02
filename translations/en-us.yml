@@ -1797,6 +1797,8 @@ binderhub:
         description: 'The contents of the default storage in this project will be copied.'
         launch: 'Launch'
         environment: 'Base Image'
+        custom_image_name: 'Custom Image based on Dockerfile'
+        custom_image_description: 'The Dockerfile you uploaded is used to create an environment.'
         additionalpackages: 'Additional Packages'
         postinstallscript: 'Auto-Execution Script'
         select_environment: 'Select'

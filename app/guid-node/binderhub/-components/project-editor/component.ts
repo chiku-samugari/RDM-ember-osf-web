@@ -236,7 +236,14 @@ export default class ProjectEditor extends Component {
         later(async () => {
             try {
                 await this.loadCurrentConfig();
-                await this.mergeConfigurations();
+                if (this.selectedImageUrl !== this.get('customImage').url) {
+                    // All the configuration files should be left as-is
+                    // if the custom image is selected. Currently, we
+                    // cannot expect the introduction of other images
+                    // which requires the same avoiding and therefore
+                    // this ad-hoc workaround is adopted.
+                    await this.mergeConfigurations();
+                }
                 this.set('isInitialized', true);
             } catch (exception) {
                 this.onError(exception, this.intl.t('binderhub.error.load_files_error'));

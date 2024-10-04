@@ -567,7 +567,7 @@ export default class ProjectEditor extends Component {
         }, 0);
     }
 
-    @computed('dockerfile', 'environment')
+    @computed('dockerfile', 'dockerfileManuallyChanged', 'environment')
     get selectedImageUrl() {
         if (this.manuallyChanged) {
             return null;
@@ -580,6 +580,10 @@ export default class ProjectEditor extends Component {
         }
         if (environment.length > 0) {
             return this.environmentImageURL;
+        }
+
+        if (this.checkEmptyScript(dockerfile) || this.verifyHashHeader(dockerfile)) {
+            return this.get('customImage').url;
         }
         const fromStatements = dockerfile.split('\n')
             .filter(line => line.match(/^FROM\s+\S+\s*/));

@@ -1,0 +1,35 @@
+<div local-class='whole' ...attributes>
+    <div local-class='title_line'>
+        <h3>
+            {{@title}}
+            <OsfButton @type='link' {{on 'click' this.flipEditorOpenBit}}>
+                {{#if this.editorOpenBit}}
+                    {{fa-icon 'chevron-down'}}
+                {{else}}
+                    {{fa-icon 'chevron-right'}}
+                {{/if}}
+            </OsfButton>
+        </h3>
+    </div>
+    {{#if this.editorOpenBit}}
+        <div local-class='editor_area'>
+            <textarea
+                class='form-control'
+                rows='16'
+                disabled={{not @enable}}
+                value={{@content}}
+                {{on 'change' @onChange}}
+                />
+            <button
+                local-class='save_button'
+                type='button'
+                class='btn btn-default'
+                disabled={{not @enable}}
+                {{on 'click' @onSave}}
+            >
+                {{fa-icon 'save'}}
+                {{t 'binderhub.deployment.save_file'}}
+            </button>
+        </div>
+    {{/if}}
+</div>

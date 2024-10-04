@@ -1809,6 +1809,7 @@ binderhub:
         reset_dirty_fragile_files: 'リセット: '
         unavailable: '設定ファイルがエディタ以外で変更されました。'
         no_environment: 'エディタにより設定された環境ではありません。'
+        save_file: '保存'
         post_build_placeholder: |-
             #!/bin/bash
             set -x

@@ -1809,6 +1809,7 @@ binderhub:
         reset_dirty_fragile_files: 'Reset: '
         unavailable: 'The configuration file has been manually changed.'
         no_environment: 'This environment is not configured by the editor.'
+        save_file: 'Save'
         post_build_placeholder: |-
             #!/bin/bash
             set -x

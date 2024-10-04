@@ -1358,10 +1358,12 @@ export default class ProjectEditor extends Component {
     /**
      * It returns an Instruction that set the `.binderhub/Dockerfile`
      * content to the given string, `dockerfileContent`, and removes
-     * other configuration files if `removeOthers` is true.
+     * other configuration files if `removeOthers` is `true`. Be aware
+     * that conflicting configuration files such as environment.yml are
+     * removed anyway.
      *
      * @param {string} dockerfileContent - the content set to Dockerfile.
-     * @param {boolean} removeOther - remove or not other configuration files.
+     * @param {boolean} removeOthers - remove or not other configuration files.
      * @return {[key: string]: string; }} - an Instruction for this.saveCurrentFile method.
      */
     buildDockerfileSetInstruction(dockerfileContent: string, removeOthers: boolean) {
@@ -1374,10 +1376,14 @@ export default class ProjectEditor extends Component {
         const dockerfileDesc = this.get('configurationFiles').find(
             ({ name }) => name === 'Dockerfile',
         );
-        if (!dockerfileDesc) {
+        const environmentymlDesc = this.get('configurationFiles').find(
+            ({ name }) => name === 'environment.yml',
+        );
+        if (!dockerfileDesc || !environmentymlDesc) {
             throw new EmberError('Illegal construction of "configurationFiles".');
         }
         instruction[dockerfileDesc.property] = dockerfileContent;
+        instruction[environmentymlDesc.property] = '';
         return instruction;
     }
 

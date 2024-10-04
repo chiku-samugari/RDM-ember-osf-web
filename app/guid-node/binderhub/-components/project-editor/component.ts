@@ -1150,6 +1150,23 @@ export default class ProjectEditor extends Component {
         ];
     }
 
+    /**
+     * A ConfigurationFile whose `name` property is identical to the
+     * given `id` is returned.
+     *
+     * @params {string} id - The name of the configuration file
+     * @return {ConfigurationFile}
+     */
+    findConfigurationFile(id: string): ConfigurationFile {
+        const info = this.get('configurationFiles').find(
+            ({ name }) => (name === id),
+        );
+        if (!info) {
+            throw new EmberError(`No ConfigurationFile entry named ${id}.`);
+        }
+        return info;
+    }
+
     // The configuration files which is not assumed to be edited
     // manually is called fragile.
     @computed('configurationFiles')
@@ -1342,15 +1359,9 @@ export default class ProjectEditor extends Component {
         this.set('imageSelecting', false);
         this.set('showDeprecated', false);
         later(async () => {
-            const dockerfileDesc = this.get('configurationFiles').find(
-                ({ name }) => name === 'Dockerfile',
-            );
-            if (!dockerfileDesc) {
-                throw new EmberError('Illegal construction of "configurationFiles".');
-            }
             const result = await this.saveCurrentConfig(
                 this.buildDockerfileSetInstruction('', false),
-                [dockerfileDesc],
+                [this.findConfigurationFile('Dockerfile')],
             );
         }, 0);
     }
@@ -1373,17 +1384,8 @@ export default class ProjectEditor extends Component {
             ),
             {},
         ) as { [key: string]: string; };
-        const dockerfileDesc = this.get('configurationFiles').find(
-            ({ name }) => name === 'Dockerfile',
-        );
-        const environmentymlDesc = this.get('configurationFiles').find(
-            ({ name }) => name === 'environment.yml',
-        );
-        if (!dockerfileDesc || !environmentymlDesc) {
-            throw new EmberError('Illegal construction of "configurationFiles".');
-        }
-        instruction[dockerfileDesc.property] = dockerfileContent;
-        instruction[environmentymlDesc.property] = '';
+        instruction[this.findConfigurationFile('Dockerfile').property] = dockerfileContent;
+        instruction[this.findConfigurationFile('environment.yml').property] = '';
         return instruction;
     }
 

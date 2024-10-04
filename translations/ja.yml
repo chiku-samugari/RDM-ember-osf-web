@@ -1809,6 +1809,7 @@ binderhub:
         reset_dirty_fragile_files: 'リセット: '
         unavailable: '設定ファイルがエディタ以外で変更されました。'
         no_environment: 'エディタにより設定された環境ではありません。'
+        dockerfile_editor_title: 'Dockerfile'
         save_file: '保存'
         post_build_placeholder: |-
             #!/bin/bash
@@ -1818,6 +1819,8 @@ binderhub:
         mran_version_setting_error: 'CRANにバージョン番号を指定することはできません。'
         reset_configfile_confirm_dialog_title: 'リセット: '
         reset_configfile_confirm_dialog_body: 'リセットしたファイルは元に戻すことはできません。続行しますか？'
+        destruct_dockerfile_confirmation_dialogue_title: 'Dockerfileの削除確認'
+        destruct_dockerfile_confirmation_dialogue_body: '基本イメージを変更すると、あなたが編集中のDockerfileの内容が破棄されます。失われた内容を復元することはできません。続行しますか？'
         release: 'リリース'
         products: 'アドオン'
         info_urls:

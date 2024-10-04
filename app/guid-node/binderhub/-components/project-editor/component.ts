@@ -216,6 +216,10 @@ export default class ProjectEditor extends Component {
 
     showDeprecated: boolean = false;
 
+    editingDockerfileContent: string | undefined = undefined;
+
+    pendingImageUrl?: string;
+
     @requiredAction onError!: (exception: any, message: string) => void;
 
     didReceiveAttrs() {
@@ -663,6 +667,11 @@ export default class ProjectEditor extends Component {
             throw new EmberError('Illegal config. No image is recommended.');
         }
         return recommendedImage;
+    }
+
+    @computed('selectedImage')
+    get isDockerfileEditorVisible() {
+        return this.isInitialized && this.decideImageCategory(this.get('selectedImage')) === ImageCategory.CUSTOM;
     }
 
     @computed('selectedImage')
@@ -1349,9 +1358,26 @@ export default class ProjectEditor extends Component {
 
     @action
     selectImage(this: ProjectEditor, url: string) {
+        if (this.get('selectedImageUrl') !== this.get('customImage').url) {
+            this.set('imageSelecting', false);
+            this.set('showDeprecated', false);
+            this.set('pendingImageUrl', undefined);
+            this.updateFiles(DockerfileProperty.From, url);
+        } else {
+            this.set('pendingImageUrl', url);
+        }
+    }
+
+    @action
+    selectPendingImage(this: ProjectEditor) {
+        const url = this.get('pendingImageUrl');
+        if (!url) {
+            throw new EmberError('Malformed State. selectPendingImage is called but pendingImageUrl is undefined.');
+        }
+        this.updateFiles(DockerfileProperty.From, url);
         this.set('imageSelecting', false);
         this.set('showDeprecated', false);
-        this.updateFiles(DockerfileProperty.From, url);
+        this.set('pendingImageUrl', undefined);
     }
 
     @action
@@ -1450,6 +1476,28 @@ export default class ProjectEditor extends Component {
             DockerfileProperty.Mpm,
             getMpmScript(config.release, config.products),
         );
+    }
+
+    @action
+    editDockerfileContent(this: ProjectEditor, event: { target: HTMLInputElement }) {
+        this.set('editingDockerfileContent', event.target.value);
+    }
+
+    @action
+    saveDockerfile(this: ProjectEditor) {
+        if (this.get('editingDockerfileContent') === undefined) {
+            return;
+        }
+        later(async () => {
+            const info = this.findConfigurationFile('Dockerfile');
+            const isNewFileCreated = await this.saveCurrentFile(
+                info,
+                await this.getRootFiles(true),
+                { [info.property]: this.get('editingDockerfileContent') || '' },
+                true,
+            );
+            this.set('editingDockerfileContent', undefined);
+        }, 0);
     }
 
     @computed('editingPostBuild')

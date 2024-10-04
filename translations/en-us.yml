@@ -1809,6 +1809,7 @@ binderhub:
         reset_dirty_fragile_files: 'Reset: '
         unavailable: 'The configuration file has been manually changed.'
         no_environment: 'This environment is not configured by the editor.'
+        dockerfile_editor_title: 'Dockerfile'
         save_file: 'Save'
         post_build_placeholder: |-
             #!/bin/bash
@@ -1818,6 +1819,8 @@ binderhub:
         mran_version_setting_error: 'The version number cannot be specified for CRAN.'
         reset_configfile_confirm_dialog_title: 'Reset: '
         reset_configfile_confirm_dialog_body: 'You cannot undo the files you have reset. Do you wish to continue?'
+        destruct_dockerfile_confirmation_dialogue_title: 'Dockerfile reset confirmation'
+        destruct_dockerfile_confirmation_dialogue_body: 'If you change the base image, Dockerfile you are currently editing will be reset. Please note that the lost content cannot be retrieved. Are you sure you want to proceed?'
         release: 'Release'
         products: 'Add-ons'
         info_urls:

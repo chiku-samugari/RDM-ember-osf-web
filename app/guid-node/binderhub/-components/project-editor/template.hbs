@@ -82,6 +82,15 @@
             {{else}}
                 {{t 'binderhub.deployment.no_environment'}}
             {{/if}}
+            {{#if this.isDockerfileEditorVisible}}
+                <GuidNode::Binderhub::-Components::TextfileEditor
+                    @title={{t 'binderhub.deployment.dockerfile_editor_title'}}
+                    @content={{this.dockerfile}}
+                    @enable={{not this.imageSelecting}}
+                    @onSave={{this.saveDockerfile}}
+                    @onChange={{this.editDockerfileContent}}
+                    />
+            {{/if}}
             {{#if this.isPackageEditorVisible}}
                 <h3>{{t 'binderhub.deployment.additionalpackages'}}</h3>
                 <div local-class='packages'>
@@ -245,6 +254,35 @@
         </BsButton>
         <BsButton
             @onClick={{action this.resetDirtyFragileFiles}}
+            @type='danger'
+        >
+            {{t 'general.ok'}}
+        </BsButton>
+    </modal.footer>
+</BsModal>
+
+<BsModal
+    @open={{this.pendingImageUrl}}
+    @onHidden={{action (mut this.pendingImageUrl) undefined}}
+    as |modal|
+>
+    <modal.header>
+        <h4>
+            {{t 'binderhub.deployment.destruct_dockerfile_confirmation_dialogue_title'}}
+        </h4>
+    </modal.header>
+    <modal.body>
+        {{t
+        'binderhub.deployment.destruct_dockerfile_confirmation_dialogue_body'}}
+    </modal.body>
+    <modal.footer>
+        <BsButton
+            @onClick={{action (mut this.pendingImageUrl) undefined}}
+        >
+            {{t 'general.cancel'}}
+        </BsButton>
+        <BsButton
+            @onClick={{action this.selectPendingImage}}
             @type='danger'
         >
             {{t 'general.ok'}}

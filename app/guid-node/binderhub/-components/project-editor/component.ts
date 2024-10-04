@@ -1358,12 +1358,14 @@ export default class ProjectEditor extends Component {
     selectCustomImage(this: ProjectEditor) {
         this.set('imageSelecting', false);
         this.set('showDeprecated', false);
-        later(async () => {
-            const result = await this.saveCurrentConfig(
-                this.buildDockerfileSetInstruction('', false),
-                [this.findConfigurationFile('Dockerfile')],
-            );
-        }, 0);
+        if (this.get('selectedImageUrl') !== this.get('customImage').url) {
+            later(async () => (
+                this.saveCurrentConfig(
+                    this.buildDockerfileSetInstruction('', false),
+                    [this.findConfigurationFile('Dockerfile')],
+                )
+            ), 0);
+        }
     }
 
     /**

@@ -595,11 +595,11 @@ export default class ProjectEditor extends Component {
         const fromStatements = dockerfile.split('\n')
             .filter(line => line.match(/^FROM\s+\S+\s*/));
         if (fromStatements.length === 0) {
-            return null;
+            return this.get('customImage').url;
         }
         const fromStatement = fromStatements[0].match(/^FROM\s+(\S+)\s*/);
         if (!fromStatement) {
-            return null;
+            return this.get('customImage').url;
         }
         return fromStatement[1];
     }

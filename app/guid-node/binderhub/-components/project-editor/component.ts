@@ -1212,15 +1212,17 @@ export default class ProjectEditor extends Component {
     }
 
     async saveCurrentFile(
-        file: ConfigurationFile, files: WaterButlerFile[] | null,
+        file: ConfigurationFile,
+        files: WaterButlerFile[] | null,
         props: { [key: string]: string; },
+        allowEmpty: boolean,
     ) {
         const content: string | undefined = props[file.property];
         if (content === undefined) {
             throw new EmberError('Illegal config');
         }
         const envFile = await this.getFile(file.name, files);
-        if (this.checkEmptyScript(content)) {
+        if (!allowEmpty && this.checkEmptyScript(content)) {
             this.set(file.modelProperty, null);
             this.set(file.property, '');
             if (!envFile) {
@@ -1239,13 +1241,21 @@ export default class ProjectEditor extends Component {
         return false;
     }
 
-    async saveCurrentConfig(properties: { [key: string]: string; }) {
+    async saveCurrentConfig(
+        properties: { [key: string]: string; },
+        allowEmpty: ConfigurationFile[] = [],
+    ) {
         if (!this.configFolder) {
             throw new EmberError('Illegal config');
         }
         const files = await this.getRootFiles(true);
         const confFiles = this.configurationFiles;
-        const tasks = confFiles.map(file => this.saveCurrentFile(file, files, properties));
+        const tasks = confFiles.map(
+            file => this.saveCurrentFile(
+                file, files, properties,
+                allowEmpty.some(({ name }) => name === file.name),
+            ),
+        );
         const created = await Promise.all(tasks);
         if (!created.some(item => item)) {
             return;
@@ -1324,7 +1334,41 @@ export default class ProjectEditor extends Component {
     selectCustomImage(this: ProjectEditor) {
         this.set('imageSelecting', false);
         this.set('showDeprecated', false);
-        this.updateFiles(DockerfileProperty.From, this.customImage.url);
+        later(async () => {
+            const dockerfileDesc = this.get('configurationFiles').find(
+                ({ name }) => name === 'Dockerfile',
+            );
+            if (!dockerfileDesc) {
+                throw new EmberError('Illegal construction of "configurationFiles".');
+            }
+            const result = await this.saveCurrentConfig(
+                this.buildDockerfileSetInstruction(''),
+                [dockerfileDesc],
+            );
+        }, 0);
+    }
+
+    /**
+     * It returns an Instruction that set the `.binderhub/Dockerfile`
+     * content to the given string, `dockerfileContent`, and flushes
+     * other configuration files.
+     *
+     * @param {string} - dockerfileContent: the content set to Dockerfile.
+     * @return {[key: string]: string; }} - an Instruction for this.saveCurrentFile method.
+     */
+    buildDockerfileSetInstruction(dockerfileContent: string) {
+        const instruction = this.get('configurationFiles').reduce(
+            (props, { property }) => (Object.assign(props, { [property]: '' })),
+            {},
+        ) as { [key: string]: string; };
+        const dockerfileDesc = this.get('configurationFiles').find(
+            ({ name }) => name === 'Dockerfile',
+        );
+        if (!dockerfileDesc) {
+            throw new EmberError('Illegal construction of "configurationFiles".');
+        }
+        instruction[dockerfileDesc.property] = dockerfileContent;
+        return instruction;
     }
 
     @action

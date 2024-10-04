@@ -1805,8 +1805,8 @@ binderhub:
         change_environment: '変更'
         deprecated_images_header: '過去のイメージ'
         add_package: '追加'
-        view_dockerfile: '参照: '
-        reset_dockerfile: 'リセット: '
+        view_dirty_fragile_files: '参照: '
+        reset_dirty_fragile_files: 'リセット: '
         unavailable: '設定ファイルがエディタ以外で変更されました。'
         no_environment: 'エディタにより設定された環境ではありません。'
         post_build_placeholder: |-

@@ -182,7 +182,7 @@ export default class ProjectEditor extends Component {
 
     postBuildModel: WaterButlerFile | null = this.postBuildModel;
 
-    showResetDockerfileConfirmDialog = false;
+    showDirtyFragileFileConfirmDialog = false;
 
     imageSelecting = false;
 
@@ -281,7 +281,7 @@ export default class ProjectEditor extends Component {
     }
 
     @computed('dirtyFragileConfigFiles')
-    get dirtyConfigurationFilenames() {
+    get dirtyFragileConfigurationFilenames() {
         return this.get('dirtyFragileConfigFiles').map(file => file.name).join(', ');
     }
 
@@ -1287,13 +1287,13 @@ export default class ProjectEditor extends Component {
         await this.loadCurrentConfig(true);
     }
 
-    async performResetDirtyFiles() {
+    async performResetDirtyFragileFiles() {
         const files = this.get('dirtyFragileConfigFiles');
-        await Promise.all(files.map(file => this.performResetDirtyFile(file)));
+        await Promise.all(files.map(file => this.performResetDirtyFragileFile(file)));
         window.location.reload();
     }
 
-    async performResetDirtyFile(configFile: ConfigurationFile) {
+    async performResetDirtyFragileFile(configFile: ConfigurationFile) {
         const fileModel = this.get(configFile.modelProperty);
         if (!fileModel) {
             throw new EmberError('Illegal config');
@@ -1475,7 +1475,7 @@ export default class ProjectEditor extends Component {
     }
 
     @action
-    viewDirtyFiles(this: ProjectEditor) {
+    viewDirtyFragileFiles(this: ProjectEditor) {
         const files = this.get('dirtyFragileConfigFiles');
         if (files.length === 0) {
             throw new EmberError('Illegal config');
@@ -1497,10 +1497,10 @@ export default class ProjectEditor extends Component {
     }
 
     @action
-    resetDirtyFiles(this: ProjectEditor) {
+    resetDirtyFragileFiles(this: ProjectEditor) {
         later(async () => {
             try {
-                await this.performResetDirtyFiles();
+                await this.performResetDirtyFragileFiles();
             } catch (exception) {
                 this.onError(exception, this.intl.t('binderhub.error.modify_files_error'));
             }

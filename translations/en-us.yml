@@ -1805,8 +1805,8 @@ binderhub:
         change_environment: 'Change'
         deprecated_images_header: 'Deprecated images'
         add_package: 'Add'
-        view_dockerfile: 'View: '
-        reset_dockerfile: 'Reset: '
+        view_dirty_fragile_files: 'View: '
+        reset_dirty_fragile_files: 'Reset: '
         unavailable: 'The configuration file has been manually changed.'
         no_environment: 'This environment is not configured by the editor.'
         post_build_placeholder: |-

@@ -6,22 +6,22 @@
             {{t 'binderhub.deployment.unavailable'}}
             {{#if this.node.userHasWritePermission}}
                 <button
-                    data-test-view-dockerfile
+                    data-test-view-dirty-fragile-files
                     type='button'
                     class='btn btn-default'
-                    {{action this.viewDirtyFiles target=this}}
+                    {{action this.viewDirtyFragileFiles target=this}}
                 >
-                    {{t 'binderhub.deployment.view_dockerfile'}}
-                    {{this.dirtyConfigurationFilenames}}
+                    {{t 'binderhub.deployment.view_dirty_fragile_files'}}
+                    {{this.dirtyFragileConfigurationFilenames}}
                 </button>
                 <button
-                    data-test-reset-dockerfile
+                    data-test-reset-dirty-fragile-files
                     type='button'
                     class='btn btn-danger'
-                    {{action (mut this.showResetDockerfileConfirmDialog) true}}
+                    {{action (mut this.showDirtyFragileFileConfirmDialog) true}}
                 >
-                    {{t 'binderhub.deployment.reset_dockerfile'}}
-                    {{this.dirtyConfigurationFilenames}}
+                    {{t 'binderhub.deployment.reset_dirty_fragile_files'}}
+                    {{this.dirtyFragileConfigurationFilenames}}
                 </button>
             {{/if}}
         {{else}}
@@ -223,15 +223,15 @@
 </div>
 
 <BsModal
-    data-test-reset-dockerfile-confirm-modal
-    @open={{this.showResetDockerfileConfirmDialog}}
-    @onHidden={{action (mut this.showResetDockerfileConfirmDialog) false}}
+    data-test-reset-dirty-fragile-files-confirm-modal
+    @open={{this.showDirtyFragileFileConfirmDialog}}
+    @onHidden={{action (mut this.showDirtyFragileFileConfirmDialog) false}}
     as |modal|
 >
     <modal.header>
         <h4>
             {{t 'binderhub.deployment.reset_configfile_confirm_dialog_title'}}
-            {{this.dirtyConfigurationFilenames}}
+            {{this.dirtyFragileConfigurationFilenames}}
         </h4>
     </modal.header>
     <modal.body>
@@ -239,12 +239,12 @@
     </modal.body>
     <modal.footer>
         <BsButton
-            @onClick={{action (mut this.showResetDockerfileConfirmDialog) false}}
+            @onClick={{action (mut this.showDirtyFragileFileConfirmDialog) false}}
         >
             {{t 'general.cancel'}}
         </BsButton>
         <BsButton
-            @onClick={{action this.resetDirtyFiles}}
+            @onClick={{action this.resetDirtyFragileFiles}}
             @type='danger'
         >
             {{t 'general.ok'}}

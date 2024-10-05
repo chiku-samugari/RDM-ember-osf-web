@@ -287,9 +287,9 @@ export default class JupyterServersList extends Component {
         if (servers === undefined || servers === null) {
             throw new EmberError('Unexpected object');
         }
-        const serverNames: string[] = Object.keys(servers)
-            .filter(({ length }) => length > 0)
-            .sort();
+        const serverNames: string[] = Object.keys(servers).filter(
+            ({ length }) => length > 0,
+        ).sort();
         return {
             namedServerLimit: limit !== undefined ? limit : null,
             entries: serverNames.map(serverName => ({

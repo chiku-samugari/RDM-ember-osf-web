@@ -60,6 +60,8 @@
                     @binderHubConfig={{this.model.binderHubConfig}}
                     @configFolder={{this.configFolder}}
                     @onError={{action this.projectError}}
+                    @pagePolluter={{this.pollute}}
+                    @pageCleanser={{this.cleanse}}
                 />
             </div>
             <GuidNode::Binderhub::-Components::BuildConsole

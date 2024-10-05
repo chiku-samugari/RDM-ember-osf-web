@@ -586,6 +586,16 @@ export default class GuidNodeBinderHub extends Controller {
             ),
         );
     }
+
+    @action
+    pollute(this: GuidNodeBinderHub) {
+        this.set('isPageDirty', true);
+    }
+
+    @action
+    cleanse(this: GuidNodeBinderHub) {
+        this.set('isPageDirty', false);
+    }
 }
 
 declare module '@ember/controller' {

@@ -218,6 +218,10 @@ export default class ProjectEditor extends Component {
 
     editingDockerfileContent: string | undefined = undefined;
 
+    @requiredAction pagePolluter!: () => void;
+
+    @requiredAction pageCleanser!: () => void;
+
     pendingImageUrl?: string;
 
     @requiredAction onError!: (exception: any, message: string) => void;
@@ -1378,6 +1382,7 @@ export default class ProjectEditor extends Component {
         this.set('imageSelecting', false);
         this.set('showDeprecated', false);
         this.set('pendingImageUrl', undefined);
+        this.pageCleanser();
     }
 
     @action
@@ -1481,6 +1486,9 @@ export default class ProjectEditor extends Component {
     @action
     editDockerfileContent(this: ProjectEditor, event: { target: HTMLInputElement }) {
         this.set('editingDockerfileContent', event.target.value);
+        if (event.target.value !== this.get('dockerfile')) {
+            this.pagePolluter();
+        }
     }
 
     @action
@@ -1497,6 +1505,7 @@ export default class ProjectEditor extends Component {
                 true,
             );
             this.set('editingDockerfileContent', undefined);
+            this.pageCleanser();
         }, 0);
     }
 

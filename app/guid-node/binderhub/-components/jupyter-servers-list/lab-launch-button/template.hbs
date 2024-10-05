@@ -1,0 +1,7 @@
+<div data-test-launch>
+    {{#if @serverReady}}
+        {{fa-icon 'play-circle' size=2 local-class='launch_icon' click=this.launch}}
+    {{else}}
+        {{fa-icon 'spinner' pulse=true size=2 local-class='disabled_icon'}}
+    {{/if}}
+</div>

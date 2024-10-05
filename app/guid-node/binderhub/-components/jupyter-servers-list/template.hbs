@@ -70,8 +70,8 @@
                                 <td class='col-md-2' data-test-server-list-item={{index}}>{{server.entry.name}}</td>
                                 <td class='col-md-2'>{{moment-format server.entry.last_activity 'YYYY-MM-DD hh:mm A'}}</td>
                                 <td>
-                                    <GuidNode::Binderhub::-Components::LaunchButtons
-                                        @binderHubConfig={{this.binderHubConfig}}
+                                    <GuidNode::Binderhub::-Components::JupyterServersList::LabLaunchButton
+                                        @serverReady={{or server.entry.ready (and (not server.entry.pending) (not server.entry.stopped))}}
                                         @onClick={{action this.openServerWithPath server}}
                                     />
                                 </td>

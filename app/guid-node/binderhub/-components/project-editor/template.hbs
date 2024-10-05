@@ -228,6 +228,15 @@
                 </div>
             {{/if}}
         {{/if}}
+        <GuidNode::Binderhub::-Components::BuildConsole
+            @binderHubConfig={{this.binderHubConfig}}
+            @currentBinderHubURL={{this.currentBinderHubURL}}
+            @renewToken={{action this.renewBinderHubToken}}
+            @requestBuild={{action this.requestBuild}}
+            @beforeLaunch={{this.performDockerfileSave}}
+            @buildLog={{this.buildLog}}
+            @buildPhase={{this.buildPhase}}
+          />
     {{/if}}
 </div>
 

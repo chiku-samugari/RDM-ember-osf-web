@@ -5,7 +5,11 @@ import { later } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 import Intl from 'ember-intl/services/intl';
 import { requiredAction } from 'ember-osf-web/decorators/component';
-import { isBinderHubConfigFulfilled } from 'ember-osf-web/guid-node/binderhub/controller';
+import {
+    BootstrapPath,
+    BuildMessage,
+    isBinderHubConfigFulfilled,
+} from 'ember-osf-web/guid-node/binderhub/controller';
 import BinderHubConfigModel, { Image } from 'ember-osf-web/models/binderhub-config';
 import Node from 'ember-osf-web/models/node';
 import CurrentUser from 'ember-osf-web/services/current-user';
@@ -225,6 +229,20 @@ export default class ProjectEditor extends Component {
     pendingImageUrl?: string;
 
     @requiredAction onError!: (exception: any, message: string) => void;
+
+    currentBinderHubURL!: URL;
+
+    buildLog: BuildMessage[] | null = null;
+
+    buildPhase: string | null = null;
+
+    @requiredAction renewBinderHubToken!: (binderhubUrl: string) => void;
+
+    @requiredAction requestBuild!: (
+        binderhubUrl: string,
+        path: BootstrapPath | null,
+        callback: (result: BuildMessage) => void,
+    ) => void;
 
     didReceiveAttrs() {
         if (!this.configFolder || this.configFolder.path === this.loadingPath) {
@@ -1493,20 +1511,26 @@ export default class ProjectEditor extends Component {
 
     @action
     saveDockerfile(this: ProjectEditor) {
-        if (this.get('editingDockerfileContent') === undefined) {
+        later(async () => {
+            await this.performDockerfileSave();
+        }, 0);
+    }
+
+    @action
+    async performDockerfileSave(this: ProjectEditor) {
+        const content = this.get('editingDockerfileContent');
+        if (typeof content === 'undefined') {
             return;
         }
-        later(async () => {
-            const info = this.findConfigurationFile('Dockerfile');
-            const isNewFileCreated = await this.saveCurrentFile(
-                info,
-                await this.getRootFiles(true),
-                { [info.property]: this.get('editingDockerfileContent') || '' },
-                true,
-            );
-            this.set('editingDockerfileContent', undefined);
-            this.pageCleanser();
-        }, 0);
+        const info = this.findConfigurationFile('Dockerfile');
+        await this.saveCurrentFile(
+            info,
+            await this.getRootFiles(true),
+            { [info.property]: content },
+            true,
+        );
+        this.set('editingDockerfileContent', undefined);
+        this.pageCleanser();
     }
 
     @computed('editingPostBuild')

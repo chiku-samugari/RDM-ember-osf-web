@@ -1,59 +1,57 @@
-<div local-class='build_console'>
-    <h3>
-        {{t 'binderhub.deployment.header'}}
-    </h3>
-    {{t 'binderhub.deployment.description'}}
-    <div local-class='build_launcher'>
-        <BsButton
-            data-test-binderhub-launch
-            @type='success'
-            local-class='build_launch_button'
-            @onClick={{action this.launch}}
-            >
-            {{t 'binderhub.build.launch_new_enviornment'}}
-        </BsButton>
-    </div>
-    {{#if this.buildLogVisible}}
-        <div local-class='build_console_button'>
-            {{#if this.buildPhase}}
-                <div local-class='build_status'>
-                    <OsfButton
-                    @type='link'
-                    @onClick={{action (mut this.buildStatusOpen) (not this.buildStatusOpen)}}
-                    >
-                        {{#if this.buildStatusOpen}}
-                            {{fa-icon 'caret-down'}}
-                        {{else}}
-                            {{fa-icon 'caret-right'}}
-                        {{/if}}
-                    </OsfButton>
-                    {{t 'binderhub.build.status'}}
-                </div>
-                <div local-class='build_phase'>
-                    {{this.buildPhase}}
-                </div>
-            {{/if}}
-        </div>
-        {{#if this.buildStatusOpen}}
-            <div local-class='build_terminal' id='binderhub-build-terminal'>
-                <pre>{{this.buildLogLinesHTML}}</pre>
+<h3>
+    {{t 'binderhub.deployment.header'}}
+</h3>
+{{t 'binderhub.deployment.description'}}
+<div local-class='build_launcher'>
+    <BsButton
+        data-test-binderhub-launch
+        @type='success'
+        local-class='build_launch_button'
+        @onClick={{action this.safeLaunch}}
+        >
+        {{t 'binderhub.build.launch_new_enviornment'}}
+    </BsButton>
+</div>
+{{#if this.buildLogVisible}}
+    <div local-class='build_console_button'>
+        {{#if this.buildPhase}}
+            <div local-class='build_status'>
+                <OsfButton
+                @type='link'
+                @onClick={{action (mut this.buildStatusOpen) (not this.buildStatusOpen)}}
+                >
+                    {{#if this.buildStatusOpen}}
+                        {{fa-icon 'caret-down'}}
+                    {{else}}
+                        {{fa-icon 'caret-right'}}
+                    {{/if}}
+                </OsfButton>
+                {{t 'binderhub.build.status'}}
+            </div>
+            <div local-class='build_phase'>
+                {{this.buildPhase}}
             </div>
         {{/if}}
+    </div>
+    {{#if this.buildStatusOpen}}
+        <div local-class='build_terminal' id='binderhub-build-terminal'>
+            <pre>{{this.buildLogLinesHTML}}</pre>
+        </div>
     {{/if}}
-    <BsAlert
-        @type='danger'
-        @dismissible={{false}}
-        @visible={{this.notAuthorized}}
-        local-class='BinderHub__connection_alert'
+{{/if}}
+<BsAlert
+    @type='danger'
+    @dismissible={{false}}
+    @visible={{this.notAuthorized}}
+    local-class='BinderHub__connection_alert'
+>
+    {{t 'binderhub.error.binderhub_auth_error'}}
+    <button
+        data-test-authorize-binderhub
+        type='button'
+        class='btn btn-danger'
+        {{action this.authorize}}
     >
-        {{t 'binderhub.error.binderhub_auth_error'}}
-        <button
-            data-test-authorize-binderhub
-            type='button'
-            class='btn btn-danger'
-            {{action this.authorize}}
-        >
-            {{t 'binderhub.error.reconnect_binderhub'}}
-        </button>
-    </BsAlert>
-</div>
+        {{t 'binderhub.error.reconnect_binderhub'}}
+    </button>
+</BsAlert>

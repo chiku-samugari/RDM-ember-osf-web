@@ -58,20 +58,17 @@
                 <GuidNode::Binderhub::-Components::ProjectEditor
                     @node={{this.model.node}}
                     @binderHubConfig={{this.model.binderHubConfig}}
+                    @currentBinderHubURL={{this.currentBinderHubURL}}
                     @configFolder={{this.configFolder}}
                     @onError={{action this.projectError}}
                     @pagePolluter={{this.pollute}}
                     @pageCleanser={{this.cleanse}}
+                    @renewBinderHubToken={{action this.renewBinderHubToken}}
+                    @requestBuild={{action this.build}}
+                    @buildLog={{this.buildLog}}
+                    @buildPhase={{this.buildPhase}}
                 />
             </div>
-            <GuidNode::Binderhub::-Components::BuildConsole
-                @binderHubConfig={{this.model.binderHubConfig}}
-                @currentBinderHubURL={{this.currentBinderHubURL}}
-                @renewToken={{action this.renewBinderHubToken}}
-                @requestBuild={{action this.build}}
-                @buildLog={{this.buildLog}}
-                @buildPhase={{this.buildPhase}}
-              />
             <BsAlert
                 @type='danger'
                 @dismissible={{false}}

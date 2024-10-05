@@ -1,6 +1,7 @@
 import Component from '@ember/component';
 import EmberError from '@ember/error';
 import { action, computed } from '@ember/object';
+import { later } from '@ember/runloop';
 import { htmlSafe } from '@ember/template';
 import { requiredAction } from 'ember-osf-web/decorators/component';
 import AnsiUp from 'ember-osf-web/guid-node/binderhub/-components/build-console/ansi_up';
@@ -19,13 +20,13 @@ export default class BuildConsole extends Component {
 
     initialized: boolean = false;
 
-    buildLog: BuildMessage[] | null = this.buildLog;
+    buildLog: BuildMessage[] | null = null;
 
     buildLogLineCount = 0;
 
     buildStatusOpen = true;
 
-    buildPhase: string | null = this.buildPhase;
+    buildPhase: string | null = null;
 
     currentBinderHubURL!: URL;
 
@@ -38,6 +39,8 @@ export default class BuildConsole extends Component {
         path: BootstrapPath | null,
         callback: (result: BuildMessage) => void,
     ) => void;
+
+    @requiredAction beforeLaunch!: () => void;
 
     didReceiveAttrs() {
         if (!this.initialized && !this.validateTokens()) {
@@ -84,7 +87,14 @@ export default class BuildConsole extends Component {
     }
 
     @action
-    launch(this: BuildConsole, path: BootstrapPath | null) {
+    safeLaunch(this: BuildConsole) {
+        later(async () => {
+            await this.beforeLaunch();
+            this.launch();
+        }, 0);
+    }
+
+    launch() {
         if (!isBinderHubConfigFulfilled(this)) {
             throw new EmberError('Illegal config');
         }
@@ -96,11 +106,7 @@ export default class BuildConsole extends Component {
             throw new EmberError('Insufficient parameters');
         }
         this.set('notAuthorized', false);
-        const defaultPath = {
-            path: 'lab/',
-            pathType: 'url',
-        } as BootstrapPath;
-        this.performBuild(path || defaultPath);
+        this.performBuild({ path: 'lab/', pathType: 'url' } as BootstrapPath);
     }
 
     @action

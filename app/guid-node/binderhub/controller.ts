@@ -15,6 +15,7 @@ import BinderHubConfigModel, {
 } from 'ember-osf-web/models/binderhub-config';
 import FileProviderModel from 'ember-osf-web/models/file-provider';
 import Node from 'ember-osf-web/models/node';
+import ServerAnnotationModel from 'ember-osf-web/models/server-annotation';
 import Analytics from 'ember-osf-web/services/analytics';
 import CurrentUser from 'ember-osf-web/services/current-user';
 import StatusMessages from 'ember-osf-web/services/status-messages';
@@ -595,6 +596,22 @@ export default class GuidNodeBinderHub extends Controller {
     @action
     cleanse(this: GuidNodeBinderHub) {
         this.set('isPageDirty', false);
+    }
+
+    @computed('model.serverAnnotations', 'currentBinderHubURL')
+    get serverAnnotationHash() {
+        return this.model.serverAnnotations.reduce(
+            (acc: {[key: string]: ServerAnnotationModel}, item: ServerAnnotationModel) => {
+                if ((new URL(item.binderhubUrl)).toString() === this.get('currentBinderHubURL').toString()) {
+                    return {
+                        ...acc,
+                        [(new URL(item.serverUrl)).toString()]: item,
+                    };
+                }
+                return acc;
+            },
+            {},
+        );
     }
 }
 

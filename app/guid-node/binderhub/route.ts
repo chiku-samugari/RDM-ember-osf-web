@@ -20,6 +20,10 @@ export default class GuidNodeBinderHubRoute extends Route.extend(ConfirmationMix
                 'binderhub-config',
                 (this.paramsFor('guid-node') as {guid: string}).guid,
             ),
+            serverAnnotations: this.store.query(
+                'server-annotation',
+                { guid: (this.paramsFor('guid-node') as {guid: string}).guid },
+            ),
         });
     }
 

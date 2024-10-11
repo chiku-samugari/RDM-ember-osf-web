@@ -60,6 +60,7 @@
                         <th class='col-md-2'>{{t 'binderhub.servers.name'}}</th>
                         <th class='col-md-2'>{{t 'binderhub.servers.last_activity'}}</th>
                         <th>{{t 'binderhub.servers.launch'}}</th>
+                        <th>{{t 'binderhub.servers.memo'}}</th>
                         <th>{{t 'binderhub.servers.delete'}}</th>
                     </tr>
                 </thead>
@@ -73,6 +74,14 @@
                                     <GuidNode::Binderhub::-Components::JupyterServersList::LabLaunchButton
                                         @serverReady={{or server.entry.ready (and (not server.entry.pending) (not server.entry.stopped))}}
                                         @onClick={{action this.openServerWithPath server}}
+                                    />
+                                </td>
+                                <td>
+                                    <textarea
+                                        local-class='memo_cell'
+                                        class='form-control'
+                                        value={{get this.serverMemoArray index}}
+                                        onchange={{fn this.onMemoEdit server}}
                                     />
                                 </td>
                                 <td>

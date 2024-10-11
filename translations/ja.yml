@@ -1790,6 +1790,7 @@ binderhub:
         url: 'URL'
         last_activity: '最終更新'
         launch: '起動'
+        memo: 'メモ'
         delete: '削除'
         no_servers: '解析環境はありません'
     deployment:

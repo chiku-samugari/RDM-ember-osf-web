@@ -1790,6 +1790,7 @@ binderhub:
         url: 'URL'
         last_activity: 'Last activity'
         launch: 'Launch'
+        memo: 'Memo'
         delete: 'Delete'
         no_servers: 'No Servers'
     deployment:

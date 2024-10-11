@@ -11,6 +11,7 @@ import {
 } from 'ember-osf-web/guid-node/binderhub/controller';
 import BinderHubConfigModel, { JupyterHub } from 'ember-osf-web/models/binderhub-config';
 import Node from 'ember-osf-web/models/node';
+import ServerAnnotationModel from 'ember-osf-web/models/server-annotation';
 import { addPathSegment } from 'ember-osf-web/utils/url-parts';
 
 /* eslint-disable camelcase */
@@ -84,6 +85,8 @@ export default class JupyterServersList extends Component {
     loggedOutDomains: string[] | null = null;
 
     namedServerLimit: number | null = null;
+
+    serverAnnotationHash: { [key: string]: ServerAnnotationModel } = {};
 
     didReceiveAttrs() {
         if (!this.initialized && !this.validateToken()) {
@@ -178,6 +181,19 @@ export default class JupyterServersList extends Component {
             return null;
         }
         return jupyterhub.token.user;
+    }
+
+    /**
+     * This property is needed since `get` helper does not work if the 2nd
+     * argument includes some dots.
+     */
+    @computed('serverAnnotationHash', 'servers')
+    get serverMemoArray(): string[] {
+        const servers = this.get('servers');
+        if (servers === null) {
+            throw new EmberError('servers not ready');
+        }
+        return servers.map(s => this.get('serverAnnotationHash')[s.entry.url].memotext);
     }
 
     @computed('binderHubConfig', 'requestNotAuthorized', 'defaultJupyterhubUrl', 'loggedOutDomains', 'initialized')
@@ -375,5 +391,16 @@ export default class JupyterServersList extends Component {
             const servers = await this.loadServers(server.ownerUrl);
             this.set('allServers', servers !== null ? servers.entries : null);
         }, 0);
+    }
+
+    @action
+    onMemoEdit(this: JupyterServersList, server: JupyterServerEntry, event: { target: HTMLInputElement }) {
+        const node = this.get('node');
+        if (!node) {
+            throw new EmberError('Page is not ready.');
+        }
+        const annotation = this.get('serverAnnotationHash')[server.entry.url];
+        annotation.memotext = event.target.value;
+        annotation.save({ adapterOptions: { guid: node.id } });
     }
 }

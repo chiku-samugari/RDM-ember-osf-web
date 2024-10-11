@@ -88,25 +88,32 @@ export default class BuildConsole extends Component {
 
     @action
     safeLaunch(this: BuildConsole) {
+        // Grab the *current* BinderHub URL beforehand. It is required since
+        // the user may (quickly) change its value via HostSelector component
+        // after clicking the launch button.
+        const binderhubUrl = this.get('currentBinderHubURL');
         later(async () => {
             await this.beforeLaunch();
-            this.launch();
+            this.launch(binderhubUrl);
         }, 0);
     }
 
-    launch() {
+    launch(binderhubUrl: URL) {
         if (!isBinderHubConfigFulfilled(this)) {
             throw new EmberError('Illegal config');
         }
         const binderhub = this.binderHubConfig.findBinderHubByURL(
-            this.get('currentBinderHubURL').toString(),
+            binderhubUrl.toString(),
         );
         if (!binderhub || !validateBinderHubToken(binderhub)) {
             this.set('notAuthorized', true);
             throw new EmberError('Insufficient parameters');
         }
         this.set('notAuthorized', false);
-        this.performBuild({ path: 'lab/', pathType: 'url' } as BootstrapPath);
+        this.performBuild(
+            binderhubUrl,
+            { path: 'lab/', pathType: 'url' } as BootstrapPath,
+        );
     }
 
     @action
@@ -117,12 +124,12 @@ export default class BuildConsole extends Component {
         this.renewToken(this.get('currentBinderHubURL').toString());
     }
 
-    performBuild(path: BootstrapPath | null) {
+    performBuild(binderhubUrl: URL, path: BootstrapPath | null) {
         if (!this.requestBuild) {
             return;
         }
         this.requestBuild(
-            this.get('currentBinderHubURL').toString(),
+            binderhubUrl.toString(),
             path,
             (result: BuildMessage) => {
                 // TODO: is this callback called repeatedly until the

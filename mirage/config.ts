@@ -27,6 +27,7 @@ import { osfNestedResource, osfResource, osfToManyRelationship } from './views/o
 import { getProviderSubjects } from './views/provider-subjects';
 import { createRegistration, forkRegistration, registrationDetail } from './views/registration';
 import { rootDetail } from './views/root';
+import * as serverAnnotation from './views/server-annotation';
 import { createToken } from './views/token';
 import { createEmails, updateEmails } from './views/update-email';
 import { userNodeList } from './views/user';
@@ -257,6 +258,9 @@ export default function(this: Server) {
 
     this.get('/project/:id/iqbrims/status', iqbrimsStatus);
     this.get('/project/:id/binderhub/config', binderhubConfig);
+    this.get('/project/:pid/binderhub/server_annotation', serverAnnotation.read);
+    this.post('/project/:pid/binderhub/server_annotation', serverAnnotation.create);
+    this.del('/project/:pid/binderhub/server_annotation/:aid', serverAnnotation.del);
     this.get('/project/:id/metadata/erad/candidates', metadataNodeErad);
     this.get('/project/:id/metadata/project', metadataNodeProject);
 

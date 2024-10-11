@@ -60,6 +60,7 @@
                         <th class='col-md-2'>{{t 'binderhub.servers.name'}}</th>
                         <th class='col-md-2'>{{t 'binderhub.servers.last_activity'}}</th>
                         <th>{{t 'binderhub.servers.launch'}}</th>
+                        <th>{{t 'binderhub.servers.memo'}}</th>
                         <th>{{t 'binderhub.servers.delete'}}</th>
                     </tr>
                 </thead>
@@ -74,6 +75,37 @@
                                         @serverReady={{or server.entry.ready (and (not server.entry.pending) server.entry.stopped)}}
                                         @onClick={{action this.openServerWithPath server}}
                                     />
+                                </td>
+                                <td>
+                                    {{#let (get this.serverMemoArray index) as |memo|}}
+                                        {{#if this.serverMemoActiveBit}}
+                                            {{#if (eq memo null)}}
+                                                <textarea
+                                                    data-test-memo-editor='preparing'
+                                                    local-class='memo_cell'
+                                                    class='form-control'
+                                                    disabled={{true}}
+                                                    placeholder={{t 'binderhub.servers.memo_disabled'}}
+                                                />
+                                            {{else}}
+                                                <textarea
+                                                    data-test-memo-editor='ready'
+                                                    local-class='memo_cell'
+                                                    class='form-control'
+                                                    value={{memo}}
+                                                    onchange={{fn this.onMemoEdit server}}
+                                                />
+                                            {{/if}}
+                                        {{else}}
+                                            <textarea
+                                                data-test-memo-editor='inactive'
+                                                local-class='memo_cell'
+                                                class='form-control'
+                                                disabled={{true}}
+                                                placeholder={{t 'binderhub.servers.memo_inactive'}}
+                                            />
+                                        {{/if}}
+                                    {{/let}}
                                 </td>
                                 <td>
                                     <div data-test-delete-icon>

@@ -1793,6 +1793,9 @@ binderhub:
         url: 'URL'
         last_activity: '最終更新'
         launch: '起動'
+        memo: 'メモ'
+        memo_disabled: '初期化中...'
+        memo_inactive: 'メモを利用できません'
         delete: '削除'
         no_servers: '解析環境はありません'
     deployment:

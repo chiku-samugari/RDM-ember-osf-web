@@ -7,36 +7,19 @@ import {
     BootstrapPath,
     getJupyterHubServerURL,
     isBinderHubConfigFulfilled,
+    JupyterServer,
+    JupyterServerEntry,
     validateBinderHubToken,
 } from 'ember-osf-web/guid-node/binderhub/controller';
 import BinderHubConfigModel, { JupyterHub } from 'ember-osf-web/models/binderhub-config';
 import Node from 'ember-osf-web/models/node';
+import ServerAnnotationModel from 'ember-osf-web/models/server-annotation';
 import { addPathSegment } from 'ember-osf-web/utils/url-parts';
 
 /* eslint-disable camelcase */
-export interface JupyterServerOptions {
-    binder_persistent_request?: string;
-    rdm_node?: string;
-}
-
 interface JupyterUser {
     named_server_limit?: number | null;
     servers?: {[key: string]: JupyterServer} | null;
-}
-
-export interface JupyterServer {
-    name: string;
-    last_activity?: string | null;
-    started?: string | null;
-    pending?: string | null;
-    ready?: boolean;
-    url: string;
-    user_options?: JupyterServerOptions | null;
-}
-
-interface JupyterServerEntry {
-    ownerUrl: string;
-    entry: JupyterServer;
 }
 
 interface JupyterServerResponse {
@@ -84,6 +67,22 @@ export default class JupyterServersList extends Component {
     loggedOutDomains: string[] | null = null;
 
     namedServerLimit: number | null = null;
+
+    serverMemoActiveBit: boolean = true;
+
+    serverAnnotationHash: { [key: string]: ServerAnnotationModel } = {};
+
+    @requiredAction requestAnnotationCreation!: (
+        entry: JupyterServerEntry,
+        binderhubUrl: URL,
+        updateDy: boolean,
+    ) => void;
+
+    @requiredAction requestAnnotationDelete!: (
+        serverPath: string, updateDy: boolean,
+    ) => void;
+
+    @requiredAction requestAnnotationReload!: (peek: boolean) => void;
 
     didReceiveAttrs() {
         if (!this.initialized && !this.validateToken()) {
@@ -178,6 +177,78 @@ export default class JupyterServersList extends Component {
             return null;
         }
         return jupyterhub.token.user;
+    }
+
+    /**
+     * An string array whose `i`th element is the (initial) contents of
+     * `i`th jupyter server (i.e. this.servers[i]). An element `null`
+     * means that the corresponding server does not have server
+     * annotation on the API server side. The `null` value is just a
+     * kind of placeholder and server annotations creation process would
+     * be started immediately, by this method.
+     *
+     * This property is needed since `get` helper does not work if the 2nd
+     * argument includes some dots and we cannot use
+     * `this.serverAnnotationHash` directly in the template.hbs.
+     */
+    @computed('serverAnnotationHash', 'servers')
+    get serverMemoArray(): Array<string | null> {
+        const servers = this.get('servers');
+        if (servers === null) {
+            throw new EmberError('servers not ready');
+        }
+        if (this.killZombieAnnotation(servers.map(s => s.entry.url))) {
+            return servers.map(() => null);
+        }
+        let nullDetected = false;
+        return servers.map(s => {
+            if (!this.get('serverMemoActiveBit')) {
+                return null;
+            }
+            const annot = this.get('serverAnnotationHash')[s.entry.url];
+            if (typeof annot === 'undefined') {
+                if (!nullDetected) {
+                    nullDetected = true;
+                    this.requestAnnotationCreation(s, this.get('currentBinderHubURL'), true);
+                }
+                return null;
+            }
+            return annot.memotext;
+        });
+    }
+
+    /**
+     * Probe if there is a zombie server annotation in
+     * `this.serverAnnotationHash`. Here, a zombie server annotation is
+     * a server annotation that has no corresponding server on the
+     * currently selected JupyterHub.
+     *
+     * If it detects a zombie server annotations, then it requests to
+     * delete it and immediately returns `true`. `false` is returned if
+     * no zombie server annotations are detected.
+     *
+     * Be aware that it requests the deletion of only one zombie server
+     * annotation even if there are 2 or more such annotations. Since
+     * the deletion modifies GuidNodeBinderHub.dyServerAnnotations,
+     * this.didReceiveAttrs is called.
+     *
+     * @param {string[]} - An path strings array of servers on the
+     *                    currently selected JupyterHub. Even though
+     *                    JupyterHub calls it `url`, it is NOT an url,
+     *                    but the path part of a url.
+     * @return {boolean} - `true` if a server annotation deletion is
+     *                     requested, `false` otherwise.
+     */
+    killZombieAnnotation(aliveServerPaths: string[]): boolean {
+        for (const path of Object.keys(this.get('serverAnnotationHash'))) {
+            if (!aliveServerPaths.includes(path)) {
+                later(async () => {
+                    this.requestAnnotationDelete(path, true);
+                }, 0);
+                return true;
+            }
+        }
+        return false;
     }
 
     @computed('binderHubConfig', 'requestNotAuthorized', 'defaultJupyterhubUrl', 'loggedOutDomains', 'initialized')
@@ -377,8 +448,20 @@ export default class JupyterServersList extends Component {
                     data: JSON.stringify({ remove: true }),
                 },
             );
+            await this.requestAnnotationDelete(server.entry.url, true);
             const servers = await this.loadServers(server.ownerUrl);
             this.set('allServers', servers !== null ? servers.entries : null);
         }, 0);
+    }
+
+    @action
+    onMemoEdit(this: JupyterServersList, server: JupyterServerEntry, event: { target: HTMLInputElement }) {
+        const node = this.get('node');
+        if (!node) {
+            throw new EmberError('Page is not ready.');
+        }
+        const annotation = this.get('serverAnnotationHash')[server.entry.url];
+        annotation.memotext = event.target.value;
+        annotation.save({ adapterOptions: { guid: node.id } });
     }
 }

@@ -42,6 +42,11 @@
                 <GuidNode::Binderhub::-Components::JupyterServersList
                     @node={{this.node}}
                     @binderHubConfig={{this.model.binderHubConfig}}
+                    @serverMemoActiveBit={{this.serverAnnotationActiveBit}}
+                    @serverAnnotationHash={{this.serverAnnotationHash}}
+                    @requestAnnotationCreation={{this.createServerAnnotation}}
+                    @requestAnnotationDelete={{this.deleteServerAnnotation}}
+                    @requestAnnotationReload={{this.reloadServerAnnotations}}
                     @currentBinderHubURL={{this.currentBinderHubURL}}
                     @loggedOutDomains={{this.loggedOutDomains}}
                     @renewToken={{action this.renewJupyterHubToken}}

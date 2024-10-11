@@ -7,6 +7,7 @@ import { later } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 
 import DS from 'ember-data';
+import { ConflictError } from 'ember-data/adapters/errors';
 
 import Intl from 'ember-intl/services/intl';
 import BinderHubConfigModel, {
@@ -15,6 +16,7 @@ import BinderHubConfigModel, {
 } from 'ember-osf-web/models/binderhub-config';
 import FileProviderModel from 'ember-osf-web/models/file-provider';
 import Node from 'ember-osf-web/models/node';
+import ServerAnnotationModel from 'ember-osf-web/models/server-annotation';
 import Analytics from 'ember-osf-web/services/analytics';
 import CurrentUser from 'ember-osf-web/services/current-user';
 import StatusMessages from 'ember-osf-web/services/status-messages';
@@ -31,6 +33,26 @@ export interface BuildFormValues {
 }
 
 /* eslint-disable camelcase */
+interface JupyterServerOptions {
+    binder_persistent_request?: string;
+    rdm_node?: string;
+}
+export interface JupyterServer {
+    name: string;
+    last_activity?: string | null;
+    started?: string | null;
+    pending?: string | null;
+    ready?: boolean;
+    url: string;
+    user_options?: JupyterServerOptions | null;
+}
+
+export interface JupyterServerEntry {
+    ownerUrl: string;
+    // TODO: It should be renamed to `server`
+    entry: JupyterServer;
+}
+
 export interface BuildMessage {
     phase: string;
     message: string;
@@ -141,7 +163,11 @@ export default class GuidNodeBinderHub extends Controller {
     @readOnly('model.node.taskInstance.value')
     node?: Node;
 
+    dyServerAnnotations: ServerAnnotationModel[] = [];
+
     isPageDirty = false;
+
+    serverAnnotationActiveBit = true;
 
     configFolder: WaterButlerFile | null = null;
 
@@ -312,7 +338,7 @@ export default class GuidNodeBinderHub extends Controller {
     }
 
     async performBuild(
-        binderhubUrl: string,
+        binderhubURLString: string,
         needsPersonalToken: boolean,
         path: BootstrapPath | null,
         callback: (result: BuildMessage) => void,
@@ -328,7 +354,7 @@ export default class GuidNodeBinderHub extends Controller {
         if (!buildPath) {
             throw new EmberError('Illegal state');
         }
-        const binderhub = this.config.findBinderHubByURL(binderhubUrl);
+        const binderhub = this.config.findBinderHubByURL(binderhubURLString);
         let additional = '';
         if (this.currentUser && this.currentUser.currentUserId) {
             additional += `&userctx=${this.currentUser.currentUserId}`;
@@ -359,7 +385,7 @@ export default class GuidNodeBinderHub extends Controller {
             if (data.phase === 'auth' && data.authorization_url && !needsPersonalToken) {
                 source.close();
                 later(async () => {
-                    await this.performBuild(binderhubUrl, true, path, callback);
+                    await this.performBuild(binderhubURLString, true, path, callback);
                 }, 0);
                 return;
             }
@@ -555,13 +581,13 @@ export default class GuidNodeBinderHub extends Controller {
     @action
     build(
         this: GuidNodeBinderHub,
-        binderhubUrl: string,
+        binderhubURLString: string,
         path: BootstrapPath | null,
         callback: (result: BuildMessage) => void,
     ) {
         this.set('buildLog', []);
         later(async () => {
-            await this.performBuild(binderhubUrl, false, path, callback);
+            await this.performBuild(binderhubURLString, false, path, callback);
         }, 0);
     }
 
@@ -584,6 +610,10 @@ export default class GuidNodeBinderHub extends Controller {
                 host => host.url.href === defaultBinderHubURL.href,
             ),
         );
+        this.set(
+            'dyServerAnnotations',
+            this.model.serverAnnotations.toArray(),
+        );
     }
 
     @action
@@ -594,6 +624,128 @@ export default class GuidNodeBinderHub extends Controller {
     @action
     cleanse(this: GuidNodeBinderHub) {
         this.set('isPageDirty', false);
+    }
+
+    @computed('dyServerAnnotations', 'currentBinderHubURL')
+    get serverAnnotationHash() {
+        return this.dyServerAnnotations.reduce(
+            (acc: {[key: string]: ServerAnnotationModel}, item: ServerAnnotationModel) => {
+                if ((new URL(item.binderhubUrl)).toString() === this.get('currentBinderHubURL').toString()) {
+                    return {
+                        ...acc,
+                        [item.serverUrl]: item,
+                    };
+                }
+                return acc;
+            },
+            {} as {[key: string]: ServerAnnotationModel},
+        );
+    }
+
+    @action
+    async reloadServerAnnotations(peek: boolean) {
+        const node = this.get('node');
+        if (!node) {
+            throw new EmberError('Illegal state. The node object is not set.');
+        }
+
+        const latest = peek ? await this.store.peekAll('server-annotation')
+            : await this.store.query('server-annotation', { guid: node.id });
+
+        this.set('dyServerAnnotations', latest.toArray());
+    }
+
+    /**
+     * Create ServerAnnotation and returns corresponding
+     * ServerAnnotationModel object. If `updateDy` is `true`, then
+     * `dyServerAnnotations` will be updated to include returned
+     * ServerAnnotationModel.
+     *
+     * What we need on this creation is not only the jupyter server's
+     * URL, but also the URL of BinderHub and/or JupyterHub server.
+     * It is not guaranteed that the `currentBinderHubURL` is the same
+     * as the BinderHub URL used to create the jupyter server. Since the
+     * server building process takes long-long time, the user can change
+     * the selected BinderHub URL (by the HostSelector) during the
+     * building process. So, it must be informed. Even though we can
+     * find the BinderHub URL from JupyterHub URL which we can retrieve
+     * as `ownerUrl` property of JupyterServerEntry, a JupyterServerEntry
+     * is not enough since the one-to-one correspondence between
+     * JupyterHub and BinderHub is not guaranteed. Finally, the URL of
+     * BinderHub must be informed too.
+     *
+     * @param {JupyterServerEntry} entry
+     * @param {URL} binderhubUrl
+     * @param {boolean} updateDy - update dyServerAnnotations by the
+     *                             array that includes newly created
+     *                             annotation.
+     * @return {ServerAnnotationModel}
+     */
+    @action
+    async createServerAnnotation(entry: JupyterServerEntry, binderhubUrl: URL, updateDy: boolean) {
+        if (!isBinderHubConfigFulfilled(this.model)) {
+            throw new EmberError('Illegal state. The configuration object is not set.');
+        }
+        const node = this.get('node');
+        if (!node) {
+            throw new EmberError('Illegal state. The node object is not set.');
+        }
+
+        const { ownerUrl, entry: server } = entry;
+        try {
+            const annotation = await this.store.createRecord(
+                'server-annotation',
+                {
+                    serverUrl: server.url,
+                    name: server.name,
+                    binderhubUrl,
+                    jupyterhubUrl: ownerUrl,
+                    memotext: '',
+                },
+            ).save({ adapterOptions: { guid: node.id } });
+            if (updateDy) {
+                this.set(
+                    'dyServerAnnotations',
+                    [...this.get('dyServerAnnotations'), annotation],
+                );
+            }
+            return annotation;
+        } catch (e) {
+            this.set('serverAnnotationActiveBit', false);
+            if (e instanceof ConflictError) {
+                throw new EmberError(
+                    'Failed to create a new Server Annotation since the requested entry already exists.',
+                );
+            }
+            throw new EmberError('Failed to create a new Server Annotation for an unknown reason.');
+        }
+    }
+
+    @action
+    async deleteServerAnnotation(serverPath: string, updateDy: boolean) {
+        const node = this.get('node');
+        if (!node) {
+            throw new EmberError('Illegal state. The node object is not set.');
+        }
+
+        const annotation = this.get('serverAnnotationHash')[serverPath];
+        if (!annotation) {
+            // The server annotation has already gone for some reason.
+            // It is weired, but should not raise an error. We can just
+            // ignore the situation.
+            return;
+        }
+
+        const result = await annotation.destroyRecord({ adapterOptions: { guid: node.id } });
+
+        if (updateDy && result) {
+            this.set(
+                'dyServerAnnotations',
+                [...this.get('dyServerAnnotations').filter(
+                    (annot: ServerAnnotationModel) => annot.serverUrl !== serverPath,
+                )],
+            );
+        }
     }
 }
 

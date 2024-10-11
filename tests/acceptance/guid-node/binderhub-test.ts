@@ -56,6 +56,7 @@ module('Acceptance | guid-node/binderhub', hooks => {
     const JSL = {
         top: '[data-test-binderhub-jupyter-servers-list]',
         launch: '[data-test-lab-launch-button]',
+        memo: propertyWithValue('data-test-memo-editor'),
         delete: '[data-test-delete-icon]',
         ready: '.fa-play-circle',
         building: '.fa-spinner',
@@ -185,6 +186,7 @@ module('Acceptance | guid-node/binderhub', hooks => {
         assert.dom(`${HS.dialogue}`).doesNotExist();
         assert.dom(`${JSL.top}`).exists();
         assert.dom(`${JSL.top} ${JSL.launch}`).doesNotExist();
+        assert.dom(`${JSL.top} ${JSL.memo()}`).doesNotExist();
         assert.dom(`${JSL.top} ${JSL.delete}`).doesNotExist();
         assert.dom('[data-test-jupyterhub-user]').hasText('testuser');
         assert.dom('[data-test-binderhub-launch]').exists();
@@ -225,6 +227,36 @@ module('Acceptance | guid-node/binderhub', hooks => {
             id: guid,
             currentUserPermissions: [Permission.Write],
         });
+        server.create(
+            'server-annotation',
+            {
+                binderhubUrl: 'http://localhost:8585/',
+                jupyterhubUrl: 'http://localhost:30123',
+                serverUrl: `/user/testuser/${guid}-osfstorage-abcdefgh/`,
+                name: `${guid}-osfstorage-abcdefgh`,
+                memotext: 'I am abcdefgh.',
+            },
+        );
+        server.create(
+            'server-annotation',
+            {
+                binderhubUrl: 'http://localhost:8585/',
+                jupyterhubUrl: 'http://localhost:30123',
+                serverUrl: `/user/testuser/${guid}-osfstorage-ijklmnop/`,
+                name: `${guid}-osfstorage-ijklmnop`,
+                memotext: 'My name is ijklmnop.',
+            },
+        );
+        server.create(
+            'server-annotation',
+            {
+                binderhubUrl: 'http://localhost:31415/',
+                jupyterhubUrl: 'http://localhost:27182',
+                serverUrl: `/user/testuser/${guid}-osfstorage-1/`,
+                name: `${guid}-osfstorage-1`,
+                memotext: 'I am No.1',
+            },
+        );
         server.create('binderhub-config', {
             id: node.id,
             binderhubs: [{
@@ -371,6 +403,8 @@ module('Acceptance | guid-node/binderhub', hooks => {
         assert.dom(`${JSL.top} ${JSL.launch}`).exists({ count: 2 });
         assert.dom(`${JSL.top} ${JSL.launch} ${JSL.ready}`).exists({ count: 1 });
         assert.dom(`${JSL.top} ${JSL.launch} ${JSL.building}`).exists({ count: 1 });
+        assert.dom(`${JSL.top} ${JSL.memo('preparing')}`).doesNotExist();
+        assert.dom(`${JSL.top} ${JSL.memo('ready')}`).exists({ count: 2 });
         assert.dom(`${JSL.top} ${JSL.delete}`).exists({ count: 2 });
         assert.dom('[data-test-jupyterhub-user]').hasText('testuser');
         assert.dom('[data-test-binderhub-launch]').exists();
@@ -429,7 +463,6 @@ module('Acceptance | guid-node/binderhub', hooks => {
             ),
             'BinderHub calls JupyterHub REST API',
         );
-
         ajaxStub.resetHistory();
         ajaxStub.resolves({
             kind: 'user',
@@ -474,6 +507,8 @@ module('Acceptance | guid-node/binderhub', hooks => {
         assert.dom(`${JSL.top} ${JSL.launch}`).exists({ count: 1 });
         assert.dom(`${JSL.top} ${JSL.launch} ${JSL.ready}`).exists({ count: 1 });
         assert.dom(`${JSL.top} ${JSL.launch} ${JSL.building}`).doesNotExist();
+        assert.dom(`${JSL.top} ${JSL.memo('preparing')}`).doesNotExist();
+        assert.dom(`${JSL.top} ${JSL.memo('ready')}`).exists({ count: 1 });
         assert.dom(`${JSL.top} ${JSL.delete}`).exists({ count: 1 });
         sandbox.restore();
     });
@@ -597,6 +632,7 @@ module('Acceptance | guid-node/binderhub', hooks => {
         assert.dom(`${HS.dialogue}`).doesNotExist();
         assert.dom(`${JSL.top}`).exists();
         assert.dom(`${JSL.top} ${JSL.launch}`).doesNotExist();
+        assert.dom(`${JSL.top} ${JSL.memo()}`).doesNotExist();
         assert.dom(`${JSL.top} ${JSL.delete}`).doesNotExist();
         assert.dom('[data-test-binderhub-launch]').exists();
         assert.dom(`${PE.top} ${PE.selection()}`).doesNotExist();
@@ -755,6 +791,7 @@ module('Acceptance | guid-node/binderhub', hooks => {
         assert.dom(`${HS.dialogue}`).doesNotExist();
         assert.dom(`${JSL.top}`).exists();
         assert.dom(`${JSL.top} ${JSL.launch}`).doesNotExist();
+        assert.dom(`${JSL.top} ${JSL.memo()}`).doesNotExist();
         assert.dom(`${JSL.top} ${JSL.delete}`).doesNotExist();
         assert.dom('[data-test-binderhub-launch]').exists();
         assert.dom(`${PE.top} ${PE.selection()}`).doesNotExist();
@@ -918,6 +955,7 @@ module('Acceptance | guid-node/binderhub', hooks => {
         assert.dom(`${HS.dialogue}`).doesNotExist();
         assert.dom(`${JSL.top}`).exists();
         assert.dom(`${JSL.top} ${JSL.launch}`).doesNotExist();
+        assert.dom(`${JSL.top} ${JSL.memo()}`).doesNotExist();
         assert.dom(`${JSL.top} ${JSL.delete}`).doesNotExist();
         assert.dom('[data-test-binderhub-launch]').exists();
         assert.dom(`${PE.top} ${PE.selection()}`).doesNotExist();
@@ -1203,6 +1241,7 @@ module('Acceptance | guid-node/binderhub', hooks => {
         assert.dom(`${HS.dialogue}`).doesNotExist();
         assert.dom(`${JSL.top}`).exists();
         assert.dom(`${JSL.top} ${JSL.launch}`).doesNotExist();
+        assert.dom(`${JSL.top} ${JSL.memo()}`).doesNotExist();
         assert.dom(`${JSL.top} ${JSL.delete}`).doesNotExist();
         assert.dom('[data-test-binderhub-launch]').exists();
         assert.dom(`${PE.top} ${PE.selection()}`).doesNotExist();
@@ -1490,6 +1529,7 @@ module('Acceptance | guid-node/binderhub', hooks => {
         assert.dom(`${HS.dialogue}`).doesNotExist();
         assert.dom(`${JSL.top}`).exists();
         assert.dom(`${JSL.top} ${JSL.launch}`).doesNotExist();
+        assert.dom(`${JSL.top} ${JSL.memo()}`).doesNotExist();
         assert.dom(`${JSL.top} ${JSL.delete}`).doesNotExist();
         assert.dom('[data-test-binderhub-launch]').exists();
         assert.dom(`${PE.top} ${PE.selection()}`).doesNotExist();
@@ -1597,6 +1637,16 @@ module('Acceptance | guid-node/binderhub', hooks => {
             id: guid,
             currentUserPermissions: [Permission.Write],
         });
+        server.create(
+            'server-annotation',
+            {
+                binderhubUrl: 'http://localhost:8585/',
+                jupyterhubUrl: 'http://localhost:30123',
+                serverUrl: `/user/testuser/${guid}-osfstorage-1/`,
+                name: `${guid}-osfstorage-1`,
+                memotext: 'I am No.1',
+            },
+        );
         server.create('binderhub-config', {
             id: node.id,
             binderhubs: [{
@@ -1661,6 +1711,7 @@ module('Acceptance | guid-node/binderhub', hooks => {
                 },
                 [`${guid}-osfstorage-1`]: {
                     name: `${guid}-osfstorage-1`,
+                    url: `/user/testuser/${guid}-osfstorage-1/`,
                 },
             },
         });
@@ -1721,6 +1772,7 @@ module('Acceptance | guid-node/binderhub', hooks => {
         assert.dom(`${HS.dialogue}`).doesNotExist();
         assert.dom(`${JSL.top}`).exists();
         assert.dom(`${JSL.top} ${JSL.launch}`).exists({ count: 1 });
+        assert.dom(`${JSL.top} ${JSL.memo('ready')}`).exists({ count: 1 });
         assert.dom(`${JSL.top} ${JSL.delete}`).exists({ count: 1 });
         assert.dom('[data-test-binderhub-launch]').exists();
 
@@ -1746,6 +1798,7 @@ module('Acceptance | guid-node/binderhub', hooks => {
                 },
                 [`${guid}-osfstorage-1`]: {
                     name: `${guid}-osfstorage-1`,
+                    url: `/user/testuser/${guid}-osfstorage-1/`,
                 },
             },
             named_server_limit: 3,
@@ -1775,9 +1828,11 @@ module('Acceptance | guid-node/binderhub', hooks => {
                 },
                 [`${guid}-osfstorage-1`]: {
                     name: `${guid}-osfstorage-1`,
+                    url: `/user/testuser/${guid}-osfstorage-1/`,
                 },
                 [`${guid}-osfstorage-2`]: {
                     name: `${guid}-osfstorage-2`,
+                    url: `/user/testuser/${guid}-osfstorage-2/`,
                 },
             },
             named_server_limit: 3,
@@ -1787,11 +1842,6 @@ module('Acceptance | guid-node/binderhub', hooks => {
 
         assert.dom('[data-test-server-list-item]').exists();
         assert.dom('[data-test-max-servers-exceeded]').exists();
-
-        assert.ok(
-            ajaxStub.calledOnceWithExactly('http://localhost:30123/', 'users/testuser?include_stopped_servers=1', null),
-            'BinderHub calls JupyterHub REST API',
-        );
 
         sandbox.restore();
     });

@@ -1793,6 +1793,9 @@ binderhub:
         url: 'URL'
         last_activity: 'Last activity'
         launch: 'Launch'
+        memo: 'Memo'
+        memo_disabled: 'initializing...'
+        memo_inactive: 'Memo is disabled.'
         delete: 'Delete'
         no_servers: 'No Servers'
     deployment:

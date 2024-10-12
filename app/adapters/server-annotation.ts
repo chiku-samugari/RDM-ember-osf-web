@@ -86,13 +86,13 @@ export default class ServerAnnotationAdapter extends OsfAdapter {
             }
             if ('guid' in snapshot.adapterOptions) {
                 const adapterOpts = snapshot.adapterOptions as {guid: string};
-                return `${url}${adapterOpts.guid}/binderhub/server_annotation`;
+                return `${url}${adapterOpts.guid}/binderhub/server_annotation${id ? `/${id}` : ''}`;
             }
             throw new EmberError(
                 'Illegal method call. `{adapterOptions: {guid: (guid value)}}` must be specified.',
             );
         }
-        return `${url}${query.guid}/binderhub/server_annotation`;
+        return `${url}${query.guid}/binderhub/server_annotation${id ? `/${id}` : ''}`;
     }
 }
 

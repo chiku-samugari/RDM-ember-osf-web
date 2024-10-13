@@ -74,6 +74,9 @@ export default class JupyterServersList extends Component {
         entry: JupyterServerEntry, updateDy: boolean,
     ) => void;
 
+    @requiredAction requestAnnotationDelete!: (
+        entry: JupyterServerEntry, updateDy: boolean,
+    ) => void;
     @requiredAction requestAnnotationReload!: (peek: boolean) => void;
 
     didReceiveAttrs() {
@@ -397,6 +400,7 @@ export default class JupyterServersList extends Component {
                     data: JSON.stringify({ remove: true }),
                 },
             );
+            await this.requestAnnotationDelete(server, true);
             const servers = await this.loadServers(server.ownerUrl);
             this.set('allServers', servers !== null ? servers.entries : null);
         }, 0);

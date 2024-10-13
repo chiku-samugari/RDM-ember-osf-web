@@ -130,6 +130,8 @@ export default class GuidNodeBinderHub extends Controller {
     @readOnly('model.node.taskInstance.value')
     node?: Node;
 
+    dyServerAnnotations: ServerAnnotationModel[] = [];
+
     isPageDirty = false;
 
     configFolder: WaterButlerFile | null = null;
@@ -586,6 +588,10 @@ export default class GuidNodeBinderHub extends Controller {
                 host => host.url.href === defaultBinderHubURL.href,
             ),
         );
+        this.set(
+            'dyServerAnnotations',
+            this.model.serverAnnotations.toArray(),
+        );
     }
 
     @action
@@ -598,9 +604,9 @@ export default class GuidNodeBinderHub extends Controller {
         this.set('isPageDirty', false);
     }
 
-    @computed('model.serverAnnotations', 'currentBinderHubURL')
+    @computed('dyServerAnnotations', 'currentBinderHubURL')
     get serverAnnotationHash() {
-        return this.model.serverAnnotations.reduce(
+        return this.dyServerAnnotations.reduce(
             (acc: {[key: string]: ServerAnnotationModel}, item: ServerAnnotationModel) => {
                 if ((new URL(item.binderhubUrl)).toString() === this.get('currentBinderHubURL').toString()) {
                     return {
@@ -610,8 +616,21 @@ export default class GuidNodeBinderHub extends Controller {
                 }
                 return acc;
             },
-            {},
+            {} as {[key: string]: ServerAnnotationModel},
         );
+    }
+
+    @action
+    async reloadServerAnnotations(peek: boolean) {
+        const node = this.get('node');
+        if (!node) {
+            throw new EmberError('Illegal state. The node object is not set.');
+        }
+
+        const latest = peek ? await this.store.peekAll('server-annotation')
+            : await this.store.query('server-annotation', { guid: node.id });
+
+        this.set('dyServerAnnotations', latest);
     }
 }
 

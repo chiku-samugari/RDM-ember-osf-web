@@ -325,7 +325,7 @@ export default class GuidNodeBinderHub extends Controller {
     }
 
     async performBuild(
-        binderhubUrl: string,
+        binderhubURLString: string,
         needsPersonalToken: boolean,
         path: BootstrapPath | null,
         callback: (result: BuildMessage) => void,
@@ -341,7 +341,7 @@ export default class GuidNodeBinderHub extends Controller {
         if (!buildPath) {
             throw new EmberError('Illegal state');
         }
-        const binderhub = this.config.findBinderHubByURL(binderhubUrl);
+        const binderhub = this.config.findBinderHubByURL(binderhubURLString);
         let additional = '';
         if (this.currentUser && this.currentUser.currentUserId) {
             additional += `&userctx=${this.currentUser.currentUserId}`;
@@ -372,7 +372,7 @@ export default class GuidNodeBinderHub extends Controller {
             if (data.phase === 'auth' && data.authorization_url && !needsPersonalToken) {
                 source.close();
                 later(async () => {
-                    await this.performBuild(binderhubUrl, true, path, callback);
+                    await this.performBuild(binderhubURLString, true, path, callback);
                 }, 0);
                 return;
             }
@@ -579,13 +579,13 @@ export default class GuidNodeBinderHub extends Controller {
     @action
     build(
         this: GuidNodeBinderHub,
-        binderhubUrl: string,
+        binderhubURLString: string,
         path: BootstrapPath | null,
         callback: (result: BuildMessage) => void,
     ) {
         this.set('buildLog', []);
         later(async () => {
-            await this.performBuild(binderhubUrl, false, path, callback);
+            await this.performBuild(binderhubURLString, false, path, callback);
         }, 0);
     }
 

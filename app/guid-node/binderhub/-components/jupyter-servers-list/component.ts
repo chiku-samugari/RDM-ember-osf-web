@@ -70,6 +70,10 @@ export default class JupyterServersList extends Component {
 
     serverAnnotationHash: { [key: string]: ServerAnnotationModel } = {};
 
+    @requiredAction requestAnnotationCreation!: (
+        entry: JupyterServerEntry, updateDy: boolean,
+    ) => void;
+
     @requiredAction requestAnnotationReload!: (peek: boolean) => void;
 
     didReceiveAttrs() {
@@ -168,16 +172,37 @@ export default class JupyterServersList extends Component {
     }
 
     /**
+     * An string array whose `i`th element is the (initial) contents of
+     * `i`th jupyter server (i.e. this.servers[i]). An element `null`
+     * means that the corresponding server does not have server
+     * annotation on the API server side. The `null` value is just a
+     * kind of placeholder and server annotations creation process would
+     * be started immediately, by this method.
+     *
      * This property is needed since `get` helper does not work if the 2nd
-     * argument includes some dots.
+     * argument includes some dots and we cannot use
+     * `this.serverAnnotationHash` directly in the template.hbs.
      */
     @computed('serverAnnotationHash', 'servers')
-    get serverMemoArray(): string[] {
+    get serverMemoArray(): Array<string | null> {
         const servers = this.get('servers');
         if (servers === null) {
             throw new EmberError('servers not ready');
         }
-        return servers.map(s => this.get('serverAnnotationHash')[s.entry.url].memotext);
+        let nullDetected = false;
+        return servers.map(s => {
+            const annot = this.get('serverAnnotationHash')[s.entry.url];
+            if (typeof annot === 'undefined') {
+                if (!nullDetected) {
+                    nullDetected = true;
+                    later(async () => {
+                        const created = await this.requestAnnotationCreation(s, true);
+                    }, 0);
+                }
+                return null;
+            }
+            return annot.memotext;
+        });
     }
 
     @computed('binderHubConfig', 'requestNotAuthorized', 'defaultJupyterhubUrl', 'loggedOutDomains', 'initialized')

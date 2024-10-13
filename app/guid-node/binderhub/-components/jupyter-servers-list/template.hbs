@@ -77,12 +77,23 @@
                                     />
                                 </td>
                                 <td>
-                                    <textarea
-                                        local-class='memo_cell'
-                                        class='form-control'
-                                        value={{get this.serverMemoArray index}}
-                                        onchange={{fn this.onMemoEdit server}}
-                                    />
+                                    {{#let (get this.serverMemoArray index) as |memo|}}
+                                        {{#if (eq memo null)}}
+                                            <textarea
+                                                local-class='memo_cell'
+                                                class='form-control'
+                                                disabled={{true}}
+                                                placeholder={{t 'binderhub.servers.memo_disabled'}}
+                                            />
+                                        {{else}}
+                                            <textarea
+                                                local-class='memo_cell'
+                                                class='form-control'
+                                                value={{memo}}
+                                                onchange={{fn this.onMemoEdit server}}
+                                            />
+                                        {{/if}}
+                                    {{/let}}
                                 </td>
                                 <td>
                                     <div data-test-server-link>

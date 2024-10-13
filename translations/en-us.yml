@@ -1791,6 +1791,7 @@ binderhub:
         last_activity: 'Last activity'
         launch: 'Launch'
         memo: 'Memo'
+        memo_disabled: 'initializing...'
         delete: 'Delete'
         no_servers: 'No Servers'
     deployment:

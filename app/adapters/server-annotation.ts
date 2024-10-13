@@ -55,7 +55,7 @@ export default class ServerAnnotationAdapter extends OsfAdapter {
     //              'server-annotation', { adapterOptions: { guid: "xyzuv" } }
     //          );
     //
-    //   4. (model object's) `save`
+    //   4. (model object's) `save` and `destroyRecord`
     //      Do the same as 2., 3., but use the 1st argument.
     //
     //          annot.save({adapterOptions: {guid: 'n376x'}});

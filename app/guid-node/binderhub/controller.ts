@@ -708,6 +708,34 @@ export default class GuidNodeBinderHub extends Controller {
         }
         return annotation;
     }
+
+    @action
+    async deleteServerAnnotation(entry: JupyterServerEntry, updateDy: boolean) {
+        const node = this.get('node');
+        if (!node) {
+            throw new EmberError('Illegal state. The node object is not set.');
+        }
+
+        const { entry: server } = entry;
+        const annotation = this.get('serverAnnotationHash')[server.url];
+        if (!annotation) {
+            // The server annotation has already gone for some reason.
+            // It is weired, but should not raise an error. We can just
+            // ignore the situation.
+            return;
+        }
+
+        const result = await annotation.destroyRecord({ adapterOptions: { guid: node.id } });
+
+        if (updateDy && result) {
+            this.set(
+                'dyServerAnnotations',
+                [...this.get('dyServerAnnotations').filter(
+                    (annot: ServerAnnotationModel) => annot.serverUrl !== server.url,
+                )],
+            );
+        }
+    }
 }
 
 declare module '@ember/controller' {

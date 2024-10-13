@@ -88,6 +88,8 @@ export default class JupyterServersList extends Component {
 
     serverAnnotationHash: { [key: string]: ServerAnnotationModel } = {};
 
+    @requiredAction requestAnnotationReload!: (peek: boolean) => void;
+
     didReceiveAttrs() {
         if (!this.initialized && !this.validateToken()) {
             return;
@@ -402,5 +404,8 @@ export default class JupyterServersList extends Component {
         const annotation = this.get('serverAnnotationHash')[server.entry.url];
         annotation.memotext = event.target.value;
         annotation.save({ adapterOptions: { guid: node.id } });
+        later(async () => {
+            this.requestAnnotationReload(true);
+        }, 0);
     }
 }

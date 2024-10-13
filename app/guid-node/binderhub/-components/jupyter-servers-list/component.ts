@@ -7,6 +7,8 @@ import {
     BootstrapPath,
     getJupyterHubServerURL,
     isBinderHubConfigFulfilled,
+    JupyterServer,
+    JupyterServerEntry,
     validateBinderHubToken,
 } from 'ember-osf-web/guid-node/binderhub/controller';
 import BinderHubConfigModel, { JupyterHub } from 'ember-osf-web/models/binderhub-config';
@@ -15,29 +17,9 @@ import ServerAnnotationModel from 'ember-osf-web/models/server-annotation';
 import { addPathSegment } from 'ember-osf-web/utils/url-parts';
 
 /* eslint-disable camelcase */
-export interface JupyterServerOptions {
-    binder_persistent_request?: string;
-    rdm_node?: string;
-}
-
 interface JupyterUser {
     named_server_limit?: number | null;
     servers?: {[key: string]: JupyterServer} | null;
-}
-
-export interface JupyterServer {
-    name: string;
-    last_activity?: string | null;
-    started?: string | null;
-    pending?: string | null;
-    ready?: boolean;
-    url: string;
-    user_options?: JupyterServerOptions | null;
-}
-
-interface JupyterServerEntry {
-    ownerUrl: string;
-    entry: JupyterServer;
 }
 
 interface JupyterServerResponse {

@@ -87,7 +87,11 @@ export default class Dashboard extends Controller {
         const user: User = yield this.currentUser.user;
 
         const nodes: QueryHasManyResult<Node> = yield user.queryHasMany('sparseNodes', {
-            embed: ['bibliographic_contributors', 'parent', 'root'],
+            embed: ['parent', 'root'],
+            fields: {
+                users: 'full_name,given_name,middle_names,family_name',
+                'sparse-nodes': 'id,title,date_modified,bibliographic_contributors,parent,root,creator',
+            },
             // eslint-disable-next-line ember/no-global-jquery
             filter: this.filter ? { title: $('<div>').text(this.filter).html() } : undefined,
             page: more ? this.incrementProperty('page') : this.set('page', 1),

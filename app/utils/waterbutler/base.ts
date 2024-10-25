@@ -7,6 +7,12 @@ export interface WaterButlerFile {
 
     path: string;
 
+    materializedPath: string;
+
+    isFile: boolean;
+
+    dateModified?: string;
+
     files: Promise<WaterButlerFile[]> | WaterButlerFile[];
 
     htmlURL: string | undefined;
@@ -29,7 +35,12 @@ export interface Metadata {
 
     path: string;
 
+    materialized?: string;
+
     provider: string;
+
+    // eslint-disable-next-line camelcase
+    modified_utc?: string;
 }
 
 export interface FilesResponseLinks {
@@ -72,6 +83,14 @@ export abstract class AbstractFile implements WaterButlerFile {
 
     get path() {
         return this.metadata.path;
+    }
+
+    get materializedPath() {
+        return this.metadata.materialized || this.metadata.path;
+    }
+
+    get dateModified() {
+        return this.metadata.modified_utc;
     }
 
     abstract get filesURL(): string;

@@ -1,0 +1,59 @@
+{{! using unsafeTitle here to avoid double encoding because the title helper does its own }}
+{{title (t 'metadata.package.page_title' nodeTitle=this.model.taskInstance.value.unsafeTitle)}}
+<div class='container' local-class='Package'>
+    <div local-class='Package__editor'>
+        <h2 local-class='Package__header'>{{t 'metadata.package.header'}}</h2>
+
+        {{#unless this.loading}}
+            {{#if this.phaseFiles}}
+                <GuidNode::Package::-Components::FileSelector
+                    @node={{this.node}}
+                    @files={{this.files}}
+                    @selectionManager={{this.selectionManager}}
+                    @wikiEnabled={{this.wikiEnabled}}
+                    @commentEnabled={{this.commentEnabled}}
+                    @logEnabled={{this.logEnabled}}
+                />
+            {{/if}}
+            {{#if this.phaseExportTarget}}
+                <GuidNode::Package::-Components::ExportTarget
+                    @node={{this.node}}
+                    @destinationProvider={{this.destinationProvider}}
+                />
+            {{/if}}
+        {{/unless}}
+
+        <div class='text-right' local-class='Package__buttons'>
+            {{#unless this.phaseFiles}}
+                <OsfButton data-test-previous-button
+                            @type='success'
+                            @disabled={{this.exporting}}
+                            @onClick={{action this.goToPrevious}}>
+                    {{t 'metadata.package.previous_button'}}
+                </OsfButton>
+            {{/unless}}
+            {{#if this.phaseExportTarget}}
+                <OsfButton data-test-export-button
+                            @type='success'
+                            @disabled={{this.exporting}}
+                            @onClick={{action this.export}}>
+                    {{#if this.exporting}}
+                        <FaIcon @icon='spinner' @pulse={{true}} @size={{1}} />
+                    {{/if}}
+                    {{#if this.opening}}
+                        {{t 'metadata.package.opening_button'}}
+                    {{else}}
+                        {{t 'metadata.package.export_button'}}
+                    {{/if}}
+                </OsfButton>
+            {{else}}
+                <OsfButton data-test-next-button
+                            @type='success'
+                            @disabled={{this.exporting}}
+                            @onClick={{action this.goToNext}}>
+                    {{t 'metadata.package.next_button'}}
+                </OsfButton>
+            {{/if}}
+        </div>
+    </div>
+</div>

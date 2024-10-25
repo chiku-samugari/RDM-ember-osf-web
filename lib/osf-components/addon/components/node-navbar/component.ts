@@ -86,6 +86,26 @@ export default class NodeNavbar extends Component {
         return result;
     }
 
+    @computed('node.addons')
+    get metadataExportingEnabled(): boolean | null {
+        if (!this.node) {
+            return null;
+        }
+        let result = null;
+        this.getAddons()
+            .then(addons => {
+                result = addons
+                    .filter(
+                        addon => addon.id === 'metadata'
+                        && addon.configured
+                        && (addon.features || {}).exporting,
+                    )
+                    .length > 0;
+                this.set('metadataExportingEnabled', result);
+            });
+        return result;
+    }
+
     @action
     toggleNav() {
         this.toggleProperty('collapsedNav');

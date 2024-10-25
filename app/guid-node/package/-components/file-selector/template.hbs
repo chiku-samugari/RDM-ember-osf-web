@@ -1,0 +1,45 @@
+<div local-class='file_selector'>
+    <div>
+        {{t 'metadata.package.files.description'}}
+    </div>
+    <GuidNode::Package::-Components::Files::Manager
+        @node={{this.node}}
+        @canEdit={{false}}
+        as |filesManager|
+    >
+        <GuidNode::Package::-Components::Files::Browse
+            @filesManager={{filesManager}}
+            @selectionManager={{@selectionManager}}
+        />
+    </GuidNode::Package::-Components::Files::Manager>
+    <strong local-class='files_notice'>
+        {{t 'metadata.package.files.notice'}}
+    </strong>
+    <div>
+        {{input
+            name='wiki_enabled'
+            id='wiki_enabled'
+            checked=this.wikiEnabled
+            type='checkbox'
+        }}
+        <label for='wiki_enabled'>{{t 'metadata.package.files.wiki'}}</label>
+    </div>
+    <div>
+        {{input
+            name='comment_enabled'
+            id='comment_enabled'
+            checked=this.commentEnabled
+            type='checkbox'
+        }}
+        <label for='comment_enabled'>{{t 'metadata.package.files.comment'}}</label>
+    </div>
+    <div>
+        {{input
+            name='log_enabled'
+            id='log_enabled'
+            checked=this.logEnabled
+            type='checkbox'
+        }}
+        <label for='log_enabled'>{{t 'metadata.package.files.log'}}</label>
+    </div>
+</div>

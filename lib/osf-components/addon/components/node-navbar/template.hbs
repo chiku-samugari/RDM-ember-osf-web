@@ -43,6 +43,9 @@
                         {{/if}}
                         {{#if this.metadataEnabled }}
                             {{node-navbar/link node=@node useLinkTo=false destination='metadata'}}
+                            {{#if this.metadataExportingEnabled }}
+                                {{node-navbar/link node=@node useLinkTo=false destination='package'}}
+                            {{/if}}
                         {{/if}}
                         {{#if this.binderhubEnabled }}
                             {{node-navbar/link node=@node useLinkTo=false destination='binderhub'}}

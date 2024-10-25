@@ -1,0 +1,17 @@
+<div ...attributes local-class='list-container'>
+    {{#each @items as |item|}}
+        <GuidNode::Package::-Components::Files::Item
+            data-test-file-row
+            @item={{item}}
+            @filesManager={{@filesManager}}
+            @selectionManager={{@selectionManager}}
+        />
+    {{else}}
+        {{#if @filesManager.canEdit}}
+            <div data-test-no-files-placeholder local-class='placeholder'>
+                <FaIcon @icon='upload' @size='4' />
+                {{t 'osf-components.files-widget.drag_drop_files'}}
+            </div>
+        {{/if}}
+    {{/each}}
+</div>

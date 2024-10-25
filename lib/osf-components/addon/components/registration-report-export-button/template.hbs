@@ -17,8 +17,14 @@
             <select id='registration-report-format-selection'>
                 {{#each this.metadataFormats as |format|}}
                     <option
-                        value='{{format.name}}'>
+                        value='{{format.id}}'>
                         {{format.name}}
+                    </option>
+                {{/each}}
+                {{#each this.metadataDestinations as |destination|}}
+                    <option
+                        value='{{destination.id}}'>
+                        {{t (concat 'metadata.registration-card.export-dialog.addons.' destination.provider) folder=destination.folder}}
                     </option>
                 {{/each}}
             </select>
@@ -35,10 +41,15 @@
         <OsfButton
             data-test-registration-report-submit
             data-analytics-name='Submit'
+            @disabled={{this.isUploading}}
             @type='success'
             @onClick={{action modal.submit}}
         >
-            {{t 'metadata.registration-card.export'}}
+            {{#if this.isUploading}}
+                {{t 'metadata.registration-card.exporting'}}
+            {{else}}
+                {{t 'metadata.registration-card.export'}}
+            {{/if}}
         </OsfButton>
     </modal.footer>
 </BsModal>
@@ -47,7 +58,7 @@
     data-test-registration-card-export
     data-analytics-name='Export'
     @type='success'
-    @disabled={{this.hasNoFormats}}
+    @disabled={{and this.hasNoFormats this.hasNoDestinations}}
     @onClick={{action this.export}}
 >
     {{t 'metadata.registration-card.export'}}

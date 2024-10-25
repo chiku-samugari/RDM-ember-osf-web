@@ -3,15 +3,31 @@ import OsfModel from './osf-model';
 
 const { attr } = DS;
 
+export enum MetadataType {
+    Registration = 'registration',
+    DraftRegistration = 'draft_registration',
+}
+
 /* eslint-disable camelcase */
-export interface Format {
+export interface ExportTarget {
+    id: string;
     schema_id: string;
     name: string | null;
+    acceptable?: MetadataType[] | null;
 }
 /* eslint-enable camelcase */
 
+export type Format = ExportTarget;
+
+export interface Destination extends ExportTarget {
+    url: string | null;
+    provider: string | null;
+    folder: string | null;
+}
+
 export default class MetadataNodeSchemaModel extends OsfModel {
     @attr('array') formats!: Format[];
+    @attr('array') destinations?: Destination[];
 }
 
 declare module 'ember-data/types/registries/model' {

@@ -192,7 +192,10 @@ export default class FileMetadataInput extends Component {
 
     saveFileMetadatas(metadatas: FileMetadata[]) {
         metadatas.sort((a, b) => a.path.localeCompare(b.path));
-        this.changeset.set(this.valuePath, JSON.stringify(metadatas));
+        this.changeset.set(
+            this.valuePath,
+            metadatas.length ? JSON.stringify(metadatas) : null,
+        );
         this.onInput();
         this.notifyPropertyChange('fileMetadatas');
     }

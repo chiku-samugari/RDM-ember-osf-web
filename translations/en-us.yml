@@ -555,6 +555,7 @@ node_navbar:
     comments: Comments
     binderhub: Computation
     metadata: Metadata
+    package: Export
 status:
     welcome_message: '<h1>Welcome to GakuNin RDM!</h1><p>Visit our <a href="https://openscience.zendesk.com/hc/en-us" target="_blank" rel="noreferrer">Guides</a> to learn about creating a project, or get inspiration from <a href="https://osf.io/explore/activity/#popularPublicProjects">popular public projects</a>.</p>'
     alternate_email_error: 'The email address has <b>NOT</b> been added to your account. Please log out and revisit the link in your email. Thank you.'
@@ -1845,9 +1846,27 @@ metadata:
         export: 'Export'
     registration-card:
         export: 'Export'
+        exporting: 'Exporting'
         export-dialog:
-            title: 'Select a report format'
-            description: 'Select the report format you want to output.'
+            title: 'Select the export format'
+            description: 'Select the export format you want to output.'
+            addons:
+                weko: 'Deposite to the repository (WEKO) - {folder}'
     array-input:
         add-item: 'Add item'
         remove-item: 'Remove item'
+    package:
+        page_title: 'Export Project'
+        header: 'Export Project'
+        export_button: 'Export'
+        opening_button: 'Opening the file...'
+        next_button: 'Next'
+        previous_button: 'Back'
+        files:
+            description: 'Select the files/folders to be exported.'
+            notice: 'Account information for external storages will not be included.'
+            wiki: 'Wiki'
+            comment: 'Comments'
+            log: 'Action Logs'
+        export_target:
+            description: 'Select a destination.'

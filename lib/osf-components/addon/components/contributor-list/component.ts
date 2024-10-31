@@ -60,7 +60,15 @@ export default class ContributorList extends Component {
             this.set('totalContributors', nextPage.meta.total);
         } else {
             this.set('page', 1);
-            const firstPage = yield this.node.bibliographicContributors;
+            const firstPage = yield this.node.queryHasMany(
+                'bibliographicContributors',
+                {
+                    fields: {
+                        users: 'full_name,given_name,family_name,id,links',
+                    },
+                    page: { size: 10 },
+                },
+            );
             this.setProperties({
                 displayedContributors: firstPage.toArray(),
                 totalContributors: firstPage.meta.total,

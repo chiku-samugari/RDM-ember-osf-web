@@ -5,13 +5,11 @@ import { htmlSafe } from '@ember/template';
 import { requiredAction } from 'ember-osf-web/decorators/component';
 import AnsiUp from 'ember-osf-web/guid-node/binderhub/-components/build-console/ansi_up';
 import {
-    getContext, getJupyterHubServerURL, SelectableBinderhub, updateContext,
-    validateBinderHubToken,
-} from 'ember-osf-web/guid-node/binderhub/-components/jupyter-servers-list/component';
-import {
     BootstrapPath,
     BuildMessage,
+    getJupyterHubServerURL,
     isBinderHubConfigFulfilled,
+    validateBinderHubToken,
 } from 'ember-osf-web/guid-node/binderhub/controller';
 import BinderHubConfigModel from 'ember-osf-web/models/binderhub-config';
 import $ from 'jquery';
@@ -29,9 +27,7 @@ export default class BuildConsole extends Component {
 
     buildPhase: string | null = this.buildPhase;
 
-    selectedBinderhubUrl: string | null = null;
-
-    selectedBinderhubUrlForJupyterHub: string | null = null;
+    currentBinderHubURL!: URL;
 
     notAuthorized: boolean = false;
 
@@ -44,14 +40,6 @@ export default class BuildConsole extends Component {
     ) => void;
 
     didReceiveAttrs() {
-        const url = getContext('bh');
-        if (!this.selectedBinderhubUrl && url) {
-            this.selectedBinderhubUrl = url;
-        }
-        const urlForJhub = getContext('jh');
-        if (!this.selectedBinderhubUrlForJupyterHub && urlForJhub) {
-            this.selectedBinderhubUrlForJupyterHub = urlForJhub;
-        }
         if (!this.initialized && !this.validateTokens()) {
             return;
         }
@@ -64,48 +52,6 @@ export default class BuildConsole extends Component {
         }
         this.buildLogLineCount = this.buildLog.length;
         this.scrollToBottom();
-    }
-
-    @computed('binderHubConfig', 'selectedBinderhubUrl')
-    get defaultBinderhubUrl() {
-        if (this.selectedBinderhubUrl && this.checkSelectable(this.selectedBinderhubUrl)) {
-            return this.selectedBinderhubUrl;
-        }
-        if (!isBinderHubConfigFulfilled(this)) {
-            throw new EmberError('Illegal state');
-        }
-        return this.binderHubConfig.get('defaultBinderhub').url;
-    }
-
-    @computed('binderHubConfig', 'selectedBinderhubUrlForJupyterHub')
-    get defaultBinderhubUrlForJupyterHub() {
-        if (this.selectedBinderhubUrlForJupyterHub && this.checkSelectable(this.selectedBinderhubUrlForJupyterHub)) {
-            return this.selectedBinderhubUrlForJupyterHub;
-        }
-        if (!isBinderHubConfigFulfilled(this)) {
-            throw new EmberError('Illegal state');
-        }
-        return this.binderHubConfig.get('defaultBinderhub').url;
-    }
-
-    @computed('binderHubConfig')
-    get selectableBinderhubs(): SelectableBinderhub[] {
-        if (!isBinderHubConfigFulfilled(this)) {
-            return [];
-        }
-        const nodeBinderhubs = this.binderHubConfig.get('node_binderhubs');
-        const userBinderhubs = this.binderHubConfig.get('user_binderhubs');
-        const nodeCands = (nodeBinderhubs || []).map(hub => ({
-            binderhub_url: hub.binderhub_url,
-            name: hub.binderhub_url,
-        }));
-        const userCands = (userBinderhubs || []).filter(
-            hub => nodeCands.every(nodeHub => !this.urlEquals(hub.binderhub_url, nodeHub.binderhub_url)),
-        ).map(hub => ({
-            binderhub_url: hub.binderhub_url,
-            name: `${hub.binderhub_url} (User)`,
-        }));
-        return nodeCands.concat(userCands);
     }
 
     @computed('buildLog')
@@ -138,18 +84,13 @@ export default class BuildConsole extends Component {
     }
 
     @action
-    binderhubChanged(this: BuildConsole, binderhubUrl: string) {
-        this.set('selectedBinderhubUrl', binderhubUrl);
-        updateContext('bh', binderhubUrl);
-    }
-
-    @action
     launch(this: BuildConsole, path: BootstrapPath | null) {
         if (!isBinderHubConfigFulfilled(this)) {
             throw new EmberError('Illegal config');
         }
-        const config = this.binderHubConfig;
-        const binderhub = config.findBinderHubByURL(this.get('defaultBinderhubUrl'));
+        const binderhub = this.binderHubConfig.findBinderHubByURL(
+            this.get('currentBinderHubURL').toString(),
+        );
         if (!binderhub || !validateBinderHubToken(binderhub)) {
             this.set('notAuthorized', true);
             throw new EmberError('Insufficient parameters');
@@ -164,40 +105,28 @@ export default class BuildConsole extends Component {
 
     @action
     authorize(this: BuildConsole) {
-        const url = this.get('defaultBinderhubUrl');
         if (!this.renewToken) {
             return;
         }
-        this.renewToken(url);
-    }
-
-    checkSelectable(url: string) {
-        return this.selectableBinderhubs
-            .filter(hub => this.urlEquals(hub.binderhub_url, url)).length > 0;
-    }
-
-    urlEquals(url1: string, url2: string): boolean {
-        return this.normalizeUrl(url1) === this.normalizeUrl(url2);
-    }
-
-    normalizeUrl(url: string): string {
-        const m = url.match(/^(.+)\/+$/);
-        if (!m) {
-            return url;
-        }
-        return m[1];
+        this.renewToken(this.get('currentBinderHubURL').toString());
     }
 
     performBuild(path: BootstrapPath | null) {
         if (!this.requestBuild) {
             return;
         }
-        this.requestBuild(this.get('defaultBinderhubUrl'), path, (result: BuildMessage) => {
-            if (result.phase !== 'ready') {
-                return;
-            }
-            this.performLaunch(result.url, result.token, path);
-        });
+        this.requestBuild(
+            this.get('currentBinderHubURL').toString(),
+            path,
+            (result: BuildMessage) => {
+                // TODO: is this callback called repeatedly until the
+                // `result.phase` get `'ready'`? It's worth to know.
+                if (result.phase !== 'ready') {
+                    return;
+                }
+                this.performLaunch(result.url, result.token, path);
+            },
+        );
     }
 
     performLaunch(originalUrl: string | undefined, token: string | undefined, targetPath: BootstrapPath | null) {
@@ -222,10 +151,7 @@ export default class BuildConsole extends Component {
         if (!isBinderHubConfigFulfilled(this)) {
             return true;
         }
-        if (!this.validateToken(this.get('defaultBinderhubUrl'))) {
-            return false;
-        }
-        if (!this.validateToken(this.get('defaultBinderhubUrlForJupyterHub'))) {
+        if (!this.validateToken(this.get('currentBinderHubURL').toString())) {
             return false;
         }
         return true;

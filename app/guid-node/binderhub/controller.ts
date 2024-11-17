@@ -2,15 +2,14 @@ import ArrayProxy from '@ember/array/proxy';
 import Controller from '@ember/controller';
 import EmberError from '@ember/error';
 import { action, computed } from '@ember/object';
-import { reads } from '@ember/object/computed';
+import { readOnly } from '@ember/object/computed';
 import { later } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 
 import DS from 'ember-data';
 
 import Intl from 'ember-intl/services/intl';
-import { getContext } from 'ember-osf-web/guid-node/binderhub/-components/jupyter-servers-list/component';
-import BinderHubConfigModel from 'ember-osf-web/models/binderhub-config';
+import BinderHubConfigModel, { BinderHub } from 'ember-osf-web/models/binderhub-config';
 import FileProviderModel from 'ember-osf-web/models/file-provider';
 import Node from 'ember-osf-web/models/node';
 import Analytics from 'ember-osf-web/services/analytics';
@@ -36,6 +35,11 @@ export interface BuildMessage {
     url?: string;
     token?: string;
 }
+
+export interface HostDescriptor {
+    name: string;
+    url: URL;
+}
 /* eslint-enable camelcase */
 
 export interface BootstrapPath {
@@ -51,8 +55,79 @@ export function isBinderHubConfigFulfilled(context: BinderHubContext): boolean {
     return !!context.binderHubConfig;
 }
 
+export function validateBinderHubToken(binderhub: BinderHub) {
+    if (!binderhub.authorize_url) {
+        return true;
+    }
+    if (!binderhub.token || (binderhub.token.expires_at && binderhub.token.expires_at * 1000 <= Date.now())) {
+        return false;
+    }
+    return true;
+}
+
+function getContext(key: string) {
+    const params = new URLSearchParams(window.location.search);
+    return params.get(key);
+}
+
+export function getJupyterHubServerURL(
+    originalUrl: string,
+    token: string | undefined,
+    targetPath: BootstrapPath | null,
+) {
+    // redirect a user to a running server with a token
+    let url = originalUrl;
+    if (targetPath && targetPath.path) {
+        // strip trailing /
+        url = url.replace(/\/$/, '');
+        // trim leading '/'
+        let path = targetPath.path.replace(/(^\/)/g, '');
+        if (targetPath.pathType === 'file') {
+            // trim trailing / on file paths
+            path = path.replace(/(\/$)/g, '');
+            // /tree is safe because it allows redirect to files
+            // need more logic here if we support things other than notebooks
+            url = `${url}/tree/${encodeURI(path)}`;
+        } else {
+            // pathType === 'url'
+            url = `${url}/${path}`;
+        }
+    }
+    if (!token) {
+        return url;
+    }
+    const sep = url.includes('?') ? '&' : '?';
+    return `${url}${sep}token=${encodeURIComponent(token)}`;
+}
+
+function getURLWithContext(url: string): string {
+    const host = getContext('bh');
+    const ourl = new URL(url);
+    if (host) {
+        ourl.searchParams.set('bh', host);
+    }
+    return ourl.href;
+}
+
+function updateContext(key: string, value: string) {
+    const params = new URLSearchParams(window.location.search);
+    params.set(key, value);
+}
+
+function normalizeUrl(url: string): string {
+    const m = url.match(/^(.+)\/+$/);
+    if (!m) {
+        return url;
+    }
+    return m[1];
+}
+
+export function urlEquals(url1: string, url2: string): boolean {
+    return normalizeUrl(url1) === normalizeUrl(url2);
+}
+
 export default class GuidNodeBinderHub extends Controller {
-    queryParams = ['bh', 'jh'];
+    queryParams = ['bh'];
 
     @service toast!: Toast;
     @service intl!: Intl;
@@ -60,7 +135,7 @@ export default class GuidNodeBinderHub extends Controller {
     @service analytics!: Analytics;
     @service currentUser!: CurrentUser;
 
-    @reads('model.node.taskInstance.value')
+    @readOnly('model.node.taskInstance.value')
     node?: Node;
 
     isPageDirty = false;
@@ -77,9 +152,9 @@ export default class GuidNodeBinderHub extends Controller {
 
     buildPhase: string | null = null;
 
-    bh: string | null = null;
+    selectedHost?: HostDescriptor;
 
-    jh: string | null = null;
+    bh: string | null = null;
 
     loadingPath?: string;
 
@@ -102,7 +177,7 @@ export default class GuidNodeBinderHub extends Controller {
         if (!binderhub.authorize_url) {
             throw new EmberError('Illegal config');
         }
-        window.location.href = this.getURLWithContext(binderhub.authorize_url);
+        window.location.href = getURLWithContext(binderhub.authorize_url);
     }
 
     @action
@@ -115,7 +190,7 @@ export default class GuidNodeBinderHub extends Controller {
             if (!jupyterhub.authorize_url) {
                 throw new EmberError('Illegal config');
             }
-            window.location.href = this.getURLWithContext(jupyterhub.authorize_url);
+            window.location.href = getURLWithContext(jupyterhub.authorize_url);
             return;
         }
         // Maybe BinderHub not authorized
@@ -366,6 +441,56 @@ export default class GuidNodeBinderHub extends Controller {
         return this.model.binderHubConfig!;
     }
 
+    @computed('config')
+    get availableHosts(): HostDescriptor[] {
+        if (!isBinderHubConfigFulfilled(this.model)) {
+            return [];
+        }
+        return (this.config.get('node_binderhubs') || []).map(
+            hub => ({
+                url: new URL(hub.binderhub_url),
+                name: hub.binderhub_url,
+            }),
+        );
+    }
+
+    isAvailableHostURL(url: URL): boolean {
+        return this.availableHosts.some(
+            hub => hub.url.href === url.href,
+        );
+    }
+
+    @computed('config', 'selectedHost')
+    get currentBinderHubURL(): URL {
+        if (!isBinderHubConfigFulfilled(this.model)) {
+            throw new EmberError('Inappropriate BinderHub configuration. [GuidNodeBinderHub.currentBinderHubURL]');
+        }
+        if (this.selectedHost && this.isAvailableHostURL(this.selectedHost.url)) {
+            return this.selectedHost.url;
+        }
+        return new URL(this.config.get('defaultBinderhub').url);
+    }
+
+    @action
+    selectHostURL(this: GuidNodeBinderHub, hostURLString: string) {
+        try {
+            const hostURL = new URL(hostURLString);
+            if (!this.isAvailableHostURL(hostURL)) {
+                throw new EmberError('Illegal Input. Input hostURL seems wired.');
+            }
+            this.set('selectedHost', { url: hostURL, name: hostURL.toString() });
+            updateContext('bh', hostURL.toString());
+        } catch (e) {
+            if (e instanceof TypeError) {
+                throw new EmberError('Malformed URL string is submitted. [GuidNodeBinderHub.selectHostURL]');
+            } else if (e instanceof EmberError) {
+                throw e;
+            } else {
+                throw new EmberError('Unknown Error [GuidNodeBinderHub.selectHostURL]');
+            }
+        }
+    }
+
     @action
     requestError(this: GuidNodeBinderHub, _: any) {
         this.set('jupyterHubAPIError', true);
@@ -393,24 +518,25 @@ export default class GuidNodeBinderHub extends Controller {
         }, 0);
     }
 
-    getURLWithContext(url: string) {
-        const bh = getContext('bh');
-        const jh = getContext('jh');
-        const ourl = new URL(url);
-        const osearch = new URLSearchParams(ourl.search);
-        if (bh) {
-            osearch.set('bh', bh);
-        }
-        if (jh) {
-            osearch.set('jh', jh);
-        }
-        ourl.search = `?${osearch.toString()}`;
-        return ourl.href;
-    }
-
     async wbAuthenticatedAJAX(ajaxOptions: JQuery.AjaxSettings) {
         const r = await this.currentUser.authenticatedAJAX(ajaxOptions);
         return r;
+    }
+
+    /**
+     * Initialization in addition to Route.setupController. This method
+     * is assumed to be called in GuidNodeBinderHubRoute.setupController,
+     * after `super.setupController` is called and therefore, we can
+     * safely use `this.model`.
+     */
+    setup() {
+        const defaultBinderHubURL = new URL(this.config.get('defaultBinderhub').url);
+        this.set(
+            'selectedHost',
+            this.availableHosts.find(
+                host => host.url.href === defaultBinderHubURL.href,
+            ),
+        );
     }
 }
 

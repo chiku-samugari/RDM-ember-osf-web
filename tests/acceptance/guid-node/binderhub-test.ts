@@ -34,6 +34,19 @@ function createFolderResponse(attrs: Metadata) {
 }
 
 module('Acceptance | guid-node/binderhub', hooks => {
+    // HS stands for HostSelector.
+    const HS = {
+        top: '[data-test-binderhub-host-selector]',
+        curHost: 'data-test-host-selector-current-host',
+        open: '[data-test-open-host-selector-dialogue]',
+        dialogue: '[data-test-binderhub-host-selector-dialogue]',
+        option: '[data-test-host-selection-option]',
+        ok: '[data-test-host-selector-dialogue-ok]',
+        cancel: '[data-test-host-selector-dialogue-cancel]',
+        checked: 'input[type="radio"]:checked',
+        notChecked: 'input[type="radio"]:not(:checked)',
+    };
+
     setupOSFApplicationTest(hooks);
     setupMirage(hooks);
 
@@ -93,8 +106,7 @@ module('Acceptance | guid-node/binderhub', hooks => {
                 ],
             },
         });
-        server.create('file-provider',
-            { node, name: 'osfstorage' });
+        server.create('file-provider', { node, name: 'osfstorage' });
         const sandbox = sinon.createSandbox();
         const ajaxStub = sandbox.stub(BinderHubConfigModel.prototype, 'jupyterhubAPIAJAX');
         ajaxStub.resolves({
@@ -138,7 +150,18 @@ module('Acceptance | guid-node/binderhub', hooks => {
         await percySnapshot(assert);
         assert.dom('[data-test-servers-header]').exists();
         assert.dom('[data-test-binderhub-header]').exists();
-        assert.dom('[data-test-jupyterhub-selection-option]').exists({ count: 1 });
+        assert.dom(`${HS.top}`).exists();
+        assert.dom(`${HS.dialogue}`).doesNotExist();
+        assert.dom(`${HS.top} ${HS.open}`).exists();
+        await click(`${HS.top} ${HS.open}`);
+        assert.dom(`${HS.dialogue}`).exists();
+        assert.dom(`${HS.option}`).exists({ count: 1 });
+        await click(`${HS.dialogue} ${HS.ok}`);
+        assert.dom(`${HS.dialogue}`).doesNotExist();
+        await click(`${HS.top} ${HS.open}`);
+        assert.dom(`${HS.dialogue}`).exists();
+        await click(`${HS.dialogue} ${HS.cancel}`);
+        assert.dom(`${HS.dialogue}`).doesNotExist();
         assert.dom('[data-test-jupyterhub-user]').hasText('testuser');
         assert.dom('[data-test-binderhub-launch]').exists();
         assert.dom('[data-test-image-selection="jupyter/test-image"]').exists();
@@ -165,6 +188,214 @@ module('Acceptance | guid-node/binderhub', hooks => {
             'BinderHub calls JupyterHub REST API',
         );
 
+        sandbox.restore();
+    });
+
+    test('We can chenge the host.', async function(assert) {
+        const node = server.create('node', {
+            id: 'i9bri',
+            currentUserPermissions: [Permission.Write],
+        });
+        server.create('binderhub-config', {
+            id: node.id,
+            binderhubs: [{
+                default: true,
+                url: 'http://localhost:8585/',
+                authorize_url: 'http://localhost/authorize',
+                token: {
+                    access_token: 'TESTBHTOKEN',
+                    token_type: 'Bearer',
+                    expires_at: null,
+                },
+                jupyterhub_url: 'http://localhost:30123/',
+            }, {
+                default: false,
+                url: 'http://localhost:31415/',
+                authorize_url: 'http://localhost/authorize',
+                token: {
+                    access_token: 'TESTBHTOKEN31415',
+                    token_type: 'Bearer',
+                    expires_at: null,
+                },
+                jupyterhub_url: 'http://localhost:27182/',
+            }],
+            jupyterhubs: [{
+                url: 'http://localhost:30123/',
+                api_url: 'http://localhost:30123/hub/api/',
+                authorize_url: 'http://localhost/authorize',
+                token: {
+                    user: 'testuser',
+                    access_token: 'TESTJHTOKEN',
+                    token_type: 'Bearer',
+                    expires_at: null,
+                },
+            }, {
+                url: 'http://localhost:27182/',
+                api_url: 'http://localhost:27182/hub/api/',
+                authorize_url: 'http://localhost/authorize',
+                token: {
+                    user: 'testuser',
+                    access_token: 'TESTJHTOKEN27182',
+                    token_type: 'Bearer',
+                    expires_at: null,
+                },
+            }],
+            node_binderhubs: [
+                {
+                    binderhub_url: 'http://localhost:8585/',
+                    jupyterhub_url: 'http://localhost:30123/',
+                },
+                {
+                    binderhub_url: 'http://localhost:31415/',
+                    jupyterhub_url: 'http://localhost:27182/',
+                },
+            ],
+            user_binderhubs: [{
+                binderhub_url: 'http://example.com:8585/',
+                jupyterhub_url: 'http://example.com:30123/',
+            }],
+            deployment: {
+                images: [
+                    {
+                        url: 'jupyter/test-image',
+                        name: 'Test Image',
+                        description: 'dummy description',
+                        packages: ['conda'],
+                    },
+                ],
+            },
+            launcher: {
+                endpoints: [
+                    {
+                        id: 'fake',
+                        name: 'Fake',
+                        path: 'Fake',
+                    },
+                ],
+            },
+        });
+        server.create('file-provider', { node, name: 'osfstorage' });
+        const sandbox = sinon.createSandbox();
+        const ajaxStub = sandbox.stub(BinderHubConfigModel.prototype, 'jupyterhubAPIAJAX');
+        ajaxStub.resolves({
+            kind: 'user',
+            name: 'testuser',
+            servers: {
+                '': {
+                    name: '',
+                },
+                'server-1': {
+                    name: 'server-1',
+                },
+                'i9bri-osfstorage-1': {
+                    name: 'i9bri-osfstorage-1',
+                },
+                'i9bri-osfstorage-2': {
+                    name: 'i9bri-osfstorage-2',
+                },
+            },
+            named_server_limit: 10,
+        });
+        const wbFileAjaxStub = sandbox.stub(AbstractFile.prototype, 'wbAuthenticatedAJAX');
+        wbFileAjaxStub
+            .onFirstCall()
+            .resolves({
+                data: [
+                    createFileResponse({
+                        kind: 'file',
+                        provider: 'osfstorage',
+                        name: 'a',
+                        path: '/a',
+                    }),
+                    createFileResponse({
+                        kind: 'file',
+                        provider: 'osfstorage',
+                        name: 'b',
+                        path: '/b',
+                    }),
+                    createFolderResponse({
+                        kind: 'folder',
+                        provider: 'osfstorage',
+                        name: '.binder',
+                        path: '/.binder',
+                    }),
+                ],
+            });
+        wbFileAjaxStub.resolves({
+            data: [],
+        });
+        const url = `/${node.id}/binderhub`;
+
+        await visit(url);
+        assert.equal(currentURL(), url, `We are on ${url}`);
+        assert.equal(currentRouteName(), 'guid-node.binderhub', 'We are at guid-node.binderhub');
+        assert.dom('[data-test-jupyterhub-user]').hasText('testuser');
+        assert.dom('[data-test-binderhub-launch]').exists();
+        assert.dom('[data-test-image-selection="jupyter/test-image"]').exists();
+        assert.dom('[data-test-image-selected]').doesNotExist();
+        assert.dom('[data-test-package-editor="apt"]').doesNotExist();
+        assert.dom('[data-test-package-editor="conda"]').doesNotExist();
+        assert.dom('[data-test-package-editor="pip"]').doesNotExist();
+
+        assert.equal(
+            wbFileAjaxStub.callCount,
+            2,
+            'WaterButler API has been called a specified number of times',
+        );
+        assert.equal(
+            wbFileAjaxStub.firstCall.args[0].url,
+            'http://localhost:8000/v2/nodes/i9bri/files/osfstorage/upload',
+        );
+        assert.equal(
+            wbFileAjaxStub.secondCall.args[0].url,
+            'http://localhost:7777/osfstorage/.binder',
+        );
+
+        assert.dom(HS.top).exists({ count: 1 });
+        assert.dom(`${HS.dialogue}`).doesNotExist();
+        assert.dom(`${HS.top} ${HS.open}`).exists();
+        await click(`${HS.top} ${HS.open}`);
+        assert.dom(`${HS.dialogue}`).exists();
+
+        assert.dom(`${HS.dialogue} ${HS.option}`).exists({ count: 2 });
+        assert.dom(`${HS.dialogue} ${HS.option} ${HS.checked}`).exists({ count: 1 });
+        assert.dom(`${HS.dialogue} ${HS.option} ${HS.notChecked}`).exists({ count: 1 });
+
+        await click(`${HS.dialogue} ${HS.ok}`);
+        assert.dom(`${HS.dialogue}`).doesNotExist();
+        await click(`${HS.top} ${HS.open}`);
+        assert.dom(`${HS.dialogue}`).exists();
+        await click(`${HS.dialogue} ${HS.cancel}`);
+        assert.dom(`${HS.dialogue}`).doesNotExist();
+        await click(`${HS.top} ${HS.open}`);
+        await click(`${HS.dialogue} ${HS.option} ${HS.notChecked}`);
+        await click(`${HS.dialogue} ${HS.cancel}`);
+        await click(`${HS.top} ${HS.open}`);
+        await click(`${HS.dialogue} ${HS.option} ${HS.checked}`);
+        await click(`${HS.dialogue} ${HS.ok}`);
+        assert.ok(
+            ajaxStub.calledOnceWithExactly(
+                'http://localhost:30123/',
+                'users/testuser?include_stopped_servers=1',
+                null,
+            ),
+            'BinderHub calls JupyterHub REST API',
+        );
+
+        await click(`${HS.top} ${HS.open}`);
+        await click(`${HS.dialogue} ${HS.option} ${HS.notChecked}`);
+        await click(`${HS.dialogue} ${HS.ok}`);
+        const hostSelectorNode = this.element.querySelector(`${HS.top} ${HS.curHost}`);
+        assert.notEqual(hostSelectorNode, 'null', 'HostSelector exists.');
+        if (hostSelectorNode !== null) {
+            // Although non-nullity of this object is already asserted
+            // above, the compiler complains if we do not check it
+            // explicitly.
+            assert.equal(
+                hostSelectorNode.getAttribute(HS.curHost),
+                'http://localhost:31415/',
+            );
+        }
         sandbox.restore();
     });
 
@@ -280,7 +511,18 @@ module('Acceptance | guid-node/binderhub', hooks => {
         await percySnapshot(assert);
         assert.dom('[data-test-servers-header]').exists();
         assert.dom('[data-test-binderhub-header]').exists();
-        assert.dom('[data-test-jupyterhub-selection-option]').exists({ count: 2 });
+        assert.dom(`${HS.top}`).exists();
+        assert.dom(`${HS.dialogue}`).doesNotExist();
+        assert.dom(`${HS.top} ${HS.open}`).exists();
+        await click(`${HS.top} ${HS.open}`);
+        assert.dom(`${HS.dialogue}`).exists();
+        assert.dom(`${HS.option}`).exists({ count: 2 });
+        await click(`${HS.dialogue} ${HS.ok}`);
+        assert.dom(`${HS.dialogue}`).doesNotExist();
+        await click(`${HS.top} ${HS.open}`);
+        assert.dom(`${HS.dialogue}`).exists();
+        await click(`${HS.dialogue} ${HS.cancel}`);
+        assert.dom(`${HS.dialogue}`).doesNotExist();
         assert.dom('[data-test-binderhub-launch]').exists();
         assert.dom('[data-test-image-change="jupyter/scipy-notebook"]').exists();
         assert.dom('[data-test-image-selected="jupyter/scipy-notebook"]').exists();
@@ -429,7 +671,18 @@ module('Acceptance | guid-node/binderhub', hooks => {
         await percySnapshot(assert);
         assert.dom('[data-test-servers-header]').exists();
         assert.dom('[data-test-binderhub-header]').exists();
-        assert.dom('[data-test-jupyterhub-selection-option]').exists({ count: 1 });
+        assert.dom(`${HS.top}`).exists();
+        assert.dom(`${HS.dialogue}`).doesNotExist();
+        assert.dom(`${HS.top} ${HS.open}`).exists();
+        await click(`${HS.top} ${HS.open}`);
+        assert.dom(`${HS.dialogue}`).exists();
+        assert.dom(`${HS.option}`).exists({ count: 1 });
+        await click(`${HS.dialogue} ${HS.ok}`);
+        assert.dom(`${HS.dialogue}`).doesNotExist();
+        await click(`${HS.top} ${HS.open}`);
+        assert.dom(`${HS.dialogue}`).exists();
+        await click(`${HS.dialogue} ${HS.cancel}`);
+        assert.dom(`${HS.dialogue}`).doesNotExist();
         assert.dom('[data-test-binderhub-launch]').exists();
         assert.dom('[data-test-image-change="#repo2docker#r-base"]').exists();
         assert.dom('[data-test-image-selected="#repo2docker#r-base"]').exists();
@@ -581,7 +834,18 @@ module('Acceptance | guid-node/binderhub', hooks => {
         await percySnapshot(assert);
         assert.dom('[data-test-servers-header]').exists();
         assert.dom('[data-test-binderhub-header]').exists();
-        assert.dom('[data-test-jupyterhub-selection-option]').exists({ count: 1 });
+        assert.dom(`${HS.top}`).exists();
+        assert.dom(`${HS.dialogue}`).doesNotExist();
+        assert.dom(`${HS.top} ${HS.open}`).exists();
+        await click(`${HS.top} ${HS.open}`);
+        assert.dom(`${HS.dialogue}`).exists();
+        assert.dom(`${HS.option}`).exists({ count: 1 });
+        await click(`${HS.dialogue} ${HS.ok}`);
+        assert.dom(`${HS.dialogue}`).doesNotExist();
+        await click(`${HS.top} ${HS.open}`);
+        assert.dom(`${HS.dialogue}`).exists();
+        await click(`${HS.dialogue} ${HS.cancel}`);
+        assert.dom(`${HS.dialogue}`).doesNotExist();
         assert.dom('[data-test-binderhub-launch]').exists();
         assert.dom('[data-test-image-change="jupyter/scipy-notebook"]').exists();
         assert.dom('[data-test-image-selected="jupyter/scipy-notebook"]').exists();
@@ -856,7 +1120,18 @@ module('Acceptance | guid-node/binderhub', hooks => {
         await percySnapshot(assert);
         assert.dom('[data-test-servers-header]').exists();
         assert.dom('[data-test-binderhub-header]').exists();
-        assert.dom('[data-test-jupyterhub-selection-option]').exists({ count: 1 });
+        assert.dom(`${HS.top}`).exists();
+        assert.dom(`${HS.dialogue}`).doesNotExist();
+        assert.dom(`${HS.top} ${HS.open}`).exists();
+        await click(`${HS.top} ${HS.open}`);
+        assert.dom(`${HS.dialogue}`).exists();
+        assert.dom(`${HS.option}`).exists({ count: 1 });
+        await click(`${HS.dialogue} ${HS.ok}`);
+        assert.dom(`${HS.dialogue}`).doesNotExist();
+        await click(`${HS.top} ${HS.open}`);
+        assert.dom(`${HS.dialogue}`).exists();
+        await click(`${HS.dialogue} ${HS.cancel}`);
+        assert.dom(`${HS.dialogue}`).doesNotExist();
         assert.dom('[data-test-binderhub-launch]').exists();
         assert.dom('[data-test-image-change="#repo2docker#r-base"]').exists();
         assert.dom('[data-test-image-selected="#repo2docker#r-base"]').exists();
@@ -1133,7 +1408,18 @@ module('Acceptance | guid-node/binderhub', hooks => {
         await percySnapshot(assert);
         assert.dom('[data-test-servers-header]').exists();
         assert.dom('[data-test-binderhub-header]').exists();
-        assert.dom('[data-test-jupyterhub-selection-option]').exists({ count: 1 });
+        assert.dom(`${HS.top}`).exists();
+        assert.dom(`${HS.dialogue}`).doesNotExist();
+        assert.dom(`${HS.top} ${HS.open}`).exists();
+        await click(`${HS.top} ${HS.open}`);
+        assert.dom(`${HS.dialogue}`).exists();
+        assert.dom(`${HS.option}`).exists({ count: 1 });
+        await click(`${HS.dialogue} ${HS.ok}`);
+        assert.dom(`${HS.dialogue}`).doesNotExist();
+        await click(`${HS.top} ${HS.open}`);
+        assert.dom(`${HS.dialogue}`).exists();
+        await click(`${HS.dialogue} ${HS.cancel}`);
+        assert.dom(`${HS.dialogue}`).doesNotExist();
         assert.dom('[data-test-binderhub-launch]').exists();
         assert.dom('[data-test-image-change="#repo2docker#r-base"]').exists();
         assert.dom('[data-test-image-selected="#repo2docker#r-base"]').exists();
@@ -1355,7 +1641,18 @@ module('Acceptance | guid-node/binderhub', hooks => {
         await percySnapshot(assert);
         assert.dom('[data-test-servers-header]').exists();
         assert.dom('[data-test-binderhub-header]').exists();
-        assert.dom('[data-test-jupyterhub-selection-option]').exists({ count: 2 });
+        assert.dom(`${HS.top}`).exists();
+        assert.dom(`${HS.dialogue}`).doesNotExist();
+        assert.dom(`${HS.top} ${HS.open}`).exists();
+        await click(`${HS.top} ${HS.open}`);
+        assert.dom(`${HS.dialogue}`).exists();
+        assert.dom(`${HS.option}`).exists({ count: 2 });
+        await click(`${HS.dialogue} ${HS.ok}`);
+        assert.dom(`${HS.dialogue}`).doesNotExist();
+        await click(`${HS.top} ${HS.open}`);
+        assert.dom(`${HS.dialogue}`).exists();
+        await click(`${HS.dialogue} ${HS.cancel}`);
+        assert.dom(`${HS.dialogue}`).doesNotExist();
         assert.dom('[data-test-binderhub-launch]').exists();
 
         assert.dom('[data-test-server-list-item]').exists();

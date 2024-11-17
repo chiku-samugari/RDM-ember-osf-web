@@ -1768,6 +1768,13 @@ iqbrims:
     uploader_comment: 'Comment'
 binderhub:
     page_title: '{nodeTitle} BinderHub'
+    host_info:
+        url: 'JupyterHub:'
+        change_host: 'SELECT'
+    host_selector:
+        dialogue_title: 'Host Select'
+        dialogue_explanation: 'Please select the server host.'
+        add_host_label: 'Add Host'
     jupyter_servers_list:
         header: 'My environments'
         delete_confirm_dialog_title: 'Delete confirmation'
@@ -1776,7 +1783,6 @@ binderhub:
         header: 'New environment'
     loading: 'Loading BinderHub config...'
     servers:
-        host: 'Host: '
         username: 'User: '
         server_exists: '{servers} environment(s) created from this project.'
         server_not_exists: 'No environments created from this project.'
@@ -1822,7 +1828,7 @@ binderhub:
     build:
         launch: 'Launch'
         status: 'Build status'
-        launch_new_enviornment: 'Launch a new environment: {binderhubUrl}'
+        launch_new_enviornment: 'Launch a new environment'
     error:
         binderhub_auth_error: 'You need to connect it to the BinderHub. Please reauthenticate.'
         binderhub_build_error: 'An error occurred while connecting to the BinderHub.'

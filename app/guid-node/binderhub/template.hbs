@@ -5,12 +5,13 @@
         {{t 'binderhub.loading'}}
     {{else}}
         <div local-class='BinderHub__editor'>
-            <h2
-                data-test-servers-header
-                local-class='BinderHub__header'
-            >
-                {{t 'binderhub.jupyter_servers_list.header'}}
-            </h2>
+            <GuidNode::Binderhub::-Components::HostSelector
+                local-class='host_selector'
+                @guid={{this.node.id}}
+                @selectedHost={{this.selectedHost}}
+                @availableHosts={{this.availableHosts}}
+                @onHostSelect={{this.selectHostURL}}
+            />
             <BsAlert
                 @type='danger'
                 @dismissible={{false}}
@@ -19,10 +20,11 @@
             >
                 {{t 'binderhub.error.jupyterhub_api_error'}}
             </BsAlert>
-            <div local-class='BinderHub__panel'>
+            <div local-class='BinderHub__section'>
                 <GuidNode::Binderhub::-Components::JupyterServersList
                     @node={{this.node}}
                     @binderHubConfig={{this.model.binderHubConfig}}
+                    @currentBinderHubURL={{this.currentBinderHubURL}}
                     @loggedOutDomains={{this.loggedOutDomains}}
                     @renewToken={{action this.renewJupyterHubToken}}
                     @logout={{action this.logoutJupyterHub}}
@@ -46,6 +48,7 @@
             </div>
             <GuidNode::Binderhub::-Components::BuildConsole
                 @binderHubConfig={{this.model.binderHubConfig}}
+                @currentBinderHubURL={{this.currentBinderHubURL}}
                 @renewToken={{action this.renewBinderHubToken}}
                 @requestBuild={{action this.build}}
                 @buildLog={{this.buildLog}}

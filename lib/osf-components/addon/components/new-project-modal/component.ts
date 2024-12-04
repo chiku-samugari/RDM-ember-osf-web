@@ -56,8 +56,10 @@ export default class NewProjectModal extends Component {
     regions: Region[] = [];
     running: boolean = false;
     createError: boolean = false;
+    createErrorMessage?: string;
 
     makeProjectAffiliate: boolean = projectAffiliate;
+    canCreateNewProject: boolean = true;
 
     @alias('currentUser.user') user!: User;
 
@@ -147,6 +149,12 @@ export default class NewProjectModal extends Component {
             this.afterProjectCreated(node);
         } catch (error) {
             this.toast.error(this.intl.t('new_project.create_failed_header'));
+            let errorMessage = this.intl.t('new_project.create_failed_msg');
+            const errorObj = error.errors.firstObject;
+            if (errorObj && errorObj.detail && errorObj.detail === 'The new project cannot be created due to the created project number is greater than or equal the project number can create.') {
+                errorMessage = this.intl.t('new_project.limited');
+            }
+            this.set('createErrorMessage', errorMessage);
             this.set('createError', true);
         }
     });

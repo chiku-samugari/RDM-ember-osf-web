@@ -60,6 +60,8 @@ export default class JupyterServersList extends Component {
 
     oldBuildPhase: string | null = null;
 
+    serverBuildingBit: boolean = false;
+
     currentBinderHubURL!: URL;
 
     requestNotAuthorized: boolean = false;
@@ -207,7 +209,7 @@ export default class JupyterServersList extends Component {
             }
             const annot = this.get('serverAnnotationHash')[s.entry.url];
             if (typeof annot === 'undefined') {
-                if (!nullDetected) {
+                if (!nullDetected && !this.get('serverBuildingBit')) {
                     nullDetected = true;
                     this.requestAnnotationCreation(s, this.get('currentBinderHubURL'), true);
                 }

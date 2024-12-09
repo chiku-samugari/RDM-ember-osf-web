@@ -51,6 +51,7 @@ export default Factory.extend<MirageUser & UserTraits>({
         return 'America/New_York';
     },
     acceptedTermsOfService: true,
+    canCreateNewProject: true,
     canViewReviews: false,
     social: {},
     employment() {

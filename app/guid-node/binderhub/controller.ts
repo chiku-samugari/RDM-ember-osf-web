@@ -461,6 +461,12 @@ export default class GuidNodeBinderHub extends Controller {
         }
     }
 
+    @computed('buildPhase')
+    get serverBuildingBit() {
+        const phase = this.get('buildPhase');
+        return (phase !== null) && (phase !== 'ready');
+    }
+
     @computed('model.binderHubConfig')
     get config(): BinderHubConfigModel {
         if (this.configCache) {

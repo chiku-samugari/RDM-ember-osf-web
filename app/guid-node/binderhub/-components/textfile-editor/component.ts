@@ -6,6 +6,7 @@ interface Args {
     title: string;
     content: string;
     enable: boolean;
+    writePermitted: boolean;
     onSave: () => void;
     onChange: (event: { target: HTMLInputElement }) => void;
 }

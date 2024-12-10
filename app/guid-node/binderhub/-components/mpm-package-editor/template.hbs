@@ -39,7 +39,7 @@
                 >
                     <i class='fa fa-times' />
                 </button>
-            {{else}}
+            {{else if this.node.userHasWritePermission}}
                 {{this.release}}
                 <button
                     data-test-mpm-release-edit

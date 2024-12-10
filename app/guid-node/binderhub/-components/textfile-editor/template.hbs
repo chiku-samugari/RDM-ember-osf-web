@@ -16,20 +16,22 @@
             <textarea
                 class='form-control'
                 rows='16'
-                disabled={{not @enable}}
+                readonly={{or (not @writePermitted) (not @enable)}}
                 value={{@content}}
                 {{on 'change' @onChange}}
                 />
-            <button
-                local-class='save_button'
-                type='button'
-                class='btn btn-default'
-                disabled={{not @enable}}
-                {{on 'click' @onSave}}
-            >
-                {{fa-icon 'save'}}
-                {{t 'binderhub.deployment.save_file'}}
-            </button>
+            {{#if @writePermitted}}
+                <button
+                    local-class='save_button'
+                    type='button'
+                    class='btn btn-default'
+                    disabled={{not @enable}}
+                    {{on 'click' @onSave}}
+                >
+                    {{fa-icon 'save'}}
+                    {{t 'binderhub.deployment.save_file'}}
+                </button>
+            {{/if}}
         </div>
     {{/if}}
 </div>

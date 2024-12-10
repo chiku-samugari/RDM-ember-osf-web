@@ -88,6 +88,7 @@
                     @title={{t 'binderhub.deployment.dockerfile_editor_title'}}
                     @content={{this.dockerfile}}
                     @enable={{not this.imageSelecting}}
+                    @writePermitted={{this.node.userHasWritePermission}}
                     @onSave={{this.saveDockerfile}}
                     @onChange={{this.editDockerfileContent}}
                     />

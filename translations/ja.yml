@@ -648,8 +648,6 @@ node:
         no_reports: このプロジェクトのメタデータはありません。
         no_drafts: このプロジェクトに関する下書きはありません。
         start_new: '「新規メタデータを作成」ボタンをクリックして、新規メタデータ作成を開始します。一度登録したメタデータを、編集または削除することはできません。'
-        register_entire_project: '代わりにプロジェクト"{rootNodeTitle}"全体を報告するには、クリックします。'
-        here: こちら
         new: 新規メタデータを作成
         reports: メタデータ
         draft_reports: 下書き

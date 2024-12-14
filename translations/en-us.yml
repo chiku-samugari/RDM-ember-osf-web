@@ -1830,13 +1830,22 @@ binderhub:
         destruct_dockerfile_confirmation_dialogue_title: 'Dockerfile reset confirmation'
         destruct_dockerfile_confirmation_dialogue_body: 'If you change the base image, Dockerfile you are currently editing will be reset. Please note that the lost content cannot be retrieved. Are you sure you want to proceed?'
         release: 'Release'
-        products: 'Add-ons'
+        clear_release: '(clear)'
+        edit_product_button_label: 'Edit Add-ons'
+        edit_product_dialogue:
+          title: 'Edit Add-ons'
+          search_placeholder: 'serach addons'
+          manual_edit:
+            tab_title: 'Specify manually'
+            add_button: 'Add'
+            message_on_add: '{product_name} has been added.'
+            message_on_conflict: '{product_name} has already been added.'
+            message_on_invalid: 'Invalid addon name. Addon name must not include whitespace characters'
         info_urls:
             mpm: 'https://rcosdp.github.io/CS-repo2docker/MATLAB.html'
         placeholders:
             package_name: 'Name'
             package_version: 'Version'
-            release: 'R2023b'
     build:
         launch: 'Launch'
         status: 'Build status'

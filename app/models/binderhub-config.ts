@@ -80,6 +80,9 @@ export default class BinderHubConfigModel extends OsfModel {
 
     // tslint:disable-next-line:variable-name
     @attr('array') user_binderhubs!: BinderHubCandidate[];
+
+    // tslint:disable-next-line:variable-name
+    @attr('array') mpm_releases!: string[];
     /* eslint-enable camelcase */
 
     @computed('binderhubs')

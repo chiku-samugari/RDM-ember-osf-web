@@ -3,17 +3,8 @@
     flex-wrap: nowrap;
 }
 
-.products_group {
-    display: flex;
-    flex-wrap: nowrap;
-}
-
-.release_label {
-    margin: auto 1em auto 0;
-}
-
-.products_label {
-    margin: auto 1em;
+.release_selector_button {
+    border-radius: 5px;
 }
 
 .package_editor {
@@ -31,51 +22,107 @@
     color: #000;
 }
 
-.package_item {
-    margin: auto 1em auto 0;
+.product_item {
+    margin: 0.5em 1em auto 0;
     border-radius: 0.85em;
     border: 1px solid #ccc;
     padding: 0 1em;
     background: #f8f8f8;
 }
 
-.package_item button {
+.product_item button {
     border: 0;
     background: transparent;
     padding: 0;
 }
 
-.package_add {
-    margin: auto;
+.product_add {
+    margin: auto 1em;
 }
 
-.package_add button {
+.product_add button {
     border-radius: 0.85em;
     font-size: 0.9em;
     padding: 2px 1em;
 }
 
-.products_list {
+.picked_products_list {
     display: flex;
+    flex-wrap: wrap;
 }
 
-.edit_release_name {
-    color: #000;
+.release_list {
+    background-color: #f8f8f8;
+    border-radius: 2px;
+    height: 200px;
+    overflow-y: scroll;
+
+    & > li > button {
+        color: #000;
+        width: 100%;
+        text-align: justify;
+    }
+
+    & > li > button:hover {
+        color: #fff;
+        background-color: #1e90ff;
+    }
 }
 
-.package_item_confirm {
-    border-style: none;
-    background: none;
-    color: #28a745;
+.products_filter_textarea {
+    resize: none;
 }
 
-.package_item_cancel {
-    border-style: none;
-    background: none;
-    color: #888;
+// A workaround to avoid a malformed behaviour of tab line.
+/* stylelint-disable-next-line selector-max-compound-selectors */
+.products_tabs > ul > li > a:hover {
+    border: 1px solid rgba(0, 0, 0, 0);
 }
 
-.package_help {
-    border-style: none;
-    background: none;
+.products_list_pane {
+    padding: 4px 10px;
+    max-height: 60vh;
+    overflow-y: scroll;
+}
+
+.products_list_entry_label {
+    white-space: nowrap;
+    width: 100%;
+
+    &:hover {
+        color: #fff;
+        background-color: #1e90ff;
+    }
+}
+
+.manual_product_name_area {
+    display: flex;
+    padding: 1em;
+}
+
+.manual_product_name_editor {
+    resize: none;
+}
+
+.manual_product_name_add_button {
+    margin: 0 1em;
+    width: max-content;
+}
+
+.inform_manual_add {
+    margin: 1em;
+    border-radius: 5px;
+    padding: 0.5em;
+
+    &.successed {
+        background-color: #98fb98;
+    }
+
+    &.failed {
+        background-color: #ff8484;
+    }
+}
+
+.inform_manual_add_msg {
+    margin: 0.5em;
 }

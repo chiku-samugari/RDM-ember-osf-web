@@ -178,10 +178,8 @@
                             @label='MATLAB (mpm)'
                             @url={{t 'binderhub.deployment.info_urls.mpm'}}
                             @config={{this.mpmConfig}}
+                            @availableReleases={{this.binderHubConfig.mpm_releases}}
                             @onUpdate={{action this.mpmUpdated}}
-                            @editing={{if (eq this.editingPackage 'mpm') 'editing'}}
-                            @onEditingStart={{action (mut this.editingPackage) 'mpm'}}
-                            @onEditingEnd={{action (mut this.editingPackage) ''}}
                         />
                     {{/if}}
                 </div>

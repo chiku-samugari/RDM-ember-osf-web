@@ -8,104 +8,186 @@
         {{/if}}
     </div>
     <div local-class='release_group'>
-        <div local-class='release_label'>
-            {{t 'binderhub.deployment.release'}}
-        </div>
-        <div local-class='release'>
-            {{#if (and this.releaseEditing this.node.userHasWritePermission)}}
-                <input
-                    name='release_name'
-                    class='input-release-name'
-                    placeholder={{t 'binderhub.deployment.placeholders.release'}}
-                    value={{this.release}}
-                    onkeyup={{action this.releaseKeyDown target=this}}
-                    type='text'
-                >
-                <button
-                    data-test-named-item-confirm
-                    type='button'
-                    class='btn btn-default'
-                    local-class='package_item_confirm'
-                    {{action this.confirmReleaseEdit target=this}}
-                >
-                    <i class='fa fa-check' />
-                </button>
-                <button
-                    data-test-named-item-cancel
-                    type='button'
-                    class='btn btn-default'
-                    local-class='package_item_cancel'
-                    {{action (mut this.releaseEditing) false}}
-                >
-                    <i class='fa fa-times' />
-                </button>
-            {{else if this.node.userHasWritePermission}}
-                {{this.release}}
-                <button
-                    data-test-mpm-release-edit
-                    class='btn btn-link'
-                    local-class='edit_release_name'
-                    {{action (mut this.releaseEditing) true}}
-                >
-                    <i class='fa fa-edit'></i>
-                </button>
+        {{#if this.node.userHasWritePermission}}
+            <BsDropdown {{did-insert this.initProductNames}} as |dd|>
+                <dd.button data-test-current-release
+                    local-class='release_selector_button'>
+                    {{or this.release (t 'binderhub.deployment.release')}}
+                    <span class='caret'></span>
+                </dd.button>
+                <dd.menu local-class='release_list' as |menu|>
+                    {{#each this.availableReleases as |release|}}
+                        <menu.item>
+                            <OsfButton data-test-pick-release={{release}}
+                                onClick={{action this.pickRelease release}}>
+                                {{#if (eq release this.release)}}
+                                    {{#fa-stack as |s|}}
+                                        {{s.stack-1x 'fw'}}
+                                        {{s.stack-1x 'check'}}
+                                    {{/fa-stack}}
+                                {{else}}
+                                    {{#fa-stack as |s|}}
+                                        {{s.stack-1x 'fw'}}
+                                    {{/fa-stack}}
+                                {{/if}}
+                                <span>{{release}}</span>
+                            </OsfButton>
+                        </menu.item>
+                    {{/each}}
+                    <menu.item>
+                        <OsfButton data-test-clear-release
+                            onClick={{action this.pickRelease null}}>
+                            {{#fa-stack as |s|}}
+                                {{s.stack-1x 'fw'}}
+                            {{/fa-stack}}
+                            <span>{{t 'binderhub.deployment.clear_release'}}</span>
+                        </OsfButton>
+                    </menu.item>
+                </dd.menu>
+            </BsDropdown>
+            {{#if this.release}}
+                <div local-class='product_add'>
+                    <button
+                        data-test-mpm-product-add
+                        type='button'
+                        class='btn btn-default'
+                        disabled={{this.transitioningBit}}
+                        onClick={{this.startProductPicking}}
+                    >
+                        <i class='fa fa-edit' />
+                        {{t 'binderhub.deployment.edit_product_button_label'}}
+                    </button>
+                </div>
             {{/if}}
-        </div>
+        {{/if}}
     </div>
-    <div local-class='products_group'>
-        <div local-class='products_label'>
-            {{t 'binderhub.deployment.products'}}
-        </div>
-        <div local-class='products_list'>
-            {{#each this.products as |pkg index|}}
-                {{#if (and (eq this.editing 'editing') (eq index this.editingIndex))}}
-                    <GuidNode::Binderhub::-Components::NamedItemEditor
-                        @name={{this.editingName}}
-                        @onConfirm={{action this.confirmEdit}}
-                        @onCancel={{action this.cancelEdit}}
-                    />
-                {{else}}
-                    <div local-class='package_item'>
-                        {{#if this.node.userHasWritePermission}}
-                            <button
-                                data-test-mpm-product-edit-item={{index}}
-                                {{action this.editProduct index target=this}}
-                            >
-                                {{pkg}}
-                            </button>
-                            <button
-                                data-test-mpm-product-delete-item={{index}}
-                                {{action this.removeProduct index target=this}}
-                            >
-                                <i class='fa fa-times' />
-                            </button>
-                        {{else}}
-                            {{pkg}}
-                        {{/if}}
-                    </div>
-                {{/if}}
-            {{/each}}
-            {{#if (and (eq this.editing 'editing') (eq this.editingIndex -1))}}
-                <GuidNode::Binderhub::-Components::NamedItemEditor
-                    @name={{this.editingName}}
-                    @onConfirm={{action this.confirmAdd}}
-                    @onCancel={{action this.cancelAdd}}
-                />
-            {{else}}
-                {{#if (and this.node.userHasWritePermission (not (eq this.editing 'editing')))}}
-                    <div local-class='package_add'>
-                        <button
-                            data-test-mpm-product-add
-                            type='button'
-                            class='btn btn-default'
-                            {{action this.addProduct target=this}}
-                        >
-                            <i class='fa fa-plus' />
-                            {{t 'binderhub.deployment.add_package'}}
+    <div>
+        <div local-class='picked_products_list'>
+            {{#each this.products as |name index|}}
+                <div local-class='product_item'>
+                    {{#if this.node.userHasWritePermission}}
+                        <button data-test-mpm-product-edit-item={{index}}>
+                            {{name}}
                         </button>
-                    </div>
-                {{/if}}
-            {{/if}}
+                        <button
+                            data-test-mpm-product-delete-item={{index}}
+                            onClick={{fn this.removeProduct name}}
+                        >
+                            <i class='fa fa-times'/>
+                        </button>
+                    {{else}}
+                        {{name}}
+                    {{/if}}
+                </div>
+            {{/each}}
         </div>
     </div>
 </div>
+
+<BsModal data-test-matlab-product-editor
+    @open={{this.productPicking}} @onHide={{this.closeProductsAddDialogue}} as |modal|>
+    <modal.header>
+        <h4>{{t 'binderhub.deployment.edit_product_dialogue.title'}}</h4>
+        <textarea
+            class='form-control'
+            local-class='products_filter_textarea'
+            placeholder={{t 'binderhub.deployment.edit_product_dialogue.search_placeholder'}}
+            rows='1'
+            value={{this.filterQuery}}
+            onKeyUp={{this.updateFilter}}
+            />
+    </modal.header>
+    {{#if this.isFiltering}}
+        <div local-class='products_list_pane'>
+            {{#each this.annotatedProductNameArray as |info|}}
+                {{#let (get this.pickedProductsHash info.name) as |picked|}}
+                    <div>
+                        <label local-class='products_list_entry_label'>
+                            <input type='checkbox'
+                                name='productname'
+                                value={{info.name}}
+                                checked={{picked}}
+                                onClick={{fn (if picked this.removeProduct this.addProduct) info.name}}
+                            >
+                            <GuidNode::Binderhub::-Components::TextSegmentHighlight
+                                @segmentHighlightMap={{info.segmentHlMap}}
+                                />
+                        </label>
+                    </div>
+                {{/let}}
+            {{/each}}
+        </div>
+    {{else}}
+        <BsTab local-class='products_tabs' as |tab|>
+            {{#each this.productNameCategories as |cat|}}
+                <tab.pane local-class='products_list_pane' @title={{cat}}>
+                    {{#each (get this.productNamesCategorizedHash cat) as |name|}}
+                        {{#let (get this.pickedProductsHash name) as |picked|}}
+                            <div>
+                                <label local-class='products_list_entry_label'>
+                                    <input type='checkbox'
+                                        name='productname'
+                                        value={{name}}
+                                        checked={{picked}}
+                                        onClick={{fn (if picked this.removeProduct this.addProduct) name}}
+                                    >
+                                    {{name}}
+                                </label>
+                            </div>
+                        {{/let}}
+                    {{/each}}
+                </tab.pane>
+            {{/each}}
+            {{#if (not this.productNamesFindingBit)}}
+                <tab.pane
+                    local-class='products_list_pane'
+                    @title={{t 'binderhub.deployment.edit_product_dialogue.manual_edit.tab_title'}}
+                    >
+                    <div local-class='manual_product_name_area'>
+                        <textarea
+                            local-class='manual_product_name_editor'
+                            class='form-control'
+                            rows='1'
+                            value={{this.manualProductName}}
+                            onKeyUp={{this.onProductNameChanged}}
+                            />
+                        <button
+                            local-class='manual_product_name_add_button'
+                            type='button'
+                            class='btn btn-default'
+                            disabled={{not (get this.manualProductName 'length')}}
+                            onClick={{fn this.addManualProductName this.manualProductName}}
+                        >
+                            {{t 'binderhub.deployment.edit_product_dialogue.manual_edit.add_button'}}
+                        </button>
+                    </div>
+                    {{#if (eq this.manualAddState 'SUCCESSED')}}
+                        <div local-class='inform_manual_add successed'>
+                            <span local-class='inform_manual_add_msg'>
+                                {{t
+                                    'binderhub.deployment.edit_product_dialogue.manual_edit.message_on_add'
+                                    product_name=this.latestManualProductName
+                                }}
+                            </span>
+                        </div>
+                    {{else if (eq this.manualAddState 'CONFLICT')}}
+                        <div local-class='inform_manual_add failed'>
+                            <span local-class='inform_manual_add_msg'>
+                                {{t
+                                    'binderhub.deployment.edit_product_dialogue.manual_edit.message_on_conflict'
+                                    product_name=this.latestManualProductName
+                                }}
+                            </span>
+                        </div>
+                    {{else if (eq this.manualAddState 'INVALID')}}
+                        <div local-class='inform_manual_add failed'>
+                            <span local-class='inform_manual_add_msg'>
+                                {{t 'binderhub.deployment.edit_product_dialogue.manual_edit.message_on_invalid'}}
+                            </span>
+                        </div>
+                    {{/if}}
+                </tab.pane>
+            {{/if}}
+        </BsTab>
+    {{/if}}
+</BsModal>

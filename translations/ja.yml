@@ -1828,13 +1828,22 @@ binderhub:
         destruct_dockerfile_confirmation_dialogue_title: 'Dockerfileの削除確認'
         destruct_dockerfile_confirmation_dialogue_body: '基本イメージを変更すると、あなたが編集中のDockerfileの内容が破棄されます。失われた内容を復元することはできません。続行しますか？'
         release: 'リリース'
-        products: 'アドオン'
+        clear_release: '(クリア)'
+        edit_product_button_label: 'アドオンを編集'
+        edit_product_dialogue:
+          title: 'アドオン編集'
+          search_placeholder: 'アドオンを検索'
+          manual_edit:
+            tab_title: 'アドオン名を直接指定'
+            add_button: '追加'
+            message_on_add: '{product_name}を追加しました。'
+            message_on_conflict: '{product_name}は既に追加されています。'
+            message_on_invalid: 'アドオン名は空白文字を含むことはできません。'
         info_urls:
             mpm: 'https://rcosdp.github.io/CS-repo2docker/MATLAB.html'
         placeholders:
             package_name: '名前'
             package_version: 'バージョン'
-            release: 'R2023b'
     build:
         launch: '起動'
         status: 'ビルド状況'

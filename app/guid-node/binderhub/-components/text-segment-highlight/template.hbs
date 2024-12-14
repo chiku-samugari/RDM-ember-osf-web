@@ -1,0 +1,7 @@
+{{~#each @segmentHighlightMap as |entry|~}}
+    {{~#if entry.highlight~}}
+        <span local-class='paint'>{{~entry.segment~}}</span>
+    {{~else~}}
+        <span>{{~entry.segment~}}</span>
+    {{~/if~}}
+{{~/each~}}

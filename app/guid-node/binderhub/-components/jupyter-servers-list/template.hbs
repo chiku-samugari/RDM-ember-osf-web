@@ -1,4 +1,4 @@
-<div local-class='jupyter_servers'>
+<div data-test-binderhub-jupyter-servers-list local-class='jupyter_servers'>
     <BsAlert
         @type='danger'
         @dismissible={{false}}
@@ -18,24 +18,6 @@
     {{#if this.loading}}
         {{t 'binderhub.loading'}}
     {{else}}
-        <div local-class='jupyterhub-server-menu'>
-            <div local-class='jupyterhub-selector'>
-                {{t 'binderhub.servers.host'}}
-                <select
-                    data-test-jupyterhub-selection
-                    onchange={{action this.binderhubChanged value='target.value'}}
-                >
-                    {{#each this.selectableBinderhubs as |item|}}
-                        <option
-                            data-test-jupyterhub-selection-option
-                            selected={{if (eq this.defaultBinderhubUrl item.binderhub_url) 'selected'}}
-                            value='{{item.binderhub_url}}'>
-                            {{item.name}}
-                        </option>
-                    {{/each}}
-                </select>
-            </div>
-        </div>
         {{#if (not this.apiLoaded)}}
             <a href={{this.serversLink}} target='_blank' rel='noopener'>
                 {{t 'binderhub.servers.server_hub_home'}}
@@ -60,22 +42,6 @@
                         {{t 'binderhub.servers.server_hub_home'}}
                     </a>
                 </div>
-                {{#if this.defaultJupyterhubUser}}
-                    <div local-class='jupyterhub-user'>
-                        {{t 'binderhub.servers.username'}}
-                        <span data-test-jupyterhub-user>
-                            {{this.defaultJupyterhubUser}}
-                        </span>
-                        {{#if this.canLogout}}
-                            <OsfButton
-                                @type='link'
-                                @onClick={{action this.performLogout}}
-                            >
-                                {{t 'binderhub.servers.logout'}}
-                            </OsfButton>
-                        {{/if}}
-                    </div>
-                {{/if}}
             </div>
             <div local-class='toolbar-button'>
                 <button
@@ -92,10 +58,10 @@
                 <thead>
                     <tr>
                         <th class='col-md-2'>{{t 'binderhub.servers.name'}}</th>
-                        <th class='col-md-3'>{{t 'binderhub.servers.url'}}</th>
-                        <th class='col-md-3'>{{t 'binderhub.servers.last_activity'}}</th>
-                        <th class='col-md-2'>{{t 'binderhub.servers.launch'}}</th>
-                        <th class='col-md-2'>{{t 'binderhub.servers.delete'}}</th>
+                        <th class='col-md-2'>{{t 'binderhub.servers.last_activity'}}</th>
+                        <th>{{t 'binderhub.servers.launch'}}</th>
+                        <th>{{t 'binderhub.servers.memo'}}</th>
+                        <th>{{t 'binderhub.servers.delete'}}</th>
                     </tr>
                 </thead>
                 <tbody local-class='jupyter-server'>
@@ -103,35 +69,50 @@
                         {{#each this.servers as |server index|}}
                             <tr>
                                 <td class='col-md-2' data-test-server-list-item={{index}}>{{server.entry.name}}</td>
-                                <td class='col-md-3'>
-                                    {{#if server.entry.ready}}
-                                        <button
-                                            data-test-server-link
-                                            type='button'
-                                            class='btn btn-link'
-                                            local-class='jupyter-link'
-                                            {{action this.openServer server target=this}}
-                                        >
-                                            {{server.entry.url}}
-                                        </button>
-                                    {{/if}}
-                                </td>
-                                <td class='col-md-3'> {{moment-format server.entry.last_activity 'YYYY-MM-DD hh:mm A'}}</td>
-                                <td class='col-md-2'>
-                                    <GuidNode::Binderhub::-Components::LaunchButtons
-                                        @binderHubConfig={{this.binderHubConfig}}
+                                <td class='col-md-2'>{{moment-format server.entry.last_activity 'YYYY-MM-DD hh:mm A'}}</td>
+                                <td>
+                                    <GuidNode::Binderhub::-Components::JupyterServersList::LabLaunchButton
+                                        @serverReady={{or server.entry.ready (and (not server.entry.pending) server.entry.stopped)}}
                                         @onClick={{action this.openServerWithPath server}}
                                     />
                                 </td>
-                                <td class='col-md-2'>
-                                    <button
-                                        data-test-server-link
-                                        type='button'
-                                        class='btn btn-default'
-                                        {{action (mut this.showDeleteConfirmDialogTarget) server}}
-                                    >
-                                        {{fa-icon 'fa-trash'}}
-                                    </button>
+                                <td>
+                                    {{#let (get this.serverMemoArray index) as |memo|}}
+                                        {{#if this.serverMemoActiveBit}}
+                                            {{#if (eq memo null)}}
+                                                <textarea
+                                                    data-test-memo-editor='preparing'
+                                                    local-class='memo_cell'
+                                                    class='form-control'
+                                                    disabled={{true}}
+                                                    placeholder={{t 'binderhub.servers.memo_disabled'}}
+                                                />
+                                            {{else}}
+                                                <textarea
+                                                    data-test-memo-editor='ready'
+                                                    local-class='memo_cell'
+                                                    class='form-control'
+                                                    value={{memo}}
+                                                    onchange={{fn this.onMemoEdit server}}
+                                                />
+                                            {{/if}}
+                                        {{else}}
+                                            <textarea
+                                                data-test-memo-editor='inactive'
+                                                local-class='memo_cell'
+                                                class='form-control'
+                                                disabled={{true}}
+                                                placeholder={{t 'binderhub.servers.memo_inactive'}}
+                                            />
+                                        {{/if}}
+                                    {{/let}}
+                                </td>
+                                <td>
+                                    <div data-test-delete-icon>
+                                        {{fa-icon 'fa-trash' size=2
+                                        local-class='delete_icon'
+                                        click=(action (mut this.showDeleteConfirmDialogTarget) server)}}
+                                    </div>
                                 </td>
                             </tr>
                         {{/each}}

@@ -2,91 +2,33 @@ import Component from '@ember/component';
 import EmberError from '@ember/error';
 import { action, computed } from '@ember/object';
 import { later } from '@ember/runloop';
-import DS from 'ember-data';
 import { requiredAction } from 'ember-osf-web/decorators/component';
-import { BootstrapPath } from 'ember-osf-web/guid-node/binderhub/controller';
-import BinderHubConfigModel, { BinderHub, JupyterHub } from 'ember-osf-web/models/binderhub-config';
+import {
+    BootstrapPath,
+    getJupyterHubServerURL,
+    isBinderHubConfigFulfilled,
+    JupyterServer,
+    JupyterServerEntry,
+    validateBinderHubToken,
+} from 'ember-osf-web/guid-node/binderhub/controller';
+import BinderHubConfigModel, { JupyterHub } from 'ember-osf-web/models/binderhub-config';
 import Node from 'ember-osf-web/models/node';
+import ServerAnnotationModel from 'ember-osf-web/models/server-annotation';
 import { addPathSegment } from 'ember-osf-web/utils/url-parts';
 
 /* eslint-disable camelcase */
-export interface JupyterServerOptions {
-    binder_persistent_request?: string;
-    rdm_node?: string;
-}
-
 interface JupyterUser {
     named_server_limit?: number | null;
     servers?: {[key: string]: JupyterServer} | null;
-}
-
-export interface JupyterServer {
-    name: string;
-    last_activity?: string | null;
-    started?: string | null;
-    pending?: string | null;
-    ready?: boolean;
-    url: string;
-    user_options?: JupyterServerOptions | null;
-}
-
-interface JupyterServerEntry {
-    ownerUrl: string;
-    entry: JupyterServer;
 }
 
 interface JupyterServerResponse {
     namedServerLimit: number | null;
     entries: JupyterServerEntry[];
 }
-
-export interface SelectableBinderhub {
-    name: string;
-    binderhub_url: string;
-}
 /* eslint-enable camelcase */
 
-export function getJupyterHubServerURL(
-    originalUrl: string,
-    token: string | undefined,
-    targetPath: BootstrapPath | null,
-) {
-    // redirect a user to a running server with a token
-    let url = originalUrl;
-    if (targetPath && targetPath.path) {
-        // strip trailing /
-        url = url.replace(/\/$/, '');
-        // trim leading '/'
-        let path = targetPath.path.replace(/(^\/)/g, '');
-        if (targetPath.pathType === 'file') {
-            // trim trailing / on file paths
-            path = path.replace(/(\/$)/g, '');
-            // /tree is safe because it allows redirect to files
-            // need more logic here if we support things other than notebooks
-            url = `${url}/tree/${encodeURI(path)}`;
-        } else {
-            // pathType === 'url'
-            url = `${url}/${path}`;
-        }
-    }
-    if (!token) {
-        return url;
-    }
-    const sep = url.includes('?') ? '&' : '?';
-    return `${url}${sep}token=${encodeURIComponent(token)}`;
-}
-
-export function validateBinderHubToken(binderhub: BinderHub) {
-    if (!binderhub.authorize_url) {
-        return true;
-    }
-    if (!binderhub.token || (binderhub.token.expires_at && binderhub.token.expires_at * 1000 <= Date.now())) {
-        return false;
-    }
-    return true;
-}
-
-export function validateJupyterHubToken(jupyterhub: JupyterHub) {
+function validateJupyterHubToken(jupyterhub: JupyterHub) {
     if (!jupyterhub.authorize_url) {
         return true;
     }
@@ -97,23 +39,10 @@ export function validateJupyterHubToken(jupyterhub: JupyterHub) {
     return false;
 }
 
-export function updateContext(key: string, value: string) {
-    const params = new URLSearchParams(window.location.search);
-    params.set(key, value);
-    window.history.pushState('', '', `?${params.toString()}`);
-}
-
-export function getContext(key: string) {
-    const params = new URLSearchParams(window.location.search);
-    return params.get(key);
-}
-
 export default class JupyterServersList extends Component {
-    binderHubConfig: DS.PromiseObject<BinderHubConfigModel> & BinderHubConfigModel = this.binderHubConfig;
+    binderHubConfig!: BinderHubConfigModel;
 
     @requiredAction renewToken!: (jupyterhubUrl: string) => void;
-
-    @requiredAction logout!: (jupyterhubUrl: string) => void;
 
     @requiredAction onError!: (exception: any) => void;
 
@@ -131,7 +60,9 @@ export default class JupyterServersList extends Component {
 
     oldBuildPhase: string | null = null;
 
-    selectedBinderhubUrl: string | null = null;
+    serverBuildingBit: boolean = false;
+
+    currentBinderHubURL!: URL;
 
     requestNotAuthorized: boolean = false;
 
@@ -139,21 +70,33 @@ export default class JupyterServersList extends Component {
 
     namedServerLimit: number | null = null;
 
+    serverMemoActiveBit: boolean = true;
+
+    serverAnnotationHash: { [key: string]: ServerAnnotationModel } = {};
+
+    @requiredAction requestAnnotationCreation!: (
+        entry: JupyterServerEntry,
+        binderhubUrl: URL,
+        updateDy: boolean,
+    ) => void;
+
+    @requiredAction requestAnnotationDelete!: (
+        serverPath: string, updateDy: boolean,
+    ) => void;
+
+    @requiredAction requestAnnotationReload!: (peek: boolean) => void;
+
     didReceiveAttrs() {
-        const bhubUrl = getContext('jh');
-        if (!this.selectedBinderhubUrl && bhubUrl) {
-            this.selectedBinderhubUrl = bhubUrl;
-        }
         if (!this.initialized && !this.validateToken()) {
             return;
         }
         if (!this.node) {
             return;
         }
-        if (this.initialized && this.buildPhase === this.oldBuildPhase) {
+        if (this.initialized && this.buildPhase && this.buildPhase === this.oldBuildPhase) {
             return;
         }
-        this.initialized = true;
+        this.set('initialized', true);
         this.oldBuildPhase = this.buildPhase;
         const url = this.defaultJupyterhubUrl;
         if (!url) {
@@ -164,16 +107,10 @@ export default class JupyterServersList extends Component {
 
     @computed('servers', 'serversLink')
     get loading(): boolean {
-        if (this.servers !== null) {
-            return false;
-        }
-        if (this.serversLink !== null) {
-            return false;
-        }
-        return true;
+        return this.servers === null && this.serversLink === null;
     }
 
-    @computed('servers')
+    @computed('allServers')
     get apiLoaded(): boolean {
         return this.allServers !== null;
     }
@@ -213,60 +150,26 @@ export default class JupyterServersList extends Component {
         return servers.length >= this.maxServers;
     }
 
-    @computed('defaultJupyterhub')
-    get canLogout(): boolean {
-        const jupyterhub = this.defaultJupyterhub;
-        if (!jupyterhub) {
-            return false;
-        }
-        if (!jupyterhub.logout_url) {
-            return false;
-        }
-        return true;
-    }
-
-    @computed('binderHubConfig', 'defaultBinderhubUrl')
+    @computed('binderHubConfig', 'currentBinderHubURL')
     get defaultJupyterhubUrl(): string {
-        if (!this.binderHubConfig || !this.binderHubConfig.get('isFulfilled')) {
+        if (!isBinderHubConfigFulfilled(this)) {
             throw new EmberError('Illegal state');
         }
-        const config = this.binderHubConfig.content as BinderHubConfigModel;
-        const binderhubUrl = this.get('defaultBinderhubUrl');
-        const binderhub = config.findBinderHubCandidateByBinderHubURL(binderhubUrl);
+        const binderhub = this.binderHubConfig.findBinderHubCandidateByBinderHubURL(
+            this.get('currentBinderHubURL').toString(),
+        );
         if (!binderhub) {
             throw new EmberError('Illegal state');
         }
         return binderhub.jupyterhub_url;
     }
 
-    @computed('binderHubConfig', 'selectedBinderhubUrl')
-    get defaultBinderhubUrl(): string {
-        if (this.selectedBinderhubUrl && this.checkSelectable(this.selectedBinderhubUrl)) {
-            return this.selectedBinderhubUrl;
-        }
-        if (!this.binderHubConfig || !this.binderHubConfig.get('isFulfilled')) {
-            throw new EmberError('Illegal state');
-        }
-        const binderhub = this.binderHubConfig.get('defaultBinderhub');
-        return binderhub.url;
-    }
-
     @computed('defaultJupyterhubUrl')
     get defaultJupyterhub() {
-        if (!this.binderHubConfig || !this.binderHubConfig.get('isFulfilled')) {
+        if (!isBinderHubConfigFulfilled(this)) {
             return null;
         }
-        const config = this.binderHubConfig.content as BinderHubConfigModel;
-        if (!config.jupyterhubs) {
-            return null;
-        }
-        const jupyterhubUrl = this.defaultJupyterhubUrl;
-        const jupyterhubs = config.jupyterhubs
-            .filter(jupyterhub => this.urlEquals(jupyterhub.url, jupyterhubUrl));
-        if (jupyterhubs.length === 0) {
-            return null;
-        }
-        return jupyterhubs[0];
+        return this.binderHubConfig.findJupyterHubByURL(this.defaultJupyterhubUrl);
     }
 
     @computed('defaultJupyterhub')
@@ -278,26 +181,76 @@ export default class JupyterServersList extends Component {
         return jupyterhub.token.user;
     }
 
-    @computed('binderHubConfig')
-    get selectableBinderhubs(): SelectableBinderhub[] {
-        if (!this.binderHubConfig || !this.binderHubConfig.get('isFulfilled')) {
-            return [];
+    /**
+     * An string array whose `i`th element is the (initial) contents of
+     * `i`th jupyter server (i.e. this.servers[i]). An element `null`
+     * means that the corresponding server does not have server
+     * annotation on the API server side. The `null` value is just a
+     * kind of placeholder and server annotations creation process would
+     * be started immediately, by this method.
+     *
+     * This property is needed since `get` helper does not work if the 2nd
+     * argument includes some dots and we cannot use
+     * `this.serverAnnotationHash` directly in the template.hbs.
+     */
+    @computed('serverAnnotationHash', 'servers')
+    get serverMemoArray(): Array<string | null> {
+        const servers = this.get('servers');
+        if (servers === null) {
+            throw new EmberError('servers not ready');
         }
-        const nodeBinderhubs = this.binderHubConfig.get('node_binderhubs');
-        const userBinderhubs = this.binderHubConfig.get('user_binderhubs');
-        const nodeCands = (nodeBinderhubs || [])
-            .map(hub => ({
-                binderhub_url: hub.binderhub_url,
-                name: hub.binderhub_url,
-            }));
-        const userCands = (userBinderhubs || [])
-            .filter(hub => nodeCands
-                .every(nodeHub => nodeHub.binderhub_url !== hub.binderhub_url))
-            .map(hub => ({
-                binderhub_url: hub.binderhub_url,
-                name: `${hub.binderhub_url} (User)`,
-            }));
-        return nodeCands.concat(userCands);
+        if (this.killZombieAnnotation(servers.map(s => s.entry.url))) {
+            return servers.map(() => null);
+        }
+        let nullDetected = false;
+        return servers.map(s => {
+            if (!this.get('serverMemoActiveBit')) {
+                return null;
+            }
+            const annot = this.get('serverAnnotationHash')[s.entry.url];
+            if (typeof annot === 'undefined') {
+                if (!nullDetected && !this.get('serverBuildingBit')) {
+                    nullDetected = true;
+                    this.requestAnnotationCreation(s, this.get('currentBinderHubURL'), true);
+                }
+                return null;
+            }
+            return annot.memotext;
+        });
+    }
+
+    /**
+     * Probe if there is a zombie server annotation in
+     * `this.serverAnnotationHash`. Here, a zombie server annotation is
+     * a server annotation that has no corresponding server on the
+     * currently selected JupyterHub.
+     *
+     * If it detects a zombie server annotations, then it requests to
+     * delete it and immediately returns `true`. `false` is returned if
+     * no zombie server annotations are detected.
+     *
+     * Be aware that it requests the deletion of only one zombie server
+     * annotation even if there are 2 or more such annotations. Since
+     * the deletion modifies GuidNodeBinderHub.dyServerAnnotations,
+     * this.didReceiveAttrs is called.
+     *
+     * @param {string[]} - An path strings array of servers on the
+     *                    currently selected JupyterHub. Even though
+     *                    JupyterHub calls it `url`, it is NOT an url,
+     *                    but the path part of a url.
+     * @return {boolean} - `true` if a server annotation deletion is
+     *                     requested, `false` otherwise.
+     */
+    killZombieAnnotation(aliveServerPaths: string[]): boolean {
+        for (const path of Object.keys(this.get('serverAnnotationHash'))) {
+            if (!aliveServerPaths.includes(path)) {
+                later(async () => {
+                    this.requestAnnotationDelete(path, true);
+                }, 0);
+                return true;
+            }
+        }
+        return false;
     }
 
     @computed('binderHubConfig', 'requestNotAuthorized', 'defaultJupyterhubUrl', 'loggedOutDomains', 'initialized')
@@ -305,15 +258,14 @@ export default class JupyterServersList extends Component {
         if (!this.initialized) {
             return false;
         }
-        if (!this.binderHubConfig || !this.binderHubConfig.get('isFulfilled')) {
+        if (!isBinderHubConfigFulfilled(this)) {
             return false;
         }
         if (this.requestNotAuthorized) {
             return true;
         }
         const jupyterhubUrl = this.defaultJupyterhubUrl;
-        const config = this.binderHubConfig.content as BinderHubConfigModel;
-        const jupyterhub = config.findJupyterHubByURL(jupyterhubUrl);
+        const jupyterhub = this.binderHubConfig.findJupyterHubByURL(jupyterhubUrl);
         if (this.loggedOutDomains !== null && this.loggedOutDomains.includes(jupyterhubUrl)) {
             return true;
         }
@@ -327,42 +279,31 @@ export default class JupyterServersList extends Component {
         return true;
     }
 
-    checkSelectable(url: string) {
-        return this.selectableBinderhubs
-            .filter(hub => this.urlEquals(hub.binderhub_url, url)).length > 0;
-    }
-
-    urlEquals(url1: string, url2: string): boolean {
-        return this.normalizeUrl(url1) === this.normalizeUrl(url2);
-    }
-
-    normalizeUrl(url: string): string {
-        const m = url.match(/^(.+)\/+$/);
-        if (!m) {
-            return url;
-        }
-        return m[1];
-    }
-
     performLoadServers(jupyterhubUrl: string) {
         this.set('allServers', null);
         this.set('serversLink', null);
         this.set('namedServerLimit', null);
         later(async () => {
             const servers = await this.loadServers(jupyterhubUrl);
-            const homeUrl = addPathSegment(jupyterhubUrl, 'hub/home');
-            this.set('serversLink', homeUrl);
-            this.set('allServers', servers !== null ? servers.entries : null);
-            this.set('namedServerLimit', servers !== null ? servers.namedServerLimit : null);
+            this.set('serversLink', addPathSegment(jupyterhubUrl, 'hub/home'));
+            if (servers === null) {
+                this.set('allServers', null);
+                this.set('namedServerLimit', null);
+                return;
+            }
+            this.set('allServers', servers.entries);
+            this.set('namedServerLimit', servers.namedServerLimit);
         }, 0);
     }
 
     validateToken() {
-        if (!this.binderHubConfig || !this.binderHubConfig.get('isFulfilled')) {
+        if (!isBinderHubConfigFulfilled(this)) {
             return false;
         }
-        const config = this.binderHubConfig.content as BinderHubConfigModel;
-        const binderhub = config.findBinderHubByURL(this.get('defaultBinderhubUrl'));
+        const config = this.binderHubConfig;
+        const binderhub = config.findBinderHubByURL(
+            this.get('currentBinderHubURL').toString(),
+        );
         if (!binderhub) {
             return false;
         }
@@ -387,13 +328,12 @@ export default class JupyterServersList extends Component {
     }
 
     async jupyterhubAPIAJAX(jupyterhubUrl: string, apiPath: string, ajaxOptions: JQuery.AjaxSettings | null = null) {
-        if (!this.binderHubConfig || !this.binderHubConfig.get('isFulfilled')) {
+        if (!isBinderHubConfigFulfilled(this)) {
             throw new EmberError('Illegal config');
         }
         this.set('requestNotAuthorized', false);
-        const config = this.binderHubConfig.content as BinderHubConfigModel;
         try {
-            return await config.jupyterhubAPIAJAX(jupyterhubUrl, apiPath, ajaxOptions);
+            return await this.binderHubConfig.jupyterhubAPIAJAX(jupyterhubUrl, apiPath, ajaxOptions);
         } catch (e) {
             if (e.status === 403) {
                 this.set('requestNotAuthorized', true);
@@ -407,11 +347,10 @@ export default class JupyterServersList extends Component {
     }
 
     async loadServers(jupyterhubUrl: string): Promise<JupyterServerResponse | null> {
-        if (!this.binderHubConfig || !this.binderHubConfig.get('isFulfilled')) {
+        if (!isBinderHubConfigFulfilled(this)) {
             throw new EmberError('Illegal config');
         }
-        const config = this.binderHubConfig.content as BinderHubConfigModel;
-        const jupyterhub = config.findJupyterHubByURL(jupyterhubUrl);
+        const jupyterhub = this.binderHubConfig.findJupyterHubByURL(jupyterhubUrl);
         if (jupyterhub && !jupyterhub.authorize_url) {
             // Non-API
             return null;
@@ -419,50 +358,31 @@ export default class JupyterServersList extends Component {
         if (!jupyterhub || !jupyterhub.token || !validateJupyterHubToken(jupyterhub)) {
             throw new EmberError('Not authorized');
         }
-        const response = await this.jupyterhubAPIAJAX(
+        const { servers, named_server_limit: limit } = await this.jupyterhubAPIAJAX(
             jupyterhubUrl,
             `users/${jupyterhub.token.user}?include_stopped_servers=1`,
-        );
-        const result = response as JupyterUser;
-        const { servers } = result;
+        ) as JupyterUser;
         if (servers === undefined || servers === null) {
             throw new EmberError('Unexpected object');
         }
-        const serverNames: string[] = Object.keys(servers)
-            .map(key => key as string)
-            .filter(key => key.length > 0);
-        serverNames.sort();
+        const serverNames: string[] = Object.keys(servers).filter(
+            ({ length }) => length > 0,
+        ).sort();
         return {
-            namedServerLimit: result.named_server_limit !== undefined ? result.named_server_limit : null,
-            entries: serverNames
-                .map(serverName => servers[serverName] as JupyterServer)
-                .map(server => ({
-                    ownerUrl: jupyterhubUrl,
-                    entry: server,
-                })),
+            namedServerLimit: limit !== undefined ? limit : null,
+            entries: serverNames.map(serverName => ({
+                ownerUrl: jupyterhubUrl,
+                entry: servers[serverName] as JupyterServer,
+            })),
         };
     }
 
-    isTarget(server: JupyterServer) {
-        if (!this.node) {
-            return false;
+    isTarget(server: JupyterServer): boolean {
+        if (this.node) {
+            const m = server.name.match(/^(.+)-([a-z0-9]+)-(.+)$/);
+            return m !== null && m[1] === this.node.id;
         }
-        const m = server.name.match(/^(.+)-([a-z0-9]+)-(.+)$/);
-        if (!m) {
-            return false;
-        }
-        return m[1] === this.node.id;
-    }
-
-    @action
-    binderhubChanged(this: JupyterServersList, binderhubUrl: string) {
-        this.set('selectedBinderhubUrl', binderhubUrl);
-        updateContext('jh', binderhubUrl);
-        const url = this.get('defaultJupyterhubUrl');
-        if (!url) {
-            throw new EmberError('Illegal config');
-        }
-        this.performLoadServers(url);
+        return false;
     }
 
     @action
@@ -485,9 +405,7 @@ export default class JupyterServersList extends Component {
 
     @action
     openServerWithPath(this: JupyterServersList, server: JupyterServerEntry, path: BootstrapPath | null) {
-        const binderHubConfig = this.get('binderHubConfig');
-        const config = binderHubConfig.content as BinderHubConfigModel;
-        const jupyterhub = config.findJupyterHubByURL(server.ownerUrl);
+        const jupyterhub = this.get('binderHubConfig').findJupyterHubByURL(server.ownerUrl);
         if (!jupyterhub) {
             throw new EmberError('Illegal config');
         }
@@ -498,9 +416,7 @@ export default class JupyterServersList extends Component {
 
     @action
     openServer(this: JupyterServersList, server: JupyterServerEntry) {
-        const binderHubConfig = this.get('binderHubConfig');
-        const config = binderHubConfig.content as BinderHubConfigModel;
-        const jupyterhub = config.findJupyterHubByURL(server.ownerUrl);
+        const jupyterhub = this.get('binderHubConfig').findJupyterHubByURL(server.ownerUrl);
         if (!jupyterhub) {
             throw new EmberError('Illegal config');
         }
@@ -511,13 +427,12 @@ export default class JupyterServersList extends Component {
 
     @action
     deleteServer(this: JupyterServersList) {
-        if (!this.showDeleteConfirmDialogTarget || !this.binderHubConfig
-            || !this.binderHubConfig.get('isFulfilled')) {
+        if (!this.showDeleteConfirmDialogTarget || !isBinderHubConfigFulfilled(this)) {
             throw new EmberError('Illegal state');
         }
-        const binderHubConfig = this.get('binderHubConfig');
-        const config = binderHubConfig.content as BinderHubConfigModel;
-        const jupyterhub = config.findJupyterHubByURL(this.showDeleteConfirmDialogTarget.ownerUrl);
+        const jupyterhub = this.get('binderHubConfig').findJupyterHubByURL(
+            this.showDeleteConfirmDialogTarget.ownerUrl,
+        );
         if (!jupyterhub || !jupyterhub.token || !validateJupyterHubToken(jupyterhub)) {
             throw new EmberError('Not authorized');
         }
@@ -535,13 +450,20 @@ export default class JupyterServersList extends Component {
                     data: JSON.stringify({ remove: true }),
                 },
             );
+            await this.requestAnnotationDelete(server.entry.url, true);
             const servers = await this.loadServers(server.ownerUrl);
             this.set('allServers', servers !== null ? servers.entries : null);
         }, 0);
     }
 
     @action
-    performLogout(this: JupyterServersList) {
-        this.logout(this.defaultJupyterhubUrl);
+    onMemoEdit(this: JupyterServersList, server: JupyterServerEntry, event: { target: HTMLInputElement }) {
+        const node = this.get('node');
+        if (!node) {
+            throw new EmberError('Page is not ready.');
+        }
+        const annotation = this.get('serverAnnotationHash')[server.entry.url];
+        annotation.memotext = event.target.value;
+        annotation.save({ adapterOptions: { guid: node.id } });
     }
 }

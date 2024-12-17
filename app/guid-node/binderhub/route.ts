@@ -4,20 +4,32 @@ import { inject as service } from '@ember/service';
 import ConfirmationMixin from 'ember-onbeforeunload/mixins/confirmation';
 
 import GuidNodeBinderHub from 'ember-osf-web/guid-node/binderhub/controller';
+import BinderHubConfigModel from 'ember-osf-web/models/binderhub-config';
 import Node from 'ember-osf-web/models/node';
 import { GuidRouteModel } from 'ember-osf-web/resolve-guid/guid-route';
 import Analytics from 'ember-osf-web/services/analytics';
+import RSVP from 'rsvp';
 
 export default class GuidNodeBinderHubRoute extends Route.extend(ConfirmationMixin, {}) {
     @service analytics!: Analytics;
 
     model(this: GuidNodeBinderHubRoute) {
-        return this.modelFor('guid-node');
+        return RSVP.hash({
+            node: this.modelFor('guid-node'),
+            binderHubConfig: this.store.findRecord(
+                'binderhub-config',
+                (this.paramsFor('guid-node') as {guid: string}).guid,
+            ),
+            serverAnnotations: this.store.query(
+                'server-annotation',
+                { guid: (this.paramsFor('guid-node') as {guid: string}).guid },
+            ),
+        });
     }
 
     @action
     async didTransition() {
-        const { taskInstance } = this.controller.model as GuidRouteModel<Node>;
+        const { taskInstance } = this.controller.model.node as GuidRouteModel<Node>;
         await taskInstance;
         const node = taskInstance.value;
 
@@ -32,5 +44,10 @@ export default class GuidNodeBinderHubRoute extends Route.extend(ConfirmationMix
     get isPageDirty() {
         const controller = this.controller as GuidNodeBinderHub;
         return () => controller.isPageDirty;
+    }
+
+    setupController(controller: GuidNodeBinderHub, model: {node: Node, config: BinderHubConfigModel}) {
+        super.setupController(controller, model);
+        controller.setup();
     }
 }

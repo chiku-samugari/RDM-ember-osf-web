@@ -1,0 +1,64 @@
+<div ...attributes data-test-binderhub-host-selector>
+    <div local-class='host_selector'>
+        <span local-class='host_label'>
+            {{t 'binderhub.host_info.url'}}
+        </span>
+        <strong data-test-host-selector-current-host={{@selectedHost.url}}
+            local-class='host_url'>
+            {{@selectedHost.name}}
+        </strong>
+        <OsfButton data-test-open-host-selector-dialogue
+          @type='link' {{on 'click' (fn this.updateOpenBit true)}}>
+            {{t 'binderhub.host_info.change_host'}}
+        </OsfButton>
+    </div>
+</div>
+
+<BsModal data-test-binderhub-host-selector-dialogue
+         @backdropClose={{false}}
+         @open={{this.selectDialogueOpenBit}}
+         as |modal|>
+    <modal.header>
+        <h4>
+            {{t 'binderhub.host_selector.dialogue_title'}}
+        </h4>
+    </modal.header>
+    <div local-class='host_selector_body'>
+        <modal.body>
+            {{t 'binderhub.host_selector.dialogue_explanation'}}
+            <div local-class='host_selections'>
+                <form>
+                    <fieldset>
+                        {{#each @availableHosts as |item|}}
+                            <div>
+                                <label data-test-host-selection-option>
+                                    <input type='radio' name='host' value={{item.url}}
+                                        checked={{eq @selectedHost.url.href item.url.href}}
+                                        {{on 'click' (fn this.pick item.url.href)}}
+                                    >
+                                    {{item.name}}
+                                </label>
+                            </div>
+                        {{/each}}
+                    </fieldset>
+                </form>
+            </div>
+        </modal.body>
+        <a href={{this.addonPageURLString}}>
+            {{t 'binderhub.host_selector.add_host_label'}}
+        </a>
+    </div>
+    <modal.footer>
+        <BsButton data-test-host-selector-dialogue-cancel
+            {{on 'click' (fn this.updateOpenBit false)}}
+        >
+            {{t 'general.cancel'}}
+        </BsButton>
+        <BsButton data-test-host-selector-dialogue-ok
+            {{on 'click' this.applyPicked}}
+            @type='success'
+        >
+            {{t 'general.ok'}}
+        </BsButton>
+    </modal.footer>
+</BsModal>

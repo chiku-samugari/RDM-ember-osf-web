@@ -24,6 +24,10 @@ export default class GuidNodeBinderHubRoute extends Route.extend(ConfirmationMix
                 'server-annotation',
                 { guid: (this.paramsFor('guid-node') as {guid: string}).guid },
             ),
+            customBaseImages: this.store.query(
+                'custom-base-image',
+                { guid: (this.paramsFor('guid-node') as {guid: string}).guid, includeParentImages: true },
+            ),
         });
     }
 

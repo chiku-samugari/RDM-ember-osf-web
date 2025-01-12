@@ -77,6 +77,15 @@ module('Acceptance | guid-node/binderhub', hooks => {
         selection: propertyWithValue('data-test-image-selection'),
         change: propertyWithValue('data-test-image-change'),
         selected: propertyWithValue('data-test-image-selected'),
+        custom: {
+            top: '[data-test-custom-base-image]',
+            moreMenu: '[data-test-more-menu]',
+            delete: '[data-test-delete-custom-base-image]',
+            edit: '[data-test-edit-custom-base-image]',
+        },
+        deleteConfirmation: '[data-test-custom-base-image-delete-confirmation]',
+        doDelete: '[data-test-do-delete-custom-base-image]',
+        cancelDelete: '[data-test-cancel-delete]',
         separator: '[data-test-deprecated-image-separator]',
         closed: '.fa-chevron-right',
         open: '.fa-chevron-down',
@@ -141,6 +150,39 @@ module('Acceptance | guid-node/binderhub', hooks => {
                 ],
             },
             mpm_releases: MATLAB_RELEASES,
+        });
+        server.create('custom-base-image', {
+            id: '1',
+            name: 'Ubuntu Base',
+            imageReference: 'docker.io/library/ubuntu:latest',
+            descriptionJa: '標準的な Ubuntu イメージ',
+            descriptionEn: 'Standard Ubuntu image',
+            deprecated: false,
+            guid,
+            level: 0,
+            nodeTitle: 'A great Project',
+        });
+        server.create('custom-base-image', {
+            id: '2',
+            name: 'Python Base',
+            imageReference: 'docker.io/library/python:3.9',
+            descriptionJa: 'Python 3.9 環境を含むイメージ',
+            descriptionEn: 'Image with Python 3.9 environment',
+            deprecated: false,
+            guid,
+            level: 0,
+            nodeTitle: 'A great Project',
+        });
+        server.create('custom-base-image', {
+            id: '3',
+            name: 'Steel Bank Common Lisp',
+            imageReference: 'docker.io/library/sbcl',
+            descriptionJa: 'Steel Bank Common Lisp試験用',
+            descriptionEn: 'Try out SBCL',
+            deprecated: false,
+            guid: 'dummy',
+            level: 0,
+            nodeTitle: 'A dummy Project',
         });
         server.create('file-provider', { node, name: 'osfstorage' });
         const sandbox = sinon.createSandbox();
@@ -207,6 +249,7 @@ module('Acceptance | guid-node/binderhub', hooks => {
         assert.dom(`${PE.top} ${PE.selection()}`).doesNotExist();
         assert.dom(`${PE.top} ${PE.change('jupyter/test-image')}`).exists();
         assert.dom(`${PE.top} ${PE.selected('jupyter/test-image')}`).exists();
+        assert.dom(`${PE.top} ${PE.custom.top}`).doesNotExist();
         assert.dom(`${PE.top} ${PE.pkgEditor('apt')}`).exists();
         assert.dom(`${PE.top} ${PE.pkgEditor('conda')}`).exists();
         assert.dom(`${PE.top} ${PE.pkgEditor('pip')}`).doesNotExist();
@@ -232,6 +275,16 @@ module('Acceptance | guid-node/binderhub', hooks => {
             ajaxStub.calledOnceWithExactly('http://localhost:30123/', 'users/testuser?include_stopped_servers=1', null),
             'BinderHub calls JupyterHub REST API',
         );
+
+        await click(`${PE.top} ${PE.change('jupyter/test-image')}`);
+        assert.dom(`${PE.top} ${PE.custom.top}`).exists({ count: 2 });
+        assert.dom(`${PE.top} ${PE.custom.top} ${PE.custom.moreMenu}`).exists({ count: 2 });
+        await click(`${PE.top} ${PE.custom.top} ${PE.custom.moreMenu}`);
+        await click(`${PE.top} ${PE.custom.top} ${PE.custom.delete}`);
+        assert.dom(`${PE.deleteConfirmation}`).exists();
+        await click(`${PE.deleteConfirmation} ${PE.cancelDelete}`);
+        assert.dom(`${PE.deleteConfirmation}`).doesNotExist();
+        assert.dom(`${PE.top} ${PE.custom.top}`).exists({ count: 2 });
 
         sandbox.restore();
     });

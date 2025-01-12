@@ -1,0 +1,140 @@
+<BsButton local-class='create_button' onClick={{fn this.updateOpenBit true}}>
+    {{t 'binderhub.deployment.custom_base_image.dialogue.title'}}
+</BsButton>
+
+<BsModal @open={{this.dialogueOpenBit}} @onHide={{this.onClose}} as |modal|>
+    <modal.header>
+        <div local-class='header'>
+            <h4>
+                {{t 'binderhub.deployment.custom_base_image.dialogue.title'}}
+            </h4>
+            {{#if this.showSuccessMsgBit}}
+                <div local-class='message'>
+                    <span local-class='accept_message'>
+                        {{t 'binderhub.deployment.custom_base_image.dialogue.registration_succeeded'
+                        name=this.lastImageName}}
+                    </span>
+                </div>
+            {{/if}}
+        </div>
+    </modal.header>
+    <BsTab as |tab|>
+        <tab.pane local-class='image_listing_pane'
+            @elementId={{this.createNewCustomBaseImageTabEelementID}}
+            @title={{t 'binderhub.deployment.custom_base_image.dialogue.create_new'}}>
+            <modal.body>
+                <div local-class='attention'>
+                    {{t 'binderhub.deployment.custom_base_image.dialogue.information'}}
+                </div>
+                {{#if this.referenceInUseBit}}
+                    <div>
+                        <span local-class='caution_message'>
+                            {{t
+                                'binderhub.deployment.custom_base_image.dialogue.already_in_use'
+                                imageReference=this.lastImageReference
+                            }}
+                        </span>
+                    </div>
+                {{/if}}
+                {{#if this.mandatoryFieldEmptyBit}}
+                    <div>
+                        <span local-class='caution_message'>
+                            {{t 'binderhub.deployment.custom_base_image.dialogue.mandatory_field'}}
+                        </span>
+                    </div>
+                {{/if}}
+                {{#if this.repo2dockerSubmittedBit}}
+                    <div>
+                        <span local-class='caution_message'>
+                            {{t 'binderhub.deployment.custom_base_image.dialogue.repo2docker'}}
+                        </span>
+                    </div>
+                {{/if}}
+                <div>
+                    <form>
+                        <label local-class='short_input_label'>
+                            <span local-class='input_label_span'>
+                                {{t 'binderhub.deployment.custom_base_image.dialogue.name_label'}}
+                            </span>
+                            <textarea
+                                class='form-control'
+                                local-class='short_input_textarea'
+                                rows='1'
+                                value={{this.name}}
+                                {{on 'keyup' (fn this.updateStringField 'name')}}
+                                />
+                        </label>
+                        <label local-class='short_input_label'>
+                            <span local-class='input_label_span'>
+                                {{t 'binderhub.deployment.custom_base_image.dialogue.reference_label'}}
+                            </span>
+                            <textarea
+                                class='form-control'
+                                local-class='short_input_textarea'
+                                rows='1'
+                                value={{this.imageReference}}
+                                {{on 'keyup' (fn this.updateStringField 'imageReference')}}
+                                />
+                        </label>
+                        <label local-class='long_input_label'>
+                            <span>
+                                {{t 'binderhub.deployment.custom_base_image.dialogue.description_ja_label'}}
+                            </span>
+                            <textarea
+                                class='form-control'
+                                rows='2'
+                                value={{this.descriptionJa}}
+                                {{on 'keyup' (fn this.updateStringField 'descriptionJa')}}
+                                />
+                        </label>
+                        <label local-class='long_input_label'>
+                            <span>
+                                {{t 'binderhub.deployment.custom_base_image.dialogue.description_en_label'}}
+                            </span>
+                            <textarea
+                                class='form-control'
+                                rows='2'
+                                value={{this.descriptionEn}}
+                                {{on 'keyup' (fn this.updateStringField 'descriptionEn')}}
+                                />
+                        </label>
+                    </form>
+                </div>
+            </modal.body>
+            <div local-class='register_button_area'>
+                <BsButton
+                    @type='success'
+                    local-class='register_button'
+                    onClick={{this.registerCustomBaseImage}}>
+                    {{t 'binderhub.deployment.custom_base_image.dialogue.register_button_label'}}
+                </BsButton>
+            </div>
+        </tab.pane>
+        <tab.pane local-class='image_listing_pane'
+            @title={{t 'binderhub.deployment.custom_base_image.dialogue.inherit'}}>
+            {{#if this.ancestorImageModelHashSeq}}
+                {{#each this.ancestorImageModelHashSeq as |hash|}}
+                    <h3>[{{get hash 'guid'}}] <span local-class='node_title'>{{get hash 'title'}}</span></h3>
+                    {{#each (get hash 'modelInfos') as |info|}}
+                        <GuidNode::Binderhub::-Components::ProjectEditor::CustomBaseImageEntry
+                            local-class={{if (get info 'inheritable') 'inheritable_image_entry' 'disabled_image_entry'}}
+                            @guid={{@guid}}
+                            @target={{get info 'model'}}
+                            @localizer={{@modelConverter}}
+                            @checked={{false}}
+                            @selectButtonTitle={{t 'binderhub.deployment.custom_base_image.dialogue.obtain_button'}}
+                            @isSelectionAllowed={{get info 'inheritable'}}
+                            @onButtonClick={{
+                                fn this.inheritCustomBaseImage (get info 'model')
+                                (fn tab.select this.createNewCustomBaseImageTabEelementID)
+                            }}
+                            @requestCustomBaseImageReloading={{@requestCustomBaseImageReloading}}
+                        />
+                    {{/each}}
+                {{/each}}
+            {{else}}
+                <h4>{{t 'binderhub.deployment.custom_base_image.dialogue.no_relevants'}}</h4>
+            {{/if}}
+        </tab.pane>
+    </BsTab>
+</BsModal>

@@ -1,0 +1,47 @@
+.entry {
+    display: flex;
+    padding: 1em;
+    border-radius: 4px;
+    border: 1px solid #adadad;
+}
+
+.sub_button_menu {
+    min-width: min-content;
+    background-color: #f8f8f8;
+}
+
+.sub_button_item {
+    width: min-content;
+}
+
+.sub_button {
+    border-style: none;
+}
+
+.delete_icon {
+    width: 14px;
+    color: #b52b27;
+
+    &:hover {
+        color: #8b211e;
+    }
+}
+
+.name {
+    font-size: 1.25em;
+}
+
+.url {
+    color: #888;
+    font-size: 0.75em;
+    margin: 0 2em;
+}
+
+.description {
+    color: #888;
+}
+
+.select_button {
+    margin-left: auto;
+    min-width: max-content;
+}

@@ -9,10 +9,17 @@
     font-size: 1.25em;
 }
 
+.url {
+    color: #888;
+    font-size: 0.75em;
+    margin: 0 2em;
+}
+
 .description {
     color: #888;
 }
 
 .select_button {
     margin-left: auto;
+    min-width: max-content;
 }

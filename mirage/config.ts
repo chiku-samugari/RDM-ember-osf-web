@@ -6,6 +6,7 @@ import { getCitation } from './views/citation';
 import { searchCollections } from './views/collection-search';
 import { reportDelete } from './views/comment';
 import { createBibliographicContributor } from './views/contributor';
+import * as customBaseImage from './views/custom-base-image';
 import { createDeveloperApp, updateDeveloperApp } from './views/developer-app';
 import { createDraftRegistration } from './views/draft-registration';
 import {
@@ -263,6 +264,7 @@ export default function(this: Server) {
     this.post('/project/:pid/binderhub/server_annotation', serverAnnotation.create);
     this.del('/project/:pid/binderhub/server_annotation/:aid', serverAnnotation.del);
     this.get('/project/:pid/binderhub/matlab/product_name_list/:release', matlabProductNameList.read);
+    this.get('/project/:pid/binderhub/custom_base_image', customBaseImage.read);
     this.get('/project/:id/metadata/erad/candidates', metadataNodeErad);
     this.get('/project/:id/metadata/project', metadataNodeProject);
 

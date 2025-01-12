@@ -1,4 +1,4 @@
-.basic_image_entry {
+.base_image_entry {
     margin: 0.5em;
 }
 
@@ -45,4 +45,8 @@
 .environment_setting_error {
     font-weight: bold;
     color: #f00;
+}
+
+.title_line {
+    display: flex;
 }

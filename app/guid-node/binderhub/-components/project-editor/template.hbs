@@ -25,12 +25,23 @@
                 </button>
             {{/if}}
         {{else}}
-            <h3>{{t 'binderhub.deployment.environment'}}</h3>
+            {{#if this.node.userHasWritePermission}}
+                <div local-class='title_line'>
+                    <h3>{{t 'binderhub.deployment.environment'}}</h3>
+                    <GuidNode::Binderhub::-Components::ProjectEditor::CustomBaseImageDialogue
+                        @guid={{this.node.id}}
+                        @ownedImageRefs={{this.ownedImageRefs}}
+                        @requestCustomBaseImageReloading={{this.reloadCustomBaseImageModels}}
+                        @customBaseImageModels={{this.dyCustomBaseImageModels}}
+                        @modelConverter={{this.modifyCustomBaseImageModelForLocale}}
+                    />
+                </div>
+            {{/if}}
             {{#if (or this.node.userHasWritePermission this.selectedImageUrl)}}
                 {{#if this.imageSelecting}}
                     {{#each this.selectableImages.preferred as |image|}}
-                        <GuidNode::Binderhub::-Components::ProjectEditor::BasicImageEntry
-                            local-class='basic_image_entry'
+                        <GuidNode::Binderhub::-Components::ProjectEditor::BaseImageEntry
+                            local-class='base_image_entry'
                             @image={{image}}
                             @checked={{eq this.selectedImageUrl image.url}}
                             @isSelectionAllowed={{this.node.userHasWritePermission}}
@@ -38,13 +49,27 @@
                             @onButtonClick={{fn this.selectImage image.url}}
                         />
                     {{/each}}
-                    <GuidNode::Binderhub::-Components::ProjectEditor::BasicImageEntry
-                        local-class='basic_image_entry'
-                        @image={{this.customImage}}
-                        @checked={{eq this.selectedImageUrl this.customImage.url}}
+                    {{#each this.ownedCustomBaseImageModels as |model|}}
+                        <GuidNode::Binderhub::-Components::ProjectEditor::CustomBaseImageEntry
+                            local-class='base_image_entry'
+                            @guid={{this.node.id}}
+                            @target={{model}}
+                            @localizer={{this.modifyCustomBaseImageModelForLocale}}
+                            @checked={{eq this.selectedImageUrl model.imageReference}}
+                            @selectButtonTitle={{t 'binderhub.deployment.select_environment'}}
+                            @isSelectionAllowed={{this.node.userHasWritePermission}}
+                            @onButtonClick={{fn this.selectCustomBaseImage model.imageReference}}
+                            @onDeleteClick={{fn this.pickDeleteTarget model}}
+                            @requestCustomBaseImageReloading={{this.reloadCustomBaseImageModels}}
+                        />
+                    {{/each}}
+                    <GuidNode::Binderhub::-Components::ProjectEditor::BaseImageEntry
+                        local-class='base_image_entry'
+                        @image={{this.singlespeedImage}}
+                        @checked={{eq this.selectedImageUrl this.singlespeedImage.url}}
                         @isSelectionAllowed={{this.node.userHasWritePermission}}
                         @isSelecting={{true}}
-                        @onButtonClick={{fn this.selectCustomImage}}
+                        @onButtonClick={{fn this.selectSinglespeedImage}}
                     />
                     <BsButton
                         data-test-deprecated-image-separator
@@ -60,8 +85,8 @@
                     </BsButton>
                     {{#if this.showDeprecated}}
                         {{#each this.selectableImages.deprecated as |image|}}
-                            <GuidNode::Binderhub::-Components::ProjectEditor::BasicImageEntry
-                                local-class='basic_image_entry'
+                            <GuidNode::Binderhub::-Components::ProjectEditor::BaseImageEntry
+                                local-class='base_image_entry'
                                 @image={{image}}
                                 @checked={{eq this.selectedImageUrl image.url}}
                                 @isSelectionAllowed={{this.node.userHasWritePermission}}
@@ -71,8 +96,8 @@
                         {{/each}}
                     {{/if}}
                 {{else}}
-                    <GuidNode::Binderhub::-Components::ProjectEditor::BasicImageEntry
-                        local-class='basic_image_entry'
+                    <GuidNode::Binderhub::-Components::ProjectEditor::BaseImageEntry
+                        local-class='base_image_entry'
                         @image={{this.modifiedSelectedImage}}
                         @checked={{true}}
                         @isSelectionAllowed={{this.node.userHasWritePermission}}
@@ -295,6 +320,32 @@
             @type='danger'
         >
             {{t 'general.ok'}}
+        </BsButton>
+    </modal.footer>
+</BsModal>
+
+<BsModal data-test-custom-base-image-delete-confirmation
+    @open={{this.deletingCustomBaseImageModel}}
+    @onHidden={{fn this.pickDeleteTarget undefined}} as |modal|
+>
+    <modal.header>
+        <h4>
+            {{t 'binderhub.deployment.custom_base_image.delete_confirmation.title'}}
+        </h4>
+    </modal.header>
+    <modal.body>
+        {{t 'binderhub.deployment.custom_base_image.delete_confirmation.content'}}
+    </modal.body>
+    <modal.footer>
+        <BsButton data-test-cancel-delete
+            @onClick={{fn this.pickDeleteTarget undefined}}>
+            {{t 'general.cancel'}}
+        </BsButton>
+        <BsButton data-test-do-delete-custom-base-image
+            @type='danger'
+            @onClick={{fn this.deleteCustomBaseImageModel this.deletingCustomBaseImageModel}}
+        >
+            {{t 'general.delete'}}
         </BsButton>
     </modal.footer>
 </BsModal>

@@ -1809,6 +1809,8 @@ binderhub:
         postinstallscript: 'Auto-Execution Script'
         select_environment: 'Select'
         change_environment: 'Change'
+        delete_button_label: 'Delete'
+        more_menu: '...'
         deprecated_images_header: 'Deprecated images'
         add_package: 'Add'
         view_dirty_fragile_files: 'View: '
@@ -1844,6 +1846,35 @@ binderhub:
         placeholders:
             package_name: 'Name'
             package_version: 'Version'
+        custom_base_image:
+            entry:
+                fatal_title: 'Failed to update the custom base image.'
+                fatal_message: 'The custom base image you were editing has already been deleted.'
+            dialogue:
+                title: 'Custom Base Image registration'
+                registration_succeeded: '`{name} has been added.'
+                create_new: 'Create New'
+                inherit: 'Inherit from ancestor projects'
+                no_relevants: 'This project has no ancestor or linked projects.'
+                obtain_button: 'Obtain'
+                information: 'The whitespace characters at the beginning and end of the image URL are ingored. And, it must be unique within the project.'
+                already_in_use: 'Image URL: {imageReference} is already in use.'
+                mandatory_field: 'Title and Image URL must not be empty.'
+                repo2docker: 'Image URL must not start with "#repo2docker"'
+                name_label: 'Title'
+                reference_label: 'Image URL'
+                description_ja_label: 'Description in Japanese'
+                description_en_label: 'Description in English'
+                register_button_label: 'Register'
+            delete_confirmation:
+                title: 'Base Image delete confirmation'
+                content: 'The deletion of base image cannot be retrieved. Are you sure you wan to proceed?'
+            editor:
+                title: 'Custom Base Image edit'
+                update_button_label: 'UPDATE'
+                mandatory_field: 'Title must not be empty.'
+                update_succeeded: 'Update succeeded.'
+                image_reference_hint: 'Image URL cannot be edited.'
     build:
         launch: 'Launch'
         status: 'Build status'

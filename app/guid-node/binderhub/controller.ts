@@ -2,17 +2,21 @@ import ArrayProxy from '@ember/array/proxy';
 import Controller from '@ember/controller';
 import EmberError from '@ember/error';
 import { action, computed } from '@ember/object';
-import { reads } from '@ember/object/computed';
+import { readOnly } from '@ember/object/computed';
 import { later } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 
 import DS from 'ember-data';
+import { ConflictError } from 'ember-data/adapters/errors';
 
 import Intl from 'ember-intl/services/intl';
-import { getContext } from 'ember-osf-web/guid-node/binderhub/-components/jupyter-servers-list/component';
-import BinderHubConfigModel from 'ember-osf-web/models/binderhub-config';
+import BinderHubConfigModel, {
+    BinderHub,
+    JupyterHub,
+} from 'ember-osf-web/models/binderhub-config';
 import FileProviderModel from 'ember-osf-web/models/file-provider';
 import Node from 'ember-osf-web/models/node';
+import ServerAnnotationModel from 'ember-osf-web/models/server-annotation';
 import Analytics from 'ember-osf-web/services/analytics';
 import CurrentUser from 'ember-osf-web/services/current-user';
 import StatusMessages from 'ember-osf-web/services/status-messages';
@@ -29,12 +33,37 @@ export interface BuildFormValues {
 }
 
 /* eslint-disable camelcase */
+interface JupyterServerOptions {
+    binder_persistent_request?: string;
+    rdm_node?: string;
+}
+export interface JupyterServer {
+    name: string;
+    last_activity?: string | null;
+    started?: string | null;
+    pending?: string | null;
+    ready?: boolean;
+    url: string;
+    user_options?: JupyterServerOptions | null;
+}
+
+export interface JupyterServerEntry {
+    ownerUrl: string;
+    // TODO: It should be renamed to `server`
+    entry: JupyterServer;
+}
+
 export interface BuildMessage {
     phase: string;
     message: string;
     authorization_url?: string;
     url?: string;
     token?: string;
+}
+
+export interface HostDescriptor {
+    name: string;
+    url: URL;
 }
 /* eslint-enable camelcase */
 
@@ -43,8 +72,87 @@ export interface BootstrapPath {
     pathType: string;
 }
 
+interface BinderHubContext {
+    binderHubConfig: BinderHubConfigModel;
+}
+
+export function isBinderHubConfigFulfilled(context: BinderHubContext): boolean {
+    return !!context.binderHubConfig;
+}
+
+export function validateBinderHubToken(binderhub: BinderHub) {
+    if (!binderhub.authorize_url) {
+        return true;
+    }
+    if (!binderhub.token || (binderhub.token.expires_at && binderhub.token.expires_at * 1000 <= Date.now())) {
+        return false;
+    }
+    return true;
+}
+
+function getContext(key: string) {
+    const params = new URLSearchParams(window.location.search);
+    return params.get(key);
+}
+
+export function getJupyterHubServerURL(
+    originalUrl: string,
+    token: string | undefined,
+    targetPath: BootstrapPath | null,
+) {
+    // redirect a user to a running server with a token
+    let url = originalUrl;
+    if (targetPath && targetPath.path) {
+        // strip trailing /
+        url = url.replace(/\/$/, '');
+        // trim leading '/'
+        let path = targetPath.path.replace(/(^\/)/g, '');
+        if (targetPath.pathType === 'file') {
+            // trim trailing / on file paths
+            path = path.replace(/(\/$)/g, '');
+            // /tree is safe because it allows redirect to files
+            // need more logic here if we support things other than notebooks
+            url = `${url}/tree/${encodeURI(path)}`;
+        } else {
+            // pathType === 'url'
+            url = `${url}/${path}`;
+        }
+    }
+    if (!token) {
+        return url;
+    }
+    const sep = url.includes('?') ? '&' : '?';
+    return `${url}${sep}token=${encodeURIComponent(token)}`;
+}
+
+function getURLWithContext(url: string): string {
+    const host = getContext('bh');
+    const ourl = new URL(url);
+    if (host) {
+        ourl.searchParams.set('bh', host);
+    }
+    return ourl.href;
+}
+
+function updateContext(key: string, value: string) {
+    const params = new URLSearchParams(window.location.search);
+    params.set(key, value);
+}
+
+function normalizeUrl(url: string): string {
+    const m = url.match(/^(.+)\/+$/);
+    if (!m) {
+        return url;
+    }
+    return m[1];
+}
+
+export function urlEquals(url1: string, url2: string): boolean {
+    return normalizeUrl(url1) === normalizeUrl(url2);
+}
+
 export default class GuidNodeBinderHub extends Controller {
-    queryParams = ['bh', 'jh'];
+    queryParams = ['bh'];
 
     @service toast!: Toast;
     @service intl!: Intl;
@@ -52,10 +160,14 @@ export default class GuidNodeBinderHub extends Controller {
     @service analytics!: Analytics;
     @service currentUser!: CurrentUser;
 
-    @reads('model.taskInstance.value')
+    @readOnly('model.node.taskInstance.value')
     node?: Node;
 
+    dyServerAnnotations: ServerAnnotationModel[] = [];
+
     isPageDirty = false;
+
+    serverAnnotationActiveBit = true;
 
     configFolder: WaterButlerFile | null = null;
 
@@ -69,17 +181,17 @@ export default class GuidNodeBinderHub extends Controller {
 
     buildPhase: string | null = null;
 
-    bh: string | null = null;
+    selectedHost?: HostDescriptor;
 
-    jh: string | null = null;
+    bh: string | null = null;
 
     loadingPath?: string;
 
     loggedOutDomains: string[] | null = null;
 
-    @computed('config.isFulfilled')
+    @computed('config')
     get loading(): boolean {
-        return !this.config || !this.config.get('isFulfilled');
+        return !this.config;
     }
 
     @action
@@ -87,15 +199,14 @@ export default class GuidNodeBinderHub extends Controller {
         if (!this.config) {
             throw new EmberError('Illegal config');
         }
-        const config = this.config.content as BinderHubConfigModel;
-        const binderhub = config.findBinderHubByURL(binderhubUrl);
+        const binderhub = this.config.findBinderHubByURL(binderhubUrl);
         if (!binderhub) {
             throw new EmberError('Illegal config');
         }
         if (!binderhub.authorize_url) {
             throw new EmberError('Illegal config');
         }
-        window.location.href = this.getURLWithContext(binderhub.authorize_url);
+        window.location.href = getURLWithContext(binderhub.authorize_url);
     }
 
     @action
@@ -103,17 +214,16 @@ export default class GuidNodeBinderHub extends Controller {
         if (!this.config) {
             throw new EmberError('Illegal config');
         }
-        const config = this.config.content as BinderHubConfigModel;
-        const jupyterhub = config.findJupyterHubByURL(jupyterhubUrl);
+        const jupyterhub = this.config.findJupyterHubByURL(jupyterhubUrl);
         if (jupyterhub) {
             if (!jupyterhub.authorize_url) {
                 throw new EmberError('Illegal config');
             }
-            window.location.href = this.getURLWithContext(jupyterhub.authorize_url);
+            window.location.href = getURLWithContext(jupyterhub.authorize_url);
             return;
         }
         // Maybe BinderHub not authorized
-        const binderhubCand = config.findBinderHubCandidateByJupyterHubURL(jupyterhubUrl);
+        const binderhubCand = this.config.findBinderHubCandidateByJupyterHubURL(jupyterhubUrl);
         if (!binderhubCand) {
             throw new EmberError('Illegal config');
         }
@@ -121,12 +231,11 @@ export default class GuidNodeBinderHub extends Controller {
     }
 
     @action
-    logoutJupyterHub(this: GuidNodeBinderHub, jupyterhubUrl: string) {
+    logoutJupyterHub(this: GuidNodeBinderHub, jupyterhubUrl: URL) {
         if (!this.config) {
             throw new EmberError('Illegal config');
         }
-        const config = this.config.content as BinderHubConfigModel;
-        const jupyterhub = config.findJupyterHubByURL(jupyterhubUrl);
+        const jupyterhub = this.config.findJupyterHubByURL(jupyterhubUrl.toString());
         if (!jupyterhub) {
             // Already logout
             return;
@@ -156,7 +265,7 @@ export default class GuidNodeBinderHub extends Controller {
             await configCache;
             this.configCache = configCache;
             this.notifyPropertyChange('config');
-            this.set('loggedOutDomains', (this.loggedOutDomains || []).concat(jupyterhubUrl));
+            this.set('loggedOutDomains', (this.loggedOutDomains || []).concat(jupyterhubUrl.toString()));
         }, 0);
     }
 
@@ -229,7 +338,7 @@ export default class GuidNodeBinderHub extends Controller {
     }
 
     async performBuild(
-        binderhubUrl: string,
+        binderhubURLString: string,
         needsPersonalToken: boolean,
         path: BootstrapPath | null,
         callback: (result: BuildMessage) => void,
@@ -245,8 +354,7 @@ export default class GuidNodeBinderHub extends Controller {
         if (!buildPath) {
             throw new EmberError('Illegal state');
         }
-        const config = this.config.content as BinderHubConfigModel;
-        const binderhub = config.findBinderHubByURL(binderhubUrl);
+        const binderhub = this.config.findBinderHubByURL(binderhubURLString);
         let additional = '';
         if (this.currentUser && this.currentUser.currentUserId) {
             additional += `&userctx=${this.currentUser.currentUserId}`;
@@ -277,7 +385,7 @@ export default class GuidNodeBinderHub extends Controller {
             if (data.phase === 'auth' && data.authorization_url && !needsPersonalToken) {
                 source.close();
                 later(async () => {
-                    await this.performBuild(binderhubUrl, true, path, callback);
+                    await this.performBuild(binderhubURLString, true, path, callback);
                 }, 0);
                 return;
             }
@@ -353,16 +461,113 @@ export default class GuidNodeBinderHub extends Controller {
         }
     }
 
-    @computed('node')
-    get config(): DS.PromiseObject<BinderHubConfigModel> | undefined {
+    @computed('buildPhase')
+    get serverBuildingBit() {
+        const phase = this.get('buildPhase');
+        return (phase !== null) && (phase !== 'ready');
+    }
+
+    @computed('model.binderHubConfig')
+    get config(): BinderHubConfigModel {
         if (this.configCache) {
-            return this.configCache;
+            return this.configCache.content!;
         }
-        if (!this.node) {
-            return undefined;
+        this.configCache = this.model.binderHubConfig;
+        return this.model.binderHubConfig!;
+    }
+
+    @computed('config')
+    get availableHosts(): HostDescriptor[] {
+        if (!isBinderHubConfigFulfilled(this.model)) {
+            return [];
         }
-        this.configCache = this.store.findRecord('binderhub-config', this.node.id);
-        return this.configCache!;
+        return (this.config.get('node_binderhubs') || []).map(
+            hub => ({
+                url: new URL(hub.binderhub_url),
+                name: hub.binderhub_url,
+            }),
+        );
+    }
+
+    isAvailableHostURL(url: URL): boolean {
+        return this.availableHosts.some(
+            hub => hub.url.href === url.href,
+        );
+    }
+
+    @computed('config', 'selectedHost')
+    get currentBinderHubURL(): URL {
+        if (!isBinderHubConfigFulfilled(this.model)) {
+            throw new EmberError('Inappropriate BinderHub configuration. [GuidNodeBinderHub.currentBinderHubURL]');
+        }
+        if (this.selectedHost && this.isAvailableHostURL(this.selectedHost.url)) {
+            return this.selectedHost.url;
+        }
+        return new URL(this.config.get('defaultBinderhub').url);
+    }
+
+    @action
+    selectHostURL(this: GuidNodeBinderHub, hostURLString: string) {
+        try {
+            const hostURL = new URL(hostURLString);
+            if (!this.isAvailableHostURL(hostURL)) {
+                throw new EmberError('Illegal Input. Input hostURL seems wired.');
+            }
+            this.set('selectedHost', { url: hostURL, name: hostURL.toString() });
+            updateContext('bh', hostURL.toString());
+        } catch (e) {
+            if (e instanceof TypeError) {
+                throw new EmberError('Malformed URL string is submitted. [GuidNodeBinderHub.selectHostURL]');
+            } else if (e instanceof EmberError) {
+                throw e;
+            } else {
+                throw new EmberError('Unknown Error [GuidNodeBinderHub.selectHostURL]');
+            }
+        }
+    }
+
+    // TODO: Eliminate double negation
+    @computed('currentJupyterHub.href')
+    get canLogout(): boolean {
+        const jupyterhub = this.currentJupyterHub;
+        if (!jupyterhub) {
+            return false;
+        }
+        if (!jupyterhub.logout_url) {
+            return false;
+        }
+        return true;
+    }
+
+    @computed('config', 'currentBinderHubURL')
+    get currentJupyterHubURL(): URL {
+        if (!isBinderHubConfigFulfilled(this.model)) {
+            throw new EmberError('BinderHubConfigModel is not ready. [GuidNodeBinderHub.currentJupyterHubURL]');
+        }
+        const binderhub = this.config.findBinderHubCandidateByBinderHubURL(
+            this.get('currentBinderHubURL').toString(),
+        );
+        if (!binderhub) {
+            throw new EmberError('Cannot find out current BinderHub. [GuidNodeBinderHub.currentJupyterHubURL]');
+        }
+        return new URL(binderhub.jupyterhub_url);
+    }
+
+    @computed('currentJupyterHubURL')
+    get currentJupyterHub(): JupyterHub | null {
+        if (!isBinderHubConfigFulfilled(this.model)) {
+            return null;
+        }
+        return this.config.findJupyterHubByURL(this.currentJupyterHubURL.toString());
+    }
+
+    @computed('currentJupyterHub')
+    get currentJupyterHubUser(): string | null {
+        const jupyterhub = this.currentJupyterHub;
+        if (!jupyterhub || !jupyterhub.token || !jupyterhub.token.user) {
+            return null;
+        }
+        return jupyterhub.token.user;
     }
 
     @action
@@ -381,33 +586,172 @@ export default class GuidNodeBinderHub extends Controller {
 
     @action
     build(
-        this: GuidNodeBinderHub, binderhubUrl: string,
-        path: BootstrapPath | null, callback: (result: BuildMessage) => void,
+        this: GuidNodeBinderHub,
+        binderhubURLString: string,
+        path: BootstrapPath | null,
+        callback: (result: BuildMessage) => void,
     ) {
         this.set('buildLog', []);
         later(async () => {
-            await this.performBuild(binderhubUrl, false, path, callback);
+            await this.performBuild(binderhubURLString, false, path, callback);
         }, 0);
-    }
-
-    getURLWithContext(url: string) {
-        const bh = getContext('bh');
-        const jh = getContext('jh');
-        const ourl = new URL(url);
-        const osearch = new URLSearchParams(ourl.search);
-        if (bh) {
-            osearch.set('bh', bh);
-        }
-        if (jh) {
-            osearch.set('jh', jh);
-        }
-        ourl.search = `?${osearch.toString()}`;
-        return ourl.href;
     }
 
     async wbAuthenticatedAJAX(ajaxOptions: JQuery.AjaxSettings) {
         const r = await this.currentUser.authenticatedAJAX(ajaxOptions);
         return r;
+    }
+
+    /**
+     * Initialization in addition to Route.setupController. This method
+     * is assumed to be called in GuidNodeBinderHubRoute.setupController,
+     * after `super.setupController` is called and therefore, we can
+     * safely use `this.model`.
+     */
+    setup() {
+        const defaultBinderHubURL = new URL(this.config.get('defaultBinderhub').url);
+        this.set(
+            'selectedHost',
+            this.availableHosts.find(
+                host => host.url.href === defaultBinderHubURL.href,
+            ),
+        );
+        this.set(
+            'dyServerAnnotations',
+            this.model.serverAnnotations.toArray(),
+        );
+    }
+
+    @action
+    pollute(this: GuidNodeBinderHub) {
+        this.set('isPageDirty', true);
+    }
+
+    @action
+    cleanse(this: GuidNodeBinderHub) {
+        this.set('isPageDirty', false);
+    }
+
+    @computed('dyServerAnnotations', 'currentBinderHubURL')
+    get serverAnnotationHash() {
+        return this.dyServerAnnotations.reduce(
+            (acc: {[key: string]: ServerAnnotationModel}, item: ServerAnnotationModel) => {
+                if ((new URL(item.binderhubUrl)).toString() === this.get('currentBinderHubURL').toString()) {
+                    return {
+                        ...acc,
+                        [item.serverUrl]: item,
+                    };
+                }
+                return acc;
+            },
+            {} as {[key: string]: ServerAnnotationModel},
+        );
+    }
+
+    @action
+    async reloadServerAnnotations(peek: boolean) {
+        const node = this.get('node');
+        if (!node) {
+            throw new EmberError('Illegal state. The node object is not set.');
+        }
+
+        const latest = peek ? await this.store.peekAll('server-annotation')
+            : await this.store.query('server-annotation', { guid: node.id });
+
+        this.set('dyServerAnnotations', latest.toArray());
+    }
+
+    /**
+     * Create ServerAnnotation and returns corresponding
+     * ServerAnnotationModel object. If `updateDy` is `true`, then
+     * `dyServerAnnotations` will be updated to include returned
+     * ServerAnnotationModel.
+     *
+     * What we need on this creation is not only the jupyter server's
+     * URL, but also the URL of BinderHub and/or JupyterHub server.
+     * It is not guaranteed that the `currentBinderHubURL` is the same
+     * as the BinderHub URL used to create the jupyter server. Since the
+     * server building process takes long-long time, the user can change
+     * the selected BinderHub URL (by the HostSelector) during the
+     * building process. So, it must be informed. Even though we can
+     * find the BinderHub URL from JupyterHub URL which we can retrieve
+     * as `ownerUrl` property of JupyterServerEntry, a JupyterServerEntry
+     * is not enough since the one-to-one correspondence between
+     * JupyterHub and BinderHub is not guaranteed. Finally, the URL of
+     * BinderHub must be informed too.
+     *
+     * @param {JupyterServerEntry} entry
+     * @param {URL} binderhubUrl
+     * @param {boolean} updateDy - update dyServerAnnotations by the
+     *                             array that includes newly created
+     *                             annotation.
+     * @return {ServerAnnotationModel}
+     */
+    @action
+    async createServerAnnotation(entry: JupyterServerEntry, binderhubUrl: URL, updateDy: boolean) {
+        if (!isBinderHubConfigFulfilled(this.model)) {
+            throw new EmberError('Illegal state. The configuration object is not set.');
+        }
+        const node = this.get('node');
+        if (!node) {
+            throw new EmberError('Illegal state. The node object is not set.');
+        }
+
+        const { ownerUrl, entry: server } = entry;
+        try {
+            const annotation = await this.store.createRecord(
+                'server-annotation',
+                {
+                    serverUrl: server.url,
+                    name: server.name,
+                    binderhubUrl,
+                    jupyterhubUrl: ownerUrl,
+                    memotext: '',
+                },
+            ).save({ adapterOptions: { guid: node.id } });
+            if (updateDy) {
+                this.set(
+                    'dyServerAnnotations',
+                    [...this.get('dyServerAnnotations'), annotation],
+                );
+            }
+            return annotation;
+        } catch (e) {
+            this.set('serverAnnotationActiveBit', false);
+            if (e instanceof ConflictError) {
+                throw new EmberError(
+                    'Failed to create a new Server Annotation since the requested entry already exists.',
+                );
+            }
+            throw new EmberError('Failed to create a new Server Annotation for an unknown reason.');
+        }
+    }
+
+    @action
+    async deleteServerAnnotation(serverPath: string, updateDy: boolean) {
+        const node = this.get('node');
+        if (!node) {
+            throw new EmberError('Illegal state. The node object is not set.');
+        }
+
+        const annotation = this.get('serverAnnotationHash')[serverPath];
+        if (!annotation) {
+            // The server annotation has already gone for some reason.
+            // It is weired, but should not raise an error. We can just
+            // ignore the situation.
+            return;
+        }
+
+        const result = await annotation.destroyRecord({ adapterOptions: { guid: node.id } });
+
+        if (updateDy && result) {
+            this.set(
+                'dyServerAnnotations',
+                [...this.get('dyServerAnnotations').filter(
+                    (annot: ServerAnnotationModel) => annot.serverUrl !== serverPath,
+                )],
+            );
+        }
     }
 }
 

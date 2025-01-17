@@ -1,0 +1,36 @@
+.host_selector {
+    display: flex;
+}
+
+.host_selector_body {
+    margin: 0 10px;
+}
+
+.host_selections {
+    margin: 10px;
+}
+
+.host_label {
+    align-content: center;
+}
+
+.host_url {
+    align-content: center;
+    padding: 0 6px;
+}
+
+.dropdown_menu {
+    background-color: #f8f8f8;
+    border-radius: 2px;
+
+    & > li > button {
+        color: #000;
+        width: 100%;
+        text-align: justify;
+    }
+
+    & > li > button:hover {
+        color: #fff;
+        background-color: #1e90ff;
+    }
+}

@@ -1,14 +1,33 @@
 {{! using unsafeTitle here to avoid double encoding because the title helper does its own }}
-{{title (t 'binderhub.page_title' nodeTitle=this.model.taskInstance.value.unsafeTitle)}}
+{{title (t 'binderhub.page_title' nodeTitle=this.node.unsafeTitle)}}
 <div class='container' local-class='BinderHub'>
     {{#if this.loading}}
         {{t 'binderhub.loading'}}
     {{else}}
         <div local-class='BinderHub__editor'>
-            <h2
-                data-test-servers-header
-                local-class='BinderHub__header'
-            >
+            <div local-class='host_information'>
+                <GuidNode::Binderhub::-Components::HostSelector
+                    local-class='host_selector'
+                    @guid={{this.node.id}}
+                    @selectedHost={{this.selectedHost}}
+                    @availableHosts={{this.availableHosts}}
+                    @onHostSelect={{this.selectHostURL}}
+                />
+                <div local-class='host_user'>
+                    {{#if this.currentJupyterHubUser}}
+                        <GuidNode::Binderhub::-Components::UserInfo
+                            @userInfo={{this.currentJupyterHubUser}}
+                        />
+                    {{/if}}
+                    {{#if this.canLogout}}
+                        <GuidNode::Binderhub::-Components::LogoutButton
+                            @currentJupyterHubURL={{this.currentJupyterHubURL}}
+                            @logout={{action this.logoutJupyterHub}}
+                        />
+                    {{/if}}
+                </div>
+            </div>
+            <h2 data-test-servers-header local-class='BinderHub__header'>
                 {{t 'binderhub.jupyter_servers_list.header'}}
             </h2>
             <BsAlert
@@ -22,11 +41,17 @@
             <div local-class='BinderHub__panel'>
                 <GuidNode::Binderhub::-Components::JupyterServersList
                     @node={{this.node}}
-                    @binderHubConfig={{this.config}}
+                    @binderHubConfig={{this.model.binderHubConfig}}
+                    @serverMemoActiveBit={{this.serverAnnotationActiveBit}}
+                    @serverAnnotationHash={{this.serverAnnotationHash}}
+                    @requestAnnotationCreation={{this.createServerAnnotation}}
+                    @requestAnnotationDelete={{this.deleteServerAnnotation}}
+                    @requestAnnotationReload={{this.reloadServerAnnotations}}
+                    @currentBinderHubURL={{this.currentBinderHubURL}}
                     @loggedOutDomains={{this.loggedOutDomains}}
                     @renewToken={{action this.renewJupyterHubToken}}
-                    @logout={{action this.logoutJupyterHub}}
                     @buildPhase={{this.buildPhase}}
+                    @serverBuildingBit={{this.serverBuildingBit}}
                     @onError={{action this.requestError}}
                 />
             </div>
@@ -39,18 +64,18 @@
             <div local-class='BinderHub__panel'>
                 <GuidNode::Binderhub::-Components::ProjectEditor
                     @node={{this.node}}
-                    @binderHubConfig={{this.config}}
+                    @binderHubConfig={{this.model.binderHubConfig}}
+                    @currentBinderHubURL={{this.currentBinderHubURL}}
                     @configFolder={{this.configFolder}}
                     @onError={{action this.projectError}}
+                    @pagePolluter={{this.pollute}}
+                    @pageCleanser={{this.cleanse}}
+                    @renewBinderHubToken={{action this.renewBinderHubToken}}
+                    @requestBuild={{action this.build}}
+                    @buildLog={{this.buildLog}}
+                    @buildPhase={{this.buildPhase}}
                 />
             </div>
-            <GuidNode::Binderhub::-Components::BuildConsole
-                @binderHubConfig={{this.config}}
-                @renewToken={{action this.renewBinderHubToken}}
-                @requestBuild={{action this.build}}
-                @buildLog={{this.buildLog}}
-                @buildPhase={{this.buildPhase}}
-              />
             <BsAlert
                 @type='danger'
                 @dismissible={{false}}

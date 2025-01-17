@@ -1,15 +1,3 @@
-.jupyter-link {
-    padding: 0;
-}
-
-.jupyterhub-server-menu {
-    display: flex;
-}
-
-.jupyterhub-selector {
-    margin-left: auto;
-}
-
 .toolbar-button {
     display: flex;
     margin-bottom: -2.5em;
@@ -39,10 +27,18 @@
     align-items: center;
 }
 
-.jupyterhub-user {
-    margin-left: auto;
-}
-
 .max-servers-exceeded {
     color: #f00;
+}
+
+.delete_icon {
+    color: #b52b27;
+}
+
+.delete_icon:hover {
+    color: #8b211e;
+}
+
+.memo_cell {
+    margin-bottom: 0;
 }

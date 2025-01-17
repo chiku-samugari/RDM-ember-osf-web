@@ -1768,6 +1768,14 @@ iqbrims:
     uploader_comment: 'Comment'
 binderhub:
     page_title: '{nodeTitle} BinderHub'
+    host_info:
+        url: 'JupyterHub:'
+        username: 'User:'
+        change_host: 'SELECT'
+    host_selector:
+        dialogue_title: 'Host Select'
+        dialogue_explanation: 'Please select the server host.'
+        add_host_label: 'Add Host'
     jupyter_servers_list:
         header: 'My environments'
         delete_confirm_dialog_title: 'Delete confirmation'
@@ -1776,8 +1784,6 @@ binderhub:
         header: 'New environment'
     loading: 'Loading BinderHub config...'
     servers:
-        host: 'Host: '
-        username: 'User: '
         server_exists: '{servers} environment(s) created from this project.'
         server_not_exists: 'No environments created from this project.'
         max_servers_exceeded: 'The maximum number of environments has been reached.'
@@ -1787,6 +1793,9 @@ binderhub:
         url: 'URL'
         last_activity: 'Last activity'
         launch: 'Launch'
+        memo: 'Memo'
+        memo_disabled: 'initializing...'
+        memo_inactive: 'Memo is disabled.'
         delete: 'Delete'
         no_servers: 'No Servers'
     deployment:
@@ -1794,23 +1803,30 @@ binderhub:
         description: 'The contents of the default storage in this project will be copied.'
         launch: 'Launch'
         environment: 'Base Image'
+        custom_image_name: 'Custom Image based on Dockerfile'
+        custom_image_description: 'The Dockerfile you uploaded is used to create an environment.'
         additionalpackages: 'Additional Packages'
         postinstallscript: 'Auto-Execution Script'
         select_environment: 'Select'
         change_environment: 'Change'
+        deprecated_images_header: 'Deprecated images'
         add_package: 'Add'
-        view_dockerfile: 'View: '
-        reset_dockerfile: 'Reset: '
+        view_dirty_fragile_files: 'View: '
+        reset_dirty_fragile_files: 'Reset: '
         unavailable: 'The configuration file has been manually changed.'
         no_environment: 'This environment is not configured by the editor.'
+        dockerfile_editor_title: 'Dockerfile'
+        save_file: 'Save'
         post_build_placeholder: |-
             #!/bin/bash
             set -x
             ...
         save_post_build: 'Save'
         mran_version_setting_error: 'The version number cannot be specified for CRAN.'
-        reset_dockerfile_confirm_dialog_title: 'Reset: '
-        reset_dockerfile_confirm_dialog_body: 'You cannot undo the files you have reset. Do you wish to continue?'
+        reset_configfile_confirm_dialog_title: 'Reset: '
+        reset_configfile_confirm_dialog_body: 'You cannot undo the files you have reset. Do you wish to continue?'
+        destruct_dockerfile_confirmation_dialogue_title: 'Dockerfile reset confirmation'
+        destruct_dockerfile_confirmation_dialogue_body: 'If you change the base image, Dockerfile you are currently editing will be reset. Please note that the lost content cannot be retrieved. Are you sure you want to proceed?'
         release: 'Release'
         products: 'Add-ons'
         info_urls:
@@ -1822,7 +1838,7 @@ binderhub:
     build:
         launch: 'Launch'
         status: 'Build status'
-        launch_new_enviornment: 'Launch a new environment: {binderhubUrl}'
+        launch_new_enviornment: 'Launch a new environment'
     error:
         binderhub_auth_error: 'You need to connect it to the BinderHub. Please reauthenticate.'
         binderhub_build_error: 'An error occurred while connecting to the BinderHub.'

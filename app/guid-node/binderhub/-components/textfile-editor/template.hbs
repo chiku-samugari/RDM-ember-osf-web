@@ -2,7 +2,7 @@
     <div local-class='title_line'>
         <h3>
             {{@title}}
-            <OsfButton @type='link' {{on 'click' this.flipEditorOpenBit}}>
+            <OsfButton @type='link' onClick={{this.flipEditorOpenBit}}>
                 {{#if this.editorOpenBit}}
                     {{fa-icon 'chevron-down'}}
                 {{else}}
@@ -26,7 +26,7 @@
                     type='button'
                     class='btn btn-default'
                     disabled={{not @enable}}
-                    {{on 'click' @onSave}}
+                    onClick={{@onSave}}
                 >
                     {{fa-icon 'save'}}
                     {{t 'binderhub.deployment.save_file'}}

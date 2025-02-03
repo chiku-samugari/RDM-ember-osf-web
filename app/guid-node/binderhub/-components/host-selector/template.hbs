@@ -8,7 +8,7 @@
             {{@selectedHost.name}}
         </strong>
         <OsfButton data-test-open-host-selector-dialogue
-          @type='link' {{on 'click' (fn this.updateOpenBit true)}}>
+          @type='link' onClick={{fn this.updateOpenBit true}}>
             {{t 'binderhub.host_info.change_host'}}
         </OsfButton>
     </div>
@@ -34,7 +34,7 @@
                                 <label data-test-host-selection-option>
                                     <input type='radio' name='host' value={{item.url}}
                                         checked={{eq @selectedHost.url.href item.url.href}}
-                                        {{on 'click' (fn this.pick item.url.href)}}
+                                        onClick={{fn this.pick item.url.href}}
                                     >
                                     {{item.name}}
                                 </label>
@@ -50,12 +50,12 @@
     </div>
     <modal.footer>
         <BsButton data-test-host-selector-dialogue-cancel
-            {{on 'click' (fn this.updateOpenBit false)}}
+            onClick={{fn this.updateOpenBit false}}
         >
             {{t 'general.cancel'}}
         </BsButton>
         <BsButton data-test-host-selector-dialogue-ok
-            {{on 'click' this.applyPicked}}
+            onClick={{this.applyPicked}}
             @type='success'
         >
             {{t 'general.ok'}}

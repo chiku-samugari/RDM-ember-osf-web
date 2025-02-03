@@ -132,8 +132,6 @@ export default class BuildConsole extends Component {
             binderhubUrl.toString(),
             path,
             (result: BuildMessage) => {
-                // TODO: is this callback called repeatedly until the
-                // `result.phase` get `'ready'`? It's worth to know.
                 if (result.phase !== 'ready') {
                     return;
                 }

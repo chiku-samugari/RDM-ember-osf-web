@@ -54,6 +54,7 @@ export default class Dashboard extends Controller {
     popular!: QueryHasManyResult<Node>;
     useSimplePage: boolean = simplePage;
     useSearch: string = useSearch ? 'true' : 'false';
+    canCreateNewProject: boolean = true;
 
     @task({ restartable: true })
     setupTask = task(function *(this: Dashboard) {
@@ -66,6 +67,7 @@ export default class Dashboard extends Controller {
             this.findNodes.perform(),
             this.getPopularAndNoteworthy.perform(popularNode, 'popular'),
             this.getPopularAndNoteworthy.perform(noteworthyNode, 'noteworthy'),
+            this.checkCreateProjectPermission.perform(),
         ]);
 
         this.set('institutions', institutions.toArray());
@@ -121,6 +123,12 @@ export default class Dashboard extends Controller {
             const failedProperty = `failedLoading-${dest}` as 'failedLoading-noteworthy' | 'failedLoading-popular';
             this.set(failedProperty, true);
         }
+    });
+
+    @task({ restartable: true })
+    checkCreateProjectPermission = task(function *(this: Dashboard) {
+        const user = yield this.currentUser.user;
+        this.set('canCreateNewProject', user.canCreateNewProject);
     });
 
     @alias('currentUser.user') user!: User;

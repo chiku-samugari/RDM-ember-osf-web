@@ -81,6 +81,7 @@ export default class UserModel extends OsfModel.extend(Validations) {
     @attr('boolean') active!: boolean;
     @attr('object') social!: {};
     @attr('array') employment!: Employment[];
+    @attr('boolean') canCreateNewProject!: boolean;
 
     @belongsTo('region', { async: false })
     defaultRegion!: DS.PromiseObject<RegionModel> & RegionModel;

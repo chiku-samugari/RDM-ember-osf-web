@@ -32,18 +32,18 @@
                             <nl.empty>
                                 <p>
                                     {{t 'node.metadata.no_reports'}}
-                                    {{#if (and this.node.currentUserIsContributor (not this.node.userHasAdminPermission))}}
-                                        {{t 'node.metadata.only_admins_can_initiate'}}
+                                    {{#if (and this.node.currentUserIsContributor (not this.node.userHasWritePermission))}}
+                                        {{t 'node.metadata.only_contributors_with_write_permission_can_initiate'}}
                                     {{/if}}
                                 </p>
-                                {{#if this.node.userHasAdminPermission}}
+                                {{#if this.node.userHasWritePermission}}
                                     <p>{{t 'node.metadata.start_new'}}</p>
                                 {{/if}}
                             </nl.empty>
                         </NodeList>
                     </div>
                 </tab.pane>
-                {{#if this.node.userHasAdminPermission}}
+                {{#if this.node.userHasWritePermission}}
                     <tab.pane
                       data-analytics-scope='Drafts tab'
                       @id='drafts'
@@ -76,7 +76,7 @@
                 {{/if}}
             </BsTab>
         </div>
-        {{#if this.node.userHasAdminPermission}}
+        {{#if this.node.userHasWritePermission}}
             <div class='col-xs-3 col-sm-4'>
                 <OsfButton
                     data-test-new-metadata-button

@@ -21,9 +21,6 @@ export default class GuidNodeMetadata extends Controller {
     @service analytics!: Analytics;
     @service store!: DS.Store;
 
-    queryParams = ['tab'];
-    tab?: string;
-
     draftsQueryParams = { embed: ['initiator', 'registration_schema', 'branched_from'] };
     defaultSchema!: RegistrationSchema;
     selectedSchema!: RegistrationSchema;
@@ -64,20 +61,9 @@ export default class GuidNodeMetadata extends Controller {
 
     @alias('model.taskInstance.value') node!: Node | null;
 
-    @computed('tab')
-    get activeTab() {
-        return this.tab ? this.tab : 'reports';
-    }
-
     @computed('node.{id,root.id,root.userHasAdminPermission}')
     get isComponentRootAdmin() {
         return this.node && this.node.id !== this.node.root.get('id') && this.node.root.get('userHasAdminPermission');
-    }
-
-    @action
-    changeTab(activeId: string) {
-        this.set('tab', activeId === 'reports' ? undefined : activeId);
-        this.analytics.click('tab', `Reports tab - Change tab to: ${activeId}`);
     }
 
     @action

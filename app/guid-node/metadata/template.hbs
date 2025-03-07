@@ -8,73 +8,50 @@
 >
     <div class='row'>
         <div class='col-xs-9 col-sm-8'>
-            <BsTab
-              data-analytics-scope='Reports Tab'
-              @activeId={{this.activeTab}}
-              @onChange={{action this.changeTab}}
-              as |tab|
-            >
-                <tab.pane
-                  @id='reports'
-                  @title={{t 'node.metadata.reports'}}
+            <div class='row' local-class='ReportsPane' data-test-draft-reports-pane>
+                <PaginatedList::HasMany
+                    data-analytics-scope='Project Reports'
+                    @modelTaskInstance={{this.model.taskInstance}}
+                    @relationshipName='draftRegistrations'
+                    @bindReload={{action (mut this.reloadDrafts)}}
+                    @query={{this.draftsQueryParams}}
+                    as |list|
                 >
-                    <div class='row' local-class='ReportsPane' data-test-reports-pane>
-                        <NodeList
-                            @modelTaskInstance={{this.model.taskInstance}}
-                            @relationshipName='registrations'
-                            @showTags={{true}}
-                            @disableNodeLink={{true}}
-                            @showExportCsvLink={{true}}
+                    <list.item as |draftRegistration|>
+                        <DraftRegistrationCard
+                            @draftRegistration={{draftRegistration}}
                             @metadataSchema={{this.metadataSchema}}
-                            @showStatus={{false}}
-                            as |nl|
-                        >
-                            <nl.empty>
-                                <p>
-                                    {{t 'node.metadata.no_reports'}}
-                                    {{#if (and this.node.currentUserIsContributor (not this.node.userHasWritePermission))}}
-                                        {{t 'node.metadata.only_contributors_with_write_permission_can_initiate'}}
-                                    {{/if}}
-                                </p>
-                                {{#if this.node.userHasWritePermission}}
-                                    <p>{{t 'node.metadata.start_new'}}</p>
-                                {{/if}}
-                            </nl.empty>
-                        </NodeList>
-                    </div>
-                </tab.pane>
-                {{#if this.node.userHasWritePermission}}
-                    <tab.pane
-                      data-analytics-scope='Drafts tab'
-                      @id='drafts'
-                      @title={{t 'node.metadata.draft_reports'}}
-                    >
-                        <div class='row' local-class='ReportsPane' data-test-draft-reports-pane>
-                            <PaginatedList::HasMany
-                                data-analytics-scope='Project Reports'
-                                @modelTaskInstance={{this.model.taskInstance}}
-                                @relationshipName='draftRegistrations'
-                                @bindReload={{action (mut this.reloadDrafts)}}
-                                @query={{this.draftsQueryParams}}
-                                as |list|
-                            >
-                                <list.item as |draftRegistration|>
-                                    <DraftRegistrationCard
-                                        @draftRegistration={{draftRegistration}}
-                                        @metadataSchema={{this.metadataSchema}}
-                                        @onDelete={{action list.doReload 1}}
-                                    />
-                                </list.item>
+                            @onDelete={{action list.doReload 1}}
+                        />
+                    </list.item>
 
-                                <list.empty>
-                                    <p>{{t 'node.metadata.no_reports'}}</p>
-                                    <p>{{t 'node.metadata.start_new'}}</p>
-                                </list.empty>
-                            </PaginatedList::HasMany>
-                        </div>
-                    </tab.pane>
-                {{/if}}
-            </BsTab>
+                    <list.empty>
+                        <p>{{t 'node.metadata.no_reports'}}</p>
+                        {{#if (and this.node.currentUserIsContributor (not this.node.userHasWritePermission))}}
+                            {{t 'node.metadata.only_contributors_with_write_permission_can_initiate'}}
+                        {{/if}}
+                        {{#if this.node.userHasWritePermission}}
+                            <p>{{t 'node.metadata.start_new'}}</p>
+                        {{/if}}
+                    </list.empty>
+                </PaginatedList::HasMany>
+                <NodeList
+                    @modelTaskInstance={{this.model.taskInstance}}
+                    @relationshipName='registrations'
+                    @showTags={{true}}
+                    @disableNodeLink={{true}}
+                    @showExportCsvLink={{true}}
+                    @metadataSchema={{this.metadataSchema}}
+                    @showStatus={{false}}
+                    as |nl|
+                >
+                    <nl.header>
+                        <p local-class='RegistrationsHeader'>
+                            {{t 'node.metadata.registrations'}}
+                        </p>
+                    </nl.header>
+                </NodeList>
+            </div>
         </div>
         {{#if this.node.userHasWritePermission}}
             <div class='col-xs-3 col-sm-4'>

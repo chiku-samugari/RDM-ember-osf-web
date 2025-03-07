@@ -57,8 +57,9 @@
 <OsfButton
     data-test-registration-card-export
     data-analytics-name='Export'
+    class={{this.buttonClass}}
     @type='success'
-    @disabled={{and this.hasNoFormats this.hasNoDestinations}}
+    @disabled={{this.isDisabled}}
     @onClick={{action this.export}}
 >
     {{t 'metadata.registration-card.export'}}

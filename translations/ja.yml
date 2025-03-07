@@ -654,6 +654,7 @@ node:
         new: 新規メタデータを作成
         reports: メタデータ
         draft_reports: 下書き
+        registrations: 登録済みメタデータ(編集不可)
 delete_modal:
     title: 'この{nodeType}を削除してもよろしいですか？'
     body: '{nodeType}の他の投稿者は利用できなくなります。'
@@ -1038,7 +1039,6 @@ registries:
                 title: 送信前に登録を確認する
                 page_label: 内容確認
                 start_review: 内容確認
-                invalid_warning: 'メタデータを登録するには、各項目に正しい内容を入力してください。'
                 toggle_dropdown: 'Toggle navigation dropdown'
             register: 登録
             submit_error: 'Unable to create a registration.'

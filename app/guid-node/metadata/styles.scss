@@ -5,6 +5,17 @@
 
 .ReportsPane {
     min-height: 150px;
+
+    :global(li:not(.list-group-item)) {
+        list-style-type: none;
+    }
+}
+
+.RegistrationsHeader {
+    color: $color-text-gray-dark;
+    font-size: 13px;
+    font-weight: bold;
+    margin-top: 2em;
 }
 
 h4:global(.NewReportModal__header) {

@@ -10,6 +10,7 @@ import requireAuth from 'ember-osf-web/decorators/require-auth';
 import DraftRegistration from 'ember-osf-web/models/draft-registration';
 import MetadataNodeEradModel from 'ember-osf-web/models/metadata-node-erad';
 import MetadataNodeProjectModel from 'ember-osf-web/models/metadata-node-project';
+import MetadataNodeSchemaModel from 'ember-osf-web/models/metadata-node-schema';
 import NodeModel from 'ember-osf-web/models/node';
 import Analytics from 'ember-osf-web/services/analytics';
 import DraftRegistrationManager from 'registries/drafts/draft/draft-registration-manager';
@@ -18,6 +19,7 @@ import NavigationManager from 'registries/drafts/draft/navigation-manager';
 export interface DraftRouteModel {
     draftRegistrationManager: DraftRegistrationManager;
     navigationManager: NavigationManager;
+    metadataSchema: TaskInstance<MetadataNodeSchemaModel>;
 }
 
 @requireAuth()
@@ -58,6 +60,17 @@ export default class DraftRegistrationRoute extends Route {
         return { metadataNodeErad, metadataNodeProject };
     });
 
+    @task
+    loadMetadataSchema = task(function *(
+        this: DraftRegistrationRoute,
+        draftRegistrationAndNodeTask: TaskInstance<{draftRegistration: DraftRegistration, node: NodeModel}>,
+    ) {
+        const { node } = yield draftRegistrationAndNodeTask;
+        const metadataSchema: MetadataNodeSchemaModel = yield this.store
+            .findRecord('metadata-node-schema', node.id);
+        return metadataSchema;
+    });
+
     model(params: { id: string }): DraftRouteModel {
         const { id: draftId } = params;
         const draftRegistrationAndNodeTask = this.loadDraftRegistrationAndNode.perform(draftId);
@@ -66,10 +79,12 @@ export default class DraftRegistrationRoute extends Route {
             draftRegistrationAndNodeTask,
             metadataNodeTask,
         );
+        const metadataSchema = this.loadMetadataSchema.perform(draftRegistrationAndNodeTask);
         const navigationManager = new NavigationManager(draftRegistrationManager);
         return {
             navigationManager,
             draftRegistrationManager,
+            metadataSchema,
         };
     }
 

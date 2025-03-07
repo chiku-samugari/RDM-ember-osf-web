@@ -34,6 +34,8 @@
                     @draftManager={{draftManager}}
                     @navManager={{navManager}}
                     @onSubmitRedirect={{this.onSubmitRedirect}}
+                    @metadataSchema={{this.model.metadataSchema.value}}
+                    @metadataSchemaLoading={{this.model.metadataSchema.isRunning}}
                 />
             {{/if}}
             <layout.leftNav as |leftNav|>
@@ -72,6 +74,8 @@
                             @navManager={{navManager}}
                             @draftManager={{draftManager}}
                             @onSubmitRedirect={{this.onSubmitRedirect}}
+                            @metadataSchema={{this.model.metadataSchema.value}}
+                            @metadataSchemaLoading={{this.model.metadataSchema.isRunning}}
                         />
                     </div>
                 </layout.right>

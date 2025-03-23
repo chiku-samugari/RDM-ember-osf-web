@@ -1,121 +1,317 @@
 import { tagName } from '@ember-decorators/component';
 import Component from '@ember/component';
 import { assert } from '@ember/debug';
-import { action } from '@ember/object';
+
+import { action, computed } from '@ember/object';
 import { alias } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
-
-import Changeset from 'ember-changeset';
-import lookupValidator from 'ember-changeset-validations';
 import { ChangesetDef } from 'ember-changeset/types';
+import { task } from 'ember-concurrency-decorators';
+import DS from 'ember-data';
+import config from 'ember-get-config';
 import Intl from 'ember-intl/services/intl';
-import { layout } from 'ember-osf-web/decorators/component';
-import NodeModel from 'ember-osf-web/models/node';
-import { buildValidation, SchemaBlock, SchemaBlockGroup } from 'ember-osf-web/packages/registration-schema';
-import DraftRegistrationManager from 'registries/drafts/draft/draft-registration-manager';
+import { layout, requiredAction } from 'ember-osf-web/decorators/component';
+import File from 'ember-osf-web/models/file';
+import FileProvider from 'ember-osf-web/models/file-provider';
 
+import MetadataNodeProjectModel from 'ember-osf-web/models/metadata-node-project';
+import NodeModel from 'ember-osf-web/models/node';
+import pathJoin from 'ember-osf-web/utils/path-join';
+import DraftRegistrationManager from 'registries/drafts/draft/draft-registration-manager';
 import styles from './styles';
 import template from './template';
 
+const { OSF: { url: baseURL } } = config;
+
+interface FileMetadataEntity {
+    comments?: any[];
+    extra?: any[];
+    value: any;
+}
+
+interface FileMetadata {
+    path: string;
+    urlpath: string | null;
+    metadata: {
+        [key: string]: FileMetadataEntity,
+    };
+}
+
+interface FileEntry {
+    path: string;
+    parts: string[];
+    lastPart: string;
+    lastPartDepth: number;
+    folder: boolean;
+    title: string | null;
+    url: string | null;
+    fileUrl: string | null;
+    manager: string | null;
+    metadata: FileMetadata | null;
+    added: boolean;
+    style: string;
+    visible: boolean;
+    folderExpanded: boolean;
+}
+
 @layout(template, styles)
 @tagName('')
-export default class ArrayInput extends Component {
+export default class AdMetadataInput extends Component {
+    @service intl!: Intl;
+
     // Required param
     changeset!: ChangesetDef;
-    metadataChangeset!: ChangesetDef;
+    node!: NodeModel;
+    metadataNodeProject!: MetadataNodeProjectModel;
     draftManager!: DraftRegistrationManager;
-    @service intl!: Intl;
 
     @alias('schemaBlock.registrationResponseKey')
     valuePath!: string;
     onInput!: () => void;
-    onMetadataInput!: () => void;
-    schemaBlockGroup!: SchemaBlockGroup;
-    schemaBlock!: SchemaBlock;
-    node!: NodeModel;
 
-    subChangesets: ChangesetDef[] = [];
+    @alias('schemaBlock.schema.id')
+    schemaId!: any;
+
+    folderExpands: {[key: string]: boolean} = {};
+
+    item: File[] = [];
+    @service store!: DS.Store;
+    currentFolder!: File;
+
+    fileProvider!: FileProvider;
+    @requiredAction openFile!: (file: File, show: string) => void;
+
+    @task
+    getCurrentFolderItems = task(function *(this: AdMetadataInput, targetFolder: File) {
+        this.set('currentFolder', targetFolder);
+        const folderItems = yield this.currentFolder.files;
+        const itemsArray = folderItems.toArray();
+        this.set('item', this.item.concat(itemsArray));
+
+        const paths = this.get('projectFilePaths');
+        const folderExpands = this.get('folderExpands');
+        if (!Object.values(folderExpands).length) {
+            paths.forEach(path => {
+                if (path.endsWith('/') && path.split('/').length === 2) {
+                    folderExpands[path] = true;
+                }
+            });
+            this.set('folderExpands', folderExpands);
+        }
+
+        for (const item of itemsArray) {
+            if (item.materializedPath.match(/.+\/$/)) {
+                yield this.getCurrentFolderItems.perform(item);
+            }
+        }
+    });
+
+    async didInsertElement() {
+        super.didInsertElement();
+        const fileProviders = await this.node.files;
+        const fileProvider = fileProviders.findBy('name', 'osfstorage') as FileProvider;
+        const rootFolder = await fileProvider.rootFolder;
+        this.getCurrentFolderItems.perform(rootFolder);
+    }
+
+    @computed('node')
+    get nodeUrl() {
+        return this.node && pathJoin(baseURL, this.node.id);
+    }
+
+    @computed('changeset', 'valuePath')
+    get adMetadatas(): FileMetadata[] {
+        const value = this.changeset.get(this.valuePath);
+        if (!value) {
+            return [];
+        }
+        const metadatas: FileMetadata[] = JSON.parse(value);
+        metadatas.sort((a, b) => a.path.localeCompare(b.path));
+        return metadatas;
+    }
+
+    @computed('item')
+    get projectFileMetadata(): FileMetadata[] {
+        const res: FileMetadata[] = [];
+        this.get('item').forEach(item => {
+            res.push({
+                path: item.provider + item.materializedPath,
+                urlpath: '',
+                metadata: {},
+            });
+        });
+        return res;
+    }
+
+    @computed('projectFileMetadata')
+    get projectFilePaths(): string[] {
+        const projectFileMetadatas = this.get('projectFileMetadata');
+        const pathSet = new Set();
+        projectFileMetadatas.forEach(projectFileMetadata => {
+            let path = '';
+            const parts = projectFileMetadata.path.split('/');
+            parts.forEach((part, i) => {
+                if (!part.length) {
+                    return;
+                }
+                path += part;
+                if (i + 1 < parts.length) {
+                    path += '/';
+                }
+                pathSet.add(path);
+            });
+        });
+        return Array.from(pathSet).sort((a, b) => a.localeCompare(b));
+    }
+
+    @computed('adMetadatas', 'projectFileMetadata', 'projectFilePaths', 'folderExpands')
+    get fileEntries(): FileEntry[] {
+        const metadataMap: {[key: string]: FileMetadata} = {};
+        this.get('adMetadatas').forEach(metadata => {
+            metadataMap[metadata.path] = metadata;
+        });
+        const projectFileMetadataMap: {[key: string]: FileMetadata} = {};
+
+        this.get('projectFileMetadata').forEach(projectFileMetadata => {
+            projectFileMetadataMap[projectFileMetadata.path] = projectFileMetadata;
+        });
+
+        const paths = this.get('projectFilePaths');
+        const folderExpands = this.get('folderExpands');
+        const res = paths.map(path => {
+            const metadata = metadataMap[path] || projectFileMetadataMap[path];
+            const parts = path.split('/');
+            if (!parts[parts.length - 1].length) {
+                parts.pop();
+            }
+            const folder = path.match(/.+\/$/) !== null;
+            // 18
+            return {
+                path,
+                parts,
+                lastPart: parts[parts.length - 1],
+                lastPartDepth: parts.length,
+                folder,
+                title: metadata ? this.extractTitleFromMetadata(metadata) : null,
+                manager: metadata ? this.extractManagerFromMetadata(metadata) : null,
+                url: metadata ? this.extractUrlFromMetadata(metadata) : null,
+                fileUrl: metadata && metadata.urlpath ? `${pathJoin(baseURL, metadata.urlpath)}#edit-metadata` : null,
+                metadata,
+                added: metadataMap[path] != null,
+                hasProject: projectFileMetadataMap[path] != null,
+                style: `margin: 0 0 0 ${parts.length * 16 + (folder ? 0 : 18)}px`,
+                visible: [...parts.slice(0, parts.length - 1).keys()]
+                    .every(i => folderExpands[`${parts.slice(0, i + 1).join('/')}/`]),
+                folderExpanded: folderExpands[path],
+            } as FileEntry;
+        });
+        return res;
+    }
 
     didReceiveAttrs() {
-        const rowAdditionCaption = this.schemaBlock.rowAdditionCaption || '';
-
-        this.schemaBlock.rowAdditionCaption = this.getLocalizedText(rowAdditionCaption);
-
-        const raw = this.changeset.get(this.valuePath);
-        if (raw) {
-            const prefix = `${this.valuePath}|`;
-            const values = JSON.parse(raw);
-            const subChangesets: ChangesetDef[] = values.map((row: Array<{key: string, value: any}>) => {
-                const subChangeset = this.createSubChangeset();
-                Object.entries(row).forEach(([k, v]) => {
-                    const key2 = `${prefix}${k}`;
-                    subChangeset.set(key2, v);
-                });
-                subChangeset.on('afterValidation', () => {
-                    this.save(this.get('subChangesets'));
-                });
-                return subChangeset;
-            });
-            this.set('subChangesets', subChangesets);
-        } else {
-            this.set('subChangesets', []);
-        }
+        assert(
+            'Registries::SchemaBlockRenderer::Editable::Rdm::AdMetadataInput requires a changeset to render',
+            Boolean(this.changeset),
+        );
+        assert(
+            'Registries::SchemaBlockRenderer::Editable::Rdm::AdMetadataInput requires a node to render',
+            Boolean(this.node),
+        );
+        assert(
+            'Registries::SchemaBlockRenderer::Editable::Rdm::AdMetadataInput requires a valuePath to render',
+            Boolean(this.valuePath),
+        );
     }
 
-    save(subChangesets: ChangesetDef[]) {
-        const prefix = `${this.valuePath}|`;
-        const allChanges = subChangesets.map(changeset => {
-            const changes: Array<{key: string, value: any}> = changeset.changes as any;
-            const row: {[key: string]: any} = {};
-            changes.forEach(({ key, value }) => {
-                assert(
-                    `Sub changeset key ${key} requires starting with parent key ${prefix}`,
-                    key.startsWith(prefix),
-                );
-                const key2 = key.substr(prefix.length);
-                row[key2] = value;
-            });
-            return row;
-        }).filter(changes => Object.keys(changes).length);
-        // todo: exclude rows where all values are empty
-        this.changeset.set(this.valuePath, JSON.stringify(allChanges));
-    }
-
-    createSubChangeset() {
-        const validations = buildValidation(this.schemaBlockGroup.children!, this.node);
-        const subChangeset = new Changeset(
-            {},
-            lookupValidator(validations),
-            validations,
-        ) as ChangesetDef;
-        // todo: setupEventForSyncValidation
-        return subChangeset;
+    saveFileMetadatas(metadatas: FileMetadata[]) {
+        metadatas.sort((a, b) => a.path.localeCompare(b.path));
+        this.changeset.set(
+            this.valuePath,
+            metadatas.length ? JSON.stringify(metadatas) : null,
+        );
+        this.onInput();
+        this.notifyPropertyChange('adMetadatas');
     }
 
     @action
-    onAdd() {
-        const subChangeset = this.createSubChangeset();
-        this.set('subChangesets', [...this.get('subChangesets'), subChangeset]);
-        subChangeset.on('afterValidation', () => {
-            this.save(this.get('subChangesets'));
-        });
+    addFileMetadata(this: AdMetadataInput, entry: FileEntry) {
+        const metadatas = this.get('adMetadatas');
+        if (entry.metadata) {
+            metadatas.push(entry.metadata);
+        }
+        this.saveFileMetadatas(metadatas);
     }
 
     @action
-    onRemove(subChangeset: ChangesetDef) {
-        const newSubChangesets = this.get('subChangesets').filter(c => c !== subChangeset);
-        this.set('subChangesets', newSubChangesets);
-        this.save(newSubChangesets);
+    removeFileMetadata(this: AdMetadataInput, entry: FileEntry) {
+        const metadatas = this.get('adMetadatas');
+        const metadata = metadatas.find(m => m.path === entry.path);
+        if (metadata) {
+            metadatas.splice(metadatas.indexOf(metadata), 1);
+        }
+        this.saveFileMetadatas(metadatas);
     }
 
-    getLocalizedText(text: string) {
-        if (!text.includes('|')) {
-            return text;
+    extractTitleFromMetadata(metadata: FileMetadata): string | null {
+        const titleJa = metadata.metadata['grdm-file:title-ja'];
+        const titleEn = metadata.metadata['grdm-file:title-en'];
+        if (!titleJa && !titleEn) {
+            return null;
         }
-        const texts = text.split('|');
+        if (titleJa && !titleEn) {
+            return `${titleJa.value}`;
+        }
+        if (!titleJa && titleEn) {
+            return `${titleEn.value}`;
+        }
+        if (!titleJa.value && !titleEn.value) {
+            return null;
+        }
         if (this.intl.locale.includes('ja')) {
-            return texts[0];
+            return `${titleJa.value}`;
         }
-        return texts[1];
+        return `${titleEn.value}`;
+    }
+
+    extractManagerFromMetadata(metadata: FileMetadata): string | null {
+        const managerJa = metadata.metadata['grdm-file:data-man-name-ja'];
+        const managerEn = metadata.metadata['grdm-file:data-man-name-en'];
+        if (!managerJa && !managerEn) {
+            return null;
+        }
+        let value;
+        if (managerJa && !managerEn) {
+            value = managerJa.value;
+        } else if (!managerJa && managerEn) {
+            value = managerEn.value;
+        } else if (this.intl.locale.includes('ja')) {
+            value = managerJa.value;
+        } else {
+            value = managerEn.value;
+        }
+        if (value && typeof value === 'object') {
+            return (
+                this.intl.locale.includes('ja')
+                    ? [value.last, value.middle, value.first]
+                    : [value.first, value.middle, value.last]
+            ).filter(v => v).join(' ');
+        }
+        return value;
+    }
+
+    extractUrlFromMetadata(metadata: FileMetadata): string | null {
+        const url = metadata.metadata['grdm-file:repo-url-doi-link'];
+        if (!url) {
+            return null;
+        }
+        return `${url.value}`;
+    }
+
+    @action
+    expandFolder(this: AdMetadataInput, entry: FileEntry, expand: boolean) {
+        const folderExpands = this.get('folderExpands');
+        folderExpands[entry.path] = expand;
+        this.set('folderExpands', folderExpands);
+        this.notifyPropertyChange('folderExpands');
     }
 }

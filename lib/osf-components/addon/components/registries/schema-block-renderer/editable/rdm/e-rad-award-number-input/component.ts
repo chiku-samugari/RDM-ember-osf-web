@@ -54,7 +54,6 @@ export default class ERadAwardNumberInput extends Component {
         if (eradRecord) {
             kadaiId = eradRecord.kadai_id;
             this.updateCode('e-rad-award-funder-input', eradRecord.haibunkikan_cd);
-            this.updateCode('single-select-pulldown-input', eradRecord.haibunkikan_cd);
             this.updateCode('e-rad-award-field-input', eradRecord.bunya_cd);
             this.changeset.set(
                 this.draftManager.getResponseKeyByBlockType('e-rad-award-title-ja-input'),

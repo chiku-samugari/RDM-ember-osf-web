@@ -5,7 +5,9 @@
             {{#if @checked}}
                 <i class='fa fa-check' data-test-image-selected={{@image.url}}/>
             {{/if}}
-            <span local-class='url'>{{@image.url}}</span>
+            {{#if this.isImageURLVisible}}
+                <span local-class='url'>{{@image.url}}</span>
+            {{/if}}
         </div>
         <div local-class='description'>{{@image.description}}</div>
     </div>

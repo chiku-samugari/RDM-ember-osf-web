@@ -10,6 +10,7 @@ interface Args {
     guid: string;
     target: CustomBaseImageModel;
     localizer: (model: CustomBaseImageModel) => Image;
+    showImageReference: (imageReference: string) => boolean;
     checked: boolean;
     isSelectionAllowed: boolean;
     isSelecting: boolean;
@@ -30,6 +31,10 @@ export default class CustomBaseImageEntry extends Component<Args> {
 
     get description() {
         return this.args.localizer(this.args.target).description;
+    }
+
+    get isImageReferenceVisible() {
+        return this.args.showImageReference(this.args.target.imageReference);
     }
 
     @action

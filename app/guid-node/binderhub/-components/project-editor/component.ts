@@ -1483,6 +1483,11 @@ export default class ProjectEditor extends Component {
     }
 
     @action
+    showImageReference(this: ProjectEditor, imageReference: string) {
+        return !(imageReference.startsWith('!') && imageReference.endsWith('!'));
+    }
+
+    @action
     selectImage(this: ProjectEditor, url: string) {
         if (this.get('selectedImageUrl') !== this.get('singlespeedImage').url) {
             this.set('imageSelecting', false);

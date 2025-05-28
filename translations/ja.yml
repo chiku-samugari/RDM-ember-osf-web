@@ -1819,7 +1819,9 @@ binderhub:
         postinstallscript: '自動実行スクリプト'
         select_environment: '選択'
         change_environment: '変更'
+        more_menu: '...'
         deprecated_images_header: '過去のイメージ'
+        delete_button_label: '削除'
         add_package: '追加'
         view_dirty_fragile_files: '参照: '
         reset_dirty_fragile_files: 'リセット: '
@@ -1838,13 +1840,51 @@ binderhub:
         destruct_dockerfile_confirmation_dialogue_title: 'Dockerfileの削除確認'
         destruct_dockerfile_confirmation_dialogue_body: '基本イメージを変更すると、あなたが編集中のDockerfileの内容が破棄されます。失われた内容を復元することはできません。続行しますか？'
         release: 'リリース'
-        products: 'アドオン'
+        clear_release: '(クリア)'
+        edit_product_button_label: 'アドオンを編集'
+        edit_product_dialogue:
+          title: 'アドオン編集'
+          search_placeholder: 'アドオンを検索'
+          manual_edit:
+            tab_title: 'アドオン名を直接指定'
+            add_button: '追加'
+            message_on_add: '{product_name}を追加しました。'
+            message_on_conflict: '{product_name}は既に追加されています。'
+            message_on_invalid: 'アドオン名は空白文字を含むことはできません。'
         info_urls:
             mpm: 'https://rcosdp.github.io/CS-repo2docker/MATLAB.html'
         placeholders:
             package_name: '名前'
             package_version: 'バージョン'
-            release: 'R2023b'
+        custom_base_image:
+            entry:
+                fatal_title: 'カスタム基本イメージの更新に失敗しました'
+                fatal_message: '編集対象のカスタム基本イメージは既に削除されています。'
+            dialogue:
+                title: 'カスタム基本イメージの登録'
+                registration_succeeded: '「{name}」を追加しました'
+                create_new: '新規作成'
+                inherit: '親プロジェクトから取得'
+                no_relevants: '親プロジェクトやリンクされたプロジェクトがありません。'
+                obtain_button: '取得'
+                information: 'イメージURLの先頭および末尾の空白文字は無視されます。また、プロジェクト内でユニークである必要があります。'
+                already_in_use: 'イメージURL: {imageReference} を利用する基本イメージは既に存在します。'
+                mandatory_field: '基本イメージ名とイメージURLとして空文字列は指定できません。'
+                repo2docker: '"#repo2docker"から始まるイメージURLは禁止されています。'
+                name_label: '基本イメージ名'
+                reference_label: 'イメージURL'
+                description_ja_label: 'イメージの概要(日本語)'
+                description_en_label: 'イメージの概要(英語)'
+                register_button_label: '登録'
+            delete_confirmation:
+                title: '基本イメージの削除確認'
+                content: '基本イメージの削除は取り消せません。削除しますか？'
+            editor:
+                title: 'カスタム基本イメージの編集'
+                update_button_label: '更新'
+                mandatory_field: '基本イメージ名として空文字列は指定できません。'
+                update_succeeded: '更新しました'
+                image_reference_hint: 'イメージURLは編集できません'
     build:
         launch: '起動'
         status: 'ビルド状況'

@@ -1,0 +1,88 @@
+<BsModal @open={{@openBit}} {{did-insert this.init}} @onHide={{this.onClose}} as |modal|>
+    <modal.header>
+        <div local-class='header'>
+            <h4>
+                {{t 'binderhub.deployment.custom_base_image.editor.title'}}
+            </h4>
+            {{#if this.showSuccessMsgBit}}
+                <div local-class='message'>
+                    <span local-class='accept_message'>
+                        {{t 'binderhub.deployment.custom_base_image.editor.update_succeeded'
+                        name=this.lastImageName}}
+                    </span>
+                </div>
+            {{/if}}
+        </div>
+    </modal.header>
+    <modal.body>
+        {{#if this.mandatoryFieldEmptyBit}}
+            <div>
+                <span local-class='caution_message'>
+                    {{t 'binderhub.deployment.custom_base_image.editor.mandatory_field'}}
+                </span>
+            </div>
+        {{/if}}
+        <div>
+            <form>
+                <label local-class='short_input_label'>
+                    <span local-class='input_label_span'>
+                        {{t 'binderhub.deployment.custom_base_image.dialogue.name_label'}}
+                    </span>
+                    <textarea
+                        class='form-control'
+                        local-class='short_input_textarea'
+                        rows='1'
+                        value={{this.name}}
+                        onKeyUp={{fn this.updateStringField 'name'}}
+                        />
+                </label>
+                <label local-class='short_input_label'>
+                    <span local-class='input_label_span'>
+                        {{t 'binderhub.deployment.custom_base_image.dialogue.reference_label'}}
+                    </span>
+                    <textarea
+                        class='form-control'
+                        local-class='short_input_textarea'
+                        rows='1'
+                        readonly={{true}}
+                        value={{get @target 'imageReference'}}
+                        >
+                        <BsPopover @triggerEvents='hover'>
+                            {{t 'binderhub.deployment.custom_base_image.editor.image_reference_hint'}}
+                        </BsPopover>
+                    </textarea>
+                </label>
+                <label local-class='long_input_label'>
+                    <span>
+                        {{t 'binderhub.deployment.custom_base_image.dialogue.description_ja_label'}}
+                    </span>
+                    <textarea
+                        class='form-control'
+                        rows='2'
+                        value={{this.descriptionJa}}
+                        onKeyUp={{fn this.updateStringField 'descriptionJa'}}
+                        />
+                </label>
+                <label local-class='long_input_label'>
+                    <span>
+                        {{t 'binderhub.deployment.custom_base_image.dialogue.description_en_label'}}
+                    </span>
+                    <textarea
+                        class='form-control'
+                        rows='2'
+                        value={{this.descriptionEn}}
+                        onKeyUp={{fn this.updateStringField 'descriptionEn'}}
+                        />
+                </label>
+            </form>
+        </div>
+    </modal.body>
+    <div local-class='update_button_area'>
+        <BsButton
+            @type='success'
+            local-class='update_button'
+            onClick={{this.updateCustomBaseImage}}>
+            {{t 'binderhub.deployment.custom_base_image.editor.update_button_label'}}
+        </BsButton>
+    </div>
+</BsModal>

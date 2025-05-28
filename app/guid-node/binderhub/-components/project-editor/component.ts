@@ -3,6 +3,7 @@ import EmberError from '@ember/error';
 import { action, computed } from '@ember/object';
 import { later } from '@ember/runloop';
 import { inject as service } from '@ember/service';
+import DS from 'ember-data';
 import Intl from 'ember-intl/services/intl';
 import { requiredAction } from 'ember-osf-web/decorators/component';
 import {
@@ -11,12 +12,13 @@ import {
     isBinderHubConfigFulfilled,
 } from 'ember-osf-web/guid-node/binderhub/controller';
 import BinderHubConfigModel, { Image } from 'ember-osf-web/models/binderhub-config';
+import CustomBaseImageModel from 'ember-osf-web/models/custom-base-image';
 import Node from 'ember-osf-web/models/node';
 import CurrentUser from 'ember-osf-web/services/current-user';
 import { WaterButlerFile } from 'ember-osf-web/utils/waterbutler/base';
 import md5 from 'js-md5';
 
-const REPO2DOCKER_IMAGE_ID = '#repo2docker';
+export const REPO2DOCKER_IMAGE_ID = '#repo2docker';
 
 enum DockerfileProperty {
     From,
@@ -29,6 +31,19 @@ enum DockerfileProperty {
     Mpm,
     PostBuild,
     NoChanges,
+}
+
+function imageFromCustomBaseImageModel(model: CustomBaseImageModel) {
+    return {
+        url: model.imageReference,
+        name: model.name,
+        description: '',
+        description_ja: model.descriptionJa,
+        description_en: model.descriptionEn,
+        packages: [],
+        deprecated: model.deprecated,
+        recommended: false,
+    };
 }
 
 function getAptPackageId(pkg: string[]) {
@@ -156,7 +171,8 @@ interface EnvironmentDependencies {
 }
 
 enum ImageCategory {
-    CUSTOM = 'CUSTOM',
+    SINGLESPEED = 'SINGLESPEED',
+    USER = 'USER',
     PREFERRED = 'PREFERRED',
     DEPRECATED = 'DEPRECATED',
 }
@@ -166,11 +182,17 @@ export default class ProjectEditor extends Component {
 
     @service intl!: Intl;
 
+    @service store!: DS.Store;
+
     node?: Node | null = null;
 
     binderHubConfig!: BinderHubConfigModel;
 
     configFolder: WaterButlerFile = this.configFolder;
+
+    initialCustomBaseImages: CustomBaseImageModel[] = [];
+
+    dyCustomBaseImageModels: CustomBaseImageModel[] = [];
 
     dockerfileModel: WaterButlerFile | null = this.dockerfileModel;
 
@@ -214,7 +236,7 @@ export default class ProjectEditor extends Component {
 
     mranVersionSettingError = false;
 
-    customImage!: Image;
+    singlespeedImage!: Image;
 
     isInitialized: boolean = false;
 
@@ -244,14 +266,25 @@ export default class ProjectEditor extends Component {
         callback: (result: BuildMessage) => void,
     ) => void;
 
+    deletingCustomBaseImageModel?: CustomBaseImageModel = undefined;
+
     didReceiveAttrs() {
         if (!this.configFolder || this.configFolder.path === this.loadingPath) {
             return;
         }
         this.loadingPath = this.configFolder.path;
 
-        this.set('customImage', {
-            url: 'custom',
+        if (!this.initialCustomBaseImages) {
+            return;
+        }
+
+        this.set(
+            'dyCustomBaseImageModels',
+            this.initialCustomBaseImages.toArray(),
+        );
+
+        this.set('singlespeedImage', {
+            url: '!SINGLESPEED!',
             name: this.intl.t('binderhub.deployment.custom_image_name'),
             description: this.intl.t('binderhub.deployment.custom_image_description'),
             packages: [],
@@ -262,7 +295,7 @@ export default class ProjectEditor extends Component {
         later(async () => {
             try {
                 await this.loadCurrentConfig();
-                if (this.selectedImageUrl !== this.get('customImage').url) {
+                if (this.selectedImageUrl !== this.get('singlespeedImage').url) {
                     // All the configuration files should be left as-is
                     // if the custom image is selected. Currently, we
                     // cannot expect the introduction of other images
@@ -275,6 +308,44 @@ export default class ProjectEditor extends Component {
                 this.onError(exception, this.intl.t('binderhub.error.load_files_error'));
             }
         }, 0);
+    }
+
+    @action
+    pickDeleteTarget(target?: CustomBaseImageModel) {
+        this.set('deletingCustomBaseImageModel', target);
+    }
+
+    @action
+    async deleteCustomBaseImageModel(target: CustomBaseImageModel) {
+        this.set('deletingCustomBaseImageModel', undefined);
+        const node = this.get('node');
+        if (!node) {
+            throw new EmberError('Illegal state. The node object is not set.');
+        }
+
+        const result = await target.destroyRecord({ adapterOptions: { guid: node.id } });
+
+        if (result) {
+            if (target.imageReference === this.get('selectedImageUrl')) {
+                await this.saveCurrentConfig(
+                    this.buildDockerfileSetInstruction('', false),
+                );
+            }
+            await this.reloadCustomBaseImageModels(true);
+        }
+    }
+
+    @action
+    async reloadCustomBaseImageModels(peek: boolean) {
+        const node = this.get('node');
+        if (!node) {
+            throw new EmberError('Illegal state. The node object is not set.');
+        }
+
+        const latest = peek ? await this.store.peekAll('custom-base-image')
+            : await this.store.query('custom-base-image', { guid: node.id, includeParentImages: true });
+
+        this.set('dyCustomBaseImageModels', latest.toArray());
     }
 
     @computed('configFolder', 'dockerfile', 'isInitialized')
@@ -387,13 +458,14 @@ export default class ProjectEditor extends Component {
     }
 
     decideImageCategory(image: Image): ImageCategory {
-        if (image.url === this.customImage.url) {
-            return ImageCategory.CUSTOM;
+        if (image.url === this.singlespeedImage.url) {
+            return ImageCategory.SINGLESPEED;
         }
-        if (image.deprecated) {
-            return ImageCategory.DEPRECATED;
+        const deployment = this.get('deployment');
+        if (deployment && deployment.images.some(({ url }) => url === image.url)) {
+            return image.deprecated ? ImageCategory.DEPRECATED : ImageCategory.PREFERRED;
         }
-        return ImageCategory.PREFERRED;
+        return ImageCategory.USER;
     }
 
     getUpdatedDockerfile(key: DockerfileProperty, value: string) {
@@ -623,18 +695,23 @@ export default class ProjectEditor extends Component {
         }
 
         if (this.checkEmptyScript(dockerfile) || this.verifyHashHeader(dockerfile)) {
-            return this.get('customImage').url;
+            return this.get('singlespeedImage').url;
         }
         const fromStatements = dockerfile.split('\n')
             .filter(line => line.match(/^FROM\s+\S+\s*/));
         if (fromStatements.length === 0) {
-            return this.get('customImage').url;
+            return this.get('singlespeedImage').url;
         }
         const fromStatement = fromStatements[0].match(/^FROM\s+(\S+)\s*/);
         if (!fromStatement) {
-            return this.get('customImage').url;
+            return this.get('singlespeedImage').url;
         }
         return fromStatement[1];
+    }
+
+    @computed('dyCustomBaseImageModels')
+    get ownedCustomBaseImageModels() {
+        return this.get('dyCustomBaseImageModels').filter(({ level }) => level === 0);
     }
 
     @computed('deployment')
@@ -642,6 +719,10 @@ export default class ProjectEditor extends Component {
         const deployment = this.get('deployment');
         if (!deployment) {
             throw new EmberError('Illegal config. No deployment images are offered.');
+        }
+        const node = this.get('node');
+        if (!node) {
+            throw new EmberError('Illegal state. The node object is not set.');
         }
         return deployment.images.reduce(({ preferred, deprecated }, image) => {
             if (image.deprecated) {
@@ -657,12 +738,22 @@ export default class ProjectEditor extends Component {
         }, { preferred: [], deprecated: [] });
     }
 
+    @computed('deployment', 'ownedCustomBaseImageModels')
+    get ownedImageRefs() {
+        const deployment = this.get('deployment');
+        return [
+            ...(deployment ? deployment.images.map(({ url }) => url) : []),
+            this.singlespeedImage.url,
+            ...this.get('ownedCustomBaseImageModels').map(({ imageReference }) => imageReference),
+        ];
+    }
+
     @computed('selectedImage')
     get modifiedSelectedImage(): Image {
         return this.modifyImageForLocale(this.get('selectedImage'));
     }
 
-    @computed('selectedImageUrl', 'deployment', 'customImage')
+    @computed('selectedImageUrl', 'deployment', 'singlespeedImage', 'dyCustomBaseImageModels')
     get selectedImage(): Image {
         const url = this.get('selectedImageUrl');
         if (url === null) {
@@ -676,9 +767,13 @@ export default class ProjectEditor extends Component {
         if (!deployment) {
             throw new EmberError('Illegal config. No deployment images are offered.');
         }
-        const image = [...deployment.images, this.customImage].find(img => img.url === url);
+        const image = [
+            ...deployment.images,
+            ...this.get('dyCustomBaseImageModels').map(imageFromCustomBaseImageModel),
+            this.singlespeedImage,
+        ].find(img => img.url === url);
         if (!image) {
-            throw new EmberError(`Undefined image: ${url}`);
+            return this.singlespeedImage;
         }
         return image;
     }
@@ -700,13 +795,15 @@ export default class ProjectEditor extends Component {
 
     @computed('selectedImage')
     get isDockerfileEditorVisible() {
-        return this.isInitialized && this.decideImageCategory(this.get('selectedImage')) === ImageCategory.CUSTOM;
+        return this.isInitialized && this.decideImageCategory(this.get('selectedImage')) === ImageCategory.SINGLESPEED;
     }
 
     @computed('selectedImage')
     get isPackageEditorVisible(): boolean {
         const image = this.get('selectedImage');
-        return image && this.decideImageCategory(image) !== ImageCategory.CUSTOM;
+        return image
+        && this.decideImageCategory(image) !== ImageCategory.SINGLESPEED
+        && this.decideImageCategory(image) !== ImageCategory.USER;
     }
 
     @computed('selectedImage')
@@ -1327,11 +1424,11 @@ export default class ProjectEditor extends Component {
 
     async performResetDirtyFragileFiles() {
         const files = this.get('dirtyFragileConfigFiles');
-        await Promise.all(files.map(file => this.performResetDirtyFragileFile(file)));
+        await Promise.all(files.map(file => this.performResetFile(file)));
         window.location.reload();
     }
 
-    async performResetDirtyFragileFile(configFile: ConfigurationFile) {
+    async performResetFile(configFile: ConfigurationFile) {
         const fileModel = this.get(configFile.modelProperty);
         if (!fileModel) {
             throw new EmberError('Illegal config');
@@ -1386,8 +1483,13 @@ export default class ProjectEditor extends Component {
     }
 
     @action
+    showImageReference(this: ProjectEditor, imageReference: string) {
+        return !(imageReference.startsWith('!') && imageReference.endsWith('!'));
+    }
+
+    @action
     selectImage(this: ProjectEditor, url: string) {
-        if (this.get('selectedImageUrl') !== this.get('customImage').url) {
+        if (this.get('selectedImageUrl') !== this.get('singlespeedImage').url) {
             this.set('imageSelecting', false);
             this.set('showDeprecated', false);
             this.set('pendingImageUrl', undefined);
@@ -1395,6 +1497,20 @@ export default class ProjectEditor extends Component {
         } else {
             this.set('pendingImageUrl', url);
         }
+    }
+
+    @action
+    selectCustomBaseImage(this: ProjectEditor, imageReference: string) {
+        this.set('imageSelecting', false);
+        this.set('showDeprecated', false);
+        this.set('pendingImageUrl', undefined);
+        later(async () => {
+            const files = this.get('configurationFiles').filter(file => (
+                file.name !== 'Dockerfile' && this.get(file.modelProperty)
+            ));
+            await Promise.all(files.map(file => this.performResetFile(file)));
+            this.updateFiles(DockerfileProperty.From, imageReference);
+        }, 0);
     }
 
     @action
@@ -1411,10 +1527,10 @@ export default class ProjectEditor extends Component {
     }
 
     @action
-    selectCustomImage(this: ProjectEditor) {
+    selectSinglespeedImage(this: ProjectEditor) {
         this.set('imageSelecting', false);
         this.set('showDeprecated', false);
-        if (this.get('selectedImageUrl') !== this.get('customImage').url) {
+        if (this.get('selectedImageUrl') !== this.get('singlespeedImage').url) {
             later(async () => (
                 this.saveCurrentConfig(
                     this.buildDockerfileSetInstruction('', false),
@@ -1606,5 +1722,10 @@ export default class ProjectEditor extends Component {
             image.description = image.description_en;
         }
         return image;
+    }
+
+    @action
+    modifyCustomBaseImageModelForLocale(model: CustomBaseImageModel) {
+        return this.modifyImageForLocale(imageFromCustomBaseImageModel(model));
     }
 }

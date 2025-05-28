@@ -1,0 +1,68 @@
+.editor_open_button {
+    margin-left: auto;
+    border-style: none;
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+.header {
+    display: flex;
+}
+
+.message {
+    margin: 0 10px 0 auto;
+    border-radius: 5px;
+    padding: 0.5em;
+    max-width: 50%;
+    background-color: #98fb98;
+}
+
+.accept_message {
+    color: none;
+}
+
+.caution_message {
+    color: #ff8484;
+}
+
+.input_label_span {
+    margin-left: auto;
+}
+
+.short_input_textarea {
+    resize: none;
+    width: 70%;
+    margin-left: auto;
+}
+
+.short_input_label {
+    display: flex;
+    align-items: center;
+}
+
+.long_input_label {
+    width: 100%;
+}
+
+.update_button_area {
+    display: flex;
+}
+
+.update_button {
+    margin: 15px 15px 15px auto;
+}
+
+.node_title {
+    font-size: 1em;
+    font-weight: bold;
+}
+
+.inheritable_image_entry {
+    margin: 0.5em;
+}
+
+.disabled_image_entry {
+    margin: 0.5em;
+    opacity: 0.6;
+    pointer-events: none;
+}

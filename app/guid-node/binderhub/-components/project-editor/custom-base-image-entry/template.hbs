@@ -1,0 +1,78 @@
+<div data-test-custom-base-image local-class='entry' ...attributes>
+    <div>
+        <div local-class='name'>
+            {{@target.name}}
+            {{#if @checked}}
+                <i class='fa fa-check' data-test-image-selected={{@target.imageReference}}/>
+            {{/if}}
+            {{#if this.isImageReferenceVisible}}
+                <span local-class='url'>{{@target.imageReference}}</span>
+            {{/if}}
+        </div>
+        <div local-class='description'>{{this.description}}</div>
+    </div>
+    <div local-class='select_button'>
+        {{#if @isSelectionAllowed}}
+            {{#if @onDeleteClick}}
+                <BsDropdown data-test-image-pick={{@target.imageReference}} type='button' as |dd|>
+                    <dd.button data-test-more-menu>{{t 'binderhub.deployment.more_menu'}}</dd.button>
+                    <dd.menu local-class='sub_button_menu' as |menu|>
+                        <menu.item local-class='sub_button_item'>
+                            <BsButton data-test-edit-custom-base-image
+                                local-class='sub_button' type='button' onClick={{fn this.updateEditorOpenBit true}}>
+                                {{t 'general.edit'}}
+                                {{fa-icon 'edit' size=1}}
+                            </BsButton>
+                        </menu.item>
+                        <menu.item local-class='sub_button_item'>
+                            <BsButton data-test-delete-custom-base-image
+                                local-class='sub_button' type='button' onClick={{@onDeleteClick}}>
+                                {{t 'general.delete'}}
+                                {{fa-icon 'trash' size=1 local-class='delete_icon'}}
+                            </BsButton>
+                        </menu.item>
+                    </dd.menu>
+                </BsDropdown>
+            {{/if}}
+            <button
+                data-test-image-pick={{@target.imageReference}}
+                type='button'
+                class='btn btn-default'
+                onClick={{@onButtonClick}}
+                >
+                {{@selectButtonTitle}}
+            </button>
+        {{/if}}
+    </div>
+</div>
+
+<GuidNode::Binderhub::-Components::ProjectEditor::ImageEditor
+    @guid={{@guid}}
+    @target={{@target}}
+    @closeCallback={{fn this.updateEditorOpenBit false}}
+    @requestCustomBaseImageReloading={{@requestCustomBaseImageReloading}}
+    @openBit={{this.editorOpenBit}}
+    @onFatalFailure={{fn this.updateFatalFailureBit true}}
+    />
+
+<BsModal
+    @backdropClose={{false}}
+    @open={{this.editFatalFailuerBit}}
+    @onHide={{this.closeFatalDialogue}} as |modal|
+    >
+    <modal.header>
+        <div local-class='header'>
+            <h4>
+                {{t 'binderhub.deployment.custom_base_image.entry.fatal_title'}}
+            </h4>
+        </div>
+    </modal.header>
+    <modal.body>
+        {{t 'binderhub.deployment.custom_base_image.entry.fatal_message'}}
+    </modal.body>
+    <modal.footer>
+        <BsButton @type='danger' onClick={{this.closeFatalDialogue}}>
+            {{t 'general.ok'}}
+        </BsButton>
+    </modal.footer>
+</BsModal>

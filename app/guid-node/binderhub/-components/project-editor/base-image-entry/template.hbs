@@ -3,9 +3,10 @@
         <div local-class='name'>
             {{@image.name}}
             {{#if @checked}}
-                <i class='fa fa-check'
-                   data-test-image-selected={{@image.url}}
-                />
+                <i class='fa fa-check' data-test-image-selected={{@image.url}}/>
+            {{/if}}
+            {{#if this.isImageURLVisible}}
+                <span local-class='url'>{{@image.url}}</span>
             {{/if}}
         </div>
         <div local-class='description'>{{@image.description}}</div>
@@ -17,7 +18,7 @@
                     data-test-image-selection={{@image.url}}
                     type='button'
                     class='btn btn-default'
-                    {{on 'click' @onButtonClick}}
+                    onClick={{@onButtonClick}}
                     >
                     {{t 'binderhub.deployment.select_environment'}}
                 </button>
@@ -26,7 +27,7 @@
                     data-test-image-change={{@image.url}}
                     type='button'
                     class='btn btn-default'
-                    {{on 'click' @onButtonClick}}
+                    onClick={{@onButtonClick}}
                     >
                     {{t 'binderhub.deployment.change_environment'}}
                 </button>

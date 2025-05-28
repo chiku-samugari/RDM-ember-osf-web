@@ -645,7 +645,7 @@ node:
             note: '*Metadata forms will be constantly added as the number of corresponding projects and institutions grows in the future.'
             create: 'Create Metadata'
         page_title: '{nodeTitle} Metadata'
-        only_admins_can_initiate: 'Only project administrators can initiate metadata.'
+        only_contributors_with_write_permission_can_initiate: 'Only contributors with write permission can initiate metadata.'
         no_reports: 'There are no metadata of this project.'
         no_drafts: 'There are no draft metadata of this project.'
         start_new: 'Start to edit a new metadata by clicking the “Create new metadata” button. Once created, metadata cannot be edited or deleted.'

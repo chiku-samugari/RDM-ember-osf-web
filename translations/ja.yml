@@ -645,7 +645,7 @@ node:
             note: ＊今後、対応する事業や機関の増加に合わせて、メタデータの様式は随時追加されていきます。
             create: メタデータを作成
         page_title: '{nodeTitle} メタデータ'
-        only_admins_can_initiate: プロジェクト管理者のみがメタデータ作成を開始できます。
+        only_contributors_with_write_permission_can_initiate: 'プロジェクトの書き込み権限を持つメンバーのみがメタデータ編集を実施できます。'
         no_reports: このプロジェクトのメタデータはありません。
         no_drafts: このプロジェクトに関する下書きはありません。
         start_new: '「新規メタデータを作成」ボタンをクリックして、新規メタデータ作成を開始します。一度登録したメタデータを、編集または削除することはできません。'

@@ -19,6 +19,7 @@ export default class RightNav extends Component {
     @service router!: any;
     disableButtons: boolean = false;
     @service intl!: Intl;
+    isRegistrationMetadata: boolean = false;
 
     constructor(...args: any[]) {
         super(...args);
@@ -43,8 +44,8 @@ export default class RightNav extends Component {
 
         const matchedSchema = allSchemas.find(
             (schema: any) => schema.schema.pages.some(
-                (page: any) => page.title.trim().toLowerCase() === title.trim().toLowerCase()
-                    && page.clipboardCopyPaste === false,
+                (page: any) => (page.title.trim().toLowerCase() === title.trim().toLowerCase()
+                    && page.clipboardCopyPaste === false) || lastPartWithQuery.startsWith('review'),
             ),
         );
 
@@ -60,21 +61,62 @@ export default class RightNav extends Component {
             try {
                 const parsedJson = JSON.parse(clipboardText);
                 const structuredJson: {[key: string]: any } = {};
-                Object.entries(parsedJson).forEach(([key, value]) => {
-                    structuredJson[key] = {
-                        extra: [],
-                        value,
-                        comments: [],
-                    };
-                });
-
                 const currentUrl = window.location.href;
                 const idRegex = /\/drafts\/([a-f0-9]{24})/;
                 const match = currentUrl.match(idRegex);
+                let isMetadataUsed = false;
                 if (match && match[1]) {
                     try {
                         const draftId = match[1];
                         const draftRegistration = await this.store.findRecord('draft-registration', draftId);
+                        if (draftRegistration) {
+                            const registrationMetadata = await draftRegistration.registrationMetadata;
+                            const registrationSchema = await draftRegistration.registrationSchema;
+
+                            for (const page of registrationSchema.schema.pages) {
+                                for (const question of page.questions) {
+                                    const regKey = question.qid;
+                                    isMetadataUsed = false;
+
+                                    if (regKey in registrationMetadata) {
+                                        isMetadataUsed = true;
+                                        if (regKey in parsedJson) {
+                                            structuredJson[regKey] = {
+                                                extra: [],
+                                                value: parsedJson[regKey],
+                                                comments: [],
+                                            };
+                                        } else if (!regKey.startsWith('grdm-')) {
+                                            const isEmptyValueAndMultipleSelect = question.format === 'multiselect'
+                                                && registrationMetadata[regKey].value === '';
+                                            structuredJson[regKey] = {
+                                                extra: [],
+                                                value: isEmptyValueAndMultipleSelect
+                                                    ? []
+                                                    : registrationMetadata[regKey].value,
+                                                comments: [],
+                                            };
+                                        }
+                                    }
+
+                                    if (!isMetadataUsed) {
+                                        if (regKey in parsedJson) {
+                                            structuredJson[regKey] = {
+                                                extra: [],
+                                                value: parsedJson[regKey],
+                                                comments: [],
+                                            };
+                                        } else if (!regKey.startsWith('grdm-')) {
+                                            structuredJson[regKey] = {
+                                                extra: [],
+                                                value: question.format === 'multiselect' ? [] : '',
+                                                comments: [],
+                                            };
+                                        }
+                                    }
+                                }
+                            }
+                        }
                         draftRegistration.set('registrationMetadata', structuredJson);
                         await draftRegistration.save();
                         window.location.reload();

@@ -73,7 +73,7 @@ export default class RegistriesSideNav extends Component {
             page.title.trim().toLowerCase() === title.trim().toLowerCase()
             && page.clipboardCopyPaste === false)));
 
-        if (matchedSchema) {
+        if (matchedSchema || lastPartWithQuery.startsWith('review')) {
             this.set('disableButtons', true);
         } else {
             this.set('disableButtons', false);

@@ -53,5 +53,6 @@ export interface SchemaBlock {
     requiredAllCheck?: string;
     multiLanguage?: boolean;
     retrievalVersion?: string;
+    readonly?: boolean;
     rowAdditionCaption?: string;
 }

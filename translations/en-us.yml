@@ -649,8 +649,6 @@ node:
         no_reports: 'There are no metadata of this project.'
         no_drafts: 'There are no draft metadata of this project.'
         start_new: 'Start to edit a new metadata by clicking the “Create new metadata” button. Once created, metadata cannot be edited or deleted.'
-        register_entire_project: 'To register the entire project "{rootNodeTitle}" instead, click'
-        here: here
         new: 'Create new metadata'
         reports: Metadata
         draft_reports: 'Draft Metadata'

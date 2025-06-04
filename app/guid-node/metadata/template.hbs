@@ -154,20 +154,4 @@
             </div>
         {{/if}}
     </div>
-
-
-
-    {{#if this.isComponentRootAdmin}}
-        <div class='row'>
-            {{t 'node.metadata.report_entire_project' rootNodeTitle=this.node.root.title}}
-            <OsfLink
-                data-analytics-name='Go to report'
-                @route='guid-node.metadata'
-                @models={{array this.node.root.id}}
-            >
-                {{t 'node.metadata.here'~}}
-            </OsfLink>
-            {{~t 'general.period'}}
-        </div>
-    {{/if}}
 </div>

@@ -54,7 +54,9 @@
             @models={{array @draftManager.draftId @schemaBlock.pageRouteParam}}
             @fragment={{@schemaBlock.elementId}}
         >
-            <FaIcon @icon='edit' />
+            {{#if (not @schemaBlock.readonly) }}
+                <FaIcon @icon='edit' />
+            {{/if}}
         </OsfLink>
     {{/if}}
 {{/if}}

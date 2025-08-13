@@ -9,12 +9,7 @@
                     <span class='copyright'>
                         {{t 'footer.copyright' htmlSafe=true}}
                     </span>
-                    <OsfLink
-                        data-analytics-name='cos_io'
-                        @href={{this.cos}}
-                    >
-                        {{t 'general.cos' organization=this.organization}}
-                    </OsfLink>
+                    {{t 'general.cos' organization=this.organization}}
                     <span>
                         {{t 'footer.separator'}}
                     </span>

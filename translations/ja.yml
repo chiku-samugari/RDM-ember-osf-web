@@ -346,7 +346,7 @@ footer:
     donate: 寄付
     socialize: ソーシャライズ
     contact: コンタクト
-    copyright: 'Copyright &copy; 2016-{currentYear}'
+    copyright: 'Copyright &copy; '
     terms: 利用規約
     privacy: プライバシーポリシー
     separator: ' | '

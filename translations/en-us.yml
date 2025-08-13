@@ -346,7 +346,7 @@ footer:
     donate: Donate
     socialize: Socialize
     contact: Contact
-    copyright: 'Copyright &copy; 2016-{currentYear}'
+    copyright: 'Copyright &copy; '
     terms: 'Terms&nbsp;of&nbsp;Use'
     privacy: 'Privacy&nbsp;Policy'
     separator: ' | '

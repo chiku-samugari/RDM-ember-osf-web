@@ -7,14 +7,9 @@
             <div class='col-sm-12 col-md-8 col-md-offset-2'>
                 <p>
                     <span class='copyright'>
-                        {{t 'footer.copyright' currentYear=this.currentYear htmlSafe=true}}
+                        {{t 'footer.copyright' htmlSafe=true}}
                     </span>
-                    <OsfLink
-                        data-analytics-name='cos_io'
-                        @href={{this.cos}}
-                    >
-                        {{t 'general.cos' organization=this.organization}}
-                    </OsfLink>
+                    {{t 'general.cos' organization=this.organization}}
                     <span>
                         {{t 'footer.separator'}}
                     </span>
@@ -37,11 +32,10 @@
                 </p>
                 <p>
                     <OsfLink
-                        data-analytics-name='social_github'
-                        aria-label={{t 'social.github'}}
-                        @href={{this.github}}
+                        data-analytics-name='cos_io'
+                        @href={{this.cos}}
                     >
-                        <i class='fa fa-github fa-2x'></i>
+                        <img src='{{t 'footer.logo_image'}}' alt={{t 'footer.cos_logo' organization=this.organization}}>
                     </OsfLink>
                 </p>
             </div>

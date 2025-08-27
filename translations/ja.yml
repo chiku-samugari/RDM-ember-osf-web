@@ -346,10 +346,12 @@ footer:
     donate: 寄付
     socialize: ソーシャライズ
     contact: コンタクト
-    copyright: 'Copyright &copy; 2016-{currentYear}'
+    copyright: 'Copyright &copy; '
     terms: 利用規約
     privacy: プライバシーポリシー
     separator: ' | '
+    logo_image: '/assets/images/global/footer_logo_JP.png'
+    cos_logo: '{organization} logo'
 home:
     title: ホーム
     youtube_modal_title: 'GakuNin RDMを始める'

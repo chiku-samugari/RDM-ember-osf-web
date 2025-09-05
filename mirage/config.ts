@@ -24,6 +24,7 @@ import { iqbrimsStatus } from './views/iqbrims-status';
 import * as matlabProductNameList from './views/matlab-product-name-list';
 import { metadataNodeErad } from './views/metadata-node-erad';
 import { metadataNodeProject } from './views/metadata-node-project';
+import { metadataNodeSchemas } from './views/metadata-node-schemas';
 import { createNode } from './views/node';
 import { osfNestedResource, osfResource, osfToManyRelationship } from './views/osf-resource';
 import { getProviderSubjects } from './views/provider-subjects';
@@ -267,6 +268,7 @@ export default function(this: Server) {
     this.get('/project/:pid/binderhub/custom_base_image', customBaseImage.read);
     this.get('/project/:id/metadata/erad/candidates', metadataNodeErad);
     this.get('/project/:id/metadata/project', metadataNodeProject);
+    this.get('/project/:id/metadata/schemas', metadataNodeSchemas);
 
     this.urlPrefix = apiUrl;
     this.namespace = apiNamespace;

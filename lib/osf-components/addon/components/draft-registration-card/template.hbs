@@ -10,7 +10,7 @@
                 @route='registries.drafts.draft'
                 @models={{array this.draftRegistration.id}}
             >
-                {{this.draftRegistration.title}}
+                {{this.displayTitle}}
             </OsfLink>
         {{else}}
             <ContentPlaceholders as |placeholder|>

@@ -1023,6 +1023,7 @@ registries:
                 back: 戻る
                 save_draft: 'ドラフトを保存'
                 new_registration: 'プロジェクトメタデータの登録'
+                metadata_list: 'プロジェクトメタデータ一覧'
                 last_saved: '自動保存済み: '
                 save_failed: '保存に失敗しました。保存できていない変更があります。'
                 failed_auto_save: '下書きの自動保存に失敗しました。'
@@ -1035,6 +1036,7 @@ registries:
                 clipboard_fail: 'クリップボードからの保存に失敗しました: '
                 json_invalid: 'クリップボードには有効な JSON が含まれていません: '
                 clipboard_unread: 'クリップボードからの読み取りに失敗しました: '
+            edit_complete: '編集完了'
             review:
                 title: 送信前に登録を確認する
                 page_label: 内容確認

@@ -1023,6 +1023,7 @@ registries:
                 back: Back
                 save_draft: 'Save draft'
                 new_registration: 'Register Project Metadata'
+                metadata_list: 'Project Metadata List'
                 last_saved: 'Auto-saved: '
                 save_failed: 'Save failed. Unsaved changes present.'
                 failed_auto_save: 'Failed to auto-save draft registration form'
@@ -1035,6 +1036,7 @@ registries:
                 clipboard_fail: 'Failed to save from clipboard: '
                 json_invalid: 'Clipboard does not contain valid JSON: '
                 clipboard_unread: 'Failed to read from clipboard: '
+            edit_complete: 'Edit Complete'
             review:
                 title: 'Review registration before submitting'
                 page_label: Review

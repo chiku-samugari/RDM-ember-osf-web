@@ -1,13 +1,23 @@
-<RegistrationReportExportButton
-    data-test-draft-export
-    @buttonClass={{local-class this.registerButtonClass}}
-    @metadataType='draft_registration'
-    @metadataId={{this.draftRegistration.id}}
-    @metadataSchema={{this.metadataSchema}}
-    @metadataSchemaLoading={{this.metadataSchemaLoading}}
-    @registrationSchemaId={{this.registrationSchemaId}}
-    @exportCsvUrl={{this.exportCsvUrl}}
-/>
+<div data-test-draft-export>
+    <RegistrationReportExportButton
+        @buttonClass={{local-class this.registerButtonClass}}
+        @metadataType='draft_registration'
+        @metadataId={{this.draftRegistration.id}}
+        @metadataSchema={{this.metadataSchema}}
+        @metadataSchemaLoading={{this.metadataSchemaLoading}}
+        @registrationSchemaId={{this.registrationSchemaId}}
+        @exportCsvUrl={{this.exportCsvUrl}}
+    />
+    <OsfLink
+        data-analytics-name='Edit Complete'
+        class='btn btn-default'
+        @route='guid-node.metadata'
+        @models={{array this.node.id}}
+        style='margin-top: 10px; width: 100%;'
+    >
+        {{t 'registries.drafts.draft.edit_complete'}}
+    </OsfLink>
+</div>
 
 {{#if this.node}}
     <Registries::PartialRegistrationModal::Manager

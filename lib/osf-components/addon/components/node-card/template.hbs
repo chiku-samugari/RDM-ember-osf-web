@@ -31,14 +31,14 @@
                 {{/if}}
                 {{node-card/node-icon category=@node.category}}
                 {{#if this.disableNodeLink}}
-                    {{@node.title}}
+                    {{this.displayTitle}}
                 {{else if this.schemaUrl}}
                     <OsfLink
                         data-analytics-name='Title'
                         data-test-node-title='{{@node.id}}'
                         @href={{this.schemaUrl}}
                     >
-                        {{@node.title}}
+                        {{this.displayTitle}}
                     </OsfLink>
                 {{else}}
                     <OsfLink
@@ -47,7 +47,7 @@
                       @route='resolve-guid'
                       @models={{array @node.id}}
                     >
-                        {{@node.title}}
+                        {{this.displayTitle}}
                     </OsfLink>
                 {{/if}}
             {{else}}

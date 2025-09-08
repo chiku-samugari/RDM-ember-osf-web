@@ -21,7 +21,14 @@
                         >
                             {{draftManager.node.title}} >
                         </OsfLink>
-                        <span local-class='MetadataTitleName'>{{t 'registries.drafts.draft.form.new_registration'}}></span>
+                        <OsfLink
+                            local-class='MetadataTitleName'
+                            @route='guid-node.metadata'
+                            @models={{array draftManager.node.id}}
+                            style='color: white;'
+                        >
+                            {{t 'registries.drafts.draft.form.metadata_list'}}
+                        </OsfLink>
                     </div>
                     <h1>
                         {{t 'registries.drafts.draft.form.new_registration'}}

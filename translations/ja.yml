@@ -648,13 +648,13 @@ node:
             create: メタデータを作成
         page_title: '{nodeTitle} メタデータ'
         only_contributors_with_write_permission_can_initiate: 'プロジェクトの書き込み権限を持つメンバーのみがメタデータ編集を実施できます。'
-        no_reports: このプロジェクトのメタデータはありません。
+        no_reports: このプロジェクトにおける編集可能なプロジェクトメタデータはありません。
         no_drafts: このプロジェクトに関する下書きはありません。
-        start_new: '「新規メタデータを作成」ボタンをクリックして、新規メタデータ作成を開始します。一度登録したメタデータを、編集または削除することはできません。'
+        start_new: '「新規メタデータを作成」ボタンをクリックして、新規メタデータ作成を開始します。'
         new: 新規メタデータを作成
         reports: メタデータ
         draft_reports: 下書き
-        registrations: 登録済みメタデータ(編集不可)
+        registrations: 凍結済みメタデータ(編集不可)
 delete_modal:
     title: 'この{nodeType}を削除してもよろしいですか？'
     body: '{nodeType}の他の投稿者は利用できなくなります。'
@@ -1007,7 +1007,7 @@ registries:
         help:
             title: 登録フォームの選択を支援
     drafts:
-        page_title: 下書きを表示
+        page_title: プロジェクトメタデータを表示
         index:
             title: 未完成の下書きを選択
         draft:
@@ -1018,11 +1018,11 @@ registries:
                 save_institutions_error: 'Failed to save affiliated institutions'
                 load_institutions_error: 'Failed to load affiliated institutions'
             form:
-                title: 登録フォームに記入
+                title: メタデータフォームに記入
                 next: 次へ
                 back: 戻る
                 save_draft: 'ドラフトを保存'
-                new_registration: 'プロジェクトメタデータの登録'
+                new_registration: 'プロジェクトメタデータの編集'
                 metadata_list: 'プロジェクトメタデータ一覧'
                 last_saved: '自動保存済み: '
                 save_failed: '保存に失敗しました。保存できていない変更があります。'
@@ -1038,7 +1038,7 @@ registries:
                 clipboard_unread: 'クリップボードからの読み取りに失敗しました: '
             edit_complete: '編集完了'
             review:
-                title: 送信前に登録を確認する
+                title: 内容を確認する
                 page_label: 内容確認
                 start_review: 内容確認
                 toggle_dropdown: 'Toggle navigation dropdown'
@@ -1386,7 +1386,7 @@ osf-components:
         started: '開始日:'
         last_updated: '最終更新日:'
         review: 内容確認
-        delete_draft_confirm: この下書きを削除してもよろしいですか？
+        delete_draft_confirm: このプロジェクトメタデータを削除してもよろしいですか？
     copyable-text:
         copyToClipboard: クリップボードへコピー
         copied: コピー済み

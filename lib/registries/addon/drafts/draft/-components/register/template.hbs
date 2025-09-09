@@ -8,15 +8,14 @@
         @registrationSchemaId={{this.registrationSchemaId}}
         @exportCsvUrl={{this.exportCsvUrl}}
     />
-    <OsfLink
+    <a
         data-analytics-name='Edit Complete'
         class='btn btn-default'
-        @route='guid-node.metadata'
-        @models={{array this.node.id}}
+        href='/{{this.node.id}}/metadata?tab=reports'
         style='margin-top: 10px; width: 100%;'
     >
         {{t 'registries.drafts.draft.edit_complete'}}
-    </OsfLink>
+    </a>
 </div>
 
 {{#if this.node}}

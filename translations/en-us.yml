@@ -319,6 +319,7 @@ addons:
         display-name-label: 'Account name'
         display-name-placeholder: 'Account name'
         display-name-help: 'This will distinguish your account from others using the same addon.'
+        host-selector-label: 'Host'
         url-label: 'Host URL'
         url-post-text: 'Please include <i>http</i> or <i>https</i>'
         username-label: 'Username'

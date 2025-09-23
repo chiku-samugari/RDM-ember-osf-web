@@ -6,6 +6,7 @@ export default class ExternalStorageServiceModel extends ExternalServiceModel {
     @attr('number') maxConcurrentDownloads!: number;
     @attr('number') maxUploadMb!: number;
     @attr('string') wbKey!: string;
+    @attr('object') hostInfo!: any;
 }
 
 declare module 'ember-data/types/registries/model' {

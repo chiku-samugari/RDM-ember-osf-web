@@ -87,6 +87,30 @@
                             </p>
                         {{/if}}
                     {{/if}}
+                {{else if this.showHostSelector}}
+                    {{#let (unique-id 'host-select') (get this.hostInfo 'availableServices')
+                      as |host-select-id services|}}
+                        <label for={{host-select-id}} local-class='auth-text-input-label'>
+                            {{t 'addons.accountCreate.host-selector-label'}}
+                        </label>
+                        <select
+                            id={{host-select-id}}
+                            data-test-input='host'
+                            local-class='input'
+                            name='host'
+                            value={{this.url}}
+                            {{on 'change' this.onHostURLChange}}
+                        >
+                            {{#each services as |svc|}}
+                                <option
+                                    value={{get svc 'host'}}
+                                    selected={{eq this.url (get svc 'host')}}
+                                >
+                                    {{get svc 'name'}}
+                                </option>
+                            {{/each}}
+                        </select>
+                    {{/let}}
                 {{else if this.showUrlField}}
                     {{#let (unique-id 'url') as |url-id|}}
                         <label for={{url-id}} local-class='auth-text-input-label'>

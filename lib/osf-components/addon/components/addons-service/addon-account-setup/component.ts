@@ -40,19 +40,45 @@ export default class AddonAccountSetupComponent extends Component<Args> {
 
     @tracked selectedRepo?: string;
     @tracked otherRepo?: string;
-    @tracked url?: string = this.args.account?.apiBaseUrl;
+    @tracked url?: string = this.initialUrl;
     @tracked newAccount?: AllAuthorizedAccountTypes;
     @tracked pendingOauth = false;
     @tracked credentialsObject: AddonCredentialFields = {};
     @tracked displayName = this.args.account?.displayName || this.args.provider.displayName;
     @tracked connectAccountError = false;
 
+    get initialUrl() {
+        const { account } = this.args;
+        if(account) {
+            return account.apiBaseUrl;
+        }
+        if(this.isHostInfoEffective) {
+            return this.hostInfo.availableServices[0].host;
+        }
+        return undefined;
+    }
+
+    get isHostInfoEffective() {
+        const { availableServices } = this.hostInfo;
+        return Boolean(availableServices) && 0 < availableServices.length;
+    }
+
     get useOauth() {
-        return [CredentialsFormat.OAUTH, CredentialsFormat.OAUTH2].includes(this.args.provider.credentialsFormat);
+        return [CredentialsFormat.OAUTH, CredentialsFormat.OAUTH2].includes(
+            this.args.provider.credentialsFormat,
+        );
     }
 
     get showUrlField() {
         return this.args.provider.configurableApiRoot;
+    }
+
+    get showHostSelector() {
+        return this.showUrlField && Object.keys(this.hostInfo).length !== 0;
+    }
+
+    get hostInfo() {
+        return this.args.provider?.hostInfo;
     }
 
     get isConnectAvailable() {
@@ -91,6 +117,14 @@ export default class AddonAccountSetupComponent extends Component<Args> {
             return this.intl.t('addons.accountCreate.gitlab-repo-other-post-text');
         }
         return '';
+    }
+
+    @action
+    onHostURLChange(ev: { target: HTMLInputElement }) {
+        this.url = ev.target.value;
+        this.displayName = this.hostInfo.availableServices.find(
+            ({host}) => host === ev.target.value,
+        ).name;
     }
 
     @action
@@ -175,7 +209,7 @@ export default class AddonAccountSetupComponent extends Component<Args> {
         const { manager } = this.args;
         const credentials = this.credentialsObject;
         let apiBaseUrl;
-        if (this.showUrlField) {
+        if (this.showUrlField || this.showHostSelector) {
             apiBaseUrl = this.url;
         } else if (this.showRepoOptions) {
             apiBaseUrl = this.otherRepoSelected ? this.otherRepo : this.selectedRepo;

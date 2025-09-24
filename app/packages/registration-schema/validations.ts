@@ -27,6 +27,7 @@ function getErrorType(groupType?: string) {
         validationErrorType = 'mustSelectFileMinOne';
         break;
     case 'single-select-input':
+    case 'single-select-pulldown-input':
         validationErrorType = 'mustSelect';
         break;
     case 'multi-select-input':

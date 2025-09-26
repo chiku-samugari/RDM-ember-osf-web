@@ -1917,7 +1917,7 @@ metadata:
             title: 'Select the export format'
             description: 'Select the export format you want to output.'
             addons:
-                weko: 'Deposite to the repository (WEKO) - {folder}'
+                weko: 'Deposite to the repository (JAIRO Cloud) - {folder}'
     array-input:
         add-item: 'Add item'
         remove-item: 'Remove item'

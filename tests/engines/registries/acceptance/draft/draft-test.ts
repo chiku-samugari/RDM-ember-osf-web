@@ -150,7 +150,8 @@ module('Registries | Acceptance | draft form', hooks => {
         assert.dom('[data-test-goto-previous-page]').isVisible();
         assert.dom('[data-test-goto-next-page]').doesNotExist();
         assert.dom('[data-test-goto-review]').doesNotExist();
-        assert.dom('[data-test-goto-register]').isVisible();
+        // GRDM-41018: Register button removed from project metadata editor
+        assert.dom('[data-test-goto-register]').doesNotExist();
     });
 
     test('right sidenav controls', async assert => {
@@ -205,7 +206,8 @@ module('Registries | Acceptance | draft form', hooks => {
         assert.dom('data-test-goto-next-page').doesNotExist();
         assert.dom('[data-test-goto-review]').doesNotExist();
 
-        assert.dom('[data-test-goto-register]').isVisible();
+        // GRDM-41018: Register button removed from project metadata editor
+        assert.dom('[data-test-goto-register]').doesNotExist();
         assert.dom('[data-test-goto-previous-page]').isVisible();
 
         // Can navigate back to the last page from review page
@@ -253,11 +255,14 @@ module('Registries | Acceptance | draft form', hooks => {
         await percySnapshot('Registries | Acceptance | draft form | mobile navigation | review page');
         assert.dom('[data-test-page-label]').containsText('Review');
         assert.dom('[data-test-goto-next-page]').isNotVisible();
-        assert.dom('[data-test-goto-register]').isVisible();
+        // GRDM-41018: Register button removed from project metadata editor
+        assert.dom('[data-test-goto-register]').doesNotExist();
 
         // check that register button is disabled
-        assert.dom('[data-test-goto-register]').isDisabled();
-        assert.dom('[data-test-invalid-responses-text]').isVisible();
+        // GRDM-41018: Register button removed from project metadata editor
+        assert.dom('[data-test-goto-register]').doesNotExist();
+        // GRDM-41018: Invalid responses text removed with registration functionality
+        // assert.dom('[data-test-invalid-responses-text]').isVisible();
 
         // Check that back button works
         await click('[data-test-goto-previous-page]');
@@ -289,8 +294,10 @@ module('Registries | Acceptance | draft form', hooks => {
 
         await visit(`/registries/drafts/${registration.id}/review`);
         assert.ok(currentURL().includes(`/registries/drafts/${registration.id}/review`), 'At review page');
-        assert.dom('[data-test-goto-register]').isDisabled();
-        assert.dom('[data-test-invalid-responses-text]').isVisible();
+        // GRDM-41018: Register button removed from project metadata editor
+        assert.dom('[data-test-goto-register]').doesNotExist();
+        // GRDM-41018: Invalid responses text removed with registration functionality
+        // assert.dom('[data-test-invalid-responses-text]').isVisible();
     });
 
     test('validations: errors show on review page', async assert => {
@@ -344,8 +351,10 @@ module('Registries | Acceptance | draft form', hooks => {
 
         await click('[data-test-link="review"]');
 
-        assert.dom('[data-test-goto-register]').isDisabled();
-        assert.dom('[data-test-invalid-responses-text]').isVisible();
+        // GRDM-41018: Register button removed from project metadata editor
+        assert.dom('[data-test-goto-register]').doesNotExist();
+        // GRDM-41018: Invalid responses text removed with registration functionality
+        // assert.dom('[data-test-invalid-responses-text]').isVisible();
     });
 
     /* metadata addon: disable metadata page
@@ -380,42 +389,11 @@ module('Registries | Acceptance | draft form', hooks => {
         registration.update({ subjects });
         await visit(`/registries/drafts/${registration.id}/review`);
         assert.ok(currentURL().includes(`/registries/drafts/${registration.id}/review`), 'At review page');
-        assert.dom('[data-test-goto-register]').isNotDisabled();
+        // GRDM-41018: Register button removed from project metadata editor
+        assert.dom('[data-test-goto-register]').doesNotExist();
 
-        await click('[data-test-goto-register]');
-        await settled();
-
-        // PartialRegistrationModal
-        assert.dom('#osf-dialog-heading').hasText(t('registries.partialRegistrationModal.title').toString());
-        [rootNode, childNode, grandChildNode].mapBy('id').forEach(id => assert.dom(`[data-test-expand-child="${id}"]`));
-        await click('[data-test-cancel-registration-button]');
-        await settled();
-        assert.dom('#osf-dialog-heading').isNotVisible('cancel closes the modal');
-
-        await click('[data-test-goto-register]');
-        await settled();
-        assert.dom('[data-test-continue-registration-button]').isVisible();
-        await click('[data-test-continue-registration-button]');
-
-        // FinalizeRegistrationModal
-        assert.dom('#osf-dialog-heading').hasText(t('registries.finalizeRegistrationModal.title').toString());
-        assert.dom('[data-test-submit-registration-button]').isDisabled();
-
-        await click('[data-test-back-button]');
-        assert.dom('#osf-dialog-heading').hasText(
-            t('registries.partialRegistrationModal.title').toString(),
-            'back button switches to partialRegistrationModal',
-        );
-
-        await click('[data-test-continue-registration-button]');
-
-        await click('[data-test-immediate-button]');
-        assert.dom('[data-test-submit-registration-button]').isNotDisabled();
-
-        await click('[data-test-submit-registration-button]');
-        await settled();
-
-        assert.equal(currentRouteName(), 'registries.overview.index', 'Redicted to new registration overview page');
+        // GRDM-41018: Registration functionality removed from project metadata editor
+        // All registration modal tests have been removed as the register button no longer exists
     });
     */
 
@@ -537,7 +515,8 @@ module('Registries | Acceptance | draft form', hooks => {
         await click('[data-test-link="review"]');
         assert.dom('[data-test-link="metadata"] > [data-test-icon]')
             .hasClass('fa-exclamation-circle', 'metadata page is marked invalid');
-        assert.dom('[data-test-goto-register]').isDisabled();
+        // GRDM-41018: Register button removed from project metadata editor
+        assert.dom('[data-test-goto-register]').doesNotExist();
         assert.dom('[data-test-validation-errors="subjects"]');
         assert.dom('[data-test-validation-errors="license"]');
 

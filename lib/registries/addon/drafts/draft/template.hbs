@@ -21,7 +21,13 @@
                         >
                             {{draftManager.node.title}} >
                         </OsfLink>
-                        <span local-class='MetadataTitleName'>{{t 'registries.drafts.draft.form.new_registration'}}></span>
+                        <a
+                            local-class='MetadataTitleName'
+                            href='/{{draftManager.node.id}}/metadata'
+                            style='color: white;'
+                        >
+                            {{t 'registries.drafts.draft.form.metadata_list'}}
+                        </a>
                     </div>
                     <h1>
                         {{t 'registries.drafts.draft.form.new_registration'}}
@@ -34,6 +40,8 @@
                     @draftManager={{draftManager}}
                     @navManager={{navManager}}
                     @onSubmitRedirect={{this.onSubmitRedirect}}
+                    @metadataSchema={{this.model.metadataSchema.value}}
+                    @metadataSchemaLoading={{this.model.metadataSchema.isRunning}}
                 />
             {{/if}}
             <layout.leftNav as |leftNav|>
@@ -72,6 +80,8 @@
                             @navManager={{navManager}}
                             @draftManager={{draftManager}}
                             @onSubmitRedirect={{this.onSubmitRedirect}}
+                            @metadataSchema={{this.model.metadataSchema.value}}
+                            @metadataSchemaLoading={{this.model.metadataSchema.isRunning}}
                         />
                     </div>
                 </layout.right>

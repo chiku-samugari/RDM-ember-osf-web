@@ -63,6 +63,8 @@
             {{#if @navManager.inReview}}
                 <Drafts::Draft::-Components::Register
                     @draftManager={{@draftManager}}
+                    @metadataSchema={{@metadataSchema}}
+                    @metadataSchemaLoading={{@metadataSchemaLoading}}
                     @onSubmitRedirect={{action @onSubmitRedirect}}
                     @showMobileView={{true}}
                 />

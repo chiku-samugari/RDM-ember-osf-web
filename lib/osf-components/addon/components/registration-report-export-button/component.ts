@@ -36,9 +36,13 @@ export default class RegistrationReportExportButton extends Component {
 
     @service toast!: Toast;
 
+    buttonClass?: string;
+
     exportCsvUrl?: string;
 
     metadataSchema?: MetadataNodeSchemaModel;
+
+    metadataSchemaLoading: boolean = false;
 
     registrationSchemaId?: string | null = null;
 
@@ -80,9 +84,14 @@ export default class RegistrationReportExportButton extends Component {
         return this.metadataFormats.length === 0;
     }
 
-    @computed('metadataFormats')
+    @computed('metadataDestinations')
     get hasNoDestinations(): boolean {
         return this.metadataDestinations.length === 0;
+    }
+
+    @computed('metadataSchemaLoading', 'hasNoFormats', 'hasNoDestinations')
+    get isDisabled(): boolean {
+        return this.metadataSchemaLoading || (this.hasNoFormats && this.hasNoDestinations);
     }
 
     @action

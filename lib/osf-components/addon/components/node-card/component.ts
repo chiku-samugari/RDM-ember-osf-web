@@ -11,6 +11,7 @@ import Registration from 'ember-osf-web/models/registration';
 import { Question } from 'ember-osf-web/models/registration-schema';
 import Analytics from 'ember-osf-web/services/analytics';
 import defaultTo from 'ember-osf-web/utils/default-to';
+import { METADATA_TITLE_FIELD_PRIORITY } from 'ember-osf-web/utils/metadata-title-field-priority';
 import pathJoin from 'ember-osf-web/utils/path-join';
 
 import styles from './styles';
@@ -96,5 +97,30 @@ export default class NodeCard extends Component {
     @computed('readOnly', 'node', 'node.{nodeType,userHasWritePermission}')
     get showDropdown() {
         return !this.readOnly && this.node && this.node.nodeType === NodeType.Fork && this.node.userHasWritePermission;
+    }
+
+    @computed('node.{registrationResponses,title}')
+    get displayTitle(): string {
+        const node = this.get('node');
+        if (!node) {
+            return '';
+        }
+        // Registrationの場合、registrationResponsesをチェック
+        if (node.isRegistration) {
+            const registration = node as Registration;
+            const responses = registration.registrationResponses;
+            if (responses) {
+                for (const field of METADATA_TITLE_FIELD_PRIORITY) {
+                    // __responseKey_ プレフィックス付きと無し両方を試す
+                    const responseKeyField = `__responseKey_${field}`;
+                    const value = responses[responseKeyField] || responses[field];
+                    if (typeof value === 'string' && value.trim()) {
+                        return value.trim();
+                    }
+                }
+            }
+        }
+        // フォールバック: title属性を使用
+        return node.title || '';
     }
 }

@@ -1,22 +1,22 @@
-<OsfButton
-    data-test-goto-register
-    data-analytics-name='Go to register'
-    local-class='registerButton {{if @showMobileView 'mobileReviewButtonItem'}}'
-    @type='success'
-    @onClick={{perform this.onClickRegister}}
-    @disabled={{not this.draftManager.registrationResponsesIsValid}}
->
-    {{#if this.onClickRegister.isRunning}}
-        <LoadingIndicator @inline={{true}} />
-    {{else}}
-        {{t 'registries.drafts.draft.register'}}
-    {{/if}}
-</OsfButton>
-{{#if (and this.isInvalid (not @showMobileView))}}
-    <div data-test-invalid-responses-text class='text-danger'>
-        {{t 'registries.drafts.draft.review.invalid_warning'}}
-    </div>
-{{/if}}
+<div data-test-draft-export>
+    <RegistrationReportExportButton
+        @buttonClass={{local-class this.registerButtonClass}}
+        @metadataType='draft_registration'
+        @metadataId={{this.draftRegistration.id}}
+        @metadataSchema={{this.metadataSchema}}
+        @metadataSchemaLoading={{this.metadataSchemaLoading}}
+        @registrationSchemaId={{this.registrationSchemaId}}
+        @exportCsvUrl={{this.exportCsvUrl}}
+    />
+    <a
+        data-analytics-name='Edit Complete'
+        class='btn btn-default'
+        href='/{{this.node.id}}/metadata?tab=reports'
+        style='margin-top: 10px; width: 100%;'
+    >
+        {{t 'registries.drafts.draft.edit_complete'}}
+    </a>
+</div>
 
 {{#if this.node}}
     <Registries::PartialRegistrationModal::Manager

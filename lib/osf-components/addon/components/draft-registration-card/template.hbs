@@ -10,7 +10,7 @@
                 @route='registries.drafts.draft'
                 @models={{array this.draftRegistration.id}}
             >
-                {{this.draftRegistration.title}}
+                {{this.displayTitle}}
             </OsfLink>
         {{else}}
             <ContentPlaceholders as |placeholder|>
@@ -89,7 +89,7 @@
                         </modal.footer>
                     </BsModal>
                 </div>
-                <div class='col-md-2'>
+                <div class='col-md-3' local-class='DraftRegistrationCard__export'>
                     <RegistrationReportExportButton
                         @metadataType='draft_registration'
                         @metadataId={{this.draftRegistration.id}}

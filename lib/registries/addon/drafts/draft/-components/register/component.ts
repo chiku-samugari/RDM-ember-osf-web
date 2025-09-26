@@ -1,17 +1,22 @@
 import { tagName } from '@ember-decorators/component';
 import Component from '@ember/component';
 import { assert } from '@ember/debug';
-import { action } from '@ember/object';
+import { action, computed } from '@ember/object';
 import { alias } from '@ember/object/computed';
 import { run } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 import { task } from 'ember-concurrency';
 import DS from 'ember-data';
 
+import config from 'ember-get-config';
 import DraftRegistration from 'ember-osf-web/models/draft-registration';
+import MetadataNodeSchemaModel from 'ember-osf-web/models/metadata-node-schema';
 import NodeModel from 'ember-osf-web/models/node';
 import Registration from 'ember-osf-web/models/registration';
+import pathJoin from 'ember-osf-web/utils/path-join';
 import DraftRegistrationManager from 'registries/drafts/draft/draft-registration-manager';
+
+const { OSF: { url: baseURL } } = config;
 
 @tagName('')
 export default class Register extends Component.extend({
@@ -39,6 +44,13 @@ export default class Register extends Component.extend({
     // Required
     draftManager!: DraftRegistrationManager;
 
+    // Optional arguments
+    metadataSchema?: MetadataNodeSchemaModel;
+
+    metadataSchemaLoading = false;
+
+    showMobileView = false;
+
     // Private
     registration!: Registration;
     onSubmitRedirect?: (nodeId: string) => void;
@@ -51,6 +63,32 @@ export default class Register extends Component.extend({
 
     didReceiveAttrs() {
         assert('@draftManager is required!', Boolean(this.draftManager));
+    }
+
+    @computed('draftRegistration')
+    get registrationSchemaId(): string | null {
+        const draftRegistration = this.get('draftRegistration');
+        return draftRegistration.registrationSchema.get('id');
+    }
+
+    @computed('draftRegistration')
+    get exportCsvUrl() {
+        const draftRegistration = this.get('draftRegistration');
+        const node = draftRegistration.get('branchedFrom');
+        return pathJoin(
+            baseURL,
+            node.get('id'),
+            `metadata/draft_registrations/${draftRegistration.get('id')}/csv`,
+        );
+    }
+
+    @computed('showMobileView')
+    get registerButtonClass() {
+        let classes = 'registerButton exportButton';
+        if (this.showMobileView) {
+            classes += ' mobileReviewButtonItem';
+        }
+        return classes;
     }
 
     @action

@@ -18,6 +18,8 @@
 {{#if @navManager.inReview}}
     <Drafts::Draft::-Components::Register
         @draftManager={{@draftManager}}
+        @metadataSchema={{@metadataSchema}}
+        @metadataSchemaLoading={{@metadataSchemaLoading}}
         @onSubmitRedirect={{@onSubmitRedirect}}
     />
 {{/if}}

@@ -33,6 +33,10 @@
     }
 }
 
+.DraftRegistrationCard__export button {
+    float: right;
+}
+
 :global(.delete_draft_registration) {
     :global(.modal-header) {
         h4 {

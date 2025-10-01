@@ -1,13 +1,19 @@
 import Component from '@ember/component';
 import { action, computed } from '@ember/object';
+import RouterService from '@ember/routing/router-service';
 import { later } from '@ember/runloop';
 import { inject as service } from '@ember/service';
-import $ from 'jquery';
-
+import { task } from 'ember-concurrency-decorators';
+import Intl from 'ember-intl/services/intl';
 import { layout } from 'ember-osf-web/decorators/component';
+import { extractProjectMetadata } from 'ember-osf-web/guid-node/workflow/-components/flowable-form/utils';
+import { normalizeTemplates, WorkflowTemplate } from 'ember-osf-web/guid-node/workflow/controller';
+import { WorkflowActivationApiResponse } from 'ember-osf-web/guid-node/workflow/types';
 import MetadataNodeSchemaModel, { Destination, Format, MetadataType } from 'ember-osf-web/models/metadata-node-schema';
+import Node from 'ember-osf-web/models/node';
 import CurrentUser from 'ember-osf-web/services/current-user';
 import Toast from 'ember-toastr/services/toast';
+import $ from 'jquery';
 
 import styles from './styles';
 import template from './template';
@@ -36,7 +42,13 @@ export default class RegistrationReportExportButton extends Component {
 
     @service toast!: Toast;
 
+    @service router!: RouterService;
+
+    @service intl!: Intl;
+
     buttonClass?: string;
+
+    vertical?: boolean;
 
     exportCsvUrl?: string;
 
@@ -53,6 +65,29 @@ export default class RegistrationReportExportButton extends Component {
     metadataId: string | null = null;
 
     isUploading: boolean = false;
+
+    node?: Node;
+
+    schemaName?: string;
+
+    workflowTemplates: WorkflowTemplate[] = [];
+
+    workflowDialogOpen: boolean = false;
+
+    @task
+    loadWorkflows = task(function *(this: RegistrationReportExportButton) {
+        const response: Response = yield fetch(`/api/v1/project/${this.node!.get('id')}/workflow/activations/`);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch workflows: ${response.statusText}`);
+        }
+        const json: { data: WorkflowActivationApiResponse[] } = yield response.json();
+        const allTemplates = normalizeTemplates(json.data);
+        const filtered = allTemplates.filter(tpl => tpl.definitionFormSchema.fields.some(field => {
+            const metadata = extractProjectMetadata(field);
+            return metadata !== null && metadata.schemaName === this.schemaName;
+        }));
+        this.set('workflowTemplates', filtered);
+    });
 
     @computed('metadataSchema')
     get metadataFormats(): Format[] {
@@ -92,6 +127,18 @@ export default class RegistrationReportExportButton extends Component {
     @computed('metadataSchemaLoading', 'hasNoFormats', 'hasNoDestinations')
     get isDisabled(): boolean {
         return this.metadataSchemaLoading || (this.hasNoFormats && this.hasNoDestinations);
+    }
+
+    didReceiveAttrs() {
+        super.didReceiveAttrs();
+        if (this.node && this.schemaName) {
+            this.loadWorkflows.perform();
+        }
+    }
+
+    @action
+    openWorkflowDialog() {
+        this.set('workflowDialogOpen', true);
     }
 
     @action
@@ -137,6 +184,12 @@ export default class RegistrationReportExportButton extends Component {
     @action
     hideDialog() {
         this.set('dialogOpen', false);
+    }
+
+    @action
+    submitWorkflow() {
+        const workflowId = $('#workflow-selection').val() as string;
+        this.startWorkflow(workflowId);
     }
 
     async upload(url: string, metadataId: string) {
@@ -195,5 +248,27 @@ export default class RegistrationReportExportButton extends Component {
         later(async () => {
             await this.checkProgress(progressApiUrl);
         }, 500);
+    }
+
+    startWorkflow(workflowId: string) {
+        this.set('workflowDialogOpen', false);
+        const workflow = this.workflowTemplates.find(w => w.id === workflowId);
+        if (!workflow) {
+            throw new Error(`Workflow ${workflowId} not found`);
+        }
+
+        const targetField = workflow.definitionFormSchema.fields.find(field => {
+            const metadata = extractProjectMetadata(field);
+            return metadata !== null && metadata.schemaName === this.schemaName;
+        });
+
+        if (!targetField) {
+            throw new Error(`No matching field found for schema ${this.schemaName}`);
+        }
+
+        const fieldKey = `field_${encodeURIComponent(targetField.id)}`;
+        const hash = `#start=${encodeURIComponent(workflowId)}&${fieldKey}=${encodeURIComponent(this.metadataId!)}`;
+        const url = this.router.urlFor('guid-node.workflow', this.node!.get('id'));
+        window.location.href = `${url}${hash}`;
     }
 }

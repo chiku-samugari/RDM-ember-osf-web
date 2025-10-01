@@ -1,0 +1,13 @@
+<div hidden {{did-insert this.initialize}} {{did-update this.initialize @form}}></div>
+
+{{#if this.hasFields}}
+    {{#each this.fields as |field|}}
+        <GuidNode::Workflow::-Components::FlowableForm::Field
+            @field={{field}}
+            @fieldValues={{this.fieldValues}}
+            @variables={{@variables}}
+            @node={{@node}}
+            @onChange={{this.handleFieldChange}}
+        />
+    {{/each}}
+{{/if}}

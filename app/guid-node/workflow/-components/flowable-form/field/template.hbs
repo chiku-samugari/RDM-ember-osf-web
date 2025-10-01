@@ -1,0 +1,158 @@
+<div class="form-group {{if this.hasError 'has-error'}}" ...attributes>
+    {{#if this.isExpression}}
+        <p class="form-control-static">{{this.expressionText}}</p>
+    {{else if this.isHyperlink}}
+        <a href={{this.hyperlinkUrl}} target="_blank" rel="noopener noreferrer">
+            {{this.fieldLabel}}
+        </a>
+    {{else if this.isHeadline}}
+        <h4 style="font-weight: 600;">{{this.fieldLabel}}</h4>
+    {{else if this.isHeadlineWithLine}}
+        <h4 style="font-weight: 600; border-bottom: 1px solid #ccc; padding-bottom: 0.5em;">{{this.fieldLabel}}</h4>
+    {{else if this.isHorizontalLine}}
+        <hr />
+    {{else if this.isSpacer}}
+        <div style="height: 20px;"></div>
+    {{else}}
+        <label for={{this.fieldId}} class="control-label" style="font-weight: normal;">
+            {{this.fieldLabel}}
+            {{#if this.isRequired}}
+                <span class="text-danger">*</span>
+            {{/if}}
+        </label>
+
+        {{#if this.isBoolean}}
+            <div class="checkbox">
+                <label>
+                    <input
+                        id={{this.fieldId}}
+                        type="checkbox"
+                        checked={{this.booleanValue}}
+                        disabled={{this.isReadOnly}}
+                        {{on "change" this.handleChange}}
+                    >
+                    {{t 'workflow.console.tasks.dialog.booleanYes'}}
+                </label>
+            </div>
+        {{else if this.isSelect}}
+            <select
+                id={{this.fieldId}}
+                class="form-control"
+                disabled={{this.isReadOnly}}
+                required={{this.isRequired}}
+                {{on "change" this.handleChange}}
+            >
+                <option value="">{{t 'workflow.console.tasks.dialog.selectPlaceholder'}}</option>
+                {{#if this.hasOptions}}
+                    {{#each this.optionsWithValue as |item|}}
+                        <option value={{item.value}} selected={{eq item.value this.stringValue}}>
+                            {{or item.option.name item.value}}
+                        </option>
+                    {{/each}}
+                {{/if}}
+            </select>
+        {{else if this.isRadio}}
+            {{#each this.optionsWithValue as |item|}}
+                <div class="radio">
+                    <label>
+                        <input
+                            type="radio"
+                            name={{this.fieldId}}
+                            value={{item.value}}
+                            checked={{eq item.value this.stringValue}}
+                            disabled={{this.isReadOnly}}
+                            required={{this.isRequired}}
+                            {{on "change" this.handleChange}}
+                        >
+                        {{or item.option.name item.value}}
+                    </label>
+                </div>
+            {{/each}}
+        {{else if this.isDate}}
+            <input
+                id={{this.fieldId}}
+                type="date"
+                class="form-control"
+                value={{this.stringValue}}
+                placeholder={{this.placeholder}}
+                disabled={{this.isReadOnly}}
+                required={{this.isRequired}}
+                {{on "change" this.handleChange}}
+            />
+        {{else if this.isNumber}}
+            <input
+                id={{this.fieldId}}
+                type="number"
+                class="form-control"
+                value={{this.stringValue}}
+                placeholder={{this.placeholder}}
+                disabled={{this.isReadOnly}}
+                required={{this.isRequired}}
+                {{on "input" this.handleChange}}
+            />
+        {{else if this.isPassword}}
+            <input
+                id={{this.fieldId}}
+                type="password"
+                class="form-control"
+                value={{this.stringValue}}
+                placeholder={{this.placeholder}}
+                disabled={{this.isReadOnly}}
+                required={{this.isRequired}}
+                {{on "input" this.handleChange}}
+            />
+        {{else if this.isProjectMetadataSelector}}
+            <GuidNode::Workflow::-Components::FlowableForm::ProjectMetadataSelector
+                @node={{@node}}
+                @schemaName={{this.projectMetadataSchemaName}}
+                @multiSelect={{this.projectMetadataMultiSelect}}
+                @value={{this.currentValue}}
+                @onChange={{this.handleProjectMetadataSelection}}
+                @disabled={{this.isReadOnly}}
+            />
+        {{else if this.isFileMetadataSelector}}
+            <GuidNode::Workflow::-Components::FlowableForm::FileMetadataSelector
+                @node={{@node}}
+                @schemaName={{this.fileMetadataSchemaName}}
+                @multiSelect={{this.fileMetadataMultiSelect}}
+                @value={{this.currentValue}}
+                @onChange={{this.handleFileMetadataSelection}}
+                @disabled={{this.isReadOnly}}
+            />
+        {{else if this.isTextarea}}
+            <textarea
+                id={{this.fieldId}}
+                class="form-control"
+                rows="3"
+                placeholder={{this.placeholder}}
+                disabled={{this.isReadOnly}}
+                required={{this.isRequired}}
+                {{on "input" this.handleChange}}
+            >{{this.stringValue}}</textarea>
+        {{else if this.isUpload}}
+            <input
+                id={{this.fieldId}}
+                type="file"
+                class="form-control"
+                disabled={{this.isReadOnly}}
+                required={{this.isRequired}}
+                {{on "change" this.handleChange}}
+            />
+        {{else}}
+            <input
+                id={{this.fieldId}}
+                type="text"
+                class="form-control"
+                value={{this.stringValue}}
+                placeholder={{this.placeholder}}
+                disabled={{this.isReadOnly}}
+                required={{this.isRequired}}
+                {{on "input" this.handleChange}}
+            />
+        {{/if}}
+
+        {{#if this.hasError}}
+            <span class="help-block">{{t 'workflow.console.tasks.dialog.fieldRequired'}}</span>
+        {{/if}}
+    {{/if}}
+</div>

@@ -1,0 +1,101 @@
+{{#let (unique-id "file-metadata-selector") as |radioGroupName|}}
+<div class="clearfix m-b-sm" {{did-insert this.initialize}} {{did-update this.updateValue @value}}>
+    <button
+        type="button"
+        class="btn btn-default btn-xs pull-right"
+        {{on "click" this.refresh}}
+        disabled={{this.loadFileMetadata.isRunning}}
+    >
+        <i class="fa fa-refresh {{if this.loadFileMetadata.isRunning 'fa-spin'}}"></i>
+        {{t 'workflow.console.tasks.dialog.fileMetadataSelector.refresh'}}
+    </button>
+</div>
+
+{{#if this.loadFileMetadata.isRunning}}
+    <div class="text-muted">
+        <i class="fa fa-spinner fa-spin"></i>
+        {{t 'workflow.console.tasks.dialog.fileMetadataSelector.loading'}}
+    </div>
+{{else if (eq this.fileEntries.length 0)}}
+    <div class="alert alert-info">
+        {{t 'workflow.console.tasks.dialog.fileMetadataSelector.noRecordsPrefix'}}:
+        <a href={{this.projectUrl}} target="_blank" rel="noopener noreferrer">
+            {{this.projectUrl}}
+        </a>
+    </div>
+{{else}}
+    <div local-class="FileMetadataSelector__list">
+        {{#each this.fileEntries as |entry|}}
+            {{#if entry.visible}}
+                <div
+                    local-class="FileMetadataSelector__card {{if entry.isSelected 'FileMetadataSelector__card--selected'}}"
+                    role="button"
+                    {{on "click" (fn this.selectFile entry.path)}}
+                >
+                    <div local-class="FileMetadataSelector__row">
+                        <div local-class="FileMetadataSelector__radio">
+                            <input
+                                type={{if this.isMultiSelect "checkbox" "radio"}}
+                                name={{radioGroupName}}
+                                checked={{entry.isSelected}}
+                                disabled={{@disabled}}
+                            />
+                        </div>
+                        <div local-class="FileMetadataSelector__content">
+                            <div local-class="FileMetadataSelector__header" style={{entry.style}}>
+                                {{#if entry.folder}}
+                                    {{#if entry.folderExpanded}}
+                                        <button
+                                            type="button"
+                                            class="btn btn-link btn-xs"
+                                            local-class="FileMetadataSelector__expand-button"
+                                            {{on "click" (fn this.expandFolder entry false)}}
+                                        >
+                                            <i class="fa fa-minus"></i>
+                                        </button>
+                                    {{else}}
+                                        <button
+                                            type="button"
+                                            class="btn btn-link btn-xs"
+                                            local-class="FileMetadataSelector__expand-button"
+                                            {{on "click" (fn this.expandFolder entry true)}}
+                                        >
+                                            <i class="fa fa-plus"></i>
+                                        </button>
+                                    {{/if}}
+                                    <i class="fa fa-folder"></i>
+                                    <strong>{{entry.lastPart}}</strong>
+                                {{else}}
+                                    <i class="fa fa-file"></i>
+                                    <strong>{{or entry.title entry.lastPart}}</strong>
+                                {{/if}}
+                                {{#if entry.url}}
+                                    <a
+                                        href={{entry.url}}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        class="btn btn-xs btn-link"
+                                        {{on "click" this.preventPropagation}}
+                                    >
+                                        <i class="fa fa-external-link"></i>
+                                    </a>
+                                {{/if}}
+                            </div>
+                            {{#unless entry.folder}}
+                                <div local-class="FileMetadataSelector__details" class="text-muted" style={{entry.style}}>
+                                    <small>
+                                        {{t 'workflow.console.tasks.dialog.fileMetadataSelector.path'}}: {{entry.path}}
+                                        {{#if entry.manager}}
+                                            | {{t 'workflow.console.tasks.dialog.fileMetadataSelector.manager'}}: {{entry.manager}}
+                                        {{/if}}
+                                    </small>
+                                </div>
+                            {{/unless}}
+                        </div>
+                    </div>
+                </div>
+            {{/if}}
+        {{/each}}
+    </div>
+{{/if}}
+{{/let}}

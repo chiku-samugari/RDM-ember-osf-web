@@ -1,0 +1,59 @@
+.FileMetadataSelector__list {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.FileMetadataSelector__card {
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover {
+        background-color: #f5f5f5;
+    }
+
+    &--selected {
+        background-color: #e3f2fd;
+        border-left: 4px solid #2196f3;
+    }
+
+    &:last-child {
+        border-bottom: 0;
+    }
+}
+
+.FileMetadataSelector__row {
+    display: flex;
+    align-items: flex-start;
+}
+
+.FileMetadataSelector__radio {
+    padding: 12px 8px 12px 12px;
+    flex-shrink: 0;
+}
+
+.FileMetadataSelector__content {
+    flex: 1;
+    padding: 12px 12px 12px 0;
+}
+
+.FileMetadataSelector__header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+
+    strong {
+        flex: 1;
+    }
+}
+
+.FileMetadataSelector__details {
+    padding-left: 24px;
+}
+
+.FileMetadataSelector__expand-button {
+    padding: 0 !important;
+}

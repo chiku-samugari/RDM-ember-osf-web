@@ -24,7 +24,7 @@ import buildChangeset from 'ember-osf-web/utils/build-changeset';
 
 export default class DraftRegistrationManager {
     // Required
-    draftRegistrationAndNodeTask!: TaskInstance<{draftRegistration: DraftRegistration, node: NodeModel}>;
+    draftRegistrationAndNodeTask!: TaskInstance<{ draftRegistration: DraftRegistration, node: NodeModel }>;
     metadataNodeTask!: TaskInstance<{
         metadataNodeErad: MetadataNodeEradModel,
         metadataNodeProject: MetadataNodeProjectModel,
@@ -78,14 +78,23 @@ export default class DraftRegistrationManager {
     }
 
     @task
-    initializePageManagers = task(function *(this: DraftRegistrationManager) {
+    initializePageManagers = task(function*(this: DraftRegistrationManager) {
         const { draftRegistration, node } = yield this.draftRegistrationAndNodeTask;
         set(this, 'draftRegistration', draftRegistration);
         set(this, 'node', node);
         const registrationSchema = yield this.draftRegistration.registrationSchema;
         const schemaBlocks: SchemaBlock[] = yield registrationSchema.loadAll('schemaBlocks');
-        set(this, 'schemaBlocks', schemaBlocks);
-        const pages = getPages(schemaBlocks);
+
+        const filteredSchemaBlocks = schemaBlocks.filter(block => {
+            // hideProjectmetadata が true の場合は除外
+            if (block.hideProjectmetadata) {
+                return false;
+            }
+            return true;
+        });
+
+        set(this, 'schemaBlocks', filteredSchemaBlocks);
+        const pages = getPages(filteredSchemaBlocks);
         const { registrationResponses } = this.draftRegistration;
 
         set(this, 'registrationResponses', registrationResponses || {});
@@ -102,21 +111,21 @@ export default class DraftRegistrationManager {
     });
 
     @task
-    initializeMetadataChangeset = task(function *(this: DraftRegistrationManager) {
+    initializeMetadataChangeset = task(function*(this: DraftRegistrationManager) {
         const { draftRegistration } = yield this.draftRegistrationAndNodeTask;
         const metadataChangeset = buildChangeset(draftRegistration, {});
         set(this, 'metadataChangeset', metadataChangeset);
     });
 
     @task
-    initializeMetadataNode = task(function *(this: DraftRegistrationManager) {
+    initializeMetadataNode = task(function*(this: DraftRegistrationManager) {
         const { metadataNodeErad, metadataNodeProject } = yield this.metadataNodeTask;
         set(this, 'metadataNodeErad', metadataNodeErad);
         set(this, 'metadataNodeProject', metadataNodeProject);
     });
 
     @task({ restartable: true })
-    onMetadataInput = task(function *(this: DraftRegistrationManager) {
+    onMetadataInput = task(function*(this: DraftRegistrationManager) {
         yield timeout(5000); // debounce
         this.updateMetadataChangeset();
         try {
@@ -130,7 +139,7 @@ export default class DraftRegistrationManager {
     });
 
     @task({ restartable: true })
-    onPageInput = task(function *(this: DraftRegistrationManager, currentPageManager: PageManager) {
+    onPageInput = task(function*(this: DraftRegistrationManager, currentPageManager: PageManager) {
         yield timeout(5000); // debounce
 
         if (currentPageManager && currentPageManager.schemaBlockGroups) {
@@ -151,7 +160,7 @@ export default class DraftRegistrationManager {
     });
 
     @task({ restartable: true })
-    saveAllVisitedPages = task(function *(this: DraftRegistrationManager) {
+    saveAllVisitedPages = task(function*(this: DraftRegistrationManager) {
         if (this.pageManagers && this.pageManagers.length) {
             this.pageManagers
                 .filter(pageManager => pageManager.isVisited)
@@ -173,7 +182,7 @@ export default class DraftRegistrationManager {
     });
 
     constructor(
-        draftRegistrationAndNodeTask: TaskInstance<{draftRegistration: DraftRegistration, node: NodeModel}>,
+        draftRegistrationAndNodeTask: TaskInstance<{ draftRegistration: DraftRegistration, node: NodeModel }>,
         metadataNodeTask: TaskInstance<{
             metadataNodeErad: MetadataNodeEradModel,
             metadataNodeProject: MetadataNodeProjectModel,

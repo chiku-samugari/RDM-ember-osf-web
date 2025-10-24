@@ -1386,6 +1386,7 @@ osf-components:
         form_type: '様式:'
         started: '開始日:'
         last_updated: '最終更新日:'
+        weko_id : 'JAIRO Cloud アイテムID:'
         review: 内容確認
         delete_draft_confirm: このプロジェクトメタデータを削除してもよろしいですか？
     copyable-text:

@@ -71,6 +71,27 @@ export default class DraftRegistrationCard extends Component {
         return draftRegistration.title || '';
     }
 
+    @computed('draftRegistration.registrationResponses')
+    get wekoItemId(): string | null {
+        const draftRegistration = this.draftRegistration;
+        if (!draftRegistration) {
+            return null;
+        }
+        const responses = draftRegistration.registrationResponses;
+        if (!responses || typeof responses !== 'object') {
+            return null;
+        }
+        const wekoIdKey = 'internal:weko-item-id';
+        const prefixedWekoIdKey = `__responseKey_${wekoIdKey}`;
+        const wekoIdValue = responses[wekoIdKey] || responses[prefixedWekoIdKey];
+
+        if (wekoIdValue && typeof wekoIdValue === 'string' && wekoIdValue.trim()) {
+            return wekoIdValue.trim();
+        }
+
+        return null;
+    }
+
     @action
     delete() {
         this.set('deleteModalOpen', true);

@@ -40,6 +40,12 @@
                     {{t 'osf-components.draft-registration-card.last_updated'}}
                     {{moment this.draftRegistration.datetimeUpdated}}
                 </p>
+                {{#if this.wekoItemId}}
+                    <p data-test-weko-item-id>
+                        {{t 'osf-components.draft-registration-card.weko_id'}}
+                        {{this.wekoItemId}}
+                    </p>
+                {{/if}}
             </small>
             <div class='row'>
                 <div class='col-md-9'>

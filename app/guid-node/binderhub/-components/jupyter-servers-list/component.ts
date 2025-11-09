@@ -139,6 +139,29 @@ export default class JupyterServersList extends Component {
 
     namedServerLimit: number | null = null;
 
+    jupyterHubUnavailable: boolean = false;
+
+    async checkServerAvailability(url: string): Promise<boolean> {
+        try {
+            // Check if the server is reachable without authentication
+            // Use a short timeout to fail fast if the server is down
+            await $.ajax({
+                url,
+                method: 'HEAD',
+                timeout: 5000, // 5 seconds timeout
+            });
+            return true;
+        } catch (error: any) {
+            // If the server responds with HTTP status (even errors like 403),
+            // it means the server is running
+            if (error.status >= 200 && error.status < 500) {
+                return true;
+            }
+            // Timeout, network error, or 5xx server error
+            return false;
+        }
+    }
+
     didReceiveAttrs() {
         const bhubUrl = getContext('jh');
         if (!this.selectedBinderhubUrl && bhubUrl) {
@@ -348,7 +371,17 @@ export default class JupyterServersList extends Component {
         this.set('allServers', null);
         this.set('serversLink', null);
         this.set('namedServerLimit', null);
+        this.set('jupyterHubUnavailable', false);
         later(async () => {
+            // Check if JupyterHub is available before attempting to load servers
+            const isAvailable = await this.checkServerAvailability(jupyterhubUrl);
+            if (!isAvailable) {
+                this.set('jupyterHubUnavailable', true);
+                this.set('serversLink', null);
+                this.set('allServers', null);
+                this.set('namedServerLimit', null);
+                return;
+            }
             const servers = await this.loadServers(jupyterhubUrl);
             const homeUrl = addPathSegment(jupyterhubUrl, 'hub/home');
             this.set('serversLink', homeUrl);

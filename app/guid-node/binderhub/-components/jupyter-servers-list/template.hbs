@@ -88,6 +88,16 @@
                     {{fa-icon 'fa-undo'}}
                 </button>
             </div>
+            {{#if this.jupyterHubUnavailable}}
+                <BsAlert
+                    @type='warning'
+                    @dismissible={{false}}
+                    @visible={{true}}
+                    local-class='BinderHub__connection_alert'
+                >
+                    {{t 'binderhub.error.jupyterhub_unavailable' url=this.defaultJupyterhubUrl}}
+                </BsAlert>
+            {{else}}
             <table class='table table-responsive' data-test-server-list>
                 <thead>
                     <tr>
@@ -144,6 +154,7 @@
                     {{/if}}
                 </tbody>
             </table>
+            {{/if}}
         {{/if}}
     {{/if}}
     <BsModal

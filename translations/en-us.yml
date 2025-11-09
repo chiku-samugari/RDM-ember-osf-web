@@ -1831,6 +1831,7 @@ binderhub:
         modify_files_error: 'Failed to update the files. Please check your network connection.'
         load_files_error: 'Failed to load the files. Please check your network connection.'
         server_unavailable: '{server} is unavailable ({url}). The server may be down.'
+        jupyterhub_unavailable: 'JupyterHub is unavailable ({url}). The server may be down. Cannot display the list of analysis environments.'
 metadata:
     file-metadata-input:
         no_metadata: 'No files'

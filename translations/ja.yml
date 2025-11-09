@@ -1831,6 +1831,7 @@ binderhub:
         modify_files_error: 'ファイルの更新に失敗しました。ネットワーク接続を確認してください。'
         load_files_error: 'ファイルの読み込みに失敗しました。ネットワーク接続を確認してください。'
         server_unavailable: '{server}が利用できません（{url}）。サーバーが停止している可能性があります。'
+        jupyterhub_unavailable: 'JupyterHubが利用できません（{url}）。サーバーが停止している可能性があります。解析環境一覧を表示できません。'
 metadata:
     file-metadata-input:
         no_metadata: 'ファイルはありません'

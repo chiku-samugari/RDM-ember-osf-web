@@ -4,6 +4,7 @@ import config from 'ember-get-config';
 
 import { layout } from 'ember-osf-web/decorators/component';
 import Node from 'ember-osf-web/models/node';
+import NodeAddonModel from 'ember-osf-web/models/node-addon';
 
 import styles from './styles';
 import template from './template';
@@ -37,8 +38,68 @@ export default class NodeNavbar extends Component {
         return null;
     }
 
+    @computed('node.addons')
+    get iqbrimsEnabled(): boolean | null {
+        if (!this.node) {
+            return null;
+        }
+        let result = null;
+        this.getAddons()
+            .then(addons => {
+                result = addons
+                    .filter(addon => addon.id === 'iqbrims')
+                    .length > 0;
+                this.set('iqbrimsEnabled', result);
+            });
+        return result;
+    }
+
+    @computed('node.addons')
+    get binderhubEnabled(): boolean | null {
+        if (!this.node) {
+            return null;
+        }
+        let result = null;
+        this.getAddons()
+            .then(addons => {
+                result = addons
+                    .filter(addon => addon.id === 'binderhub' && addon.configured)
+                    .length > 0;
+                this.set('binderhubEnabled', result);
+            });
+        return result;
+    }
+
+    @computed('node.addons')
+    get metadataEnabled(): boolean | null {
+        if (!this.node) {
+            return null;
+        }
+        let result = null;
+        this.getAddons()
+            .then(addons => {
+                result = addons
+                    .filter(addon => addon.id === 'metadata' && addon.configured)
+                    .length > 0;
+                this.set('metadataEnabled', result);
+            });
+        return result;
+    }
+
     @action
     toggleNav() {
         this.toggleProperty('collapsedNav');
+    }
+
+    async getAddons(): Promise<NodeAddonModel[]> {
+        const { node } = this;
+        if (!node) {
+            return [];
+        }
+        const addons = await node.addons;
+        if (!addons) {
+            return [];
+        }
+        return addons.map(addon => addon);
     }
 }

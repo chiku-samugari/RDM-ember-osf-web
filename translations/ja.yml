@@ -1,0 +1,1849 @@
+documentType:
+    default:
+        plural: ドキュメント
+        pluralCapitalized: ドキュメント
+        singular: ドキュメント
+        singularCapitalized: ドキュメント
+    work:
+        plural: ワーク
+        pluralCapitalized: ワーク
+        singular: ワーク
+        singularCapitalized: ワーク
+    paper:
+        plural: ペーパー
+        pluralCapitalized: ペーパー
+        singular: ペーパー
+        singularCapitalized: ペーパー
+    preprint:
+        plural: プレプリント
+        pluralCapitalized: プレプリント
+        singular: プレプリント
+        singularCapitalized: プレプリント
+    thesis:
+        plural: 論文
+        pluralCapitalized: 論文
+        singular: 論文
+        singularCapitalized: 論文
+general:
+    OSF: '{title}'
+    share: 共有
+    embed: 埋め込み
+    download: ダウンロード
+    download_url: ダウンロードURL
+    done: 完了
+    delete: 削除
+    view: ビュー
+    edit: 編集
+    cancel: キャンセル
+    ok: OK
+    revisions: バージョン管理
+    md5: MD5
+    date: 日付
+    sha2: SHA2
+    title: タイトル
+    contributors: メンバー
+    modified: 最終更新日時
+    description: 説明
+    create: 作成
+    and: と
+    or: か
+    bookmark: ブックマーク
+    more: 詳細
+    upload: アップロード
+    rename: 名前の変更
+    move: 移動
+    name: 名前
+    size: サイズ
+    version: バージョン
+    downloads: ダウンロード
+    close: 閉じる
+    back: 戻る
+    public: 公開
+    filter: フィルター
+    revert: 元に戻す
+    save: 保存
+    ellipsis: …
+    warning: 警告
+    sort_asc: 昇順ソート
+    sort_desc: 降順ソート
+    last_modified: 最終更新日
+    sort: ソート
+    asc_paren: (asc)
+    desc_paren: (desc)
+    loading: ロード中...
+    next: 次へ
+    previous: 戻る
+    help: ヘルプ
+    api: API
+    cos: 国立情報学研究所
+    home: ホーム
+    period: .
+    settings: 設定
+    project: プロジェクト
+    component: コンポーネント
+    hosted_on_the_osf: 'Hosted on GakuNin RDM'
+    please_confirm: 確認してください。
+    proj_admin: プロジェクト管理者
+    quota_notice: クォータ警告
+    required: 必須
+    options: オプション
+    optional: 任意
+    optional_paren: (任意)
+    services:
+        collections: コレクション
+        institutions: 機関
+        preprints: プレプリント
+        registries: 登録
+    other: Other
+node_categories:
+    analysis: 分析
+    communication: コミュニケーション
+    data: データ
+    hypothesis: 仮説
+    instrumentation: インストルメンテーション
+    'methods and measures': 方法と対策
+    procedure: 手順
+    project: プロジェクト
+    software: ソフトウェア
+    other: その他
+    uncategorized: 未分類
+maintenance:
+    line1: '本サイトは<strong>{start}から{end}</strong> ({utc} UTC)時の間メンテナンスを実施します。'
+    line2: ご不自由をおかけいたしますが、ご協力どうぞよろしくお願いいたします。
+    title: お知らせ：
+quickfiles:
+    title: ' {user-name}のQuick File'
+    description: ' ここにアップロードされたファイルは<b>一般公開</b>されており、共有リンクを使用して他のユーザーと簡単に共有できます。'
+    feedback_dialog_text: 'Quick Fileについてご意見をお聞かせください。'
+    transition_auth: 'Quick Fileを表示するには、ログインしている必要があります。ログインページに遷移します。'
+    share_by_email: メールで共有
+feedback:
+    button_text: フィードバック
+    placeholder: フィードバックをNIIと共有
+    follow_up_label: 'GakuNin RDMを改善するさらなる機会について私に連絡してください'
+    title: フィードバックを送る
+    confirm_button_text: 送信
+    thank_you: ありがとうございます。
+    success: あなたからのフィードバックは提出されました。
+    dismiss: 了解
+file_detail:
+    version:
+        id: バージョンID
+        title: '(バージョン: {version-number})'
+    embed:
+        dynamic: 動的にJavaScriptを用いたレンダーiframe
+        direct: 高さと幅を固定したダイレクトiframe
+    tags: 'タグ:'
+    toggle: 'ビュー切り替え:'
+    delete_file:
+        question: 'ファイルを削除しますか？?'
+        confirm: '本当に<b>{file-name}</b>を削除してもよろしいですか？'
+    sha2_description: SHA-2は、データの完全性を検証するために使用されるNSAによって設計された暗号ハッシュ関数です。
+    md5_description: MD5は、データの完全性を検証するために使用されるアルゴリズムです。
+    delete_success: ファイルが削除されました。
+    delete_fail: エラー：ファイルを削除できません。
+    save_success: ファイルが保存されました。
+    save_fail: エラー：ファイルを保存できません。
+    mfr_iframe_title: ドキュメントのレンダリング
+    embed_js_label: 埋め込み用javascript
+    embed_iframe_label: 埋め込み用iframe
+file_browser:
+    loading: ロード中...
+    delete_multiple: 複数削除
+    download_zip: Zipでダウンロード
+    drop_placeholder: アップロードするファイルをここにドロップ
+    drop_reminder: アップロードするファイルをドロップ
+    no_files: このユーザーはQuickFileをアップロードしていません
+    share_title: 共有
+    clipboard_copy: クリップボードへコピー
+    info:
+        title: ファイルブラウザの使い方
+        upload: '<b>アップロード:</b>ドラッグアンドドロップまたはアップロードボタンをクリックして、ファイルをアップロードします。'
+        select: '<b>行を選択:</b>行をクリックすると、ツールバーにさらにアクションが表示されます。 複数のファイルを選択するには、commandキーまたはshiftキーを使用します。'
+        folders: '<b>フォルダ:</b>サポートされていません; 多くのファイルをアップロードおよび管理するためのGakuNin RDMプロジェクトを検討してください。'
+        open1: '<b>ファイルを開く:</b>ファイル名をクリックすると、GakuNin RDM内のファイルが表示されます。'
+        open2: '<b>新規タブでファイルを開く:</b> command（WindowsではCtrl）を押し、ファイル名をクリックして新しいタブで開きます。'
+        download: '<b>Zipでダウンロード:</b> ツールバーの [Zipでダウンロード] ボタンをクリックすると、すべてのファイルが.zipとしてダウンロードされます。'
+    delete_modal:
+        title: '"{filename}"を削除しますか？'
+        title_multiple: 複数削除しますか？
+        body: この操作は不可逆的です。
+    conflict_modal:
+        title: '{textValue}という名前のアイテムは、この場所に既に存在します。'
+        keep_info: '"両方を保持"は、両方のファイル（およびそのバージョン履歴）をこの場所に保持します。'
+        replace_info: '"置換"は、この場所にある既存のファイルを上書きします。 上書きされたファイルの以前のバージョンは失われます。 移動したファイルの以前のバージョンを保持します。'
+        keep_button: 両方を保持
+        replace_button: 置換
+    move_modal:
+        title: プロジェクトへファイルを移動
+        move_button: ファイルを移動
+    filtering: フィルタリング
+    file_added: このファイルは追加されました。
+    file_added_toast: ファイルが追加されました。
+    file_replaced: このファイルは置換されました。
+    file_deleted: このファイルは削除されました。
+    delete_failed: 削除に失敗しました。
+    rename_failed: 'Unable to rename file'
+    successfully_moved: 移動に成功しました
+    successfully_renamed: 'This file has been successfully renamed.'
+dashboard:
+    page_title: ホーム
+    title: ダッシュボード
+    create_new_project_button: 新規プロジェクト作成
+    quicksearch:
+        search: プロジェクトを検索
+        other_links: |-
+            あなたのプロジェクトを整理{useSearch, select,
+                true { 、<a href="/search/">検索</a> }
+                other {  }
+            }するには、<a href="/myprojects/">マイプロジェクト</a>を開きます
+        no_results: プロジェクトが見つかりません。
+        no_projects:
+            line1: まだプロジェクトがありません。画面右上のボタンからプロジェクトを作成して下さい。
+            line2: この機能を使用すると、プロジェクトを検索してすばやくアクセスできます。
+            preview_alt: クイックプロジェクトの全画面プレビュー
+        private_parent: '非公開プロジェクト / '
+        private_grandparent: '非公開プロジェクト / 非公開 / '
+    noteworthy:
+        description: 公開プロジェクトの検索
+        new_and_noteworthy: 新着と注目
+        failed_noteworthy: '"新着と注目"プロジェクトのローディングに失敗しました。'
+        most_popular: 最も人気
+        failed_popular: '"最も人気"プロジェクトのローディングに失敗しました。'
+        search_more: 更にプロジェクトを探す
+        by: by
+    meetings:
+        title: 学会や研究会を主催しますか？
+        description: 'GakuNin RDM for Meetings サービスを使用し、学術集会への投稿するためのポータルを提供します。'
+        button: 学術集会の表示
+    preprints:
+        title: 最新の研究を閲覧
+        description: 'さまざまな研究分野をカバーするGakuNin RDMで、ホストされている最新のプレプリントをご覧ください。'
+        button: プレプリントの表示
+new_project:
+    header: 新規プロジェクトの作成
+    title_placeholder: プロジェクトのタイトル
+    more: 詳細
+    affiliation: 所属
+    remove_all: 全件削除
+    select_all: 全件選択
+    no_matches: 一致するものがありません。
+    description_placeholder: プロジェクトの説明
+    template_title: テンプレート（オプション）
+    template_search_help: プルダウンから文字を入力しプロジェクトを検索。テンプレートとしてプロジェクトを選択すると、そのプロジェクトの内容をインポートせずにその構造が新しいプロジェクトに複製されます。
+    template_placeholder: テンプレートとして使用するプロジェクトを選択する
+    success_message: 新規プロジェクトが作成されました
+    stay_here: このページに留まる
+    go_to_new: 作成したプロジェクトへ移動
+    storage_region: ストレージの場所
+    could_not_create_project: 'Could not create project'
+    creating: プロジェクトを保存中...
+    create_failed_header: プロジェクトを作成できませんでした
+    create_failed_msg: '不明なエラーが発生しました。 後でもう一度やり直してください。'
+banners:
+    prereg:
+        description: 'あなたの次の研究を改善してください。 Prereg Challengeに参加すれば$ 1,000を獲得できます。'
+        button: 'Prereg Challengeを始める'
+    view_only:
+        warning: 'GakuNin RDMを表示専用リンクから表示しているため、表示する権限があるデータが制限される場合があります。'
+        view_normally: このページを離れます。
+move_to_project:
+    create_new_project: 新規の公開プロジェクトを作成
+    connect_to_existing: '既存のGakuNin RDMプロジェクトへファイルを接続する'
+    enter_project_title: プロジェクトタイトルの入力
+    new_project_message: 'ファイル用の新しい公開プロジェクトを作成することを選択しました。 プロジェクトがプライベートにならない限り、ユーザーは引き続きファイルにアクセスできます。'
+    choose_project: プロジェクトを選択
+    select_placeholder: クリックして選択
+    project_select_message: '表示されるプロジェクトのリストは、書き込みアクセス権を持つプロジェクトとコンポーネントです。 登録はここには含まれていません。'
+    no_projects_exist_error: '利用可能なプロジェクトはありません。 新しいプロジェクトを作成するには、元に戻ってください。'
+    could_not_create_project: 'プロジェクトを作成できませんでした。 もう一度お試しください。'
+    convert_or_copy_message:
+        project: '"ファイルの移動"をクリックすると、すぐにGakuNin RDMプロジェクトが変更され、ファイルが移動されます。'
+        component: '"ファイルの移動"をクリックすると、すぐにGakuNin RDMコンポーネントが変更され、ファイルが移動されます。'
+    no_longer_public_warning:
+        project: 非公開プロジェクトに移動されたファイルは公開されなくなり、他のユーザーから見えなくなります。
+        component: プライベートコンポーネントに移動されたファイルは公開されなくなり、他のユーザーから見えなくなります。
+    file_successfully_moved: ファイルは正常に移動されました。
+    could_not_move_file: 'ファイルを移動できませんでした。 もう一度お試しください'
+    keep_working_here: このページに留まる
+    go_to_new_project: 作成したプロジェクトへ移動
+    go_to_component: コンポーネントへ移動
+    go_to_project: プロジェクトへ移動
+navbar:
+    add: 追加
+    # add_a_preprint: '{preprintWords.preprint}を追加'
+    browse: 探す
+    cancel_search: 検索をキャンセル
+    donate: 寄付
+    go_home: ホームへ
+    my_projects: マイプロジェクト
+    my_registrations: 登録情報
+    my_quick_files: 'マイ Quick Files'
+    reviews: マイレビュー
+    search: 検索
+    search_help: 検索ヘルプ
+    search_the_OSF: 'GakuNin RDM内を検索'
+    send_search: 検索クエリの送信
+    support: サポート
+    toggle_primary: プライマリー・ナビゲーション切替
+    toggle_secondary: セカンダリー・ナビゲーション切替
+    other_views: '他のGakuNin RDMビュー'
+    login: ログイン
+    join: ジョイン
+    osf_logo: 'GakuNin RDM ロゴ'
+    search_bar: 'Search bar for registries'
+auth_dropdown:
+    log_out: ログアウト
+    my_profile: プロフィール
+    osf_support: 'RDM サポート'
+    sign_up: 新規登録
+    sign_in: ログイン
+    user_gravatar: ユーザグラベイタ
+    toggle_auth_dropdown: authドロップダウンの切替
+support:
+    title: サポート
+    faq_title: よくあるご質問
+    faq_paragraph: 'どうすれば無料になるのですか？ GakuNin RDMは私の研究にどのように役立つでしょうか？ 登録とは何ですか？等、 GakuNin RDMに関する質問は、<a href="{faqPageUrl}" data-analytics-name="faq_link">FAQページ</a>を参照して下さい。'
+    faq_button: FAQへ
+    guides_title: 'GakuNin RDMガイド'
+    guides_paragraph: '研究ワークフローを改善するためにGakuNin RDMを使用する方法を学びます。 プロジェクトの基本的な構造、バージョン管理、プライバシー、ファイル、アドオンサポート等のスクリーンショットは<a href="{helpUrl}" data-analytics-name="guides_link">ガイド</a>を参照して下さい。'
+    guides_button: ガイドへ
+    contact_title: 連絡する
+    contact_questions: その他の質問やコメント
+    contact_form: リクエストを送る
+    prereg_title: 事前登録について質問はありますか？
+    prereg_paragraph: '<a href="{preregUrl}" data-analytics-name="prereg_link">プレレグページ</a>をご覧ください。'
+    status_title: あなたは私たちのサービスでダウンタイムを経験していますか？
+    status_paragraph: '当社のサービスがどのように機能しているかの最新情報については、<a href="{statusPageUrl}" data-analytics-name="status_page_link">ステータスページ</a>をご覧ください。'
+    consultation_title: 実践的なトレーニングをお探しですか？
+    consultation_paragraph: 'このサービスの詳細については、<a href="{consultationUrl}" data-analytics-name="consultation_link">トレーニングサービス</a>のページをご覧ください。'
+    social_title: その他の方法
+    social_twitter: Twitterで質問
+    social_mailing: メーリングリストへ参加
+    social_facebook: Facebookでフォロー
+    social_github: NIIのGitHubとコンタクト
+not_found:
+    title: ページが見つかりません。
+    body: '要求されたリソースが見つかりませんでした。 これが発生してはならず、問題が解決しない場合は、<a href="mailto:{supportEmail}"> {supportEmail} </a>に報告してください。'
+    registries:
+        contact: 'support@GakuNin RDM.io'
+        go_to: 'GakuNin RDM レジストリ画面へ'
+        line1: 'お探しのページは、GakuNin RDMレジストリサービスに見つかりません。'
+        line2: これが発生してはならず、問題が解決しない場合は、報告してください。
+error_no_api:
+    title: APIは利用できません。
+    body: 'APIは現在利用できません。 しばらくしてから再度お試しください。 問題が解決しない場合は、<a href="mailto:{supportEmail}">{supportEmail}</a>に報告してください。'
+osf_mode_footer:
+    dev_mode: このサイトは開発モードで実行されています。
+footer:
+    status: ステータス
+    faq: FAQ/ガイド
+    source_code: ソースコード
+    rpp: '再現性&nbsp;プロジェクト: 心理学'
+    rpcb: '再現性&nbsp;プロジェクト: がん生物学'
+    top: 'TOP ガイドライン'
+    donate: 寄付
+    socialize: ソーシャライズ
+    contact: コンタクト
+    copyright: 'Copyright &copy; 2016-{currentYear}'
+    terms: 利用規約
+    privacy: プライバシーポリシー
+    separator: ' | '
+home:
+    title: ホーム
+    youtube_modal_title: 'GakuNin RDMを始める'
+    alert_logged_out: ログアウトしました。
+    brand: '{brand}'
+    tagline: 研究データ管理による研究推進と研究公正
+    youtube_label: 'GakuNin RDM YouTube ビデオ'
+    osf_screenshot_alt: 'GakuNin RDMのスクリーンショット'
+    signup_title: '無料でオープンソース。 今すぐ始めましょう。'
+    collaboration: 簡略化された学術コラボレーション
+    management: あなたのプロジェクトのためのクラウドベースの管理
+    structured_projects_title: 構造化プロジェクト
+    structured_projects_paragraph: すべてのファイル、データ、プロトコルを<strong>一元化した場所</strong>に保管してください。ファイルを探すためにメールを探したり、失われたデータから回復するために急いで移動したりする必要はありません。
+    secure_cloud: セキュアクラウド
+    control_access_title: アクセス制御
+    control_access_paragraph: プロジェクトのどの部分を公開または非公開にするかを管理することで、世界中のコミュニティやチームだけと簡単にコラボレーションできます。
+    control_access_span: プロジェクトレベルの権限
+    workflow_title: あなたのワークフローを尊重する
+    workflow_paragraph: '<strong>あなたのお気に入りのサードパーティサービスをGakuNin RDMに直接接続してください。</strong>'
+    workflow_span: サードパーティインテグレーション
+    student_main: '「GakuNin RDMは、コラボレーションの精神で研究プロセスを効果的に共有したい人のためのゲームチェンジャーです」'
+    student_attrib: '<strong>パトリシア・アヤラ</strong>、トロント大学研究サービス司書'
+    integrations_title: 'GakuNin RDMの統合による、<strong>ワークフローの効率化</strong>'
+    integrations_alt_dropbox: 'Dropbox ロゴ'
+    integrations_alt_github: 'Github ロゴ'
+    integrations_alt_amazon: 'Amazon S3 ロゴ'
+    integrations_alt_box: 'Box ロゴ'
+    integrations_alt_google: 'Google Drive ロゴ'
+    integrations_alt_figshare: 'Figshare ロゴ'
+    integrations_alt_dataverse: 'Dataverse ロゴ'
+    integrations_alt_mendeley: 'Mendeley ロゴ'
+    features_title: 研究が成功するために必要なもの<strong>すべて</strong>のもの
+    features_manage_title: プロジェクト管理
+    features_manage_paragraph: '<strong>1つのダッシュボード</strong>からすべてのプロジェクトを表示します。'
+    features_share_title: すばやくファイルを共有
+    features_share_paragraph: '<strong>主要なプロジェクト情報を共有</strong>し、他の人がそれを使用して引用できるようにする。'
+    features_changes_title: プロジェクトの変更を参照する
+    features_changes_paragraph: '最新のプロジェクトの変更、貢献者および<strong>履歴ファイルのバージョン</ strong>をご覧ください。'
+    features_analytics_title: プロジェクト分析の表示
+    features_analytics_paragraph: '長期にわたる訪問から上位の参照Webサイトまで、<strong>プロジェクトデータ</ strong>にアクセスします。'
+    features_archive_title: データをアーカイブする
+    features_archive_paragraph: 'コンピューターまたは協力者は爆発しますか？ GakuNin RDMを使用すると、<strong>プロジェクトデータが失われることはありません。</ strong>'
+    features_collaboration_title: アクセスとコラボレーションの制御
+    features_collaboration_paragraph: 他のユーザーをプロジェクトに追加して共同作業を行ったり、アクセス権限を付与したりします。
+    features_workflow_title: ワークフローを盛り上げる
+    features_workflow_paragraph: 'GakuNin RDMは、個人、チーム、研究室が<strong>研究プロセスをより効率的にするのに役立ちます。</ strong>'
+    features_registration_title: 登録
+    features_registration_paragraph: '<strong>データ収集の開始など、ライフサイクルの重要な部分でプロジェクトの状態を保持します</ strong>。'
+    global_title: 'グローバルな科学的取り組みに<strong>貢献</ strong>する'
+    global_paragraph: '世界中のラボとチームがGakuNin RDMを使用して、プロジェクトを科学コミュニティに公開しています。 最新で最も人気のある公共プロジェクトを閲覧できます'
+    global_link: ここに.
+    global_label: 参加する。
+    non_profit_title: 私たちは、<strong>ミッションドリブンの非営利組織</strong>です
+    non_profit_paragraph1: 'GakuNin RDMは無料のオープンソースサービスです。'
+    non_profit_link: 国立情報学研究所
+    non_profit_paragraph2: 私たちは、研究の開放性、完全性、再現性を改善することにより、科学的実践と科学的価値を一致させています。
+    non_profit_label: 非営利
+    users_title: '<strong>教師、研究者、グローバルチームはGakuNin RDMに依存しています</ strong>'
+    users_1_alt: 'Richard Ball'
+    users_1_title: 研究を再現可能かつ検証可能にする
+    users_1_paragraph: 'GakuNin RDMは、生徒が健全なデータ管理の原則を理解し、自分の仕事に適用するのを支援します。 また、学生が作業しているすべてのファイルに簡単にアクセスできるため、建設的なガイダンスを提供する能力が大幅に向上します。'
+    users_1_small: 'Richard Ball, ハーバードカレッジの経済学教授'
+    users_2_title: バージョン管理により生活が楽になります
+    users_2_paragraph: 'GakuNin RDMはバージョン管理を簡単にします。 私のPI、研究室の仲間、そして私はいつでもファイルの以前のバージョンにアクセスでき、最新バージョンはいつでもすぐに利用できます。'
+    users_2_small: 'Erica Baranski, 博士課程学生, 社会心理学Funder研究室, カリフォルニア大学リバーサイド校'
+    users_2_alt: 'Erica Baranski'
+    users_3_alt: 'Anne Allison'
+    users_3_title: 情報の集中型ハブ
+    users_3_paragraph: 'GakuNin RDMは、複数の分類にまたがる多様な研究プロジェクトを監督できる情報の集中ハブを作成します。 集中化、組織化、およびどこからでもアクセスできるため、これらのプロジェクトの管理に必要な時間とエネルギーを節約できます。'
+    users_3_small: 'Anne Allison, ピエモント・バージニア・コミュニティ大学の生物学の准教授'
+    free_title1: 無料でオープンソース
+    free_title2: 'GakuNin RDMは、研究を支援するために構築された公共財です。'
+    free_link: 始めよう
+    learn_more: もっと詳しく知る
+new-home:
+    support-section:
+        header: 'GakuNin RDMが研究をサポートする方法'
+        arrow: アロー
+        search:
+            header: 検索と発見
+            description: '論文、データ、資料を検索して、次の研究プロジェクトを刺激してください。 公開プロジェクトを検索して、他の人の仕事を土台にして、新しい協力者を見つけます。'
+        design:
+            header: 研究をデザインする
+            description: 'プロジェクトを開始し、協力者を追加して、プロトコルやその他の研究資料にアクセスできるようにします。 組み込みのバージョン管理により、研究の進化が追跡されます。'
+        analyze:
+            header: データの収集と分析
+            description: 'データ、コード、およびその他の資料をGakuNin RDMストレージに保存するか、Dropboxまたは他のサードパーティアカウントに接続します。 すべてのファイルには、引用および共有のための一意の永続URLが割り当てられます。'
+        publish:
+            header: レポートを公開する
+            description: 'GakuNin RDM プレプリントまたはコミュニティベースのPreprint プロバイダで論文を共有して、他の人があなたの研究を見つけて引用できるようにします。 ダウンロードや表示回数などの指標で影響を追跡します。'
+    testimonials:
+        heading: 他の人の意見
+        see_her_research: 彼女の研究を参照する
+        see_his_research: 彼の研究を参照する
+        carousel_heading: ユーザの声
+        slide_1:
+            text: 'GakuNin RDMは、コラボレーションの精神で研究プロセスを効果的に共有したい人のためのゲームチェンジャーです。'
+            alt: 'Patricia Ayalaの証言'
+            description:
+                name: 'Patricia Ayala'
+                position: 研究サービス司書<br>トロント大学
+        slide_2:
+            text: 'GakuNin RDMは、事前登録からデータの収集と分析まで、再現可能な研究パイプラインを作成するのに不可欠です。 その汎用性により、プロジェクトのワンストップショップになっています。 Dropboxの統合により、既存のローカルワークフローがパブリックリポジトリに簡単に変換されます。'
+            alt: 'Maya の証言'
+            description:
+                name: 'Maya Mathur'
+                position: 疫学部<br>ハーバード大学
+        slide_3:
+            text: 'SocArXivは非営利組織であるため、研究者は、利益ではなくアクセス、包括性、保存がミッションの中心にある環境で研究を共有していることを保証できます。 GakuNin RDMと提携することの大きな利点は、このアプリケーションが無料の公共財であることです。'
+            alt: 'Philip Cohen の証言'
+            description:
+                name: 'Philip Cohen'
+                position: 'SocArXiv papers'
+    integrations-section:
+        header: 'GakuNin RDM統合により、ワークフローがより効率的になります'
+        authentication: 認証
+        discovery: 発見
+        references: 参照
+        storage: ストレージ
+        incommon: 'Incommon ロゴ'
+        sso: 'SSO ロゴ'
+        google_scholar: 'Google Scholar ロゴ'
+        orcid: 'Orcid ロゴ'
+        mendeley: 'Mendeley ロゴ'
+        zotero: 'Zotero ロゴ'
+        dropbox: 'Dropbox ロゴ'
+        google_drive: 'Google Drive ロゴ'
+tos_consent:
+    paragraph: '<a href="https://support.rdm.nii.ac.jp/terms">利用規約</a>と<a href="https://support.rdm.nii.ac.jp/terms/">プライバシーポリシー</a>を更新しました。注意深くお読みください。'
+    have_read_and_agree: これらの規約を読み、同意します
+    continue: 続ける
+    failed_save: 'Unable to save Terms of Services consent.'
+validationErrors:
+    description: このフィールド
+    inclusion: '{description}はリストに含まれていません。'
+    exclusion: '{description}は予約されています。'
+    invalid: '{description}は無効です。'
+    confirmation: '{description}は{on}と一致しません。'
+    accepted: '{description}に同意する必要があります。'
+    empty: 'このフィールドを空白にはできません。'
+    blank: 'このフィールドをブランクにはできません。'
+    present: '{description}は空白にする必要があります。'
+    collection: '{description}はコレクションでなければいけません。'
+    singular: '{description}はコレクションにすることはできません。.'
+    tooLong: '{description}が長すぎます。 ({max}文字以内でなければいけません).'
+    tooShort: '{description}が短すぎます。 ({min}文字以上でなければいけません).'
+    before: '{description}は{before}より前でなければいけません。'
+    after: '{description}は{after}より後でなければいけません。'
+    wrongDateFormat: '{description}は{format}の形式である必要があります。'
+    wrongLength: '{description}の長さが間違っています、({is}文字でなければいけません).'
+    notANumber: '{description}は数字でなければいけません。'
+    notAnInteger: '{description}は整数でなければいけません。'
+    greaterThan: '{description}は{gt}より大きくなければいけません。'
+    greaterThanOrEqualTo: '{description}は{gte}以上である必要があります。.'
+    equalTo: '{description}は{is}と等しくなければいけません。.'
+    lessThan: '{description}は{lt}未満でなければいけません。.'
+    lessThanOrEqualTo: '{description}は{lte}以下でなければいけません。'
+    otherThan: '{description}は{value}以外でなければいけません。'
+    odd: '{description}は奇数でなければいけません。'
+    even: '{description}は偶数でなければいけません。'
+    positive: '{description}は正の数でなければいけません。'
+    date: '{description}は有効な日付でなければなりません。'
+    onOrAfter: '{description}は{onOrAfter}以降でなければいけません。'
+    onOrBefore: '{description}は{onOrBefore}以前でなければいけません。'
+    email: '{description}は有効なメールアドレスでなければいけません。'
+    phone: '{description}は有効な電話番号でなければいけません。'
+    url: '{description}は有効なURLでなければいけません。'
+    https_url: '{description}は有効なhttps URLでなければいけません。'
+    email_registered: このメールアドレスは既に登録されています。
+    email_invalid: '無効なメールアドレスです。 これが発生しないはずの場合は、{supportEmail}に報告してください'
+    email_match: メールアドレスは一致する必要があります。
+    email_duplicate: メールアドレスが重複しています。
+    password_email: パスワードをメールアドレスと同じにすることはできません。
+    password_old: 新しいパスワードを古いパスワードと同じにすることはできません。
+    password_match: パスワードは一致しなければなりません。
+    recaptcha: reCAPTCHAを完了させてください。
+    affirm_terms: 利用規約とプライバシーポリシーを読み、同意する必要があります。
+    min_subjects: '少なくとも1件の件名を選択する必要があります。'
+    node_license_invalid: ライセンスの無効な必須項目
+    node_license_missing_fields: '次の必須項目がありません。: {missingFields}'
+    invalid_doi: 有効なDOI形式(10.xxxx/xxxxx)を使用してください
+    mustSelect: 'You must select a value for this field.'
+    mustSelectMinOne: 'You must select at least one value for this field.'
+    mustSelectFileMinOne: 'You must select at least one file for this field.'
+    onlyProjectOrComponentFiles: 'The {numOfFiles, plural, =1 {file} other {files}} "{missingFilesList}" cannot be found on this {projectOrComponent}.'
+    new_folder_name: 'Folder name must not be blank.'
+    year_format: 'Please specify a valid year.'
+    invalid_format_funder: '半角英数字で入力してください。'
+    invalid_format_funding-stream-code: '5文字以内の半角英数字で入力してください。'
+validated_input_form:
+    discard_changes: 変更を破棄
+node_navbar:
+    toggle: ナビゲーションを切り替える
+    project_nav: プロジェクトナビゲーション
+    iqbrims: IQB-RIMS
+    wiki: Wiki
+    analytics: 統計
+    registrations: 登録
+    files: ファイル
+    contributors: メンバー
+    addons: アドオン
+    settings: 設定
+    comments: コメント
+    binderhub: 解析
+    metadata: メタデータ
+status:
+    welcome_message: '<h1>GakuNin RDMへようこそ!</h1><p><a href="https://openscience.zendesk.com/hc/en-us" target="_blank" rel="noreferrer">プロジェクトの作成方法について学ぶ</a>か、<a href="https://osf.io/explore/activity/#popularPublicProjects">一般的な公開プロジェクトからインスピレーションを得ます</a>。</p>'
+    alternate_email_error: '<b>メールアドレスがアカウントに追加されていません</ b>。 ログアウトして、メールのリンクを再確認してください。 ありがとうございました。'
+    # remove_addon: '{extra.category} "{extra.title}" のGitHubアドオンは{extra.user},によって認証されたため、認証情報は削除されました。'
+    project_deleted: プロジェクトは正常に削除されました。
+    component_deleted: コンポーネントは正常に削除されました。
+    remove_self_contrib: このプロジェクトからメンバーとして自分自身を削除しました。
+    registration_archiving: ファイルは新しく作成された登録にコピーされており、コピーが完了するとメール通知を受け取ります。
+    registration_submitted: 'あなたの提出物は受領されました。 2営業日以内に、提出ステータスについて通知されます。 ご質問がある場合は、prereg @ NII.ioまでご連絡ください。'
+    redirected_to_registrations: 'プロジェクトの登録ページにリダイレクトされました。 ここから、新しいドラフト登録を開始して、登録プロセスを完了できます。'
+dropzone_widget:
+    drop_files: ここにファイルをドロップしてアップロードします
+    error_multiple_files: 複数のファイルをアップロードできません
+    error_directories: ディレクトリ、アプリケーション、またはパッケージをアップロードできません
+join_osf:
+    header: 'GakuNin RDMでプロジェクトの管理を今すぐ始めましょう。'
+    pitch: '無料で使いやすいGakuNin RDMは、計画、実行、レポート、アーカイブ、および発見という研究ライフサイクル全体をサポートします。'
+    create_account: アカウントを作成する
+    learn_more: もっと詳しく知る
+    hide_message: このメッセージを非表示
+node_card:
+    generic:
+        private_tooltip: このプロジェクトはプライベートです。
+        timestamp_label: ""
+    fork:
+        private_tooltip: このフォークはプライベートです
+        timestamp_label: 'フォーク:'
+        manage_contributors: メンバーを管理する
+    registration:
+        private_tooltip: この登録は非公開です
+        timestamp_label: '登録日:'
+        statuses:
+            pending: 登録待ち
+            withdrawn: 脱退している
+            pending_withdrawl: 脱退待ち
+            embargoed: 停止
+            pending_embargo: 停止待ち
+            pending_embargo_termination: 停止の終了待ち
+            archiving: アーカイブ
+    tags: 'タグ:'
+    options: オプション
+forks:
+    fork: フォーク
+    title: フォーク
+    info: 表示する権限があるフォークがここに表示されます。
+    back: 分析に戻る
+    new: フォークを作成
+    loading_new: 新しいフォークを作成しています
+    new_fork_info_title: フォークのステータス
+    new_fork_info: 'フォークを作成しています。 完了するとメールが届きます。'
+    create_fork_modal: このプロジェクトをフォークしてもよろしいですか？
+    unable_to_delete_fork: このコンポーネントを削除する前に、子コンポーネントを削除する必要があります。
+    page_title: '{nodeTitle} フォーク'
+    no_forks: フォークは、元のプロジェクトに影響を与えずに変更できるプロジェクトのコピーです。
+    new_fork_failed: '新しいフォークを作成できませんでした。 後でもう一度やり直してください。'
+    delete_fork_failed: 'プロジェクトの削除に失敗しました。 後でもう一度やり直してください。'
+node:
+    registrations:
+        new_registration_modal:
+            title: 登録
+            info: '登録により、プロジェクトの凍結バージョンが作成されます。 元のプロジェクトは編集可能なままで、登録がリンクされます。 登録について知っておくべきこと：<ul> <li> <strong>登録を編集または削除することはできません。</ strong> </ li> <li>登録を取り消すと、そのコンテンツは削除されますが、タイトル、投稿者、 登録日、撤回日、正当化（提供されている場合）。</ li> <li>登録は、最大4年間公開または停止できます。 停止の登録は、禁輸の有効期限が切れると自動的に公開されます。</ li> </ ul>登録フォームを選択して登録を続行します。'
+            create: 下書きを作成
+        prereg_modal:
+            title: 事前登録チャレンジ
+            notice: 通知
+            eligibility: '賞品を獲得するには、2018年12月31日までに<a href="{approvedJournalLink}">承認済み</a>ジャーナルによって記事を公開する必要があります。'
+            info: '以下は、事前登録チャレンジへの参加を選択した人にとって重要な項目です。 条件に同意しない場合でも、チャレンジを入力せずに続行し、フォームを使用して、調査研究を登録できます。 <strong>チャレンジに参加してレビューを受ける事前登録のみが$ 1,000の賞品の対象となります。</ strong> 質問やコメントを歓迎します（詳細は <a href="{learnMoreLink}">こちら</a> またはメール <a href="mailto:prereg@NII.io">prereg@cos.io</a>)でお問い合わせください。'
+            list: '<li>調査計画をレビュー用に送信した後、まだ登録されていません。 あなたの研究計画は、レビューに合格すると静的なタイムスタンプ付きの事前登録になります。 <strong>登録するまで学習を開始しないでください。</strong>2営業日以内にレビューチームから連絡があります。</li><li>公開された記事は、賞品を受け取る前にレビューする必要があります。 </li><li>賞品は、資格のある参加者に所定の日に授与されます。 利用可能な賞品よりも資格のある参加者が存在する場合、登録日に基づいて参加者がランク付けされます。</li><li>記事は、<a href="{eligibleJournalLink}">対象となるジャーナル</a>.</li><li>米国国務省の<a href="{embargoedCountriesLink}">停止国のリスト</a>に居住する国々は、事前登録チャレンジに参加できません。</li><li>事前登録チャレンジに参加するには、<a href="{termsLink}">すべての規約</a>に同意する必要があります。</li>'
+            consent: '私はこれらの条件を読みました。 賞を受賞するには、2018年12月31日までに記事を公開する必要があることを理解しています。'
+            continue: 続ける
+        page_title: '{nodeTitle} 登録'
+        no_registrations: このプロジェクトの登録は完了していません。
+        only_admins_can_initiate: プロジェクト管理者のみが登録を開始できます。
+        no_drafts: このプロジェクトの登録草案はありません。
+        start_new: '「新規登録」ボタンをクリックして、新規登録を開始します。 作成した登録は、編集または削除できません。'
+        learn_more: '登録の詳細については、<a href="{learnMoreLink}">こちら</a>をご覧ください。.'
+        register_entire_project: '代わりにプロジェクト"{rootNodeTitle}"全体を登録するには、クリックします。'
+        here: こちら
+        new: 新規登録
+        registrations: 登録
+        draft_registrations: ドラフト登録
+    metadata:
+        new_report_modal:
+            title: メタデータ様式を選択
+            info: 'デフォルトは「公的資金による研究データのメタデータ登録」です。<ul><li>「ムーンショット目標２未病データベース-メタデータ」は該当する人のみ選択してください</li></ul>新規に作成したいプロジェクトメタデータの様式を以下から選択してください。<ul><li>メタデータ作成では、様式で定義された各項目を入力することができます。</li><li>メタデータ作成では、このプロジェクトに含まれるファイルのメタデータを登録することができます。</li><li>メタデータ作成から報告書様式に準拠したファイルをダウンロードし、報告書等の提出に利用することができます。</li></ul>'
+            note: ＊今後、対応する事業や機関の増加に合わせて、メタデータの様式は随時追加されていきます。
+            create: メタデータを作成
+        page_title: '{nodeTitle} メタデータ'
+        only_admins_can_initiate: プロジェクト管理者のみがメタデータ作成を開始できます。
+        no_reports: このプロジェクトのメタデータはありません。
+        no_drafts: このプロジェクトに関する下書きはありません。
+        start_new: '「新規メタデータを作成」ボタンをクリックして、新規メタデータ作成を開始します。一度登録したメタデータを、編集または削除することはできません。'
+        register_entire_project: '代わりにプロジェクト"{rootNodeTitle}"全体を報告するには、クリックします。'
+        here: こちら
+        new: 新規メタデータを作成
+        reports: メタデータ
+        draft_reports: 下書き
+delete_modal:
+    title: 'この{nodeType}を削除してもよろしいですか？'
+    body: '{nodeType}の他の投稿者は利用できなくなります。'
+    type_this: '次を入力して続行します:'
+    input_label: 科学者名の確認
+paginator:
+    next: 次のページ
+    previous: 前のページ
+    page: 'ページ {page} / {max}'
+social:
+    twitter: Twitter
+    facebook: Facebook
+    google_group: 'Google グループ'
+    github: GitHub
+    linkedin: リンク済み
+institutions:
+    description: 'GakuNin RDM Institutionsは、透明性を高め、コラボレーションを促進し、機関レベルでの研究成果の可視性を高める無料の学術Webツールです。'
+    read_more: 続きを読む
+    footer: 'あなたの研究機関のためにGakuNin RDM Institutionsページをセットアップすることに興味がありますか？'
+    contact_us: お問い合わせ
+    title: 機関
+    search_placeholder: 機関を検索
+    dashboard:
+        title: '{institutionName} Dashboard'
+        last_update: 'Updated every 24 hours'
+        download_csv: 'Download CSV'
+        select_default: 'All Departments'
+        users_list:
+            name: Name
+            department: Department
+            projects: Projects
+            public_projects: 'Public Projects'
+            private_projects: 'Private Projects'
+            empty: 'No users found matching search criteria.'
+        users_connected_panel: 'SSO Users Connected'
+        projects_panel: 'Total Projects'
+        departments_panel: Departments
+        public: Public
+        private: Private
+        users: Users
+        empty: 'No data for institution found.'
+registration:
+    project_alert: 'この登録は、<a class="link-solid" href="/{projectId}/">このプロジェクト</a>の凍結された編集不可バージョンです。'
+list:
+    two_item:
+        delimiter: ', '
+    many_item:
+        first_delimiter: ', '
+        each_delimiter: ', '
+        last_delimiter: ', '
+contributor_list:
+    x_more: '他{x}名'
+    anonymous: 匿名のメンバー
+app_components:
+    branded_navbar:
+        my_osf_projects: 'My GakuNin RDM Projects'
+        on_the_osf: 'GakuNin RDMで:'
+    error_page:
+        email_message: これが発生してはならず、問題が解決しない場合は、報告してください
+        go_to: '{brand}に移動します。'
+    license_picker:
+        faq: 'ライセンス FAQ'
+        show: 全文を表示
+        hide: 全文を非表示
+        fields:
+            copyrightHolders: 著作権者
+            year: 年
+    license_text:
+        anonymized_placeholder: '[anonymized]'
+    navbar:
+        add_item: '{objectType}に追加'
+    project_contributors:
+        title: メンバー
+        contributors_popover_title: メンバー情報
+        contributors_popover: 'プロジェクトには、少なくとも1人の登録管理者と1人の著者が常に引用に表示されている必要があります。 登録管理者は、アカウントを確認し、管理者権限を持っているユーザーです。'
+        instructions: 著者をドラッグアンドドロップして、著者の順序を変更します。
+        list:
+            name: 名前
+            permissions: 許可
+            permissions_popover_title: 許可情報
+            permissions_popover: "\n                    <dl>\n                        <dt>読込</dt>\n                        <dd>\n                            <ul>\n                                <li>プロジェクトを参照する</li>\n                            </ul>\n                        </dd>\n                        <dt>読込/書込</dt>\n                        <dd>\n                            <ul>\n                                <li>読取権限</li>\n                                <li>プロジェクトを追加して構成する</li>\n                                <li>コンテンツを追加および編集する</li>\n                            </ul>\n                        </dd>\n                        <dt>管理者</dt>\n                        <dd>\n                            <ul>\n                                <li>読取/書込権限</li>\n                                <li>メンバーを管理する</li>\n                                <li>公開/非公開設定</li>\n                            </ul>\n                        </dd>\n                    </dl>\n                "
+            citation: 引用
+            citation_popover_title: 引用情報
+            citation_popover: 'チェックされたメンバーのみがプロジェクトの引用に含まれます。 引用に含まれていないメンバーは、通常どおりプロジェクトを読んで変更できます。'
+            remove_contributor_success: プロジェクトのメンバーが削除されました。
+            remove_contributor_error: 'メンバーを削除できませんでした。 もう一度やり直してください。'
+            item:
+                img_alt: Gravatar
+                in_citation_label: '引用中:'
+                permissions_label: '許可:'
+                permissions:
+                    admin: 管理者
+                    write: 読込/書込
+                    read: 読込
+                remove: 除外
+                remove_author: 著者を削除
+            load_more_contributors: メンバーをさらに読み込む
+        search:
+            placeholder: 名前で検索
+            unregistered_description: お探しのユーザが見つかりませんか？
+            unregistered_button: メールアドレスで著者を追加
+            results: 結果
+            no_results: 結果が見つかりません。
+            unregistered_contributor:
+                title: メールで著者を追加
+                full_name: フルネーム
+                email: Eメール
+                paragraph: プロジェクトに追加されたことをユーザーに通知します。
+                cancel: キャンセル
+                add: 追加
+                add_success: 未登録のメンバーが追加されました！
+                add_error: '未登録のメンバーを追加できませんでした。 もう一度やり直してください。'
+            result:
+                yourself: あなた自身
+                add: 追加
+            add_contributor_success: プロジェクトメンバーが追加されました！
+            add_contributor_error: 'メンバーを追加できませんでした。 もう一度やり直してください。'
+    project_metadata:
+        field_title_label: 'タイトル:'
+        field_title_placeholder: ""
+        field_description_label: '説明:'
+        field_description_placeholder: ""
+        field_license_label: 'ライセンスを選択してください。:'
+        field_license_placeholder: ""
+        field_tags_label: 'タグ:'
+        field_tags_placeholder: タグを追加
+        save_success: プロジェクトメタデータが保存されました。
+        save_error: プロジェクトメタデータを保存できません。
+    query_syntax:
+        allDatesIn: 全ての日付
+        allFieldsSearched: デフォルトでは、使用可能なすべてのフィールドが検索されますが、代わりに特定のフィールドを検索することを選択できます
+        allTagsBetween: 間のすべてのタグ
+        and: and
+        booleanDesc1: 'デフォルトでは、1つの用語が一致する限り、クエリ内のすべての用語はオプションです。 ブール演算子を使用できます。'
+        booleanDesc2: 検索をより細かく制御する
+        booleanDesc3: 言葉
+        booleanDesc4: は存在する。言葉
+        booleanDesc5: はオプションですが、関連性によるソートに使用されます
+        booleanDesc6: 単語以外は上記と同じ
+        booleanDesc7: は存在する。
+        booleanDesc8: に相当
+        booleanDesc9: 言葉
+        booleanDesc10: タグのリストには
+        booleanOperators: ブール演算子
+        boosting: ぶースティング
+        boostingDesc1: ブースト演算子を使用する
+        boostingDesc2: 'ある用語を別の用語よりも関連性のある数にする。 ブーストは任意の正の数にすることができます。 0と1の間のブーストは関連性を低下させます.'
+        boostingDesc3: 成果を高める
+        boostingDesc4: ただの結果よりも高い
+        both: 両方
+        butNot: 除いて
+        couldNotPerformQuery: 検索クエリを実行できませんでした。
+        damerauLevenshteinDistanceDesc: '多くて1個の変更ですべての単語に一致します。 別の最大編集距離を指定するには、'
+        descriptionContainsPhrase: 説明には正確なフレーズが含まれています。
+        documentation: ドキュメンテーション
+        escapeReservedChars: ' クエリでこれらの予約文字のいずれかを使用する場合は、先頭のバックスラッシュでエスケープします。 たとえば、検索するには '
+        except: を除く
+        excluding: 除く
+        fuzziness: あいまいさ
+        fuzzinessDesc1: 「あいまい」検索を示す単語の後に、類似しているが完全に同じではない一致を含めます。
+        listContainsExactPhrase: メンバー名のリストには正確なフレーズが含まれています
+        listOfIdentifiersContains: 識別子のリストには
+        match: 一致
+        matchWordStartsWith: 次で始まる単語に一致
+        moreInformation: 詳しくは
+        moreInformationOnSearch: 高度な検索クエリの詳細については、以下をご覧ください。
+        moreInfoQuerySyntax: クエリ構文の詳細については、
+        must: しなければいけません。
+        mustNot: してはいけません。
+        needToType: 入力する必要があります。
+        or: or
+        phraseProximity: フレーズ類似
+        phraseProximityDesc1: また、フレーズの最大編集距離を指定して、フレーズ内の単語の間隔を広げたり、順序を変えたりすることもできます。
+        ranges: 範囲
+        rangesDesc1: '角括弧を使用して、フィールドの範囲を指定します。 '
+        rangesDesc2: 包括的な範囲と中括弧を示します
+        rangesDesc3: 排他的範囲を示します
+        reservedChars: 予約文字
+        searchByField: フィールドで検索する
+        specialMeanings: 次の文字はクエリで特別な意味を持ちます。
+        theWord: 単語
+        thisUsesThe: これは
+        titleContainsWord: タイトルに単語が含まれています。
+        use: 使用
+        wildcards: ワイルドカード
+        wildcardsDesc1: ワイルドカードを使用して、複数の用語を一度に一致させます。
+        wildcardsDesc2: 任意の1文字に一致する、または
+        wildcardsDesc3: 0個以上の文字に一致します。
+    search_help_modal:
+        close: 閉じる
+        title: 検索ヘルプ
+        queries: 問い合わせ
+        searchSyntax: '検索では、<a href="http://extensions.xwiki.org/xwiki/bin/view/Extension/Search+Application+Query+Syntax">Lucene検索構文</a>を使用します。'
+        helpDescription: 'これにより多くのオプションが提供されますが、非常に簡単な場合もあります。 有効な検索の例は次のとおりです。:'
+    search_paginator:
+        prev: «
+        next: »
+    submit_section:
+        discard: 変更を破棄
+        save: 保存して続行
+        continue: 続行
+        click_to_edit: クリックして編集
+collections:
+    general:
+        brand: '{name} コレクション'
+    navbar:
+        add: コレクションに追加
+    index:
+        title: コレクション
+        services_heading: コレクションサービス
+        services_paragraph: 大手コレクションサービスプロバイダーは、このオープンソースインフラストラクチャを使用して、コミュニティをサポートしています。
+        service_bottom:
+            p1: 'GakuNin RDMが支援する独自のブランドコレクションサービスを作成します。'
+            div:
+                line1: をチェック
+                linkText1: オープンソースコード
+                line2: そして
+                linkText2: 要件とロードマップ
+                line3: 。入力歓迎です。！
+            contact: お問い合わせ
+    provider:
+        title: プロバイダー
+    discover:
+        title: 発見
+        search_heading: コレクション検索
+        search_placeholder: 検索コレクション
+        other_repositories: その他のコレクション
+        facet_titles:
+            collection_provider: プロバイダー
+            status: ステータス
+            collected_type: タイプ
+            issue: イシュー
+            program_area: プログラムエリア
+            volume: ボリューム
+    collections_submission:
+        title: 提出
+        add_header: コレクションに追加
+        update_header: コレクションで更新
+        project_select_title: プロジェクトを選択
+        project_select_project_label: 'プロジェクト:'
+        closed_tooltip: このセクションを編集するには、前のセクションを完了してください
+        project_metadata_title: プロジェクトのメタデータ
+        project_metadata_description: このセクションで行った更新により、プロジェクトが更新されます。
+        project_metadata_title_label: 'タイトル:'
+        project_metadata_description_label: '説明:'
+        project_metadata_license_label: 'ライセンス:'
+        project_metadata_tags_label: 'タグ:'
+        project_contributors_title: プロジェクトのメンバー
+        project_contributors_description: このセクションを更新すると、プロジェクトが更新されます。
+        collection_metadata_title: コレクションのメタデータ
+        cancel: キャンセル
+        add_button: コレクションに追加
+        update_button: 更新
+        add_save_success: '{title}がコレクションに追加されました。'
+        update_save_success: 'コレクションで{title}が更新されました。'
+        add_save_error: "コレクションへの{title}の追加エラー."
+        update_save_error: "コレクションの{title}の更新エラー."
+        warning_body: '提出に対する変更を破棄してもよろしいですか？ プロジェクトに保存された変更は持続します.'
+    collection_submission_confirmation_modal:
+        header: プロジェクトを提出する
+        body: 'このプロジェクトがコレクションに送信されると、公開されます。常に公開されると想定してください。 後でプライベートに戻すことができますが、検索エンジン（Googleのキャッシュを含む）または他のユーザーは、ファイル、Wikiページ、または分析にあなたがアクセスする前にアクセスできます。'
+        add_button: コレクションに追加
+    collection_item_picker:
+        after_options:
+            loading: ロード中…
+            load_more: さらにプロジェクトを読み込む
+    collection_metadata:
+        collected_type_label: 'タイプ:'
+        issue_label: 'イシュー:'
+        program_area_label: 'プログラムエリア:'
+        status_label: 'ステータス:'
+        volume_label: 'ボリューム:'
+    collection_search_result:
+        expand: 検索結果を展開する
+        collapse: 検索結果を折りたたむ
+    discover_page:
+        active_filters:
+            button: フィルターをクリア
+            heading: アクティブフィルター
+            remove_provider: プロバイダーを削除
+            remove_type: タイプを削除
+            remove_status: ステータスを削除
+            remove_issue: イシューを削除
+            remove_program_area: プログラムエリアを削除
+            remove_volume: ボリュームを削除
+        asOf: から
+        broadenSearch: 検索語を広げてみてください
+        date: 日付
+        funder: 資金提供者
+        language: 言語
+        luceneHelp: Lucene検索ヘルプ
+        noResults: '結果がありません。 いくつかのフィルターを削除してみてください。'
+        noResultsFound: 検索結果が見つかりません。
+        partnerRepositories: パートナーレポジトリ
+        people: People
+        poweredBy: 'powered by'
+        publisher: 出版社
+        refineSearch: 検索を絞り込む
+        removeRegistrationType: 登録タイプを削除
+        search: 検索
+        searchLoading: 検索中
+        searchPlaceholder: 検索中...
+        share: 共有
+        searchUnavailable: 検索は利用できません。
+        sortBy: 並び替え
+        sortSearchResults: 検索結果を並べ替える
+        source: ソース
+        tag: タグ
+        type: タイプ
+registries:
+    header:
+        search: 検索
+        search_placeholder: 登録を検索...
+        searchable_as_of: '{today}現在の{registrations}検索可能な登録 '
+    facets:
+        registration_type:
+            title: 'GakuNin RDM 登録タイプ'
+            only_available_with_osf: 'GakuNin RDMレジストリでのみ利用可能'
+            registration_schema_error: '登録タイプの取得中にエラーが発生しました。 もう一度やり直してください。'
+    application:
+        page_title: 'GakuNin RDMレジストリ'
+    discover:
+        page_title: 検索
+        SHARE: 共有
+        registrations: Registrations
+        sort_by: 並び替え
+        powered_by: 'powered by'
+        no_results: 検索結果が見つかりません。
+        try_broadening: 検索語を広げてみてください
+        order:
+            relevance: 関連性
+            modified_ascending: 最終更新日（最古から最新へ）
+            modified_descending: '最終更新日 (最新から最古へ)'
+        sidebar:
+            refine_your_search: 検索を絞り込む
+            clear_filters: フィルターをクリア
+            active_filters: アクティブフィルター
+        search_result:
+            last_edited: '最終編集日: {date}'
+            withdrawn: 脱退している
+        pagination:
+            previous: «
+            next: »
+    start:
+        page_title: 登録を開始
+    forms:
+        page_title: 登録フォームを選択
+        form:
+            title: 既存の登録スキーマから選択
+        help:
+            title: 登録フォームの選択を支援
+    drafts:
+        page_title: 下書きを表示
+        index:
+            title: 未完成の下書きを選択
+        draft:
+            metadata:
+                title: 基本的な登録情報を記入してください
+                page_label: Metadata
+                failed_auto_save: 'Failed to auto-save draft registration metadata'
+                save_institutions_error: 'Failed to save affiliated institutions'
+                load_institutions_error: 'Failed to load affiliated institutions'
+            form:
+                title: 登録フォームに記入
+                next: 次へ
+                back: 戻る
+                save_draft: 'ドラフトを保存'
+                new_registration: 'プロジェクトメタデータの登録'
+                last_saved: '自動保存済み: '
+                save_failed: '保存に失敗しました。保存できていない変更があります。'
+                failed_auto_save: '下書きの自動保存に失敗しました。'
+            review:
+                title: 送信前に登録を確認する
+                page_label: 内容確認
+                start_review: 内容確認
+                invalid_warning: 'メタデータを登録するには、各項目に正しい内容を入力してください。'
+                toggle_dropdown: 'Toggle navigation dropdown'
+            register: 登録
+            submit_error: 'Unable to create a registration.'
+    index:
+        lead: '<span class="f-w-lg">オープン</span> レジストリネットワーク'
+        see_example: 例を見る
+        services:
+            top:
+                heading: レジストリサービス
+                paragraph: 主要なレジストリサービスプロバイダーは、このオープンソースインフラストラクチャを使用して、コミュニティをサポートしています。
+            bottom:
+                p1: 'GakuNin RDMがサポートする独自のブランドのレジストリを作成します。'
+                div:
+                    line1: をチェック
+                    linkText1: オープンソースコード
+                    line2: そして
+                    linkText2: 要件とロードマップ
+                    line3: 入力歓迎です。
+                contact: お問い合わせ
+        advisory:
+            heading: アドバイザリーグループ
+            paragraph: アドバイザリーグループには、さまざまな分野の登録のリーダーが含まれています
+        recent:
+            title: 登録を閲覧する
+            more: 続きを見る
+    registration_metadata:
+        add_description: 説明を追加
+        add_license: ライセンスを追加
+        affiliated_institutions: 所属機関
+        category: カテゴリー
+        choose_license: 'Choose a License'
+        citation: 引用
+        contributors: メンバー
+        create_doi: DOIを作成する
+        date_created: 作成日
+        date_registered: 登録日
+        description: 説明
+        disciplines: 分野
+        edit_field: '{field}を編集'
+        license: ライセンス
+        metadata_page_heading: 'Registration Metadata'
+        metadata_page_description: 'This metadata applies only to the registration you are creating, and will not be applied to your project.'
+        no_affiliated_institutions: 'No affiliated institutions'
+        no_copyrightHolders: 'No copyright holders'
+        no_description: 説明なし
+        no_doi: DOIが割りあてられていません。
+        no_license: ライセンスがありません。
+        no_matches: 一致がありません。
+        no_publication_doi: パブリケーションDOIがありません。
+        no_subjects: 学科がありません。
+        no_title: 'No title'
+        no_year: 'No year'
+        publication_doi: 'パブリケーション DOI'
+        registered_from: 登録元
+        registration_doi: '登録 DOI'
+        registration_type: 登録
+        select_license: ライセンスを選択
+        show_less: 少なく表示
+        show_more: もっと表示
+        subjects: 学科
+        tags: タグ
+        title: Title
+        edit_description:
+            success: 説明が正常に更新されました。
+            error: 説明を保存できません。
+        edit_category:
+            success: カテゴリが正常に更新されました。
+            error: カテゴリを保存できません。
+        mint_doi:
+            header: この登録のDOIを作成してもよろしいですか？
+            text: DOIは永続的であり、常にこのページに解決されます。
+            success: DOIが正常に作成されました。
+            error: 登録DOIを作成できません。
+        edit_pub_doi:
+            success: 'パブリケーション DOIが正常に更新されました。'
+            error: パブリケーションDOIを保存できません。
+        edit_institutions:
+            success: 所属機関が正常に更新されました。
+            error: 提携機関を保存できません。
+        edit_license:
+            success: ライセンスが更新されました。
+            error: ライセンスを保存できません。
+        edit_tags:
+            success: タグが正常に更新されました。
+            error: タグを保存できません。
+        nodeLicense:
+            year: 'Year'
+            copyrightHolders: 'Copyright Holders'
+        save_subjects_error: 件名を保存できません
+        load_subjects_error: 'Unable to load subjects'
+    form_view:
+        none_selected: 何も選択されていません。
+    overview:
+        title: 概要
+        collapse: 折りたたむ
+        expand: 展開する
+        contents: コンテンツ
+        see_more: 続きを見る
+        metadata: メタデータ
+        component_of: 'これは登録のコンポーネントです:'
+        comments:
+            title: コメント
+            see_replies: 返信を見る
+            hide_replies: 返信を非表示
+            report: レポート
+            cancel: キャンセル
+            load_more: 返信をさらに読み込む
+            create_report:
+                success: コメントが正常に報告されました。
+                error: コメントを報告できません。
+            category_placeholder: 悪用を最もよく表すカテゴリを選択
+            retract_report:
+                success: レポートを撤回しました。
+                error: 不正行為レポートを撤回できません。
+            modified: '修正済 '
+            report_placeholder: 悪用を説明する
+            comment_abuse: コメントが報告されました。
+            comment_abuse_action: 悪用しない
+            abuse_spam: スパムまたは広告
+            abuse_hate: ヘイトスピーチ
+            abuse_violence: 暴力または有害は行為
+            cannot_retract_report: レポーターのみがレポートを撤回できます。
+            no_comments: コメントはありません。
+        links:
+            title: リンク
+            linked_nodes: リンクされたプロジェクトとコンポーネント
+            no_linked_nodes: この登録には、リンクされたプロジェクトまたはコンポーネントはありません。
+            linked_registrations: リンクされた登録
+            no_linked_registrations: この登録には、リンクされた登録はありません。
+        contributors:
+            title: メンバー
+            gravatar_alt: '{name}のGravatar'
+        components:
+            title: コンポーネント
+            no_components: この登録にはコンポーネントがありません。
+        external_links:
+            files: ファイル
+            wiki: Wiki
+            analytics: 分析
+        form_view:
+            no_files: ファイルが選択されていません。
+        withdrawn:
+            has_been_withdrawn: この登録は、下記の理由により取り下げられました。
+            date_withdrawn: 脱退日
+            justification: 脱退の正当化
+            no_justification: なし
+            state: 脱退
+        withdraw:
+            withdraw: 登録を取り消す
+            withdrawal_justification_label: この登録を取り消す理由を説明してください。
+            random_scientist_x: '下に<strong>{x}</strong> と入力し、続行することが確実な場合は「登録の取り消し」をクリックします。'
+            success: 出金リクエストが正常に送信されました
+            error: この登録を取り消せません
+            warning: '登録を取り消すと、GakuNin RDMからコンテンツが削除されますが、基本的なメタデータは残されます。 取り下げられた登録のタイトルとそのメンバーリストは、引き取りの正当化または説明と同様に、もしあなたがそれを提供したいなら、残ります。 取り下げられた登録には、「取り下げられた」タグが付けられます。 このアクションは元に戻せません。'
+        archiving:
+            currently_archiving: この登録は現在アーカイブ中であり、現時点では変更できません。
+            email_support: 'この登録が72時間以上アーカイブされている場合は、<a data-analytics-name="Email support" href="mailto:{supportEmail}">{supportEmail}</a>にメールしてください。'
+        pending:
+            state: 保留中
+            action:
+                approve: 承認
+                reject: 却下
+        public:
+            state: 公開
+            text: 公開登録
+            short_description: 公開
+            long_description: 'この公開登録は、この<strong><a href={projectUrl}>プロジェクト</a></strong>の凍結された編集不可バージョンです。.'
+        pendingRegistration:
+            text: 登録待ち
+            short_description: 登録承認待ち
+            long_description: 'これはこの<strong><a href={projectUrl}>プロジェクト</a></strong>の保留中の登録であり、プロジェクト管理者からの承認を待っています。 この登録は、すべてのプロジェクト管理者が登録または48時間のパスのいずれか早い方を承認したときに最終となります。'
+        pendingWithdrawal:
+            text: 公開登録
+            short_description: 脱退中
+            long_description: すべてのプロジェクト管理者が脱退を承認すると、この登録は脱退されます。
+        pendingEmbargo:
+            text: 登録中
+            short_description: 停止の承認待ち
+            long_description: 'この登録は承認待ちです。 それは最終であり、すべてのプロジェクト管理者が登録または48時間のパスのいずれか早い方を承認した時点で停止期間に入ります。 停止措置は、停止期間が終了するまで登録を非公開にします。'
+        pendingEmbargoTermination:
+            text: 停止登録
+            short_description: 保留中の停止措置
+            long_description: 'この登録は停止されています。 {embargoEndDate}まで非公開のままです。 この登録を公開するリクエストは保留中です。'
+        embargoed:
+            state: 停止
+            action: 停止措置を早期に終了する
+            action_success: 停止終了リクエストが正常に送信されました
+            action_error: 停止終了リクエストを送信できません
+            confirm_text: '[確認]をクリックすると、Eメールがプロジェクト管理者に送信され、停止の終了を承認します。 承認された場合、コンポーネントを含むこの登録は直ちに公開されます。 このアクションは元に戻せません。'
+            confirm_button_text: 確認
+            text: 停止された登録
+            short_description: 停止
+            long_description: 'この登録は禁止されています。{embargoEndDate}まで非公開のままです。'
+        bookmark:
+            add:
+                text: ブックマーク
+                success: 登録がブックマークに正常に追加されました
+                error: この登録をブックマークできません
+            remove:
+                text: ブックマークから削除
+                success: 登録がブックマークから削除されました
+                error: この登録をブックマークから削除できません
+        fork:
+            success: 'フォークを作成しています。 完了したらメールが届きます'
+            success_title: フォークステータス
+            error: 登録をフォークできません
+        view_forks: フォークを表示
+        fork_registration: この登録をフォークする
+        tooltips:
+            bookmark: この登録をブックマークする
+            remove_bookmark: ブックマークを削除
+            share: この登録を共有する
+            fork: この登録をフォークする
+    partialRegistrationModal:
+        title: コンポーネントを選択
+        continueButton: 続ける
+        cancelButton: キャンセル
+        selectAll: 全選択
+        clearAll: 全クリア
+    finalizeRegistrationModal:
+        title: '登録する前に...'
+        notice: "メタデータを登録する際は、以下の点に注意してください:\n<ul>\n<li>登録した内容は編集や削除はできません。</li>\n<li>登録した内容のレポートを作成できます。</li>\n<li>登録した内容は検索できるようになります。</li>\n</ul>"
+        immediateOption: 'Make registration public immediately'
+        embargoOption: 'Enter registration into embargo'
+        createDoi: 'Create DOI'
+        submit: 登録
+        back: 戻る
+        datePlaceholder: 'Choose embargo end date'
+meetings:
+    index:
+        meetings-list:
+            min_5_submissions: 少なくとも5つの提出がある会議のみが表示されます。
+            name: 名前
+            submissions: 提出
+            location: ロケーション
+            date: 日付
+            empty: この検索語の結果は見つかりませんでした。
+        meetings-hero-banner:
+            image_alt: 'GakuNin RDMミーティングのロゴ'
+            h3: 学術会議や会議のための<strong>無料のポスターおよびプレゼンテーション共有サービス</strong>。
+            conference_organizers_h3: 会議主催者向け
+            conference_organizers_help_text: 'イベントを登録して、その影響を拡大します。 イベントには、専用ページ、簡単な送信プロセス、および永続的なリンクがあります。'
+            conference_organizers_register_button: 登録
+            conference_organizers_register_panel_texts: '<p> GakuNin RDM ミーティングは、無料で学術会議に提供する製品です。 会議のポスターおよびトークホスティングをリクエストするには:</p><p class=''text-center''><a href=''https://docs.google.com/forms/d/e/1FAIpQLSeBq4CfC5CjTBz49TP2dO9ZIsQc6QAAJFUoUbkS767Le9twLw/viewform''>このセットアップフォーム</a><strong>を送信してください。</strong></p><p>1営業日以内に会議を確認して追加します</p>'
+            conference_participants_h3: 会議参加者向け
+            conference_participants_help_text: 'ポスターやプレゼンテーションをサポートデータや資料とともに共有します。 永続的なリンクと使用状況分析を取得します。'
+            conference_participants_upload_button: アップロード
+            conference_participants_upload_panel_texts: '<p>GakuNin RDMは、学術会議のポスターや講演を開催できます。 プレゼンテーションの送信は簡単です。:</p><ul><li>下のリストにある名前をクリックして会議のメールアドレスを見つけます</li><li>OSFは、学術会議のポスターや講演を開催できます。 プレゼンテーションの送信は簡単です。</li></ul><p>OSF Meetingsのメールアドレスに会議の資料を送信します。</ li> </ ul> <p> OSFプロジェクトを作成します。 プレゼンテーションへの永続的なリンクに加えて、誰があなたの作品を閲覧およびダウンロードしたかについての分析が得られます。</p>'
+        meetings-footer:
+            discover: 発見する
+            discover_text: イベントが終わってからずっと後に、イベントのポスターやプレゼンテーションを探索します。
+            share: 共有
+            share_text: コンテンツへの永続的なリンクを取得して、インパクトを高めます。
+            enhance: 高める
+            enhance_text: 補足データと資料を提出物に追加して、作業をより透明にします。
+            who_use_text: 'GakuNin RDMミーティングを使用するのは誰ですか？'
+            aps_img_alt: アメリカ生理学会（APS）のロゴ
+            bitss_img_alt: 社会科学の透明性のためのバークレー・イニシアティブ（BITSS）のロゴ
+            nrao_img_alt: 国立電波天文台（NRAO）のロゴ
+            spsp_img_alt: パーソナリティおよび社会心理学協会（SPSP）のロゴ
+    detail:
+        meeting-submissions-list:
+            title: タイトル
+            author: 著者
+            category: カテゴリ
+            dateCreated: 作成日
+            downloads: ダウンロード
+            noSubmissions: 提出なし
+        meeting-detail-header:
+            image_alt: 会議のロゴ画像
+            add_your: 追加
+            send_email: 'GakuNin RDMで使用するメールアカウントから次のアドレスにメールを送信します:'
+            email_text: '{typeName}については,<a href="{emailAddress}">{emailAddress}</a>にメールを送信してください。'
+            format_header: 'メールの形式は次のとおりです:'
+            subject: 主題
+            message_body: 本文
+            attachment: 添付ファイル
+            panel_footer_note: '送信後、他の人があなたの作業を引用するために使用できる恒久的な識別子を送信してフォローアップします。 また、そのURLでプロジェクトにログインして、追加ファイルのアップロードなどの変更を行うこともできます。GakuNin RDMアカウントを持っていなかった場合は、自動的に作成され、パスワードを設定するリンクがメールで送信されます。 その場合は、アカウントに新しいプロジェクトを作成するだけです。アカウントを作成することにより、<a href="https://github.com/CenterForOpenScience/centerforopenscience.org/blob/master/TERMS_OF_USE.md">利用規約</a>に同意し、<a href="https://github.com/CenterForOpenScience/centerforopenscience.org/blob/master/PRIVACY_POLICY.md#f-cookies">クッキーの使用</a>に関する情報を含む<a href="https://github.com/CenterForOpenScience/centerforopenscience.org/blob/master/PRIVACY_POLICY.md">プライバシーポリシー</a>を読んだことになります。'
+            conference_homepage: 会議のホームページ
+analytics:
+    pageTitle: '{nodeTitle} 分析'
+    forks: フォーク
+    viewForks: フォークを表示
+    links: このプロジェクトへのリンク
+    viewLinks: リンクを表示
+    noLinks: このプロジェクトへのリンクはありません
+    templateCopies: テンプレートのコピー
+    adblockWarning: 広告非表示ソフトウェアを使用すると、サイト分析が正しく読み込まれない場合があります
+    uniqueVisits: ユニークな訪問
+    visitTimes: 訪問時間
+    topReferrers: トップリファラー
+    popularPages: 人気のあるページ
+    showForDateRange: '日付範囲の分析を表示する:'
+    directLink: 直接リンク
+    enableChart: チャートを有効にする
+    visits: 訪問
+    hourOfDay: 時間帯
+    keenError: 分析データの読み込みエラー
+    dateRanges:
+        pastWeek: この一週間
+        pastTwoWeeks: 過去2週間
+        pastMonth: 過去1ヶ月
+    popularPageNames:
+        home: ホーム
+        files: ファイル
+        fileDetail: 'ファイル名: {fileName}'
+        analytics: 分析
+        forks: フォーク
+        registrations: 登録
+        wiki: Wiki
+    privateProject: "\n            <p>\n                分析は非公開プロジェクトでは使用できません。 分析を表示するには、\n                プロジェクトの概要ページから[公開]を選択して、プロジェクトを公開します。 公開プロジェクト:\n            </p>\n            <ul>\n                <li>は発見可能です。</li>\n                <li>は引用可能です。</li>\n                <li>はOSF for Institutionsパートナーと提携できます</li>\n                <li>ピア間のオープンプラクティスを促進する</li>\n            </ul>\n            <p>\n                分析を有効にしてプロジェクトへの訪問者に関するデータを受け取り、\n                作業の影響を発見し始めます。\n            </p>\n        "
+cookieBanner:
+    cookieWarning: 'GakuNin RDMは、利用機関の同意を受けて国立情報学研究所（NII）がサービスを提供しているものであり、利用者については、利用機関が定めた規程が適用されます。また、GakuNin RDMではサービスの運営およびユーザ体験の向上を目的にクッキーを利用しております。GakuNin RDMをご利用されるお客様は、<a href="https://support.rdm.nii.ac.jp/terms/">プライバシーポリシー</a>に関する情報をご覧ください。右側の「同意する」ボタンをクリックまたは当サイトの利用を継続されることで、弊所がクッキーを使用することにご同意いただいたものとさせていただきます。ご同意いただけない場合には、お客様のブラウザ設定でクッキーを無効化していただくか、または当サイトの利用を中止して下さい。クッキーを利用しないことで、当サイトの一部の機能がご利用いただけない可能性がございますがご了承ください。尚、利用機関とNIIの間で同意している事項につきましては、<a href="https://support.rdm.nii.ac.jp/terms">規約サイト</a>で確認ができます。'
+    accept: 同意する
+discover:
+    relevance: 関連性
+    sort_oldest_newest: 最終更新日（最古から最新へ）
+    sort_newest_oldest: 最終更新日（最新から最古へ）
+    search_results:
+        lastEdited: '最終編集日: {date} (UTC)'
+        status: 'ステータス: {value}'
+page_not_found:
+    heading: 'Page not found'
+    message: 'お探しのページは{brand}サービスで見つかりません。'
+forbidden:
+    heading: Forbidden
+    message: ユーザーはこのページへのアクセスを制限されています。
+resource_deleted:
+    heading: 'Resource deleted'
+    message: ユーザーがこのコンテンツを削除しました。
+routes:
+    register:
+        sign_up: 登録
+        create_a_free_account: 無料アカウントを作成
+        sign_up_using: '次を使用して登録する:'
+        orcid: ORCID
+        institution: 機関
+        email: Eメール
+osf-components:
+    draft-registration-card:
+        initiated_by: '開始したユーザ:'
+        form_type: '様式:'
+        started: '開始日:'
+        last_updated: '最終更新日:'
+        review: 内容確認
+        delete_draft_confirm: この下書きを削除してもよろしいですか？
+    copyable-text:
+        copyToClipboard: クリップボードへコピー
+        copied: コピー済み
+    delete-button:
+        buttonLabel: 削除
+        confirmButtonText: 削除
+        cancelButtonText: キャンセル
+        modalTitle: これを削除してもよろしいですか？
+        modalBody: このアクションは元に戻せません。
+        hardConfirm: '次を入力して続行します。: <strong>{text}</strong>'
+        error: このアイテムの削除中にエラーが発生しました。
+    paginated-list:
+        error: このリストの読み込み中にエラーが発生しました。
+    sign-up-form:
+        full_name: フルネーム
+        contact_email: 連絡先メールアドレス
+        confirm_email: Eメール確認
+        password: パスワード
+        sign_up_button_label: 登録
+        password_placeholder: 'パスワード ({min} ～ {max} 文字でなければいけません)'
+        registration_success: '登録に成功。 {email}をチェックして、メールアドレスを確認してください。'
+    sign-up-policy:
+        paragraph: '<a href="{link1}">利用規約</a> 及び <a href="{link2}">プライバシーポリシー</a> を読み、同意します。'
+    tags-widget:
+        tags: タグ
+        add_tag: タグを追加して発見しやすくする
+        no_tags: タグなし
+    institutions-list:
+        no_affiliated_institution:
+            project: このプロジェクトには提携機関がありません
+            registration: この登録には提携機関がありません
+    institutions-select-list:
+        no_affiliated_institution: 所属機関はありません
+    citation-viewer:
+        get_more: より多くの引用を取得
+        placeholder: 引用スタイルを入力します（例：「APA」）
+        type_to_search: 入力を開始して引用スタイルを検索します
+    search-bar:
+        aria: 検索
+        heading: 公開研究を発見する
+        subheading: 'あなた自身の研究に役立つかもしれないGakuNin RDMのプロジェクト、データ、資料、メンバーを発見してください。'
+        placeholder: 検索分野、著者...
+        search: 検索
+    hero-banner:
+        headingA: 'The place to share your research'
+        headingB: 'There’s a better way to manage your research'
+        subheading: 'GakuNin RDMは、国立情報学研究所が提供する研究データ管理システムです。研究チームが持つ多様なデータを一元管理し、効率的で公正なデータ活用をサポートします。'
+        add_your_research:
+            heading: あなたの研究を追加
+            subheading: '世界中のラボとチームがGakuNin RDMを使用して、プロジェクトを科学コミュニティに公開しています。'
+    carousel:
+        current_slide: (現在のスライド)
+        previous_slide: 前のスライド
+        next_slide: 次のスライド
+        go_to_slide: 'スライド{slideIndex}に移動'
+    registries:
+        read-only-contributors-list:
+            editContributorsOnYourProject: プロジェクトのメンバーを編集する
+        schema-block-renderer/label:
+            showExample: 'Show example'
+            hideExample: 'Hide example'
+            editButtonAriaLabel: 'Edit {questionLabel}'
+        schema-block-renderer/editable/files:
+            instructions: 'You may attach up to 5 file(s) to this question. You may attach files that you already have in GakuNin RDM Storage in this <a href={nodeUrl}>{projectOrComponent}</a> or upload (drag and drop) a new file from your computer. Uploaded files will automatically be added to this <a href={nodeUrl}>{projectOrComponent}</a> so that they can be registered. To attach files from other components or an add-on, first add them to this <a href={nodeUrl}>{projectOrComponent}</a>.'
+        schema-block-renderer/read-only/response:
+            noResponse: 'No response'
+        schema-block-renderer/read-only/files:
+            noFilesSelected: 'No files selected'
+    files-widget:
+        drag_drop_files: ここにファイルをドラッグアンドドロップして、このフォルダーにファイルをアップロードします
+        load_more: 'Load more files'
+        unselect_file: 'Unselect file'
+        upload_file: 'Upload file'
+        expand_files_menu: 'Expand files menu'
+        create_folder: 'Create folder'
+        create: Create
+        folder_name_placeholder: 'New folder name'
+        create_folder_failed: 'Failed to create folder'
+    subjects:
+        browse:
+            browse_all: 全ての学科を閲覧する
+            show_child_subjects: 'Show child subjects'
+            hide_child_subjects: 'Hide child subjects'
+        search:
+            search_all: 学科を検索
+            placeholder: 入力して検索
+            no_results: '一致する学科は見つかりませんでした。 より限定的な検索を試してください。'
+        display:
+            placeholder: ここに選択内容が表示されます
+            remove_subject: 'Remove subject'
+    registries-side-nav:
+        expandSideNav: 'Expand registration form navigation'
+        collapseSideNav: 'Collapse registration form navigation'
+    registries-top-nav:
+        showRegistrationNavigation: 'Show registration form navigation'
+        metadata: 'Return to metadata'
+        previousPage: 'Previous page'
+        nextPage: 'Next page'
+        reviewRegistration: 'Review registration'
+    contributors:
+        headings:
+            name: 'Name'
+            permission: 'Permission'
+            citation: 'Citation'
+        permissions:
+            admin: 'Administrator'
+            write: 'Read + Write'
+            read: 'Read'
+        citation:
+            true: 'Yes'
+            false: 'No'
+settings:
+    toggleNav: ナビゲーションを切り替える
+    profile:
+        title: プロフィール情報
+        name:
+            title: 名前
+            fullName: '表示名（例：Rosalind Elsie Franklin）'
+            givenName: 名（Rosalindなど）
+            middleNames: ミドルネーム（例：Elsie）
+            familyName: 姓（例：フランクリン）
+            suffix: 接尾語
+            citationName: 引用名
+            instructions: '上記のフルネームがプロフィールに表示されます。 引用での名前の表示方法を制御するには、以下のフィールドを編集します。'
+            apa: APA
+            mla: MLA
+            citationPreview: 引用プレビュー
+        social:
+            title: 社会的
+        education:
+            title: 教育
+        employment:
+            title: 雇用
+    account:
+        deactivation:
+            title: 非アクティブのアカウント
+            body: 'アカウントを無効にすると、投稿者であるすべての公開プロジェクトから削除されます。 アカウントはGakuNin RDMプロジェクトに関連付けられなくなり、OSFでの作業にアクセスできなくなります。 これが閉鎖するセカンダリアカウントである場合は、<a href="https://openscience.zendesk.com/hc/en-us/articles/360019738014">アカウントの統合</a>を検討してください。'
+            warning: '警告:'
+            warningText: 無効化が承認されると、元に戻せません。
+            pending: アカウントは現在、非アクティブ化が保留されています。
+            requestButton: 非アクティブ化をリクエストする
+            confirmationTitle: アカウントの非アクティブ化をリクエストしますか？
+            confirmationBody: 'アカウントの非アクティブ化をリクエストしてもよろしいですか？ GakuNin RDM管理者がリクエストを確認します。 承認された場合、アカウントを再開することはできません。'
+            confirmationButton: リクエスト
+            confirmationToastMessage: 'GakuNin RDM管理者がすぐに連絡して、非アクティブ化リクエストを確認します。'
+            undoRequestButton: 非アクティブ化リクエストを取り消す
+            undoRequestConfirmationTitle: 非アクティブ化リクエストを取り消しますか？
+            undoRequestConfirmationBody: 'アカウントの非アクティブ化リクエストを取り消してもよろしいですか？ これにより、アカウントの状態が保持されます。'
+            undoRequestConfirmationButton: 非アクティブ化リクエストを取り消す
+            undoRequestToastMessage: 非アクティブ化リクエストは取り消されました。
+        defaultRegion:
+            title: デフォルトのストレージロケーション
+            why: 'このロケーションは、新しいプロジェクトとコンポーネントに適用されます。 既存のプロジェクトとコンポーネントには影響しません。'
+            updateButton: ロケーションを更新
+            successToast: 'デフォルトのストレージロケーションを正常に<strong>{region}</strong>へ変更しました。'
+            saveError: 'この変更を行うことができませんでした。 数分後にもう一度お試しください。問題が解決しない場合は、<a href="mailto:{supportEmail}">{supportEmail}</a>それを報告してください。'
+        export:
+            title: アカウントデータをエクスポートする。
+            body: 'アカウントデータをエクスポートすると、アカウントの現在の状態の永続的なコピーを保持できます。 アカウントデータのコピーを保存しておくと、安心して他のプロバイダーに情報を転送するのに役立ちます。'
+            requestButton: エクスポートをリクエスト
+            confirmationTitle: アカウントのエクスポートをリクエストしますか？
+            confirmationBody: アカウントのエクスポートをリクエストしてもよろしいですか？
+            confirmationButton: リクエスト
+            confirmationToastMessage: 'GakuNin RDM管理者がすぐに連絡して、エクスポートリクエストを確認します。'
+            saveError: 'この変更を行うことができませんでした。 数分後にもう一度お試しください。 問題が解決しない場合は、<a href="mailto:{supportEmail}">{supportEmail}</a>へそれを報告してください.'
+        security:
+            title: セキュリティ設定
+            twoFactorAuth: ２要素認証
+            enableTwoFactor: 設定する
+            enableWarning: '２要素認証を設定しても、アカウントのこの機能はすぐには有効になりません。 アカウントの2要素認証の有効化を完了するには、以下に表示される手順に従う必要があります。'
+            disableTwoFactor: 無効にする
+            why: '２要素認証を使用すると、パスワードと携帯電話の両方でGakuNin RDMアカウントを保護できます。'
+            enableButton: 設定する
+            importantWarning: '重要：モバイルデバイスにアクセスできなくなると、GakuNin RDMアカウントにログインできなくなります。'
+            howTo: '使用するには、モバイルデバイスに適切なアプリケーションをインストールする必要があります。 Google認証システムは人気のある選択肢であり、AndroidとiOSの両方で利用できます。'
+            onceVerified: '検証が完了すると、ログインプロセス中に入力する必要がある6桁のコードがデバイスに表示されます。 このコードは数秒ごとに変更されます。つまり、許可されていないユーザーは、パスワードを知っていてもアカウントにログインできません。'
+            scanImage: '以下の画像をスキャンするか、秘密鍵<code>{secretKey}</code>を認証デバイスに入力します。'
+            enterVerification: '確認コードを入力してください:'
+            verificationFailed: '検証に失敗しました。 確認コードをもう一度入力してください。'
+            disableWarning: ２要素認証を無効にしますか？
+            disableButton: 無効にする
+            saveError: 'この変更を行うことができませんでした。 数分後にもう一度お試しください。 問題が解決しない場合は、<a href="mailto:{supportEmail}">{supportEmail}</a>それを報告してください。'
+            submitVerification: 有効にする
+        title: アカウント設定
+        connected_emails:
+            add_email: emailを追加
+            add_email_modal:
+                title: 確認メールを送信しました
+                body: '<strong>{emailAddress}</strong> がアカウントに追加されました。<strong>{emailAddress}</strong>に確認メールが届きます。このアクションを確認するには、メールのリンクをクリックしてください。パスワードを入力する必要があります。'
+            alternate_emails: 代替メール
+            confirm_delete:
+                title: メールを削除
+                body: 'メーリングリストから<strong>{emailAddress}</strong>を削除してもよろしいですか？'
+            resend_confirmation_modal:
+                title: 確認メールを再送信しますか？
+                body: '<strong>{emailAddress}</strong>に確認メールを再送信してもよろしいですか？'
+                resend_button: 再送信
+            resend_fail: 確認メールを再送信できません
+            resend_success: メールの再送
+            delete_fail: メールを削除できません
+            delete_success: メールを削除しました
+            load_fail: メールを読み込めません
+            make_primary: プライマリにする
+            merge_explanation: '既存のアカウントをこのアカウントと統合するか、複数のメールアドレスでログインするには、下に別のメールアドレスを追加します。 すべてのプロジェクトとコンポーネントは、プライマリとしてリストされているメールアドレスの下に表示されます。'
+            no_unconfirmed_emails: 未確認のメールはありません
+            no_alternate_emails: 代替メールはありません
+            placeholder_text: メールアドレス
+            primary_email: 主に使用するメールアドレス
+            resend_confirmation: 確認を再送信
+            save_fail: メールを追加できません
+            save_success: メールを追加しました
+            title: 接続されたメール
+            unconfirmed_emails: 未確認のメール
+            update_fail: メールを更新できません
+            update_success: メールを更新しました
+        changePassword:
+            title: パスワード変更
+            updateButton: パスワードを更新する
+            updateFail: パスワード更新エラー
+            updateSuccess: パスワードを変更しました
+            currentPassword:
+                placeholder: 以前のパスワード
+            newPassword:
+                placeholder: 新しいpassword
+            confirmPassword:
+                title: 新しいパスワードを確認
+                placeholder: パスワードを照合します
+        connected_identities:
+            title: 接続されたID
+            description: '接続されたIDを使用すると、サードパーティのサービスを介してGakuNin RDMにログインできます。<br>ここでこれらの承認を取り消すことができます。'
+            no_identities: 'GakuNin RDMへのログインを外部サービスに許可していません。'
+            status:
+                verified: 確認済み
+                pending: 保留中
+            confirm_remove:
+                title: 認証を削除しますか？
+                body: この承認を除外してもよろしいですか？
+                confirm_button_text: 除外
+            remove_fail: '取り消し要求が失敗しました。 問題が解決しない場合は、<a href="mailto:{supportEmail}">{supportEmail}</a>までご連絡ください。'
+            remove_success: この接続されたIDを取り消しました。
+    addons:
+        title: アドオンアカウントを構成する
+    notifications:
+        title: 通知
+    developer-apps:
+        title: 開発者アプリ
+        explanation: 'GakuNin RDMにより、サードパーティのWebアプリケーションは、OAuth 2.0 Webアプリケーションフローを介して他のユーザーに代わってOSFに接続できます。'
+        createApp: 開発者アプリを作成する
+        backToList: 開発者アプリのリストに戻る
+        appDetail: 'アプリの詳細: <strong>{appName}</strong>'
+        editApp: アプリを編集
+        appName: アプリ名
+        appHomepage: プロジェクトホームページのURL
+        appDescription: アプリの説明
+        appCallbackUrl: 認証コールバックURL
+        clientID: クライアントID
+        clientIDDescription: 'この開発者アプリの一意の識別子。 他の人と公に共有することは安全です。'
+        clientSecret: クライアントシークレット
+        clientSecretDescription: 'クライアントシークレットは、あなたとGakuNin RDMのみが知っています。 他の人に表示したり公開したりしないでください。'
+        showSecret: クライアントシークレットを表示
+        hideSecret: クライアントシークレットを非表示
+        created: 開発者アプリが作成されました。
+        saved: 開発者アプリが保存されました。
+        deleted: 開発者アプリが削除されました。
+        resetSecret:
+            label: シークレットをリセット
+            description: 'クライアントシークレットをリセットすると、新しいクライアントシークレットで更新されるまでアプリケーションが使用できなくなり、すべてのユーザーがアクセスを再認証する必要があります。 以前に発行されたアクセストークンは機能しなくなります。'
+            modalTitle: クライアントシークレットをリセットしますか？
+            confirm: 'クライアントシークレットをリセットしてもよろしいですか？ これを元に戻すことはできません。'
+            success: クライアントシークレットが正常にリセットされました。
+            error: クライアントシークレットのリセット中にエラーが発生しました。
+        confirmDelete:
+            title: 'アプリを削除しますか？: <strong>{appName}</strong>'
+            body: 'この開発アプリを削除してもよろしいですか？ すべてのユーザーアクセストークンが取り消されます。 これを元に戻すことはできません。'
+    tokens:
+        title: 個人用アクセストークン
+        explanation: '個人用アクセストークンは、通常のOAuthアクセストークンのように機能します。 APIの認証に使用できます。'
+        createToken: ""
+        editToken: トークンを編集する
+        backToList: トークンのリストに戻る
+        tokenName: トークン名
+        scopes: スコープ
+        scopesDescription: スコープは、個人アクセストークンのアクセスを制限します。
+        created: トークンが作成されました。
+        saved: トークンを保存しました。
+        deleted: トークンが削除されました。
+        confirmDelete:
+            title: 'トークンを削除しますか？:<strong>{tokenName}</strong>?'
+            body: 'この個人アクセストークンを削除してもよろしいですか？ これを元に戻すことはできません。'
+        createSuccess:
+            message: 'トークンが作成されました。:<strong>{tokenName}</strong>'
+            instructions: 'このトークンは期限切れになりません。 このトークンを他の人と共有しないでください。 誤って公開された場合は、すぐに無効にする必要があります。'
+            warning: これは、トークンが表示される唯一の時間です。
+            editScopes: スコープを編集
+verifyEmail:
+    merge:
+        header: アカウントを統合しますか？
+        body: '<strong>{email}</strong>をアカウントに統合しますか？ このアクションは元に戻せません。'
+        verifyButton: アカウントを統合
+        denyButton: アカウントをマージしない
+        verifySuccess: '<strong>{email}</strong> はあなたのアカウントに統合されました。'
+        denySuccess: '<strong>{email}</strong>はあなたのアカウントに統合されていません。'
+        verifyError: 'アカウントへの<strong>{email}</strong>の統合中に問題が発生しました。'
+        denyError: '<strong>{email}</strong>をアカウントにマージするリクエストのキャンセル中に問題が発生しました。'
+    add:
+        header: 代替メールを追加しますか？
+        body: 'アカウントに<strong>{email}</strong>を追加しますか？'
+        verifyButton: メールを追加
+        denyButton: メールを追加しないでください
+        verifySuccess: '<strong>{email}</strong>がアカウントに追加されました。'
+        denySuccess: '<strong>{email}</strong>はアカウントに追加されていません。'
+        verifyError: 'アカウントへの<strong>{email}</strong>の追加中に問題が発生しました。'
+        denyError: 'アカウントへの<strong>{email}</strong>の追加リクエストのキャンセル中に問題が発生しました。'
+ipsum:
+    title: 'tempor nec feugiat nisl pretium'
+    sentence: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+    paragraph: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Id velit ut tortor pretium. Nisi porta lorem mollis aliquam ut porttitor leo a. Cras fermentum odio eu feugiat. Eget mi proin sed libero enim. Quam adipiscing vitae proin sagittis. Volutpat consequat mauris nunc congue nisi vitae suscipit tellus. At varius vel pharetra vel turpis nunc eget. Purus ut faucibus pulvinar elementum integer enim neque volutpat. Turpis nunc eget lorem dolor. Mattis pellentesque id nibh tortor id aliquet lectus proin nibh. Arcu felis bibendum ut tristique et egestas quis. Nisl tincidunt eget nullam non nisi est sit amet. Fringilla urna porttitor rhoncus dolor purus non enim.'
+dev_tools:
+    title: 開発ツール
+    zoom_to_route:
+        title: ルートにズーム
+        zoom: ズーム!
+        placeholder: ルートを選択する
+    options:
+        toast_events: 追跡されたイベントのトーストを表示する
+        show_url_bar: 'URLバーを表示 -- リロードせずにURLでナビゲート'
+iqbrims:
+    page_title: '{nodeTitle} IQB-RIMS'
+    header_overview: 書誌情報
+    header_manuscripts: 最終原稿・組図
+    header_data: 生データ
+    header_checklist: チェックリスト
+    loading: フォルダを準備しています...
+    deposit_button: 論文登録申請
+    check_button: 画像スキャン依頼
+    edit_button: 編集
+    management_project: 管理プロジェクト
+    flowable_task_service: Flowableタスクサービス
+    deposit_help: 論文の受理を報告し、登録申請をする
+    check_help: 論文登録前に画像のみのスキャンを依頼する
+    paper_title: 論文タイトル
+    contributors: 共著者/作業者
+    edit_contributors: 編集
+    labo: 研究分野
+    email: 通知用メールアドレス
+    accepted_date: 論文受理日
+    journal_name: 雑誌名
+    doi: DOI
+    publish_date: 出版日
+    volume: 巻（号）
+    page_number: ページ番号
+    directly_submit_data: 生データファイルが非常に大きいので研究倫理推進室に手渡しで直接提出する
+    raw_drive_link: 生データファイル（.zip）をGoogle Driveでアップロード
+    workflow_overall_state: 審査状況
+    submit_manuscripts: 審査状況
+    submit_data: 審査状況
+    submit_checklist: 審査状況
+    submitted_no_data: 提出済みデータはありません
+    submitted_loading: 提出済みデータをロード中
+    submitted_name: 名前
+    submitted_modified: 更新日時
+    placeholders:
+        paper_title: 論文タイトル
+        labo: 所属ラボを選択
+        accepted_date: YYYY/MM/DD
+        journal_name: 雑誌名
+        doi: 'https://doi.org/XX.XXXX/Y.YYYYYY'
+        publish_date: YYYY/MM/DD
+        volume: N
+        page_number: N
+        files_comment: 提出するファイルに関するコメント(任意)
+        uploader_comment: 提出するファイルに関するコメント(任意)
+    submit_button: 提出
+    confirm_button: 更新
+    processing_submit_button: 処理中...
+    discard_button: 変更を破棄
+    failed_to_submit: 提出に失敗しました。
+    uploader_no_files: ファイルがありません。
+    uploader_rejected_manuscript_files: 'TIFF, PNG, JPEGファイルはアップロードできません。'
+    uploader_rejected_data_files: 'ZIP, Excelファイルのみアップロードできます。'
+    uploader_rejected_checklist_files: PDFファイルのみアップロードできます。
+    uploader_info_raw_file: '提出前に生データファイル（.zip）のサイズを確認ください。<ul><li><strong>10GB未満の場合：</strong> 以下の「アップロードするファイルをここにドロップ」から生データファイルを提出してください。</li><li><strong>10GB以上の場合：</strong> (1) お手元のPC環境で、生データファイルからデータファイル一覧（Excelファイル）を作成してください（マニュアルを参照のこと）。(2) 以下の「生データファイル（.zip）をGoogle Driveでアップロード」で示したURLをクリックしてGoogle Driveフォルダを開き、そこへzipファイルをアップロードしてください。(3) ２が完了したら、１で作成したExcelファイルを以下の「アップロードするファイルをここにドロップ」から提出してください。</li></ul><strong>[注意]</strong> 以下の「アップロードするファイルをここにドロップ」は大きなzipファイルには使用できません。また、生データファイルが非常に大きい（200GB超）場合には、研究倫理推進室までご相談ください。'
+    file_confirm_dialog_title: ファイルの提出
+    file_confirm_dialog_body: ファイル提出後は変更・追加はできません。よろしいですか？
+    file_confirm_dialog_notice: '処理完了にともない、通知メール "Your move has finished" が送られる場合があります。'
+    submit_files: 提出予定ファイル
+    has_paper: 最終原稿・組図
+    has_raw: 生データ
+    has_checklist: チェックリスト
+    files_comment: コメント
+    uploader_comment: コメント
+binderhub:
+    page_title: '{nodeTitle} BinderHub'
+    jupyter_servers_list:
+        header: '私の解析環境'
+        delete_confirm_dialog_title: '削除確認'
+        delete_confirm_dialog_body: 'サーバーを削除しますか？ '
+    project_editor:
+        header: '新しい解析環境'
+    loading: 'BinderHub設定を読み込んでいます...'
+    servers:
+        host: 'ホスト: '
+        username: 'ユーザー: '
+        server_exists: 'このプロジェクトから作った解析環境が {servers} 個あります。'
+        server_not_exists: 'このプロジェクトから作った解析環境はありません。'
+        max_servers_exceeded: '解析環境の数が上限に達しています。'
+        server_hub_home: 'すべての解析環境を表示'
+        logout: 'ログアウト'
+        name: '解析環境名'
+        url: 'URL'
+        last_activity: '最終更新'
+        launch: '起動'
+        delete: '削除'
+        no_servers: '解析環境はありません'
+    deployment:
+        header: '環境作成'
+        description: 'このプロジェクトのデフォルトストレージの内容がコピーされます。'
+        launch: '起動'
+        environment: '基本イメージ'
+        additionalpackages: '追加パッケージ'
+        postinstallscript: '自動実行スクリプト'
+        select_environment: '選択'
+        change_environment: '変更'
+        add_package: '追加'
+        view_dockerfile: '参照: '
+        reset_dockerfile: 'リセット: '
+        unavailable: '設定ファイルがエディタ以外で変更されました。'
+        no_environment: 'エディタにより設定された環境ではありません。'
+        post_build_placeholder: |-
+            #!/bin/bash
+            set -x
+            ...
+        save_post_build: '保存'
+        mran_version_setting_error: 'CRANにバージョン番号を指定することはできません。'
+        reset_dockerfile_confirm_dialog_title: 'リセット: '
+        reset_dockerfile_confirm_dialog_body: 'リセットしたファイルは元に戻すことはできません。続行しますか？'
+        release: 'リリース'
+        products: 'アドオン'
+        info_urls:
+            mpm: 'https://rcosdp.github.io/CS-repo2docker/MATLAB.html'
+        placeholders:
+            package_name: '名前'
+            package_version: 'バージョン'
+            release: 'R2023b'
+    build:
+        launch: '起動'
+        status: 'ビルド状況'
+        launch_new_enviornment: '新しい解析環境を作成: {binderhubUrl}'
+    error:
+        binderhub_auth_error: 'BinderHubと接続する必要があります。再認証してください。'
+        binderhub_build_error: 'BinderHubとの接続時にエラーが発生しました。'
+        reconnect_binderhub: '再認証'
+        jupyterhub_auth_error: 'JupyterHubと接続する必要があります。再認証してください。'
+        jupyterhub_api_error: 'JupyterHubとの接続時にエラーが発生しました。ページを再読み込みしてください。'
+        reconnect_jupyterhub: '再認証'
+        modify_files_error: 'ファイルの更新に失敗しました。ネットワーク接続を確認してください。'
+        load_files_error: 'ファイルの読み込みに失敗しました。ネットワーク接続を確認してください。'
+metadata:
+    file-metadata-input:
+        no_metadata: 'ファイルはありません'
+        no_metadata_editable: 'ファイルメタデータは登録されていません。プロジェクトページでファイルのメタデータを編集し、この下書きに登録することができます:'
+        columns:
+            title: 'タイトル'
+            path: 'パス'
+            manager: '管理者'
+        no_manager: '-'
+        reload: '更新'
+    draft-registration-card:
+        export: 'エクスポート'
+    registration-card:
+        export: 'エクスポート'
+        export-dialog:
+            title: '報告書フォーマットの選択'
+            description: '出力したい報告書のフォーマットを選択してください。'

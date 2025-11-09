@@ -17,11 +17,13 @@ import IdentifierModel from './identifier';
 import InstitutionModel from './institution';
 import LicenseModel from './license';
 import LogModel from './log';
+import NodeAddonModel from './node-addon';
 import { Permission } from './osf-model';
 import PreprintModel from './preprint';
 import RegionModel from './region';
 import RegistrationModel from './registration';
 import SubjectModel from './subject';
+import UserModel from './user';
 import WikiModel from './wiki';
 
 const { attr, belongsTo, hasMany } = DS;
@@ -129,6 +131,13 @@ export default class NodeModel extends BaseFileItem.extend(Validations, Collecta
     @hasMany('institution', { inverse: 'nodes' })
     affiliatedInstitutions!: DS.PromiseManyArray<InstitutionModel> | InstitutionModel[];
 
+    @belongsTo('user', { inverse: null })
+    creator!: DS.PromiseObject<UserModel> & UserModel;
+
+    @attr('number') quotaRate!: number;
+
+    @attr('number') quotaThreshold!: number;
+
     @hasMany('comment', { inverse: 'node' })
     comments!: DS.PromiseManyArray<CommentModel>;
 
@@ -180,6 +189,9 @@ export default class NodeModel extends BaseFileItem.extend(Validations, Collecta
 
     @hasMany('subject', { inverse: null, async: false })
     subjects!: SubjectModel[];
+
+    @hasMany('node-addon', { inverse: 'node' })
+    addons!: DS.PromiseManyArray<NodeAddonModel>;
 
     // These are only computeds because maintaining separate flag values on
     // different classes would be a headache TODO: Improve.

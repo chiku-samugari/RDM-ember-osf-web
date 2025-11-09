@@ -11,6 +11,12 @@ import param from 'ember-osf-web/utils/param';
 
 const { OSF: { casUrl, url: baseUrl } } = config;
 
+const {
+    OSF: {
+        pageName,
+    },
+} = config;
+
 interface RegisterQueryParams {
     next: string;
     campaign: string;
@@ -35,6 +41,8 @@ export default class Register extends Controller.extend(registerQueryParams.Mixi
 
     isOsfPreprints: boolean = false;
     isOsfRegistries: boolean = false;
+
+    title: string = pageName;
 
     @computed('next')
     get orcidUrl() {

@@ -14,21 +14,12 @@
             {{t 'osf-components.hero-banner.subheading'}}
         </h2>
         <div data-test-hero-container>
-            <div data-test-add-research local-class='addResearch'>
-                <GetStartedButton local-class='getStartedButton' />
-            </div>
-            <div data-test-discover local-class='discoverResearch'>
-                <h3 data-test-discover-heading>
-                    {{t 'osf-components.search-bar.heading'}}
-                </h3>
-                <h4 data-test-discover-subheading>
-                    {{t 'osf-components.search-bar.subheading'}}
-                </h4>
-                <SearchBar
-                    local-class='searchBar'
-                    @onSearch={{action 'search'}}
-                />
-            </div>
+            <img
+                data-hero-logo
+                local-class='heroImg'
+                src='/assets/images/new-home/rdm-logo-vertical.png'
+                alt='GakuNin RDM'
+            >
         </div>
     </header>
 </section>

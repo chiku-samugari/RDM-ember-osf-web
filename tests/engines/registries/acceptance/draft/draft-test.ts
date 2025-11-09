@@ -1,7 +1,6 @@
 import Service from '@ember/service';
-import { click, currentRouteName, currentURL, fillIn, settled, triggerKeyEvent } from '@ember/test-helpers';
+import { click, currentRouteName, currentURL, fillIn } from '@ember/test-helpers';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
-import { t } from 'ember-intl/test-support';
 import { percySnapshot } from 'ember-percy';
 import { setBreakpoint } from 'ember-responsive/test-support';
 import { TestContext } from 'ember-test-helpers';
@@ -34,7 +33,8 @@ module('Registries | Acceptance | draft form', hooks => {
         server.loadFixtures('licenses');
     });
 
-    test('it redirects to metadata page of the draft form', async assert => {
+    // metadata addon: redirects to first page instead of metadata page
+    test('it redirects to first page of the draft form', async assert => {
         const initiator = server.create('user', 'loggedIn');
         const registrationSchema = server.schema.registrationSchemas.find('testSchema');
         const registration = server.create(
@@ -44,10 +44,13 @@ module('Registries | Acceptance | draft form', hooks => {
                 initiator,
             },
         );
+        const node = registration.branchedFrom;
+        server.create('metadata-node-erad', { id: node.id, records: [] });
+        server.create('metadata-node-project', { id: node.id, files: [] });
 
         await visit(`/registries/drafts/${registration.id}/`);
 
-        assert.equal(currentRouteName(), 'registries.drafts.draft.metadata', 'At the expected route');
+        assert.equal(currentRouteName(), 'registries.drafts.draft.page', 'At the expected route');
     });
 
     test('it redirects page-not-found if the pageIndex route param is out of range', async assert => {
@@ -59,12 +62,16 @@ module('Registries | Acceptance | draft form', hooks => {
                 initiator,
             },
         );
+        const node = registration.branchedFrom;
+        server.create('metadata-node-erad', { id: node.id, records: [] });
+        server.create('metadata-node-project', { id: node.id, files: [] });
 
         await visit(`/registries/drafts/${registration.id}/99/`);
 
         assert.equal(currentRouteName(), 'registries.page-not-found', 'At page not found');
     });
 
+    // metadata addon: hide metadata page
     test('left nav controls', async assert => {
         const initiator = server.create('user', 'loggedIn');
         const registrationSchema = server.schema.registrationSchemas.find('testSchema');
@@ -74,16 +81,18 @@ module('Registries | Acceptance | draft form', hooks => {
                 initiator,
             },
         );
+        const node = registration.branchedFrom;
+        server.create('metadata-node-erad', { id: node.id, records: [] });
+        server.create('metadata-node-project', { id: node.id, files: [] });
 
         await visit(`/registries/drafts/${registration.id}/`);
-        await percySnapshot('Registries | Acceptance | draft form | left nav controls | metadata page');
+        await percySnapshot('Registries | Acceptance | draft form | left nav controls | first page');
 
-        // Metadata page
-        assert.equal(currentRouteName(), 'registries.drafts.draft.metadata', 'Starts at metadata route');
-        assert.dom('[data-test-link="metadata"] > [data-test-icon]')
-            .hasClass('fa-circle-o', 'metadata is marked current page');
+        // First page
+        assert.equal(currentRouteName(), 'registries.drafts.draft.page', 'Starts at page route');
+        assert.dom('[data-test-link="metadata"] > [data-test-icon]').doesNotExist();
         assert.dom('[data-test-link="1-first-page-of-test-schema"] > [data-test-icon]')
-            .hasClass('fa-circle', 'page 1 is marked unvisited');
+            .hasClass('fa-circle-o', 'page 1 is marked as current page');
         assert.dom('[data-test-link="2-this-is-the-second-page"] > [data-test-icon]')
             .hasClass('fa-circle', 'page 2 is marked unvisited');
         assert.dom('[data-test-link="review"] > [data-test-icon]')
@@ -98,10 +107,9 @@ module('Registries | Acceptance | draft form', hooks => {
         await click('[data-test-link="2-this-is-the-second-page"]');
         await percySnapshot('Registries | Acceptance | draft form | left nav controls | second page');
         assert.equal(currentRouteName(), 'registries.drafts.draft.page', 'Goes to page route');
-        assert.dom('[data-test-link="metadata"] > [data-test-icon]')
-            .hasClass('fa-exclamation-circle', 'metadata is marked visited, invalid');
+        assert.dom('[data-test-link="metadata"] > [data-test-icon]').doesNotExist();
         assert.dom('[data-test-link="1-first-page-of-test-schema"] > [data-test-icon]')
-            .hasClass('fa-circle', 'page 1 is marked unvisited');
+            .hasClass('fa-exclamation-circle', 'page 1 is marked visited, invalid');
         assert.dom('[data-test-link="2-this-is-the-second-page"] > [data-test-icon]')
             .hasClass('fa-circle-o', 'page 2 is marked as current page');
         assert.dom('[data-test-link="review"] > [data-test-icon]')
@@ -112,26 +120,11 @@ module('Registries | Acceptance | draft form', hooks => {
         assert.dom('[data-test-goto-review]').isVisible();
         assert.dom('[data-test-goto-register]').doesNotExist();
 
-        // Navigate to first page
+        // Navigate back to first page
         await click('[data-test-link="1-first-page-of-test-schema"]');
-        assert.dom('[data-test-link="metadata"] > [data-test-icon]')
-            .hasClass('fa-exclamation-circle', 'metadata is marked visited, invalid');
+        assert.dom('[data-test-link="metadata"] > [data-test-icon]').doesNotExist();
         assert.dom('[data-test-link="1-first-page-of-test-schema"] > [data-test-icon]')
             .hasClass('fa-circle-o', 'page 1 is marked current page');
-        assert.dom('[data-test-link="2-this-is-the-second-page"] > [data-test-icon]')
-            .hasClass('fa-check-circle-o', 'page 2 is marked visited, valid');
-        assert.dom('[data-test-link="review"] > [data-test-icon]')
-            .hasClass('fa-circle', 'review is marked unvisited');
-        assert.dom('[data-test-goto-metadata]').isVisible();
-        assert.dom('[data-test-goto-previous-page]').doesNotExist();
-        assert.dom('[data-test-goto-next-page]').isVisible();
-        assert.dom('[data-test-goto-review]').doesNotExist();
-        assert.dom('[data-test-goto-register]').doesNotExist();
-
-        // Navigate back to metadata
-        await click('[data-test-link="metadata"]');
-        assert.dom('[data-test-link="metadata"] > [data-test-icon]')
-            .hasClass('fa-circle-o', 'metadata is marked current again');
         assert.dom('[data-test-link="2-this-is-the-second-page"] > [data-test-icon]')
             .hasClass('fa-check-circle-o', 'page 2 is marked visited, valid');
         assert.dom('[data-test-link="review"] > [data-test-icon]')
@@ -146,8 +139,7 @@ module('Registries | Acceptance | draft form', hooks => {
         await click('[data-test-link="review"]');
         await percySnapshot('Registries | Acceptance | draft form | left nav controls | review page');
         assert.equal(currentRouteName(), 'registries.drafts.draft.review', 'Goes to review route');
-        assert.dom('[data-test-link="metadata"] > [data-test-icon]')
-            .hasClass('fa-exclamation-circle', 'metadata is marked visited, invalid');
+        assert.dom('[data-test-link="metadata"] > [data-test-icon]').doesNotExist();
         assert.dom('[data-test-link="1-first-page-of-test-schema"] > [data-test-icon]')
             .hasClass('fa-exclamation-circle', 'page 1 is marked visited, invalid');
         assert.dom('[data-test-link="2-this-is-the-second-page"] > [data-test-icon]')
@@ -171,11 +163,14 @@ module('Registries | Acceptance | draft form', hooks => {
                 initiator,
             },
         );
+        const node = registration.branchedFrom;
+        server.create('metadata-node-erad', { id: node.id, records: [] });
+        server.create('metadata-node-project', { id: node.id, files: [] });
 
         await visit(`/registries/drafts/${registration.id}/`);
 
-        // Metadata page
-        assert.equal(currentRouteName(), 'registries.drafts.draft.metadata', 'At metadata page');
+        // First page of form
+        assert.equal(currentRouteName(), 'registries.drafts.draft.page', 'At first page');
 
         assert.dom('[data-test-goto-previous-page]').doesNotExist();
         assert.dom('[data-test-goto-review]').doesNotExist();
@@ -183,17 +178,7 @@ module('Registries | Acceptance | draft form', hooks => {
 
         assert.dom('[data-test-goto-next-page]').isVisible();
         assert.ok(getHrefAttribute('[data-test-goto-next-page]')!
-            .includes(`/registries/drafts/${registration.id}/1-`));
-
-        await click('[data-test-goto-next-page]');
-
-        // First page of form
-        assert.ok(currentURL().includes(`/registries/drafts/${registration.id}/1-`), 'At first schema page');
-        assert.dom('[data-test-goto-register]').doesNotExist();
-        assert.dom('[data-test-goto-previous-page]').doesNotExist();
-
-        assert.dom('[data-test-goto-metadata]').exists();
-        assert.dom('[data-test-goto-next-page]').exists();
+            .includes(`/registries/drafts/${registration.id}/2-`));
 
         await click('[data-test-goto-next-page]');
 
@@ -234,26 +219,23 @@ module('Registries | Acceptance | draft form', hooks => {
         const registration = server.create(
             'draft-registration', { registrationSchema, initiator },
         );
+        const node = registration.branchedFrom;
+        server.create('metadata-node-erad', { id: node.id, records: [] });
+        server.create('metadata-node-project', { id: node.id, files: [] });
 
         await visit(`/registries/drafts/${registration.id}/`);
         setBreakpoint('mobile');
 
-        assert.ok(currentURL().includes(`/registries/drafts/${registration.id}/metadata`), 'At metadata page');
-        await percySnapshot('Registries | Acceptance | draft form | mobile navigation | metadata page');
-
-        // Check header
-        assert.dom('[data-test-page-label]').containsText('Metadata');
-
-        // Check next page arrow
-        assert.dom('[data-test-goto-previous-page]').isNotVisible();
-        assert.dom('[data-test-goto-next-page]').isVisible();
-        await click('[data-test-goto-next-page]');
+        assert.ok(currentURL().includes(`/registries/drafts/${registration.id}/1-`), 'At first page');
+        await percySnapshot('Registries | Acceptance | draft form | mobile navigation | first page');
 
         // Check header
         assert.dom('[data-test-page-label]').containsText('First page of Test Schema');
 
         // Check next page arrow
-        assert.dom('[data-test-goto-metadata]').isVisible();
+        assert.dom('[data-test-goto-metadata]').isNotVisible();
+        assert.dom('[data-test-goto-previous-page]').isNotVisible();
+        assert.dom('[data-test-goto-next-page]').isVisible();
 
         // Next page
         await click('[data-test-goto-next-page]');
@@ -301,6 +283,9 @@ module('Registries | Acceptance | draft form', hooks => {
                 registrationResponses,
             },
         );
+        const node = registration.branchedFrom;
+        server.create('metadata-node-erad', { id: node.id, records: [] });
+        server.create('metadata-node-project', { id: node.id, files: [] });
 
         await visit(`/registries/drafts/${registration.id}/review`);
         assert.ok(currentURL().includes(`/registries/drafts/${registration.id}/review`), 'At review page');
@@ -327,6 +312,9 @@ module('Registries | Acceptance | draft form', hooks => {
                 registrationResponses,
             },
         );
+        const node = registration.branchedFrom;
+        server.create('metadata-node-erad', { id: node.id, records: [] });
+        server.create('metadata-node-project', { id: node.id, files: [] });
 
         await visit(`/registries/drafts/${registration.id}/review`);
         assert.ok(currentURL().includes(`/registries/drafts/${registration.id}/review`), 'At review page');
@@ -348,6 +336,9 @@ module('Registries | Acceptance | draft form', hooks => {
                 initiator,
             },
         );
+        const node = registration.branchedFrom;
+        server.create('metadata-node-erad', { id: node.id, records: [] });
+        server.create('metadata-node-project', { id: node.id, files: [] });
 
         await visit(`/registries/drafts/${registration.id}/`);
 
@@ -357,6 +348,7 @@ module('Registries | Acceptance | draft form', hooks => {
         assert.dom('[data-test-invalid-responses-text]').isVisible();
     });
 
+    /* metadata addon: disable metadata page
     test('partial and finalize registration modal show, can register draft', async assert => {
         const initiator = server.create('user', 'loggedIn');
         const registrationSchema = server.schema.registrationSchemas.find('testSchema');
@@ -381,6 +373,9 @@ module('Registries | Acceptance | draft form', hooks => {
                 license: server.schema.licenses.first(),
             },
         );
+        const node = registration.branchedFrom;
+        server.create('metadata-node-erad', { id: node.id, records: [] });
+        server.create('metadata-node-project', { id: node.id, files: [] });
         const subjects = [server.create('subject')];
         registration.update({ subjects });
         await visit(`/registries/drafts/${registration.id}/review`);
@@ -422,7 +417,9 @@ module('Registries | Acceptance | draft form', hooks => {
 
         assert.equal(currentRouteName(), 'registries.overview.index', 'Redicted to new registration overview page');
     });
+    */
 
+    /* metadata addon: disable metadata page
     test('validations: marks all pages (visited or unvisited) as visited and validates all in review', async assert => {
         const initiator = server.create('user', 'loggedIn');
         const registrationSchema = server.schema.registrationSchemas.find('testSchema');
@@ -433,6 +430,9 @@ module('Registries | Acceptance | draft form', hooks => {
                 initiator,
             },
         );
+        const node = registration.branchedFrom;
+        server.create('metadata-node-erad', { id: node.id, records: [] });
+        server.create('metadata-node-project', { id: node.id, files: [] });
 
         await visit(`/registries/drafts/${registration.id}/2`);
 
@@ -448,6 +448,7 @@ module('Registries | Acceptance | draft form', hooks => {
         assert.dom('[data-test-link="1-first-page-of-test-schema"] > [data-test-icon]')
             .hasClass('fa-exclamation-circle', 'page 1 is marked visited, invalid');
     });
+    */
 
     test('validations: validates all visited pages upon current page load', async assert => {
         const initiator = server.create('user', 'loggedIn');
@@ -459,6 +460,9 @@ module('Registries | Acceptance | draft form', hooks => {
                 initiator,
             },
         );
+        const node = registration.branchedFrom;
+        server.create('metadata-node-erad', { id: node.id, records: [] });
+        server.create('metadata-node-project', { id: node.id, files: [] });
 
         await visit(`/registries/drafts/${registration.id}/1`);
         assert.dom('[data-test-link="1-first-page-of-test-schema"] > [data-test-icon]')
@@ -472,6 +476,7 @@ module('Registries | Acceptance | draft form', hooks => {
             .hasClass('fa-exclamation-circle', 'page 1 is validated, invalid');
     });
 
+    /* metadata addon: disable metadata page
     test('validations: validations status updates properly on metadata page', async assert => {
         server.loadFixtures('subjects');
 
@@ -607,6 +612,7 @@ module('Registries | Acceptance | draft form', hooks => {
         assert.dom('[data-test-required-field="copyrightHolders"]')
             .doesNotExist('copyright holders field does not display on a license that does not require it');
     });
+    */
 
     test('validations: validations status changes as user fixes/introduces errors', async assert => {
         const initiator = server.create('user', 'loggedIn');
@@ -618,6 +624,9 @@ module('Registries | Acceptance | draft form', hooks => {
                 initiator,
             },
         );
+        const node = registration.branchedFrom;
+        server.create('metadata-node-erad', { id: node.id, records: [] });
+        server.create('metadata-node-project', { id: node.id, files: [] });
 
         await visit(`/registries/drafts/${registration.id}/1`);
         assert.dom('[data-test-link="1-first-page-of-test-schema"] > [data-test-icon]')
@@ -640,7 +649,7 @@ module('Registries | Acceptance | draft form', hooks => {
         assert.dom(`[data-test-validation-errors="${shortTextKey}"]`)
             .doesNotExist('page-one_short-text has no validation errors with non-empty string');
 
-        await click('[data-test-goto-metadata]');
+        await click('[data-test-goto-next-page]');
         assert.dom('[data-test-link="1-first-page-of-test-schema"] > [data-test-icon]')
             .hasClass('fa-check-circle-o', 'page 1 is now valid');
     });

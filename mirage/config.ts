@@ -1,6 +1,7 @@
 import { Server } from 'ember-cli-mirage';
 import config from 'ember-get-config';
 
+import { binderhubConfig } from './views/binderhub-config';
 import { getCitation } from './views/citation';
 import { searchCollections } from './views/collection-search';
 import { reportDelete } from './views/comment';
@@ -18,6 +19,9 @@ import { createFork, createRegistrationFork } from './views/fork';
 import { guidDetail } from './views/guid';
 import { identifierCreate } from './views/identifier';
 import { summaryMetrics } from './views/institution';
+import { iqbrimsStatus } from './views/iqbrims-status';
+import { metadataNodeErad } from './views/metadata-node-erad';
+import { metadataNodeProject } from './views/metadata-node-project';
 import { createNode } from './views/node';
 import { osfNestedResource, osfResource, osfToManyRelationship } from './views/osf-resource';
 import { getProviderSubjects } from './views/provider-subjects';
@@ -30,7 +34,7 @@ import { updatePassword } from './views/user-password';
 import * as userSettings from './views/user-setting';
 import * as wb from './views/wb';
 
-const { OSF: { apiUrl } } = config;
+const { OSF: { apiUrl, url } } = config;
 
 export default function(this: Server) {
     this.passthrough(); // pass through all requests on currrent domain
@@ -102,6 +106,7 @@ export default function(this: Server) {
         only: ['related', 'add', 'remove'],
         path: '/nodes/:parentID/relationships/institutions',
     });
+    osfNestedResource(this, 'node', 'addons', { only: ['index'] });
 
     osfToManyRelationship(this, 'node', 'subjects', {
         only: ['related', 'self'],
@@ -244,4 +249,17 @@ export default function(this: Server) {
         only: ['related'],
         path: '/meetings/:parentID/submissions/',
     });
+
+    // Endpoint on web pod
+    const apiNamespace = this.namespace;
+    this.urlPrefix = url;
+    this.namespace = '/api/v1';
+
+    this.get('/project/:id/iqbrims/status', iqbrimsStatus);
+    this.get('/project/:id/binderhub/config', binderhubConfig);
+    this.get('/project/:id/metadata/erad/candidates', metadataNodeErad);
+    this.get('/project/:id/metadata/project', metadataNodeProject);
+
+    this.urlPrefix = apiUrl;
+    this.namespace = apiNamespace;
 }

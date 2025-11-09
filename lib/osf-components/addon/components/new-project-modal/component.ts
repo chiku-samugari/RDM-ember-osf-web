@@ -23,6 +23,9 @@ import styles from './styles';
 import template from './template';
 
 const {
+    OSF: {
+        projectAffiliate,
+    },
     featureFlagNames: {
         storageI18n,
     },
@@ -51,6 +54,10 @@ export default class NewProjectModal extends Component {
     selectedRegion?: Region;
     institutions: Institution[] = [];
     regions: Region[] = [];
+    running: boolean = false;
+    createError: boolean = false;
+
+    makeProjectAffiliate: boolean = projectAffiliate;
 
     @alias('currentUser.user') user!: User;
 
@@ -110,32 +117,38 @@ export default class NewProjectModal extends Component {
         if (!title) {
             return;
         }
-        const node = this.store.createRecord('node', {
-            category: 'project',
-            description,
-            public: isPublic !== undefined ? isPublic : false,
-            title,
-        });
-
-        if (templateFrom) {
-            node.set('templateFrom', templateFrom.id);
-        }
-        if (institutions.length) {
-            node.set('affiliatedInstitutions', institutions.slice());
-        }
-        if (storageRegion) {
-            node.set('region', storageRegion);
-        }
-
         try {
-            yield node.save();
-        } catch (e) {
-            const errorMessage = this.intl.t('new_project.could_not_create_project');
-            captureException(e, { errorMessage });
-            this.toast.error(getApiErrorMessage(e), errorMessage);
-        }
+            const node = this.store.createRecord('node', {
+                category: 'project',
+                description,
+                public: isPublic !== undefined ? isPublic : false,
+                title,
+            });
 
-        this.afterProjectCreated(node);
+            if (templateFrom) {
+                node.set('templateFrom', templateFrom.id);
+            }
+            if (institutions.length) {
+                node.set('affiliatedInstitutions', institutions.slice());
+            }
+            if (storageRegion) {
+                node.set('region', storageRegion);
+            }
+
+            try {
+                yield node.save();
+            } catch (e) {
+                const errorMessage = this.intl.t('new_project.could_not_create_project');
+                captureException(e, { errorMessage });
+                this.toast.error(getApiErrorMessage(e), errorMessage);
+                throw e;
+            }
+
+            this.afterProjectCreated(node);
+        } catch (error) {
+            this.toast.error(this.intl.t('new_project.create_failed_header'));
+            this.set('createError', true);
+        }
     });
 
     @action
@@ -178,6 +191,7 @@ export default class NewProjectModal extends Component {
 
     @action
     create(this: NewProjectModal) {
+        this.set('running', true);
         this.get('createNodeTask').perform(
             this.nodeTitle,
             this.description,

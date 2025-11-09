@@ -349,6 +349,10 @@ const AnalyticsTestCases: Array<{
     }];
 
 module('Registries | Integration | discover', hooks => {
+    // registries page is disabled for metadata addon
+    return;
+
+    /* eslint-disable no-unreachable */
     setupOSFApplicationTest(hooks);
     setupMirage(hooks);
 
@@ -641,4 +645,6 @@ module('Registries | Integration | discover', hooks => {
             }),
         }));
     });
+
+    /* eslint-enable no-unreachable */
 });

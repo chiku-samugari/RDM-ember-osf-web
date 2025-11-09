@@ -41,7 +41,7 @@ export default class Register extends Component.extend({
 
     // Private
     registration!: Registration;
-    onSubmitRedirect?: (registrationId: string) => void;
+    onSubmitRedirect?: (nodeId: string) => void;
     @alias('draftManager.hasInvalidResponses') isInvalid?: boolean;
     @alias('draftManager.draftRegistration') draftRegistration!: DraftRegistration;
     @alias('draftManager.node') node?: NodeModel;
@@ -54,11 +54,11 @@ export default class Register extends Component.extend({
     }
 
     @action
-    onSubmitRegistration(registrationId: string) {
+    onSubmitRegistration(nodeId: string) {
         this.closeAllDialogs();
 
         if (this.onSubmitRedirect) {
-            this.onSubmitRedirect(registrationId);
+            this.onSubmitRedirect(nodeId);
             this.draftRegistration.unloadRecord();
         }
     }

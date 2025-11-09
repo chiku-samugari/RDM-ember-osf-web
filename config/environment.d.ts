@@ -18,6 +18,7 @@ export interface KeenConfig {
 }
 
 declare const config: {
+    organization: string;
     environment: any;
     lintOnBuild: boolean;
     testsEnabled: boolean;
@@ -65,12 +66,15 @@ declare const config: {
         } | undefined };
     };
     OSF: {
+        pageName: string;
+        longBrand: string;
         clientId?: string;
         scope?: string;
         apiNamespace: string;
         backend: string;
         redirectUri?: string;
         url: string;
+        webApiNamespace: string;
         apiUrl: string;
         apiVersion: string;
         apiHeaders: { [k: string]: string };
@@ -107,6 +111,8 @@ declare const config: {
             action: string;
         };
         doiUrlPrefix: string;
+        simplePage: boolean;
+        projectAffiliate: boolean;
     };
     social: {
         twitter: {
@@ -131,6 +137,8 @@ declare const config: {
         github: string,
     },
     support: {
+        globalUrl: string;
+        serviceUrl: string;
         preregUrl: string;
         statusPageUrl: string;
         faqPageUrl: string;
@@ -169,7 +177,22 @@ declare const config: {
     home: {
         youtubeId: string;
     };
+    navbar: {
+        useDropdown: boolean;
+        useQuickfiles: boolean;
+        useRegistrations: boolean;
+        useSearch: boolean;
+        useSupport: boolean;
+        useGlobalSupport: boolean;
+        useDonate: boolean;
+        useSignup: boolean;
+        useEmbeddedDS: boolean;
+    },
     secondaryNavbarId: string;
+    dsconfig: {
+        settingFile: string;
+        wayfScript: string;
+    };
     'ember-a11y-testing'?: {
         componentOptions: {
             turnAuditOff: boolean,

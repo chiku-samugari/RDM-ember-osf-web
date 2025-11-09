@@ -1,0 +1,27 @@
+<div local-class='package_item_editor'>
+    <input
+        name='package_name'
+        class='input-package-name'
+        placeholder={{t 'binderhub.deployment.placeholders.package_name'}}
+        value={{this.name}}
+        onkeyup={{action this.nameKeyDown target=this}}
+        type='text'>
+    <button
+        data-test-named-item-confirm
+        type='button'
+        class='btn btn-default'
+        local-class='package_item_confirm'
+        {{action this.confirm target=this}}
+    >
+        <i class='fa fa-check' />
+    </button>
+    <button
+        data-test-named-item-cancel
+        type='button'
+        class='btn btn-default'
+        local-class='package_item_cancel'
+        {{action this.cancel target=this}}
+    >
+        <i class='fa fa-times' />
+    </button>
+</div>

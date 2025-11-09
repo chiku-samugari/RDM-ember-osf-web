@@ -82,6 +82,33 @@ export default class GuidNodeBinderHub extends Controller {
         return !this.config || !this.config.get('isFulfilled');
     }
 
+    async checkServerAvailability(url: string): Promise<boolean> {
+        try {
+            // Try to check if the server is reachable by making a simple request
+            // Use a short timeout to fail fast if the server is down
+            const response = await $.ajax({
+                url,
+                method: 'HEAD',
+                timeout: 5000, // 5 seconds timeout
+                xhrFields: { withCredentials: true },
+            });
+            return true;
+        } catch (error) {
+            // If HEAD fails, try GET with a common endpoint
+            try {
+                await $.ajax({
+                    url,
+                    method: 'GET',
+                    timeout: 5000,
+                    xhrFields: { withCredentials: true },
+                });
+                return true;
+            } catch (getError) {
+                return false;
+            }
+        }
+    }
+
     @action
     renewBinderHubToken(this: GuidNodeBinderHub, binderhubUrl: string) {
         if (!this.config) {
@@ -95,7 +122,19 @@ export default class GuidNodeBinderHub extends Controller {
         if (!binderhub.authorize_url) {
             throw new EmberError('Illegal config');
         }
-        window.location.href = this.getURLWithContext(binderhub.authorize_url);
+        later(async () => {
+            const isAvailable = await this.checkServerAvailability(binderhub.url);
+            if (!isAvailable) {
+                this.toast.error(
+                    this.intl.t('binderhub.error.server_unavailable', {
+                        server: 'BinderHub',
+                        url: binderhub.url,
+                    }),
+                );
+                return;
+            }
+            window.location.href = this.getURLWithContext(binderhub.authorize_url);
+        }, 0);
     }
 
     @action
@@ -109,7 +148,19 @@ export default class GuidNodeBinderHub extends Controller {
             if (!jupyterhub.authorize_url) {
                 throw new EmberError('Illegal config');
             }
-            window.location.href = this.getURLWithContext(jupyterhub.authorize_url);
+            later(async () => {
+                const isAvailable = await this.checkServerAvailability(jupyterhub.url);
+                if (!isAvailable) {
+                    this.toast.error(
+                        this.intl.t('binderhub.error.server_unavailable', {
+                            server: 'JupyterHub',
+                            url: jupyterhub.url,
+                        }),
+                    );
+                    return;
+                }
+                window.location.href = this.getURLWithContext(jupyterhub.authorize_url);
+            }, 0);
             return;
         }
         // Maybe BinderHub not authorized

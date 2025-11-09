@@ -1830,6 +1830,7 @@ binderhub:
         reconnect_jupyterhub: '再認証'
         modify_files_error: 'ファイルの更新に失敗しました。ネットワーク接続を確認してください。'
         load_files_error: 'ファイルの読み込みに失敗しました。ネットワーク接続を確認してください。'
+        server_unavailable: '{server}が利用できません（{url}）。サーバーが停止している可能性があります。'
 metadata:
     file-metadata-input:
         no_metadata: 'ファイルはありません'

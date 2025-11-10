@@ -2,11 +2,13 @@ import Component from '@ember/component';
 import EmberError from '@ember/error';
 import { action, computed } from '@ember/object';
 import { later } from '@ember/runloop';
+import { inject as service } from '@ember/service';
 import DS from 'ember-data';
 import { requiredAction } from 'ember-osf-web/decorators/component';
 import { BootstrapPath } from 'ember-osf-web/guid-node/binderhub/controller';
 import BinderHubConfigModel, { BinderHub, JupyterHub } from 'ember-osf-web/models/binderhub-config';
 import Node from 'ember-osf-web/models/node';
+import StatusMessages from 'ember-osf-web/services/status-messages';
 import { addPathSegment } from 'ember-osf-web/utils/url-parts';
 
 /* eslint-disable camelcase */
@@ -109,6 +111,8 @@ export function getContext(key: string) {
 }
 
 export default class JupyterServersList extends Component {
+    @service statusMessages!: StatusMessages;
+
     binderHubConfig: DS.PromiseObject<BinderHubConfigModel> & BinderHubConfigModel = this.binderHubConfig;
 
     @requiredAction renewToken!: (jupyterhubUrl: string) => void;
@@ -140,6 +144,8 @@ export default class JupyterServersList extends Component {
     namedServerLimit: number | null = null;
 
     jupyterHubUnavailable: boolean = false;
+
+    jupyterHubStatusMessageAdded: boolean = false;
 
     async checkServerAvailability(url: string): Promise<boolean> {
         try {
@@ -380,14 +386,40 @@ export default class JupyterServersList extends Component {
                 this.set('serversLink', null);
                 this.set('allServers', null);
                 this.set('namedServerLimit', null);
+                // Add status banner message if not already added
+                if (!this.jupyterHubStatusMessageAdded) {
+                    this.statusMessages.addStatusMessage({
+                        id: 'binderhub_unavailable_banner',
+                        class: 'warning',
+                        dismiss: false,
+                        extra: { url: jupyterhubUrl },
+                    });
+                    this.set('jupyterHubStatusMessageAdded', true);
+                }
                 return;
             }
+            // JupyterHub is available, remove status banner message if exists
+            this.removeJupyterHubStatusMessage();
             const servers = await this.loadServers(jupyterhubUrl);
             const homeUrl = addPathSegment(jupyterhubUrl, 'hub/home');
             this.set('serversLink', homeUrl);
             this.set('allServers', servers !== null ? servers.entries : null);
             this.set('namedServerLimit', servers !== null ? servers.namedServerLimit : null);
         }, 0);
+    }
+
+    removeJupyterHubStatusMessage() {
+        if (this.jupyterHubStatusMessageAdded) {
+            // Remove message from the messages array
+            const messages = this.statusMessages.messages;
+            if (messages) {
+                const filteredMessages = messages.filter(
+                    msg => msg.id !== 'status.binderhub_unavailable_banner',
+                );
+                this.statusMessages.set('messages', filteredMessages);
+            }
+            this.set('jupyterHubStatusMessageAdded', false);
+        }
     }
 
     validateToken() {

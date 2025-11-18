@@ -24,6 +24,11 @@
     <section local-class='DraftRegistrationCard__body' data-test-draft-registration-card-body>
         {{#if this.draftRegistration}}
             <small>
+                {{#if this.wekoItemId}}
+                    <p data-test-weko-item-id>
+                        <strong>{{t 'osf-components.draft-registration-card.weko_id' weko_id=this.wekoItemId}}</strong>
+                    </p>
+                {{/if}}
                 <p data-test-initiated-by>
                     {{t 'osf-components.draft-registration-card.initiated_by'}}
                     {{this.draftRegistration.initiator.fullName}}
@@ -40,12 +45,6 @@
                     {{t 'osf-components.draft-registration-card.last_updated'}}
                     {{moment this.draftRegistration.datetimeUpdated}}
                 </p>
-                {{#if this.wekoItemId}}
-                    <p data-test-weko-item-id>
-                        {{t 'osf-components.draft-registration-card.weko_id'}}
-                        {{this.wekoItemId}}
-                    </p>
-                {{/if}}
             </small>
             <div class='row'>
                 <div class='col-md-9'>

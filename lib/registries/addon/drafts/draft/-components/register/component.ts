@@ -20,7 +20,7 @@ const { OSF: { url: baseURL } } = config;
 
 @tagName('')
 export default class Register extends Component.extend({
-    onClickRegister: task(function *(this: Register) {
+    onClickRegister: task(function*(this: Register) {
         if (!this.registration) {
             const registration = this.store.createRecord('registration', {
                 draftRegistrationId: this.draftRegistration.id,
@@ -80,6 +80,27 @@ export default class Register extends Component.extend({
             node.get('id'),
             `metadata/draft_registrations/${draftRegistration.get('id')}/csv`,
         );
+    }
+
+    @computed('draftRegistration.registrationResponses')
+    get wekoItemId(): string | null {
+        const draftRegistration = this.draftRegistration;
+        if (!draftRegistration) {
+            return null;
+        }
+        const responses = draftRegistration.registrationResponses;
+        if (!responses || typeof responses !== 'object') {
+            return null;
+        }
+        const wekoIdKey = 'internal:weko-item-id';
+        const prefixedWekoIdKey = `__responseKey_${wekoIdKey}`;
+        const wekoIdValue = responses[wekoIdKey] || responses[prefixedWekoIdKey];
+
+        if (wekoIdValue && typeof wekoIdValue === 'string' && wekoIdValue.trim()) {
+            return wekoIdValue.trim();
+        }
+
+        return null;
     }
 
     @computed('showMobileView')

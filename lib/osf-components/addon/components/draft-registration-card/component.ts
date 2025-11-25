@@ -77,7 +77,7 @@ export default class DraftRegistrationCard extends Component {
         if (!draftRegistration) {
             return null;
         }
-        const responses = draftRegistration.registrationResponses;
+        const { registrationResponses: responses } = draftRegistration;
         if (!responses || typeof responses !== 'object') {
             return null;
         }

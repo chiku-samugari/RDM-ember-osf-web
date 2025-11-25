@@ -78,7 +78,7 @@ export default class DraftRegistrationManager {
     }
 
     @task
-    initializePageManagers = task(function*(this: DraftRegistrationManager) {
+    initializePageManagers = task(function *(this: DraftRegistrationManager) {
         const { draftRegistration, node } = yield this.draftRegistrationAndNodeTask;
         set(this, 'draftRegistration', draftRegistration);
         set(this, 'node', node);
@@ -111,21 +111,21 @@ export default class DraftRegistrationManager {
     });
 
     @task
-    initializeMetadataChangeset = task(function*(this: DraftRegistrationManager) {
+    initializeMetadataChangeset = task(function *(this: DraftRegistrationManager) {
         const { draftRegistration } = yield this.draftRegistrationAndNodeTask;
         const metadataChangeset = buildChangeset(draftRegistration, {});
         set(this, 'metadataChangeset', metadataChangeset);
     });
 
     @task
-    initializeMetadataNode = task(function*(this: DraftRegistrationManager) {
+    initializeMetadataNode = task(function *(this: DraftRegistrationManager) {
         const { metadataNodeErad, metadataNodeProject } = yield this.metadataNodeTask;
         set(this, 'metadataNodeErad', metadataNodeErad);
         set(this, 'metadataNodeProject', metadataNodeProject);
     });
 
     @task({ restartable: true })
-    onMetadataInput = task(function*(this: DraftRegistrationManager) {
+    onMetadataInput = task(function *(this: DraftRegistrationManager) {
         yield timeout(5000); // debounce
         this.updateMetadataChangeset();
         try {
@@ -139,7 +139,7 @@ export default class DraftRegistrationManager {
     });
 
     @task({ restartable: true })
-    onPageInput = task(function*(this: DraftRegistrationManager, currentPageManager: PageManager) {
+    onPageInput = task(function *(this: DraftRegistrationManager, currentPageManager: PageManager) {
         yield timeout(5000); // debounce
 
         if (currentPageManager && currentPageManager.schemaBlockGroups) {
@@ -160,7 +160,7 @@ export default class DraftRegistrationManager {
     });
 
     @task({ restartable: true })
-    saveAllVisitedPages = task(function*(this: DraftRegistrationManager) {
+    saveAllVisitedPages = task(function *(this: DraftRegistrationManager) {
         if (this.pageManagers && this.pageManagers.length) {
             this.pageManagers
                 .filter(pageManager => pageManager.isVisited)

@@ -20,7 +20,7 @@ const { OSF: { url: baseURL } } = config;
 
 @tagName('')
 export default class Register extends Component.extend({
-    onClickRegister: task(function*(this: Register) {
+    onClickRegister: task(function *(this: Register) {
         if (!this.registration) {
             const registration = this.store.createRecord('registration', {
                 draftRegistrationId: this.draftRegistration.id,
@@ -84,11 +84,11 @@ export default class Register extends Component.extend({
 
     @computed('draftRegistration.registrationResponses')
     get wekoItemId(): string | null {
-        const draftRegistration = this.draftRegistration;
+        const { draftRegistration } = this;
         if (!draftRegistration) {
             return null;
         }
-        const responses = draftRegistration.registrationResponses;
+        const { registrationResponses: responses } = draftRegistration;
         if (!responses || typeof responses !== 'object') {
             return null;
         }

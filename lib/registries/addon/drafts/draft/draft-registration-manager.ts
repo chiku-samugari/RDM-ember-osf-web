@@ -24,7 +24,7 @@ import buildChangeset from 'ember-osf-web/utils/build-changeset';
 
 export default class DraftRegistrationManager {
     // Required
-    draftRegistrationAndNodeTask!: TaskInstance<{draftRegistration: DraftRegistration, node: NodeModel}>;
+    draftRegistrationAndNodeTask!: TaskInstance<{ draftRegistration: DraftRegistration, node: NodeModel }>;
     metadataNodeTask!: TaskInstance<{
         metadataNodeErad: MetadataNodeEradModel,
         metadataNodeProject: MetadataNodeProjectModel,
@@ -84,8 +84,17 @@ export default class DraftRegistrationManager {
         set(this, 'node', node);
         const registrationSchema = yield this.draftRegistration.registrationSchema;
         const schemaBlocks: SchemaBlock[] = yield registrationSchema.loadAll('schemaBlocks');
-        set(this, 'schemaBlocks', schemaBlocks);
-        const pages = getPages(schemaBlocks);
+
+        const filteredSchemaBlocks = schemaBlocks.filter(block => {
+            // hideProjectmetadata が true の場合は除外
+            if (block.hideProjectmetadata) {
+                return false;
+            }
+            return true;
+        });
+
+        set(this, 'schemaBlocks', filteredSchemaBlocks);
+        const pages = getPages(filteredSchemaBlocks);
         const { registrationResponses } = this.draftRegistration;
 
         set(this, 'registrationResponses', registrationResponses || {});
@@ -173,7 +182,7 @@ export default class DraftRegistrationManager {
     });
 
     constructor(
-        draftRegistrationAndNodeTask: TaskInstance<{draftRegistration: DraftRegistration, node: NodeModel}>,
+        draftRegistrationAndNodeTask: TaskInstance<{ draftRegistration: DraftRegistration, node: NodeModel }>,
         metadataNodeTask: TaskInstance<{
             metadataNodeErad: MetadataNodeEradModel,
             metadataNodeProject: MetadataNodeProjectModel,

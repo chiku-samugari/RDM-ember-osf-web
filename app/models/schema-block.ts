@@ -24,6 +24,7 @@ export default class SchemaBlockModel extends OsfModel implements SchemaBlock {
     @attr('boolean') spaceNormalization?: boolean;
     @attr('string') retrievalTitle?: string;
     @attr('string') retrievalDate?: string;
+    @attr('boolean') hideProjectmetadata?: boolean;
     @attr('boolean') concealmentPageNavigator?: boolean;
     @attr('string') requiredAllCheck?: string;
     @attr('boolean') multiLanguage?: boolean;

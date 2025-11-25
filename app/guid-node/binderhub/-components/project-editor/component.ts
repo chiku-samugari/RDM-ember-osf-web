@@ -18,6 +18,9 @@ import CurrentUser from 'ember-osf-web/services/current-user';
 import { WaterButlerFile } from 'ember-osf-web/utils/waterbutler/base';
 import md5 from 'js-md5';
 
+const PATHS_YAML_FILENAME = 'paths.yaml';
+const MINIMAL_PATHS_YAML_CONTENT = 'override: true\npaths: []';
+
 export const REPO2DOCKER_IMAGE_ID = '#repo2docker';
 
 enum DockerfileProperty {
@@ -31,6 +34,12 @@ enum DockerfileProperty {
     Mpm,
     PostBuild,
     NoChanges,
+}
+
+enum PathsYamlState {
+    DEFAULT = 'default', // paths.yaml does not exist, copy default storage
+    NO_COPY = 'no_copy', // minimal paths.yaml exists, do not copy
+    CUSTOM = 'custom', // custom paths.yaml exists, UI disabled
 }
 
 function imageFromCustomBaseImageModel(model: CustomBaseImageModel) {
@@ -190,6 +199,20 @@ export default class ProjectEditor extends Component {
 
     configFolder: WaterButlerFile = this.configFolder;
 
+    pathsYamlState: PathsYamlState = PathsYamlState.DEFAULT;
+
+    @computed('pathsYamlState')
+    get copyDefaultStorage(): boolean {
+        return this.pathsYamlState === PathsYamlState.DEFAULT;
+    }
+
+    @computed('pathsYamlState')
+    get pathsYamlIsCustom(): boolean {
+        return this.pathsYamlState === PathsYamlState.CUSTOM;
+    }
+
+    showPathsYamlResetConfirm: boolean = false;
+
     initialCustomBaseImages: CustomBaseImageModel[] = [];
 
     dyCustomBaseImageModels: CustomBaseImageModel[] = [];
@@ -207,6 +230,8 @@ export default class ProjectEditor extends Component {
     mpmModel: WaterButlerFile | null = this.mpmModel;
 
     postBuildModel: WaterButlerFile | null = this.postBuildModel;
+
+    pathsYamlModel: WaterButlerFile | null = this.pathsYamlModel;
 
     showDirtyFragileFileConfirmDialog = false;
 
@@ -229,6 +254,8 @@ export default class ProjectEditor extends Component {
     mpm: string | undefined = undefined;
 
     postBuild: string | undefined = undefined;
+
+    pathsYaml: string | undefined = undefined;
 
     editingPostBuild: string | undefined = undefined;
 
@@ -391,6 +418,12 @@ export default class ProjectEditor extends Component {
     @computed('environment')
     get environmentManuallyChanged() {
         const content = this.get('environment');
+        return this.verifyHashHeader(content);
+    }
+
+    @computed('pathsYaml')
+    get pathsYamlManuallyChanged() {
+        const content = this.get('pathsYaml');
         return this.verifyHashHeader(content);
     }
 
@@ -1156,6 +1189,59 @@ export default class ProjectEditor extends Component {
         return name;
     }
 
+    @computed('pathsYaml')
+    get pathsYamlContent(): { override: boolean; paths: string[] } | null {
+        if (this.pathsYamlManuallyChanged) {
+            return null;
+        }
+        const content = this.get('pathsYaml');
+        if (content === undefined || content.length === 0) {
+            return null;
+        }
+        const lines = content.split('\n');
+        let override = false;
+        const paths: string[] = [];
+        let inPathsSection = false;
+
+        for (const line of lines) {
+            if (line.trim().startsWith('#')) {
+                continue;
+            }
+            // Check for "override: true"
+            const overrideMatch = line.match(/^\s*override\s*:\s*(true|false)\s*$/);
+            if (overrideMatch) {
+                override = overrideMatch[1] === 'true';
+                continue;
+            }
+            // Check for "paths:" section
+            const pathsSectionMatch = line.match(/^\s*paths\s*:\s*$/);
+            if (pathsSectionMatch) {
+                inPathsSection = true;
+                continue;
+            }
+            // Check for inline empty array "paths: []"
+            const inlinePathsMatch = line.match(/^\s*paths\s*:\s*\[\s*\]\s*$/);
+            if (inlinePathsMatch) {
+                // paths is empty array
+                continue;
+            }
+            // Parse items in paths array
+            if (inPathsSection) {
+                const itemMatch = line.match(/^\s*-\s+(.+)\s*$/);
+                if (itemMatch) {
+                    paths.push(itemMatch[1]);
+                    continue;
+                }
+                // If we hit a non-indented line, we've exited the paths section
+                if (line.match(/^\S/)) {
+                    inPathsSection = false;
+                }
+            }
+        }
+
+        return { override, paths };
+    }
+
     @computed('requirements')
     get requirementsLines() {
         if (this.requirementsManuallyChanged) {
@@ -1368,6 +1454,7 @@ export default class ProjectEditor extends Component {
         const confFiles = this.configurationFiles;
         const tasks = confFiles.map(file => this.loadCurrentFile(file, files));
         await Promise.all(tasks);
+        await this.loadPathsYaml(files);
     }
 
     async saveCurrentFile(
@@ -1625,6 +1712,50 @@ export default class ProjectEditor extends Component {
     }
 
     @action
+    toggleCopyDefaultStorage(this: ProjectEditor, event: Event) {
+        const node = this.get('node');
+        if (!node || !node.userHasWritePermission || this.pathsYamlIsCustom) {
+            return;
+        }
+        const target = event.target as HTMLInputElement;
+        const previous = this.pathsYamlState;
+        const newState = target.checked ? PathsYamlState.DEFAULT : PathsYamlState.NO_COPY;
+        this.set('pathsYamlState', newState);
+        later(async () => {
+            try {
+                await this.persistPathsYamlPreference();
+                this.pageCleanser();
+            } catch (exception) {
+                this.set('pathsYamlState', previous);
+                this.onError(exception, this.intl.t('binderhub.error.modify_files_error'));
+            }
+        }, 0);
+    }
+
+    @action
+    openPathsYamlResetConfirm(this: ProjectEditor) {
+        this.set('showPathsYamlResetConfirm', true);
+    }
+
+    @action
+    cancelPathsYamlReset(this: ProjectEditor) {
+        this.set('showPathsYamlResetConfirm', false);
+    }
+
+    @action
+    resetPathsYaml(this: ProjectEditor) {
+        this.set('showPathsYamlResetConfirm', false);
+        later(async () => {
+            try {
+                await this.performPathsYamlReset();
+                this.pageCleanser();
+            } catch (exception) {
+                this.onError(exception, this.intl.t('binderhub.error.modify_files_error'));
+            }
+        }, 0);
+    }
+
+    @action
     editDockerfileContent(this: ProjectEditor, event: { target: HTMLInputElement }) {
         this.set('editingDockerfileContent', event.target.value);
         if (event.target.value !== this.get('dockerfile')) {
@@ -1727,5 +1858,72 @@ export default class ProjectEditor extends Component {
     @action
     modifyCustomBaseImageModelForLocale(model: CustomBaseImageModel) {
         return this.modifyImageForLocale(imageFromCustomBaseImageModel(model));
+    }
+
+    private getHashedMinimalPathsYaml(): string {
+        const content = MINIMAL_PATHS_YAML_CONTENT;
+        const checksum = md5(content.trim());
+        return `# rdm-binderhub:hash:${checksum}\n${content}`;
+    }
+
+    private async loadPathsYaml(files: WaterButlerFile[] | null) {
+        const pathsFile = await this.getFile(PATHS_YAML_FILENAME, files);
+        if (!pathsFile) {
+            this.set('pathsYamlModel', null);
+            this.set('pathsYaml', '');
+            this.set('pathsYamlState', PathsYamlState.DEFAULT);
+            return;
+        }
+        const content = (await pathsFile.getContents()).toString();
+        this.set('pathsYamlModel', pathsFile);
+        this.set('pathsYaml', content);
+
+        // Use computed property to check if manually changed (avoid duplicate hash verification)
+        if (this.pathsYamlManuallyChanged) {
+            this.set('pathsYamlState', PathsYamlState.CUSTOM);
+            return;
+        }
+
+        // Hash is valid - verify content structure is minimal paths.yaml
+        const parsed = this.pathsYamlContent;
+        if (!parsed) {
+            throw new EmberError('Invalid paths.yaml: hash is valid but failed to parse content');
+        }
+        if (!parsed.override || parsed.paths.length !== 0) {
+            throw new EmberError(
+                'Invalid paths.yaml: hash is valid but content does not match minimal template',
+            );
+        }
+        this.set('pathsYamlState', PathsYamlState.NO_COPY);
+    }
+
+    private async persistPathsYamlPreference() {
+        if (!this.configFolder) {
+            throw new EmberError('Illegal config');
+        }
+        const files = await this.getRootFiles(true);
+        const pathsFile = await this.getFile(PATHS_YAML_FILENAME, files);
+        if (this.pathsYamlState === PathsYamlState.DEFAULT) {
+            if (pathsFile) {
+                await pathsFile.delete();
+            }
+        } else {
+            const content = this.getHashedMinimalPathsYaml();
+            if (!pathsFile) {
+                await this.configFolder.createFile(PATHS_YAML_FILENAME, content);
+            } else {
+                await pathsFile.updateContents(content);
+            }
+        }
+        await this.loadPathsYaml(await this.getRootFiles(true));
+    }
+
+    private async performPathsYamlReset() {
+        const files = await this.getRootFiles(true);
+        const pathsFile = await this.getFile(PATHS_YAML_FILENAME, files);
+        if (pathsFile) {
+            await pathsFile.delete();
+        }
+        await this.loadPathsYaml(await this.getRootFiles(true));
     }
 }

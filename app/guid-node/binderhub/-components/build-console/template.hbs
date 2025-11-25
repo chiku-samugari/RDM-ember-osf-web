@@ -1,7 +1,33 @@
 <h3>
     {{t 'binderhub.deployment.header'}}
 </h3>
-{{t 'binderhub.deployment.description'}}
+<div local-class='paths_toggle'>
+    <label local-class='paths_toggle__label {{if (or (not this.userHasWritePermission) this.pathsYamlIsCustom) 'paths_toggle__label--disabled'}}'>
+        <Input
+            @type='checkbox'
+            @checked={{this.copyDefaultStorage}}
+            @change={{this.toggleCopyDefaultStorage}}
+            disabled={{or (not this.userHasWritePermission) this.pathsYamlIsCustom}}
+            data-test-copy-default-storage
+        />
+        {{t 'binderhub.deployment.copy_default_storage_checkbox'}}
+    </label>
+    {{#if this.pathsYamlIsCustom}}
+        <p local-class='paths_toggle__hint'>
+            {{t 'binderhub.deployment.copy_default_storage_disabled_hint'}}
+        </p>
+        {{#if this.userHasWritePermission}}
+            <button
+                type='button'
+                class='btn btn-default'
+                data-test-reset-paths-yaml
+                {{action this.openPathsYamlResetConfirm}}
+            >
+                {{t 'binderhub.deployment.reset_paths_yaml'}}
+            </button>
+        {{/if}}
+    {{/if}}
+</div>
 <div local-class='build_launcher'>
     <BsButton
         data-test-binderhub-launch

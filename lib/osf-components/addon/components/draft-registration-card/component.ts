@@ -73,7 +73,7 @@ export default class DraftRegistrationCard extends Component {
 
     @computed('draftRegistration.registrationResponses')
     get wekoItemId(): string | null {
-        const draftRegistration = this.draftRegistration;
+        const { draftRegistration } = this;
         if (!draftRegistration) {
             return null;
         }

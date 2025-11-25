@@ -1045,6 +1045,7 @@ registries:
                 toggle_dropdown: 'Toggle navigation dropdown'
             register: Register
             submit_error: 'Unable to create a registration.'
+            weko_id: 'Registered in Mebyo DB<br>ID:{weko_id}'
     index:
         lead: 'The <span class="f-w-lg">open</span> registries network'
         see_example: 'See an example'

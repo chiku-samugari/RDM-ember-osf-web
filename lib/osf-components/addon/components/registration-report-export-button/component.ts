@@ -130,7 +130,14 @@ export default class RegistrationReportExportButton extends Component {
         this.upload(targetDestination.url, this.metadataId)
             .catch(error => {
                 this.set('dialogOpen', false);
-                this.toast.error(`Upload failed: ${error.toString()}`);
+                const msg = (error && error.responseJSON && error.responseJSON.message_long)
+                    || (
+                        (typeof error === 'object' && error !== null && typeof error.toString === 'function')
+                            ? error.toString()
+                            : ''
+                    )
+                    || '';
+                this.toast.error(`Upload failed: ${msg}`);
             });
     }
 

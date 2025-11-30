@@ -1047,7 +1047,7 @@ registries:
                 toggle_dropdown: 'Toggle navigation dropdown'
             register: 登録
             submit_error: 'Unable to create a registration.'
-            weko_id: '未病DBカタログ登録済<br>ID:{weko_id}'
+            weko_id: '<strong>登録済</strong>:未病DBカタログ<br>ID:{weko_id}'
     index:
         lead: '<span class="f-w-lg">オープン</span> レジストリネットワーク'
         see_example: 例を見る
@@ -1389,7 +1389,7 @@ osf-components:
         form_type: '様式:'
         started: '開始日:'
         last_updated: '最終更新日:'
-        weko_id : 'JAIRO Cloud アイテムID: 未病DBカタログ登録済(ID:{weko_id})'
+        weko_id : '登録済：未病DBカタログ (ID:{weko_id})'
         review: 内容確認
         delete_draft_confirm: このプロジェクトメタデータを削除してもよろしいですか？
     copyable-text:

@@ -1786,7 +1786,7 @@ iqbrims:
 binderhub:
     page_title: '{nodeTitle} BinderHub'
     host_info:
-        url: 'JupyterHub:'
+        url: 'Host:'
         username: 'User:'
         change_host: 'SELECT'
     host_selector:
@@ -1797,6 +1797,7 @@ binderhub:
         header: 'My environments'
         delete_confirm_dialog_title: 'Delete confirmation'
         delete_confirm_dialog_body: 'Do you want to delete the server?'
+        jupyterhub_unavailable: 'The selected JupyterHub is currently unavailable.'
     project_editor:
         header: 'New environment'
     loading: 'Loading BinderHub config...'
@@ -1910,6 +1911,8 @@ binderhub:
         reconnect_jupyterhub: 'Authorize'
         modify_files_error: 'Failed to update the files. Please check your network connection.'
         load_files_error: 'Failed to load the files. Please check your network connection.'
+        server_unavailable: 'JupyterHub is unavailable.<p>Status Code: {status}</p>'
+        hub_unavailable: 'The selected JupyterHub is currently unavailable. Creating new environments is not possible at this time. <a href="{extra}">Retry</a>'
 metadata:
     file-metadata-input:
         no_metadata: 'No files'

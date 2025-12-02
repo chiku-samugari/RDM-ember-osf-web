@@ -295,6 +295,8 @@ export default class ProjectEditor extends Component {
 
     deletingCustomBaseImageModel?: CustomBaseImageModel = undefined;
 
+    hubsAvailability: boolean = true;
+
     didReceiveAttrs() {
         if (!this.configFolder || this.configFolder.path === this.loadingPath) {
             return;

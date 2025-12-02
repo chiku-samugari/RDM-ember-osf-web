@@ -62,6 +62,8 @@ module('Acceptance | guid-node/binderhub', hooks => {
     // JSL stands for JupyterServersList
     const JSL = {
         top: '[data-test-binderhub-jupyter-servers-list]',
+        list: '[data-test-server-list]',
+        refresh: '[data-test-server-refresh-button]',
         launch: '[data-test-lab-launch-button]',
         memo: propertyWithValue('data-test-memo-editor'),
         delete: '[data-test-delete-icon]',
@@ -96,6 +98,11 @@ module('Acceptance | guid-node/binderhub', hooks => {
     const MPE = {
         top: '[data-test-matlab-product-editor]',
         product: (v: string) => `input${propertyWithValue('value')(v)}`,
+    };
+
+    // BC stands for Build Console
+    const BC = {
+        button: '[data-test-binderhub-launch]',
     };
 
     setupOSFApplicationTest(hooks);
@@ -220,6 +227,12 @@ module('Acceptance | guid-node/binderhub', hooks => {
         wbFileAjaxStub.resolves({
             data: [],
         });
+        const fetchStub = sandbox.stub(window, 'fetch');
+        fetchStub.resolves({
+            ok: true,
+            status: 200,
+            type: 'basic',
+        } as Response);
         const url = `/${node.id}/binderhub`;
 
         await visit(url);
@@ -245,7 +258,7 @@ module('Acceptance | guid-node/binderhub', hooks => {
         assert.dom(`${JSL.top} ${JSL.memo()}`).doesNotExist();
         assert.dom(`${JSL.top} ${JSL.delete}`).doesNotExist();
         assert.dom('[data-test-jupyterhub-user]').hasText('testuser');
-        assert.dom('[data-test-binderhub-launch]').exists();
+        assert.dom(`${BC.button}`).exists();
         assert.dom(`${PE.top} ${PE.selection()}`).doesNotExist();
         assert.dom(`${PE.top} ${PE.change('jupyter/test-image')}`).exists();
         assert.dom(`${PE.top} ${PE.selected('jupyter/test-image')}`).exists();
@@ -462,6 +475,12 @@ module('Acceptance | guid-node/binderhub', hooks => {
         wbFileAjaxStub.resolves({
             data: [],
         });
+        const fetchStub = sandbox.stub(window, 'fetch');
+        fetchStub.resolves({
+            ok: true,
+            status: 200,
+            type: 'basic',
+        } as Response);
         const url = `/${node.id}/binderhub`;
 
         await visit(url);
@@ -475,7 +494,7 @@ module('Acceptance | guid-node/binderhub', hooks => {
         assert.dom(`${JSL.top} ${JSL.memo('ready')}`).exists({ count: 2 });
         assert.dom(`${JSL.top} ${JSL.delete}`).exists({ count: 2 });
         assert.dom('[data-test-jupyterhub-user]').hasText('testuser');
-        assert.dom('[data-test-binderhub-launch]').exists();
+        assert.dom(`${BC.button}`).exists();
         assert.dom(`${PE.top} ${PE.selection()}`).doesNotExist();
         assert.dom(`${PE.top} ${PE.change('jupyter/test-image')}`).exists();
         assert.dom(`${PE.top} ${PE.selected('jupyter/test-image')}`).exists();
@@ -679,6 +698,12 @@ module('Acceptance | guid-node/binderhub', hooks => {
         const toStringStub = sinon.stub();
         toStringStub.returns('# rdm-binderhub:hash:7c5b3a3d0a63ffd19147fd8c5e52d9a0\nFROM jupyter/scipy-notebook\n');
         getContentsStub.resolves({ toString: toStringStub });
+        const fetchStub = sandbox.stub(window, 'fetch');
+        fetchStub.resolves({
+            ok: true,
+            status: 200,
+            type: 'basic',
+        } as Response);
         const url = `/${node.id}/binderhub`;
 
         await visit(url);
@@ -703,7 +728,7 @@ module('Acceptance | guid-node/binderhub', hooks => {
         assert.dom(`${JSL.top} ${JSL.launch}`).doesNotExist();
         assert.dom(`${JSL.top} ${JSL.memo()}`).doesNotExist();
         assert.dom(`${JSL.top} ${JSL.delete}`).doesNotExist();
-        assert.dom('[data-test-binderhub-launch]').exists();
+        assert.dom(`${BC.button}`).exists();
         assert.dom(`${PE.top} ${PE.selection()}`).doesNotExist();
         assert.dom(`${PE.top} ${PE.change('jupyter/scipy-notebook')}`).exists();
         assert.dom(`${PE.top} ${PE.selected('jupyter/scipy-notebook')}`).exists();
@@ -839,6 +864,12 @@ module('Acceptance | guid-node/binderhub', hooks => {
         toStringStub.returns('# rdm-binderhub:hash:bb2a9dd68272d5f92e93acfbcfbbd267\n'
             + 'name: "#repo2docker#r-base"\ndependencies:\n- r-base\n');
         getContentsStub.resolves({ toString: toStringStub });
+        const fetchStub = sandbox.stub(window, 'fetch');
+        fetchStub.resolves({
+            ok: true,
+            status: 200,
+            type: 'basic',
+        } as Response);
         const url = `/${node.id}/binderhub`;
 
         await visit(url);
@@ -863,7 +894,7 @@ module('Acceptance | guid-node/binderhub', hooks => {
         assert.dom(`${JSL.top} ${JSL.launch}`).doesNotExist();
         assert.dom(`${JSL.top} ${JSL.memo()}`).doesNotExist();
         assert.dom(`${JSL.top} ${JSL.delete}`).doesNotExist();
-        assert.dom('[data-test-binderhub-launch]').exists();
+        assert.dom(`${BC.button}`).exists();
         assert.dom(`${PE.top} ${PE.selection()}`).doesNotExist();
         assert.dom(`${PE.top} ${PE.change('#repo2docker#r-base')}`).exists();
         assert.dom(`${PE.top} ${PE.selected('#repo2docker#r-base')}`).exists();
@@ -1004,6 +1035,12 @@ module('Acceptance | guid-node/binderhub', hooks => {
             + 'FROM jupyter/scipy-notebook\n\nCOPY --chown=$NB_UID:$NB_GID . .\n');
         getContentsStub.resolves({ toString: toStringStub });
         const updateContentsStub = sandbox.stub(AbstractFile.prototype, 'updateContents');
+        const fetchStub = sandbox.stub(window, 'fetch');
+        fetchStub.resolves({
+            ok: true,
+            status: 200,
+            type: 'basic',
+        } as Response);
         const url = `/${node.id}/binderhub`;
 
         await visit(url);
@@ -1028,7 +1065,7 @@ module('Acceptance | guid-node/binderhub', hooks => {
         assert.dom(`${JSL.top} ${JSL.launch}`).doesNotExist();
         assert.dom(`${JSL.top} ${JSL.memo()}`).doesNotExist();
         assert.dom(`${JSL.top} ${JSL.delete}`).doesNotExist();
-        assert.dom('[data-test-binderhub-launch]').exists();
+        assert.dom(`${BC.button}`).exists();
         assert.dom(`${PE.top} ${PE.selection()}`).doesNotExist();
         assert.dom(`${PE.top} ${PE.change('jupyter/scipy-notebook')}`).exists();
         assert.dom(`${PE.top} ${PE.selected('jupyter/scipy-notebook')}`).exists();
@@ -1291,6 +1328,12 @@ module('Acceptance | guid-node/binderhub', hooks => {
             + 'name: "#repo2docker#r-base"\ndependencies:\n- r-base\n');
         getContentsStub.resolves({ toString: toStringStub });
         const updateContentsStub = sandbox.stub(AbstractFile.prototype, 'updateContents');
+        const fetchStub = sandbox.stub(window, 'fetch');
+        fetchStub.resolves({
+            ok: true,
+            status: 200,
+            type: 'basic',
+        } as Response);
         const url = `/${node.id}/binderhub`;
 
         await visit(url);
@@ -1315,7 +1358,7 @@ module('Acceptance | guid-node/binderhub', hooks => {
         assert.dom(`${JSL.top} ${JSL.launch}`).doesNotExist();
         assert.dom(`${JSL.top} ${JSL.memo()}`).doesNotExist();
         assert.dom(`${JSL.top} ${JSL.delete}`).doesNotExist();
-        assert.dom('[data-test-binderhub-launch]').exists();
+        assert.dom(`${BC.button}`).exists();
         assert.dom(`${PE.top} ${PE.selection()}`).doesNotExist();
         assert.dom(`${PE.top} ${PE.change('#repo2docker#r-base')}`).exists();
         assert.dom(`${PE.top} ${PE.selected('#repo2docker#r-base')}`).exists();
@@ -1589,6 +1632,12 @@ module('Acceptance | guid-node/binderhub', hooks => {
             .onSecondCall()
             .resolves({ toString: mpmToStringStub });
         const updateContentsStub = sandbox.stub(AbstractFile.prototype, 'updateContents');
+        const fetchStub = sandbox.stub(window, 'fetch');
+        fetchStub.resolves({
+            ok: true,
+            status: 200,
+            type: 'basic',
+        } as Response);
         const url = `/${node.id}/binderhub`;
 
         await visit(url);
@@ -1613,7 +1662,7 @@ module('Acceptance | guid-node/binderhub', hooks => {
         assert.dom(`${JSL.top} ${JSL.launch}`).doesNotExist();
         assert.dom(`${JSL.top} ${JSL.memo()}`).doesNotExist();
         assert.dom(`${JSL.top} ${JSL.delete}`).doesNotExist();
-        assert.dom('[data-test-binderhub-launch]').exists();
+        assert.dom(`${BC.button}`).exists();
         assert.dom(`${PE.top} ${PE.selection()}`).doesNotExist();
         assert.dom(`${PE.top} ${PE.change('#repo2docker#r-base')}`).exists();
         assert.dom(`${PE.top} ${PE.selected('#repo2docker#r-base')}`).exists();
@@ -1841,6 +1890,12 @@ module('Acceptance | guid-node/binderhub', hooks => {
         const toStringStub = sinon.stub();
         toStringStub.returns('# rdm-binderhub:hash:7c5b3a3d0a63ffd19147fd8c5e52d9a0\nFROM jupyter/scipy-notebook\n');
         getContentsStub.resolves({ toString: toStringStub });
+        const fetchStub = sandbox.stub(window, 'fetch');
+        fetchStub.resolves({
+            ok: true,
+            status: 200,
+            type: 'basic',
+        } as Response);
         const url = `/${node.id}/binderhub`;
 
         await visit(url);
@@ -1865,7 +1920,7 @@ module('Acceptance | guid-node/binderhub', hooks => {
         assert.dom(`${JSL.top} ${JSL.launch}`).exists({ count: 1 });
         assert.dom(`${JSL.top} ${JSL.memo('ready')}`).exists({ count: 1 });
         assert.dom(`${JSL.top} ${JSL.delete}`).exists({ count: 1 });
-        assert.dom('[data-test-binderhub-launch]').exists();
+        assert.dom(`${BC.button}`).exists();
 
         assert.dom('[data-test-server-list-item]').exists();
         assert.dom('[data-test-max-servers-exceeded]').doesNotExist();
@@ -1895,7 +1950,7 @@ module('Acceptance | guid-node/binderhub', hooks => {
             named_server_limit: 3,
         });
 
-        await click('[data-test-server-refresh-button]');
+        await click(`${JSL.top} ${JSL.refresh}`);
 
         assert.dom('[data-test-server-list-item]').exists();
         assert.dom('[data-test-max-servers-exceeded]').doesNotExist();
@@ -1929,10 +1984,516 @@ module('Acceptance | guid-node/binderhub', hooks => {
             named_server_limit: 3,
         });
 
-        await click('[data-test-server-refresh-button]');
+        await click(`${JSL.top} ${JSL.refresh}`);
 
         assert.dom('[data-test-server-list-item]').exists();
         assert.dom('[data-test-max-servers-exceeded]').exists();
+
+        sandbox.restore();
+    });
+
+    test('health check success', async assert => {
+        const node = server.create('node', {
+            id: guid,
+            currentUserPermissions: [Permission.Write],
+        });
+        server.create('binderhub-config', {
+            id: node.id,
+            binderhubs: [{
+                default: true,
+                url: 'http://localhost:8585/',
+                authorize_url: 'http://localhost/authorize',
+                token: {
+                    access_token: 'TESTBHTOKEN',
+                    token_type: 'Bearer',
+                    expires_at: null,
+                },
+                jupyterhub_url: 'http://localhost:30123/',
+            }],
+            jupyterhubs: [{
+                url: 'http://localhost:30123/',
+                api_url: 'http://localhost:30123/hub/api/',
+                authorize_url: 'http://localhost/authorize',
+                token: {
+                    user: 'testuser',
+                    access_token: 'TESTJHTOKEN',
+                    token_type: 'Bearer',
+                    expires_at: null,
+                },
+            }],
+            node_binderhubs: [
+                {
+                    binderhub_url: 'http://localhost:8585/',
+                    jupyterhub_url: 'http://localhost:30123/',
+                },
+            ],
+            user_binderhubs: [],
+            deployment: {
+                images: [
+                    {
+                        url: 'jupyter/test-image',
+                        name: 'Test Image',
+                        description: 'dummy description',
+                        packages: ['conda'],
+                        recommended: true,
+                        deprecated: false,
+                    },
+                ],
+            },
+            mpm_releases: MATLAB_RELEASES,
+        });
+        server.create('file-provider', { node, name: 'osfstorage' });
+        const sandbox = sinon.createSandbox();
+
+        // Stub fetch to simulate successful health check
+        const fetchStub = sandbox.stub(window, 'fetch');
+        fetchStub.resolves({
+            ok: true,
+            status: 200,
+            type: 'basic',
+        } as Response);
+
+        const ajaxStub = sandbox.stub(BinderHubConfigModel.prototype, 'jupyterhubAPIAJAX');
+        ajaxStub.resolves({
+            kind: 'user',
+            name: 'testuser',
+            servers: {},
+        });
+        const wbFileAjaxStub = sandbox.stub(AbstractFile.prototype, 'wbAuthenticatedAJAX');
+        wbFileAjaxStub
+            .onFirstCall()
+            .resolves({
+                data: [
+                    createFolderResponse({
+                        kind: 'folder',
+                        provider: 'osfstorage',
+                        name: '.binder',
+                        path: '/.binder',
+                    }),
+                ],
+            });
+        wbFileAjaxStub.resolves({
+            data: [],
+        });
+        const url = `/${node.id}/binderhub`;
+
+        await visit(url);
+
+        assert.equal(currentURL(), url, `We are on ${url}`);
+        assert.equal(currentRouteName(), 'guid-node.binderhub', 'We are at guid-node.binderhub');
+
+        assert.ok(
+            fetchStub.called,
+            'fetch (health check) should have been called',
+        );
+
+        assert.dom(`${BC.button}`).exists('Launch button should exist');
+        assert.dom(`${BC.button}`).isNotDisabled(
+            'Launch button should not be disabled when health check succeeds',
+        );
+        assert.dom(`${BC.button}`).hasClass(
+            'btn-success',
+            'Launch button should have success class when health check succeeds',
+        );
+
+        assert.dom(`${JSL.top}`).exists();
+        assert.dom(`${JSL.top} ${JSL.refresh}`).exists(
+            'Server refresh button should be visible when health check succeeds',
+        );
+        assert.dom(`${JSL.top} ${JSL.list}`).exists();
+        assert.dom('[data-test-status-message]').doesNotExist();
+
+        sandbox.restore();
+    });
+
+    test('health check failure: unavailable status message is shown', async assert => {
+        const node = server.create('node', {
+            id: guid,
+            currentUserPermissions: [Permission.Write],
+        });
+        server.create('binderhub-config', {
+            id: node.id,
+            binderhubs: [{
+                default: true,
+                url: 'http://localhost:8585/',
+                authorize_url: 'http://localhost/authorize',
+                token: {
+                    access_token: 'TESTBHTOKEN',
+                    token_type: 'Bearer',
+                    expires_at: null,
+                },
+                jupyterhub_url: 'http://localhost:30123/',
+            }],
+            jupyterhubs: [{
+                url: 'http://localhost:30123/',
+                api_url: 'http://localhost:30123/hub/api/',
+                authorize_url: 'http://localhost/authorize',
+                token: {
+                    user: 'testuser',
+                    access_token: 'TESTJHTOKEN',
+                    token_type: 'Bearer',
+                    expires_at: null,
+                },
+            }],
+            node_binderhubs: [
+                {
+                    binderhub_url: 'http://localhost:8585/',
+                    jupyterhub_url: 'http://localhost:30123/',
+                },
+            ],
+            user_binderhubs: [],
+            deployment: {
+                images: [
+                    {
+                        url: 'jupyter/test-image',
+                        name: 'Test Image',
+                        description: 'dummy description',
+                        packages: ['conda'],
+                        recommended: true,
+                        deprecated: false,
+                    },
+                ],
+            },
+            mpm_releases: MATLAB_RELEASES,
+        });
+        server.create('file-provider', { node, name: 'osfstorage' });
+        const sandbox = sinon.createSandbox();
+
+        // Stub fetch to simulate failed health check (503 Service Unavailable)
+        const fetchStub = sandbox.stub(window, 'fetch');
+        fetchStub.resolves({
+            ok: false,
+            status: 503,
+            type: 'basic',
+        } as Response);
+
+        const ajaxStub = sandbox.stub(BinderHubConfigModel.prototype, 'jupyterhubAPIAJAX');
+        ajaxStub.resolves({
+            kind: 'user',
+            name: 'testuser',
+            servers: {},
+        });
+        const wbFileAjaxStub = sandbox.stub(AbstractFile.prototype, 'wbAuthenticatedAJAX');
+        wbFileAjaxStub
+            .onFirstCall()
+            .resolves({
+                data: [
+                    createFolderResponse({
+                        kind: 'folder',
+                        provider: 'osfstorage',
+                        name: '.binder',
+                        path: '/.binder',
+                    }),
+                ],
+            });
+        wbFileAjaxStub.resolves({
+            data: [],
+        });
+        const url = `/${node.id}/binderhub`;
+
+        await visit(url);
+
+        assert.equal(currentURL(), url, `We are on ${url}`);
+        assert.equal(currentRouteName(), 'guid-node.binderhub', 'We are at guid-node.binderhub');
+
+        assert.ok(
+            fetchStub.called,
+            'fetch (health check) should have been called',
+        );
+
+        // Launch button should be disabled
+        assert.dom(`${BC.button}`).exists('Launch button should exist');
+        assert.dom(`${BC.button}`).isDisabled(
+            'Launch button should be disabled when health check fails',
+        );
+        assert.dom(`${BC.button}`).doesNotHaveClass(
+            'btn-success',
+            'Launch button should not have success class when health check fails',
+        );
+
+        assert.dom(`${JSL.top}`).exists();
+        // Server refresh button and server list should NOT be visible
+        // when unavailable message is shown
+        assert.dom(`${JSL.top} ${JSL.refresh}`).doesNotExist(
+            'Server refresh button should not be visible when health check fails',
+        );
+        assert.dom(`${JSL.top} ${JSL.list}`).doesNotExist();
+        assert.dom('[data-test-status-message]').exists();
+
+        sandbox.restore();
+    });
+
+    test('health check network error', async assert => {
+        const node = server.create('node', {
+            id: guid,
+            currentUserPermissions: [Permission.Write],
+        });
+        server.create('binderhub-config', {
+            id: node.id,
+            binderhubs: [{
+                default: true,
+                url: 'http://localhost:8585/',
+                authorize_url: 'http://localhost/authorize',
+                token: {
+                    access_token: 'TESTBHTOKEN',
+                    token_type: 'Bearer',
+                    expires_at: null,
+                },
+                jupyterhub_url: 'http://localhost:30123/',
+            }],
+            jupyterhubs: [{
+                url: 'http://localhost:30123/',
+                api_url: 'http://localhost:30123/hub/api/',
+                authorize_url: 'http://localhost/authorize',
+                token: {
+                    user: 'testuser',
+                    access_token: 'TESTJHTOKEN',
+                    token_type: 'Bearer',
+                    expires_at: null,
+                },
+            }],
+            node_binderhubs: [
+                {
+                    binderhub_url: 'http://localhost:8585/',
+                    jupyterhub_url: 'http://localhost:30123/',
+                },
+            ],
+            user_binderhubs: [],
+            deployment: {
+                images: [
+                    {
+                        url: 'jupyter/test-image',
+                        name: 'Test Image',
+                        description: 'dummy description',
+                        packages: ['conda'],
+                        recommended: true,
+                        deprecated: false,
+                    },
+                ],
+            },
+            mpm_releases: MATLAB_RELEASES,
+        });
+        server.create('file-provider', { node, name: 'osfstorage' });
+        const sandbox = sinon.createSandbox();
+
+        // Stub fetch to simulate network error
+        const fetchStub = sandbox.stub(window, 'fetch');
+        fetchStub.rejects(new Error('Network error'));
+
+        const ajaxStub = sandbox.stub(BinderHubConfigModel.prototype, 'jupyterhubAPIAJAX');
+        ajaxStub.resolves({
+            kind: 'user',
+            name: 'testuser',
+            servers: {},
+        });
+        const wbFileAjaxStub = sandbox.stub(AbstractFile.prototype, 'wbAuthenticatedAJAX');
+        wbFileAjaxStub
+            .onFirstCall()
+            .resolves({
+                data: [
+                    createFolderResponse({
+                        kind: 'folder',
+                        provider: 'osfstorage',
+                        name: '.binder',
+                        path: '/.binder',
+                    }),
+                ],
+            });
+        wbFileAjaxStub.resolves({
+            data: [],
+        });
+        const url = `/${node.id}/binderhub`;
+
+        await visit(url);
+
+        assert.equal(currentURL(), url, `We are on ${url}`);
+
+        assert.ok(
+            fetchStub.called,
+            'fetch (health check) should have been called',
+        );
+
+        // Launch button should be disabled
+        assert.dom(`${BC.button}`).exists('Launch button should exist');
+        assert.dom(`${BC.button}`).isDisabled(
+            'Launch button should be disabled on network error',
+        );
+
+        assert.dom(`${JSL.top}`).exists();
+        // Server refresh button and server list should NOT be visible
+        // when unavailable message is shown
+        assert.dom(`${JSL.top} ${JSL.refresh}`).doesNotExist(
+            'Server refresh button should not be visible on network error',
+        );
+        assert.dom(`${JSL.top} ${JSL.list}`).doesNotExist();
+        assert.dom('[data-test-status-message]').exists();
+
+        sandbox.restore();
+    });
+
+    test('host change re-triggers health check and can re-enable components', async assert => {
+        const node = server.create('node', {
+            id: guid,
+            currentUserPermissions: [Permission.Write],
+        });
+        server.create('binderhub-config', {
+            id: node.id,
+            binderhubs: [{
+                default: true,
+                url: 'http://localhost:8585/',
+                authorize_url: 'http://localhost/authorize',
+                token: {
+                    access_token: 'TESTBHTOKEN',
+                    token_type: 'Bearer',
+                    expires_at: null,
+                },
+                jupyterhub_url: 'http://localhost:30123/',
+            }, {
+                default: false,
+                url: 'http://localhost:31415/',
+                authorize_url: 'http://localhost/authorize',
+                token: {
+                    access_token: 'TESTBHTOKEN31415',
+                    token_type: 'Bearer',
+                    expires_at: null,
+                },
+                jupyterhub_url: 'http://localhost:27182/',
+            }],
+            jupyterhubs: [{
+                url: 'http://localhost:30123/',
+                api_url: 'http://localhost:30123/hub/api/',
+                authorize_url: 'http://localhost/authorize',
+                token: {
+                    user: 'testuser',
+                    access_token: 'TESTJHTOKEN',
+                    token_type: 'Bearer',
+                    expires_at: null,
+                },
+            }, {
+                url: 'http://localhost:27182/',
+                api_url: 'http://localhost:27182/hub/api/',
+                authorize_url: 'http://localhost/authorize',
+                token: {
+                    user: 'testuser',
+                    access_token: 'TESTJHTOKEN27182',
+                    token_type: 'Bearer',
+                    expires_at: null,
+                },
+            }],
+            node_binderhubs: [
+                {
+                    binderhub_url: 'http://localhost:8585/',
+                    jupyterhub_url: 'http://localhost:30123/',
+                },
+                {
+                    binderhub_url: 'http://localhost:31415/',
+                    jupyterhub_url: 'http://localhost:27182/',
+                },
+            ],
+            user_binderhubs: [],
+            deployment: {
+                images: [
+                    {
+                        url: 'jupyter/test-image',
+                        name: 'Test Image',
+                        description: 'dummy description',
+                        packages: ['conda'],
+                        recommended: true,
+                        deprecated: false,
+                    },
+                ],
+            },
+            mpm_releases: MATLAB_RELEASES,
+        });
+        server.create('file-provider', { node, name: 'osfstorage' });
+        const sandbox = sinon.createSandbox();
+
+        // Initial health check fails for first host
+        const fetchStub = sandbox.stub(window, 'fetch');
+        fetchStub.resolves({
+            ok: false,
+            status: 503,
+            type: 'basic',
+        } as Response);
+
+        const ajaxStub = sandbox.stub(BinderHubConfigModel.prototype, 'jupyterhubAPIAJAX');
+        ajaxStub.resolves({
+            kind: 'user',
+            name: 'testuser',
+            servers: {},
+        });
+        const wbFileAjaxStub = sandbox.stub(AbstractFile.prototype, 'wbAuthenticatedAJAX');
+        wbFileAjaxStub
+            .onFirstCall()
+            .resolves({
+                data: [
+                    createFolderResponse({
+                        kind: 'folder',
+                        provider: 'osfstorage',
+                        name: '.binder',
+                        path: '/.binder',
+                    }),
+                ],
+            });
+        wbFileAjaxStub.resolves({
+            data: [],
+        });
+        const url = `/${node.id}/binderhub`;
+
+        await visit(url);
+
+        // Initial state: health check failed, launch button disabled and
+        // server refresh button and server list should NOT be visible
+        assert.dom(`${BC.button}`).isDisabled(
+            'Launch button should be disabled initially (first host is down)',
+        );
+        assert.dom(`${JSL.top}`).exists();
+        assert.dom(`${JSL.top} ${JSL.refresh}`).doesNotExist(
+            'Server refresh button should not be visible initially (first host is down)',
+        );
+        assert.dom(`${JSL.top} ${JSL.list}`).doesNotExist();
+        // Status message banner is shown
+        assert.dom('[data-test-status-message]').exists();
+
+        const initialFetchCallCount = fetchStub.callCount;
+
+        // Modify the fetch stub to return success for the second host
+        fetchStub.resolves({
+            ok: true,
+            status: 200,
+            type: 'basic',
+        } as Response);
+
+        await click(`${HS.top} ${HS.open}`);
+        assert.dom(`${HS.dialogue}`).exists('Host selector dialogue should be open');
+        assert.dom(`${HS.dialogue} ${HS.option}`).exists({ count: 2 }, 'Should have 2 host options');
+
+        // Click on the unchecked option (the second host)
+        await click(`${HS.dialogue} ${HS.option} ${HS.notChecked}`);
+        await click(`${HS.dialogue} ${HS.ok}`);
+
+        assert.ok(
+            fetchStub.callCount > initialFetchCallCount,
+            'Health check should be re-triggered on host change',
+        );
+
+        assert.dom(`${BC.button}`).isNotDisabled(
+            'Launch button should be enabled after switching to healthy host',
+        );
+        assert.dom(`${BC.button}`).hasClass(
+            'btn-success',
+            'Launch button should have success class after health check succeeds',
+        );
+
+        assert.dom(`${JSL.top}`).exists();
+        // Server refresh button and server list should be visible after
+        // switching to healthy host
+        assert.dom(`${JSL.top} ${JSL.refresh}`).exists(
+            'Server refresh button should be visible after switching to healthy host',
+        );
+        assert.dom(`${JSL.top} ${JSL.list}`).exists();
+        // And the Status Message Banner must disappear
+        assert.dom('[data-test-status-message]').doesNotExist();
 
         sandbox.restore();
     });

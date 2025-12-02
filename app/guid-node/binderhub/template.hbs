@@ -53,6 +53,8 @@
                     @buildPhase={{this.buildPhase}}
                     @serverBuildingBit={{this.serverBuildingBit}}
                     @onError={{action this.requestError}}
+                    @hubsAvailability={{this.hubsAvailability}}
+                    @updateHubsAvailability={{this.updateHubsAvailability}}
                 />
             </div>
             <h2
@@ -75,6 +77,7 @@
                     @requestBuild={{action this.build}}
                     @buildLog={{this.buildLog}}
                     @buildPhase={{this.buildPhase}}
+                    @hubsAvailability={{this.hubsAvailability}}
                 />
             </div>
             <BsAlert

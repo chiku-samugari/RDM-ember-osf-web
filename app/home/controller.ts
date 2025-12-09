@@ -18,16 +18,9 @@ const {
 export default class Home extends Controller {
     @service features!: Features;
 
-    queryParams = [{
-        loginNotAvailable: {
-            as: 'login_not_available',
-        },
-    }];
-
     organization: string = organization;
     brand: string = longBrand;
     useSimplePage: boolean = simplePage;
-    loginNotAvailable: boolean = false;
 
     get heroStyle(): string {
         return simplePage ? 'height: 600px !important;' : 'min-height: auto;';

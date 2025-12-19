@@ -27,6 +27,7 @@ function stubWorkflowRequests(
     currentUser: CurrentUser,
     config: WorkflowStubConfig,
 ) {
+    const originalMethod = currentUser.authenticatedAJAX.bind(currentUser);
     return sandbox.stub(currentUser, 'authenticatedAJAX').callsFake((options: JQuery.AjaxSettings) => {
         const url = String(options.url || '');
         const method = (options.type || 'GET').toString().toUpperCase();
@@ -73,7 +74,8 @@ function stubWorkflowRequests(
             return Promise.resolve({});
         }
 
-        throw new Error(`Unhandled request: ${method} ${url}`);
+        // Pass through to original method (Mirage) for unhandled requests
+        return originalMethod(options);
     });
 }
 

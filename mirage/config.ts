@@ -43,6 +43,9 @@ const { OSF: { apiUrl, url } } = config;
 export default function(this: Server) {
     this.passthrough(); // pass through all requests on currrent domain
 
+    // Handle workflow activations for relative URLs (test environment)
+    this.get('/api/v1/project/:id/workflow/activations/', () => ({ data: [] }));
+
     this.urlPrefix = apiUrl;
     this.namespace = '/v2';
 
@@ -269,6 +272,7 @@ export default function(this: Server) {
     this.get('/project/:id/metadata/erad/candidates', metadataNodeErad);
     this.get('/project/:id/metadata/project', metadataNodeProject);
     this.get('/project/:id/metadata/schemas', metadataNodeSchemas);
+    this.get('/project/:id/workflow/activations/', () => ({ data: [] }));
 
     this.urlPrefix = apiUrl;
     this.namespace = apiNamespace;

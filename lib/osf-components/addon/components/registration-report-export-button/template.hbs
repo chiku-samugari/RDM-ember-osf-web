@@ -2,6 +2,7 @@
     data-test-registration-report-modal
     local-class='Modal'
     @open={{this.dialogOpen}}
+    @backdropClose={{not this.isUploading}}
     @onSubmit={{action this.submit}}
     @onHidden={{action this.hideDialog}}
     as |modal|
@@ -31,13 +32,15 @@
         </div>
     </modal.body>
     <modal.footer data-analytics-scope='RegistrationReport modal footer'>
-        <OsfButton
-            data-test-registration-report-cancel
-            data-analytics-name='Cancel'
-            @onClick={{action modal.close}}
-        >
-            {{t 'general.cancel'}}
-        </OsfButton>
+        {{#unless this.isUploading}}
+            <OsfButton
+                data-test-registration-report-cancel
+                data-analytics-name='Cancel'
+                @onClick={{action modal.close}}
+            >
+                {{t 'general.cancel'}}
+            </OsfButton>
+        {{/unless}}
         <OsfButton
             data-test-registration-report-submit
             data-analytics-name='Submit'
@@ -50,6 +53,48 @@
             {{else}}
                 {{t 'metadata.registration-card.export'}}
             {{/if}}
+        </OsfButton>
+    </modal.footer>
+</BsModal>
+
+<BsModal
+    data-test-registration-report-result-modal
+    local-class='Modal'
+    @open={{this.resultDialogOpen}}
+    @onHidden={{action this.hideResultDialog}}
+    as |modal|
+>
+    <modal.body data-analytics-scope='RegistrationReport result modal'>
+        <div>
+            <h4 local-class='Modal__title'>{{t 'metadata.registration-card.result-dialog.title'}}</h4>
+        </div>
+        <div local-class='Export__description'>
+            {{#if (eq this.resultState 'wekoIngested')}}
+                {{t 'metadata.registration-card.result-dialog.weko-ingested'}}
+            {{else if (eq this.resultState 'wekoInWorkflow')}}
+                {{t 'metadata.registration-card.result-dialog.weko-in-workflow'}}
+            {{/if}}
+        </div>
+        {{#if (eq this.resultState 'wekoIngested')}}
+            <p>
+                <a
+                    data-test-registration-report-result-link
+                    href={{this.resultUrl}}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                >
+                    {{this.resultUrl}}
+                </a>
+            </p>
+        {{/if}}
+    </modal.body>
+    <modal.footer data-analytics-scope='RegistrationReport result modal footer'>
+        <OsfButton
+            data-test-registration-report-result-close
+            data-analytics-name='Close'
+            @onClick={{action modal.close}}
+        >
+            {{t 'general.close'}}
         </OsfButton>
     </modal.footer>
 </BsModal>

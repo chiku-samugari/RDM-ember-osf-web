@@ -1926,6 +1926,10 @@ metadata:
             description: '出力したいエクスポート形式を選択してください。'
             addons:
                 weko: 'リポジトリ (JAIRO Cloud)に登録 - {folder}'
+        result-dialog:
+            title: 'エクスポート結果'
+            weko-ingested: '登録が成功しました。'
+            weko-in-workflow: '登録申請を送信しました。機関リポジトリ管理者の審査をお待ちください。'
     array-input:
         add-item: 'アイテム追加'
         remove-item: 'アイテム削除'

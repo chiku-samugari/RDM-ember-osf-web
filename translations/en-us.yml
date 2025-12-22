@@ -1926,6 +1926,10 @@ metadata:
             description: 'Select the export format you want to output.'
             addons:
                 weko: 'Deposite to the repository (JAIRO Cloud) - {folder}'
+        result-dialog:
+            title: 'Export Result'
+            weko-ingested: 'Registration successful.'
+            weko-in-workflow: 'Registration request submitted. Please wait for review by the repository administrator.'
     array-input:
         add-item: 'Add item'
         remove-item: 'Remove item'

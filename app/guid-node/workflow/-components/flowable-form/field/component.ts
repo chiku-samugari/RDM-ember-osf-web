@@ -8,7 +8,7 @@ import { FieldValueWithType, WorkflowTaskField, WorkflowTaskFieldOption } from '
 import { extractFileMetadata, extractProjectMetadata } from '../utils';
 
 function getOptionValue(option: WorkflowTaskFieldOption): string | undefined {
-    return option.id !== undefined ? option.id : option.name;
+    return (option.id !== undefined && option.id !== null) ? option.id : option.name;
 }
 
 function isValidFieldValue(field: WorkflowTaskField, value: unknown): boolean {

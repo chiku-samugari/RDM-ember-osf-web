@@ -1814,7 +1814,6 @@ binderhub:
         no_servers: 'No Servers'
     deployment:
         header: 'Creating an Environment'
-        description: 'The contents of the default storage in this project will be copied.'
         launch: 'Launch'
         environment: 'Base Image'
         custom_image_name: 'Custom Image based on Dockerfile'
@@ -1833,6 +1832,12 @@ binderhub:
         no_environment: 'This environment is not configured by the editor.'
         dockerfile_editor_title: 'Dockerfile'
         save_file: 'Save'
+        copy_default_storage_checkbox: 'Copy the contents of the default storage.'
+        copy_default_storage_disabled_hint: 'paths.yaml has custom settings. Reset it to manage the copy setting here.'
+        reset_paths_yaml: 'Reset paths.yaml'
+        reset_paths_yaml_confirm_title: 'Reset paths.yaml'
+        reset_paths_yaml_confirm_body: 'The existing paths.yaml will be deleted. Continue?'
+        reset_paths_yaml_confirm_ok: 'Reset'
         post_build_placeholder: |-
             #!/bin/bash
             set -x
@@ -1930,6 +1935,10 @@ metadata:
             title: 'Select workflow'
             description: 'Please select a workflow.'
             submit: 'Enter Workflow Form'
+        result-dialog:
+            title: 'Export Result'
+            weko-ingested: 'Registration successful.'
+            weko-in-workflow: 'Registration request submitted. Please wait for review by the repository administrator.'
     array-input:
         add-item: 'Add item'
         remove-item: 'Remove item'

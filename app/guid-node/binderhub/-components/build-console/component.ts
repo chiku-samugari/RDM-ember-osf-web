@@ -32,6 +32,16 @@ export default class BuildConsole extends Component {
 
     notAuthorized: boolean = false;
 
+    copyDefaultStorage?: boolean;
+
+    pathsYamlIsCustom?: boolean;
+
+    userHasWritePermission?: boolean;
+
+    toggleCopyDefaultStorage?: (event: Event) => void;
+
+    openPathsYamlResetConfirm?: () => void;
+
     @requiredAction renewToken!: (binderhubUrl: string) => void;
 
     @requiredAction requestBuild!: (

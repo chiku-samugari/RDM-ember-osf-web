@@ -19,6 +19,15 @@ import styles from './styles';
 import template from './template';
 
 /* eslint-disable camelcase */
+interface SwordV3Response {
+    '@context': string;
+    '@id': string;
+    '@type': string;
+    state: Array<{ '@id': string; description: string }>;
+    actions?: Record<string, boolean>;
+    links?: Array<{ '@id': string; contentType: string; rel: string[] }>;
+}
+
 interface UploadingProgress {
     id: string;
     type: string;
@@ -32,6 +41,7 @@ interface UploadingProgress {
         error?: string | null;
         progress_url?: string;
         result?: string | null;
+        response?: SwordV3Response;
     };
 }
 /* eslint-enable camelcase */
@@ -73,6 +83,12 @@ export default class RegistrationReportExportButton extends Component {
     workflowTemplates: WorkflowTemplate[] = [];
 
     workflowDialogOpen: boolean = false;
+
+    resultDialogOpen: boolean = false;
+
+    resultState: 'wekoIngested' | 'wekoInWorkflow' | null = null;
+
+    resultUrl: string | null = null;
 
     @task
     loadWorkflows = task(function *(this: RegistrationReportExportButton) {
@@ -192,6 +208,13 @@ export default class RegistrationReportExportButton extends Component {
         this.startWorkflow(workflowId);
     }
 
+    @action
+    hideResultDialog() {
+        this.set('resultDialogOpen', false);
+        this.set('resultState', null);
+        this.set('resultUrl', null);
+    }
+
     async upload(url: string, metadataId: string) {
         this.set('isUploading', true);
         try {
@@ -232,16 +255,31 @@ export default class RegistrationReportExportButton extends Component {
             xhrFields: { withCredentials: true },
         });
         const progress = resp.data as UploadingProgress;
-        if (progress.attributes.result) {
+        if (progress.attributes.error) {
             this.set('isUploading', false);
-            window.open(progress.attributes.result, '_blank');
+            const { error } = progress.attributes;
+            this.toast.error(error.toString());
             this.set('dialogOpen', false);
             return;
         }
-        if (progress.attributes.error) {
+        const { response } = progress.attributes;
+        if (response && response['@context'] === 'https://swordapp.github.io/swordv3/swordv3.jsonld') {
             this.set('isUploading', false);
-            const { error } = resp;
-            this.toast.error(error.toString());
+            this.set('dialogOpen', false);
+            const stateUri = response.state[0]['@id'];
+            if (stateUri.endsWith('/ingested')) {
+                this.set('resultState', 'wekoIngested');
+                this.set('resultUrl', progress.attributes.result);
+            } else if (stateUri.endsWith('/inWorkflow')) {
+                this.set('resultState', 'wekoInWorkflow');
+                this.set('resultUrl', null);
+            }
+            this.set('resultDialogOpen', true);
+            return;
+        }
+        if (progress.attributes.result) {
+            this.set('isUploading', false);
+            window.open(progress.attributes.result, '_blank');
             this.set('dialogOpen', false);
             return;
         }

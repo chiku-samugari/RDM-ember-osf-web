@@ -1814,7 +1814,6 @@ binderhub:
         no_servers: '解析環境はありません'
     deployment:
         header: '環境作成'
-        description: 'このプロジェクトのデフォルトストレージの内容がコピーされます。'
         launch: '起動'
         environment: '基本イメージ'
         custom_image_name: 'Dockerfileを用いたカスタムイメージ'
@@ -1833,6 +1832,12 @@ binderhub:
         no_environment: 'エディタにより設定された環境ではありません。'
         dockerfile_editor_title: 'Dockerfile'
         save_file: '保存'
+        copy_default_storage_checkbox: 'デフォルトストレージの内容をコピーする'
+        copy_default_storage_disabled_hint: 'paths.yaml にカスタム設定があるため、ここでは切り替えできません。リセットすると既定のコピー設定に戻ります。'
+        reset_paths_yaml: 'paths.yaml をリセット'
+        reset_paths_yaml_confirm_title: 'paths.yaml をリセット'
+        reset_paths_yaml_confirm_body: '現在の paths.yaml を削除します。この操作は元に戻せません。よろしいですか？'
+        reset_paths_yaml_confirm_ok: 'リセット'
         post_build_placeholder: |-
             #!/bin/bash
             set -x
@@ -1930,6 +1935,10 @@ metadata:
             title: 'ワークフローの選択'
             description: 'ワークフローを選んでください。'
             submit: 'ワークフローフォーム入力'
+        result-dialog:
+            title: 'エクスポート結果'
+            weko-ingested: '登録が成功しました。'
+            weko-in-workflow: '登録申請を送信しました。機関リポジトリ管理者の審査をお待ちください。'
     array-input:
         add-item: 'アイテム追加'
         remove-item: 'アイテム削除'

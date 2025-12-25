@@ -266,9 +266,41 @@
             @beforeLaunch={{this.performDockerfileSave}}
             @buildLog={{this.buildLog}}
             @buildPhase={{this.buildPhase}}
+            @copyDefaultStorage={{this.copyDefaultStorage}}
+            @pathsYamlIsCustom={{this.pathsYamlIsCustom}}
+            @userHasWritePermission={{this.node.userHasWritePermission}}
+            @toggleCopyDefaultStorage={{action this.toggleCopyDefaultStorage}}
+            @openPathsYamlResetConfirm={{action this.openPathsYamlResetConfirm}}
           />
     {{/if}}
 </div>
+
+<BsModal
+    data-test-reset-paths-yaml-confirm-modal
+    @open={{this.showPathsYamlResetConfirm}}
+    @onHidden={{action this.cancelPathsYamlReset}}
+    as |modal|
+>
+    <modal.header>
+        <h4>
+            {{t 'binderhub.deployment.reset_paths_yaml_confirm_title'}}
+        </h4>
+    </modal.header>
+    <modal.body>
+        {{t 'binderhub.deployment.reset_paths_yaml_confirm_body'}}
+    </modal.body>
+    <modal.footer>
+        <BsButton @onClick={{action this.cancelPathsYamlReset}}>
+            {{t 'general.cancel'}}
+        </BsButton>
+        <BsButton
+            @onClick={{action this.resetPathsYaml}}
+            @type='danger'
+        >
+            {{t 'binderhub.deployment.reset_paths_yaml_confirm_ok'}}
+        </BsButton>
+    </modal.footer>
+</BsModal>
 
 <BsModal
     data-test-reset-dirty-fragile-files-confirm-modal

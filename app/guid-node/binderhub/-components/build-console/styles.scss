@@ -53,3 +53,23 @@
 .build_launch_button {
     margin-left: auto;
 }
+
+.paths_toggle {
+    margin: 1.5em 0;
+}
+
+.paths_toggle__label {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    margin-bottom: 0;
+}
+
+.paths_toggle__label--disabled {
+    color: #999;
+    cursor: not-allowed;
+}
+
+.paths_toggle__hint {
+    margin: 0.5em 0;
+}

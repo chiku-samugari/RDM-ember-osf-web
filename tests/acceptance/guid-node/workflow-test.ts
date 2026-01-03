@@ -54,7 +54,13 @@ function stubWorkflowRequests(
         }
 
         if (url.includes('/workflow/templates/') && method === 'POST') {
-            return Promise.resolve({});
+            return Promise.resolve({
+                data: {
+                    job_id: 'test-job-start',
+                    status: 'pending',
+                    status_url: '/api/v1/project/test/workflow/jobs/test-job-start/',
+                },
+            });
         }
 
         if (url.includes('/workflow/engines/') && url.includes('/tasks/') && method === 'GET') {
@@ -71,7 +77,17 @@ function stubWorkflowRequests(
             if (config.postSubmitTasks) {
                 config.tasks = config.postSubmitTasks; // eslint-disable-line no-param-reassign
             }
-            return Promise.resolve({});
+            return Promise.resolve({
+                data: {
+                    job_id: 'test-job-1',
+                    status: 'pending',
+                    status_url: '/api/v1/project/test/workflow/jobs/test-job-1/',
+                },
+            });
+        }
+
+        if (url.includes('/workflow/jobs/') && method === 'GET') {
+            return Promise.resolve({ data: { status: 'completed' } });
         }
 
         // Pass through to original method (Mirage) for unhandled requests

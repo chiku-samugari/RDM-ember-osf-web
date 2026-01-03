@@ -31,6 +31,9 @@ export {
 
 interface AjaxErrorShape {
     responseJSON?: { message?: string; data?: { message?: string } };
+    responseText?: string;
+    status?: number;
+    statusText?: string;
     payload?: unknown;
 }
 
@@ -38,11 +41,8 @@ function isAjaxError(error: unknown): error is AjaxErrorShape {
     if (!error || typeof error !== 'object') {
         return false;
     }
-    const obj = error as Record<string, unknown> | null;
-    if (!obj) {
-        return false;
-    }
-    return 'responseJSON' in obj || 'payload' in obj;
+    const obj = error as Record<string, unknown>;
+    return 'responseJSON' in obj || 'payload' in obj || 'status' in obj;
 }
 
 function ensureTrailingSlash(value: string): string {
@@ -50,15 +50,38 @@ function ensureTrailingSlash(value: string): string {
 }
 
 function extractMessage(error: unknown, fallback: string): string {
-    const err = error as any;
-    const response: any = (err && err.responseJSON) || (err && err.payload && err.payload.responseJSON);
+    const err = error as AjaxErrorShape;
+    const payload = err.payload as AjaxErrorShape | undefined;
+    const response = err.responseJSON || (payload ? payload.responseJSON : undefined);
     if (response && response.message) {
-        return response.message as string;
+        return response.message;
     }
     if (response && response.data && response.data.message) {
-        return response.data.message as string;
+        return response.data.message;
+    }
+    if (err.status && err.statusText) {
+        return `${err.status} ${err.statusText}`;
     }
     return fallback;
+}
+
+function sleep(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+interface JobStatusResponse {
+    data: {
+        status: 'pending' | 'running' | 'completed' | 'failed';
+        error?: string;
+    };
+}
+
+interface AsyncJobResponse {
+    data: {
+        job_id: string; // eslint-disable-line camelcase
+        status: string;
+        status_url: string; // eslint-disable-line camelcase
+    };
 }
 
 export function normalizeTemplates(activations: WorkflowActivationApiResponse[]): WorkflowTemplate[] {
@@ -541,7 +564,7 @@ export default class GuidNodeWorkflowController extends Controller {
         try {
             const actionUrl = `${this.apiBaseUrl}engines/${encodeURIComponent(this.selectedTask.engine_id)}`
                 + `/tasks/${encodeURIComponent(this.selectedTask.id)}/actions/`;
-            await this.currentUser.authenticatedAJAX({
+            const response: AsyncJobResponse = await this.currentUser.authenticatedAJAX({
                 url: actionUrl,
                 type: 'POST',
                 contentType: 'application/json',
@@ -551,6 +574,9 @@ export default class GuidNodeWorkflowController extends Controller {
                     ...(submission.assignee ? { assignee: submission.assignee } : {}),
                 }),
             });
+
+            await this.pollJobStatus(response.data.status_url);
+
             this.taskActionSuccess = this.intl.t('workflow.console.tasks.submitSuccess') as string;
             await this.refreshTasks();
 
@@ -569,9 +595,10 @@ export default class GuidNodeWorkflowController extends Controller {
                     error,
                     this.intl.t('workflow.console.tasks.submitFailed') as string,
                 );
+            } else if (error instanceof Error) {
+                this.taskActionError = error.message;
             } else {
-                const err = error as Error;
-                this.taskActionError = (err && err.message) || String(error);
+                throw error;
             }
         } finally {
             this.isSubmittingTaskAction = false;
@@ -632,12 +659,15 @@ export default class GuidNodeWorkflowController extends Controller {
         this.submitSuccess = null;
 
         try {
-            await this.currentUser.authenticatedAJAX({
+            const response: AsyncJobResponse = await this.currentUser.authenticatedAJAX({
                 url: `${this.apiBaseUrl}templates/${encodeURIComponent(this.selectedTemplateId)}/runs/`,
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(payload),
             });
+
+            await this.pollJobStatus(response.data.status_url);
+
             this.submitSuccess = this.intl.t('workflow.console.startSuccess') as string;
             this.startFormVariables = [];
             await this.refreshTasks();
@@ -649,12 +679,44 @@ export default class GuidNodeWorkflowController extends Controller {
             const fallback = this.intl.t('workflow.console.startFailed') as string;
             if (isAjaxError(error)) {
                 this.submitError = extractMessage(error, fallback);
+            } else if (error instanceof Error) {
+                this.submitError = error.message;
             } else {
                 throw error;
             }
         } finally {
             this.isSubmitting = false;
         }
+    }
+
+    private async pollJobStatus(statusUrl: string): Promise<void> {
+        const maxWaitMs = 180000;
+        const startTime = Date.now();
+        let interval = 500;
+        const maxInterval = 4000;
+        const backoffFactor = 1.5;
+
+        while (Date.now() - startTime < maxWaitMs) {
+            // eslint-disable-next-line no-await-in-loop
+            const response: JobStatusResponse = await this.currentUser.authenticatedAJAX({
+                url: statusUrl,
+                type: 'GET',
+            });
+
+            const { status, error } = response.data;
+
+            if (status === 'completed') {
+                return;
+            }
+            if (status === 'failed') {
+                throw new Error(error || 'Job failed');
+            }
+
+            // eslint-disable-next-line no-await-in-loop
+            await sleep(interval);
+            interval = Math.min(interval * backoffFactor, maxInterval);
+        }
+        throw new Error('Job timed out');
     }
 
     private assigneeLabel(assignee?: string): string {

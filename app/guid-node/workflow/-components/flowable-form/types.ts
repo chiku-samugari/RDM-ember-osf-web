@@ -14,6 +14,7 @@ interface WorkflowTaskField {
     readOnly?: boolean;
     placeholder?: string;
     options?: WorkflowTaskFieldOption[];
+    hasEmptyValue?: boolean;
     expression?: string;
     params?: {
         hyperlinkUrl?: string;

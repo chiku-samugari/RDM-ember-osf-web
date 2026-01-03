@@ -178,7 +178,11 @@ export default class TaskFormField extends Component<TaskFormFieldArgs> {
     }
 
     get optionsWithValue(): Array<{ option: WorkflowTaskFieldOption; value: string }> {
-        return this.options.map(opt => ({
+        let opts = this.options;
+        if (this.args.field.hasEmptyValue && opts.length > 0) {
+            opts = opts.slice(1);
+        }
+        return opts.map(opt => ({
             option: opt,
             value: getOptionValue(opt) || '',
         }));

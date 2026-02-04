@@ -8,7 +8,7 @@ import { layout } from 'ember-osf-web/decorators/component';
 import DraftRegistration from 'ember-osf-web/models/draft-registration';
 import MetadataNodeSchemaModel from 'ember-osf-web/models/metadata-node-schema';
 import Analytics from 'ember-osf-web/services/analytics';
-import { METADATA_TITLE_FIELD_PRIORITY } from 'ember-osf-web/utils/metadata-title-field-priority';
+import { getMetadataDisplayTitle } from 'ember-osf-web/utils/metadata-title-field-priority';
 import pathJoin from 'ember-osf-web/utils/path-join';
 
 import styles from './styles';
@@ -56,19 +56,10 @@ export default class DraftRegistrationCard extends Component {
         if (!draftRegistration) {
             return '';
         }
-        const responses = draftRegistration.registrationResponses;
-        if (responses) {
-            for (const field of METADATA_TITLE_FIELD_PRIORITY) {
-                // __responseKey_ プレフィックス付きと無し両方を試す
-                const responseKeyField = `__responseKey_${field}`;
-                const value = responses[responseKeyField] || responses[field];
-                if (typeof value === 'string' && value.trim()) {
-                    return value.trim();
-                }
-            }
-        }
-        // フォールバック: title属性を使用
-        return draftRegistration.title || '';
+        return getMetadataDisplayTitle(
+            draftRegistration.registrationResponses,
+            draftRegistration.title || '',
+        );
     }
 
     @computed('draftRegistration.registrationResponses')

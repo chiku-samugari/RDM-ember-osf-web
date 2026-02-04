@@ -1,0 +1,15 @@
+{{#if this.hasFlowableForm}}
+    <GuidNode::Workflow::-Components::FlowableForm
+        @form={{@form}}
+        @variables={{@variables}}
+        @node={{@node}}
+        @onChange={{@onChange}}
+    />
+{{else if this.hasCedarForm}}
+    <GuidNode::Workflow::-Components::CedarForm
+        @form={{@form}}
+        @onChange={{@onChange}}
+    />
+{{else}}
+    <p class="text-muted">{{t 'workflow.console.tasks.dialog.noForm'}}</p>
+{{/if}}

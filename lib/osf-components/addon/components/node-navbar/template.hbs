@@ -47,6 +47,9 @@
                                 {{node-navbar/link node=@node useLinkTo=false destination='package'}}
                             {{/if}}
                         {{/if}}
+                        {{#if this.workflowEnabled }}
+                            {{node-navbar/link node=@node useLinkTo=false destination='workflow'}}
+                        {{/if}}
                         {{#if this.binderhubEnabled }}
                             {{node-navbar/link node=@node useLinkTo=false destination='binderhub'}}
                         {{/if}}

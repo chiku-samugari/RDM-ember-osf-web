@@ -47,7 +47,7 @@
                 </p>
             </small>
             <div class='row'>
-                <div class='col-md-9'>
+                <div class='col-md-6'>
                     <OsfLink
                         data-analytics-name='Edit'
                         class='btn btn-default'
@@ -94,13 +94,15 @@
                         </modal.footer>
                     </BsModal>
                 </div>
-                <div class='col-md-3' local-class='DraftRegistrationCard__export'>
+                <div class='col-md-6' local-class='DraftRegistrationCard__export'>
                     <RegistrationReportExportButton
                         @metadataType='draft_registration'
                         @metadataId={{this.draftRegistration.id}}
                         @metadataSchema={{@metadataSchema}}
                         @registrationSchemaId={{this.registrationSchemaId}}
                         @exportCsvUrl={{this.exportCsvUrl}}
+                        @schemaName={{this.draftRegistration.registrationSchema.name}}
+                        @node={{this.draftRegistration.branchedFrom}}
                     />
                 </div>
             </div>

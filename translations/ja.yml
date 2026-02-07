@@ -2069,6 +2069,8 @@ workflow:
                 noForm: このタスクにはフォームが設定されていません。コメントのみで完了できます。
                 noTask: タスクの詳細を取得できませんでした。
                 submit: 送信
+                next: 次へ
+                progressTitle: 進捗状況
                 submitting: 送信中...
                 projectMetadataSelector:
                     loading: メタデータレコードを読み込み中...

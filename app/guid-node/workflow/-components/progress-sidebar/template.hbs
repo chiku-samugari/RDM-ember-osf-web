@@ -1,0 +1,10 @@
+{{#if this.hasProgressSteps}}
+    <div class="progress-sidebar">
+        <div class="progress-sidebar__title">{{t 'workflow.console.tasks.dialog.progressTitle'}}</div>
+        <ul class="progress-sidebar__list">
+            {{#each this.progressSteps as |step|}}
+                <GuidNode::Workflow::-Components::ProgressSidebar::StepItem @step={{step}} />
+            {{/each}}
+        </ul>
+    </div>
+{{/if}}

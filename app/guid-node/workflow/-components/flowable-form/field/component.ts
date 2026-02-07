@@ -3,6 +3,7 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 
 import { WorkflowVariable } from '../../../types';
+import { parseProgressSteps, ProgressStep } from '../../progress-sidebar/utils';
 import { resolveFlowableType } from '../component';
 import { FieldValueWithType, WorkflowTaskField, WorkflowTaskFieldOption } from '../types';
 import { extractFileMetadata, extractProjectMetadata } from '../utils';
@@ -315,5 +316,17 @@ export default class TaskFormField extends Component<TaskFormFieldArgs> {
     get hyperlinkUrl(): string {
         const field = this.args.field as unknown as { params?: { hyperlinkUrl?: string } };
         return (field.params && field.params.hyperlinkUrl) || '#';
+    }
+
+    get parsedExpression(): { steps: ProgressStep[]; remainingText: string } {
+        return parseProgressSteps(this.expressionText);
+    }
+
+    get hasProgressSteps(): boolean {
+        return this.parsedExpression.steps.length > 0;
+    }
+
+    get remainingExpressionText(): string {
+        return this.parsedExpression.remainingText;
     }
 }

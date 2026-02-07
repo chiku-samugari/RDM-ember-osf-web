@@ -8,7 +8,7 @@
                     </button>
                     <h4 class="modal-title">{{if this.taskTitle this.taskTitle (t 'workflow.console.tasks.dialog.titleFallback')}}</h4>
                 </div>
-                <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+                <div class="modal-body task-dialog__body">
                     {{#if @error}}
                         <div class="alert alert-danger" role="alert">
                             {{@error}}
@@ -25,33 +25,41 @@
                             {{t 'workflow.console.tasks.dialog.loading'}}
                         </p>
                     {{else if this.hasTask}}
-                        <dl class="dl-horizontal">
-                            <dt>{{t 'workflow.console.tasks.columns.task'}}</dt>
-                            <dd>{{or this.taskTitle (t 'workflow.console.tasks.dialog.untitled')}}</dd>
-                            <dt>{{t 'workflow.console.tasks.columns.assignee'}}</dt>
-                            <dd>{{this.assigneeLabel}}</dd>
-                            <dt>{{t 'workflow.console.tasks.dialog.startedAt'}}</dt>
-                            <dd>{{or @task.created (t 'workflow.console.tasks.dialog.notAvailable')}}</dd>
-                            <dt>{{t 'workflow.console.tasks.dialog.dueAt'}}</dt>
-                            <dd>{{or @task.due (t 'workflow.console.tasks.dialog.notAvailable')}}</dd>
-                        </dl>
+                        <div class="task-dialog__layout">
+                            <GuidNode::Workflow::-Components::ProgressSidebar
+                                @form={{@task.form}}
+                                @variables={{@task.variables}}
+                            />
+                            <div class="task-dialog__content">
+                                <dl class="dl-horizontal">
+                                    <dt>{{t 'workflow.console.tasks.columns.task'}}</dt>
+                                    <dd>{{or this.taskTitle (t 'workflow.console.tasks.dialog.untitled')}}</dd>
+                                    <dt>{{t 'workflow.console.tasks.columns.assignee'}}</dt>
+                                    <dd>{{this.assigneeLabel}}</dd>
+                                    <dt>{{t 'workflow.console.tasks.dialog.startedAt'}}</dt>
+                                    <dd>{{or @task.created (t 'workflow.console.tasks.dialog.notAvailable')}}</dd>
+                                    <dt>{{t 'workflow.console.tasks.dialog.dueAt'}}</dt>
+                                    <dd>{{or @task.due (t 'workflow.console.tasks.dialog.notAvailable')}}</dd>
+                                </dl>
 
-                        {{#if @task.description}}
-                            <p class="text-muted">{{@task.description}}</p>
-                        {{/if}}
+                                {{#if @task.description}}
+                                    <p class="text-muted">{{@task.description}}</p>
+                                {{/if}}
 
-                        {{#unless this.canComplete}}
-                            <div class="alert alert-warning" role="alert">
-                                {{t 'workflow.console.tasks.dialog.notAssigned'}}
+                                {{#unless this.canComplete}}
+                                    <div class="alert alert-warning" role="alert">
+                                        {{t 'workflow.console.tasks.dialog.notAssigned'}}
+                                    </div>
+                                {{/unless}}
+
+                                <GuidNode::Workflow::-Components::TaskForm
+                                    @form={{@task.form}}
+                                    @variables={{@task.variables}}
+                                    @node={{@node}}
+                                    @onChange={{this.handleFormChange}}
+                                />
                             </div>
-                        {{/unless}}
-
-                        <GuidNode::Workflow::-Components::TaskForm
-                            @form={{@task.form}}
-                            @variables={{@task.variables}}
-                            @node={{@node}}
-                            @onChange={{this.handleFormChange}}
-                        />
+                        </div>
                     {{else}}
                         <p class="text-muted">{{t 'workflow.console.tasks.dialog.noTask'}}</p>
                     {{/if}}
@@ -69,7 +77,7 @@
                                 <i class="fa fa-spinner fa-spin"></i>
                                 {{t 'workflow.console.tasks.dialog.submitting'}}
                             {{else}}
-                                {{t 'workflow.console.tasks.dialog.submit'}}
+                                {{if this.isFinalStep (t 'workflow.console.tasks.dialog.submit') (t 'workflow.console.tasks.dialog.next')}}
                             {{/if}}
                         </button>
                     {{/if}}

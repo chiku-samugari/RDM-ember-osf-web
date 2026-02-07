@@ -2067,6 +2067,8 @@ workflow:
                 noForm: 'This task does not provide a form. You can still leave a comment before submitting.'
                 noTask: 'Task details are unavailable.'
                 submit: 'Submit response'
+                next: 'Next'
+                progressTitle: 'Progress'
                 submitting: 'Submitting...'
                 projectMetadataSelector:
                     loading: 'Loading metadata records...'

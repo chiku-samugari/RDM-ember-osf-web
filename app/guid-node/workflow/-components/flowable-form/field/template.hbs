@@ -1,6 +1,16 @@
 <div class="form-group {{if this.hasError 'has-error'}}" ...attributes>
     {{#if this.isExpression}}
-        <p class="form-control-static">{{this.expressionText}}</p>
+        {{#if this.hasProgressSteps}}
+            {{#if this.remainingExpressionText}}
+                <div class="form-control-static markdown-expression">
+                    <MarkdownToHtml @markdown={{this.remainingExpressionText}} />
+                </div>
+            {{/if}}
+        {{else}}
+            <div class="form-control-static markdown-expression">
+                <MarkdownToHtml @markdown={{this.expressionText}} />
+            </div>
+        {{/if}}
     {{else if this.isHyperlink}}
         <a href={{this.hyperlinkUrl}} target="_blank" rel="noopener noreferrer">
             {{this.fieldLabel}}

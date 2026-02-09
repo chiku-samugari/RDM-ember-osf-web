@@ -11,6 +11,7 @@ import {
     WorkflowTaskDetail,
     WorkflowVariable,
 } from '../../types';
+import { isFinalStep } from '../progress-sidebar/utils';
 
 interface WorkflowTaskDialogArgs {
     open: boolean;
@@ -66,6 +67,14 @@ export default class WorkflowTaskDialog extends Component<WorkflowTaskDialogArgs
     get canComplete(): boolean {
         const { task } = this.args;
         return !task || task.can_complete !== false;
+    }
+
+    get isFinalStep(): boolean {
+        const { task } = this.args;
+        if (!task) {
+            return true;
+        }
+        return isFinalStep(task.form || undefined, task.variables);
     }
 
     @action

@@ -1,0 +1,24 @@
+<li class="progress-sidebar__item progress-sidebar__item--{{@step.status}} {{if @step.isActive 'progress-sidebar__item--active'}}">
+    <div class="progress-sidebar__marker">
+        <span class="progress-sidebar__icon">
+            {{#if (eq @step.status 'completed')}}
+                <i class="fa fa-check-circle-o"></i>
+            {{else if (eq @step.status 'current')}}
+                <i class="fa fa-circle-o"></i>
+            {{else}}
+                <i class="fa fa-circle"></i>
+            {{/if}}
+        </span>
+        <span class="progress-sidebar__line"></span>
+    </div>
+    <div class="progress-sidebar__content">
+        <span class="progress-sidebar__label">{{@step.name}}</span>
+        {{#if @step.children.length}}
+            <ul class="progress-sidebar__children">
+                {{#each @step.children as |child|}}
+                    <GuidNode::Workflow::-Components::ProgressSidebar::StepItem @step={{child}} />
+                {{/each}}
+            </ul>
+        {{/if}}
+    </div>
+</li>

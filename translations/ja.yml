@@ -1785,7 +1785,7 @@ iqbrims:
 binderhub:
     page_title: '{nodeTitle} BinderHub'
     host_info:
-        url: 'JupyterHub:'
+        url: 'ホスト:'
         username: 'ユーザー:'
         change_host: '変更'
     host_selector:
@@ -1796,6 +1796,7 @@ binderhub:
         header: '私の解析環境'
         delete_confirm_dialog_title: '削除確認'
         delete_confirm_dialog_body: 'サーバーを削除しますか？ '
+        jupyterhub_unavailable: '選択されたJupyterHubは現在停止中です。'
     project_editor:
         header: '新しい解析環境'
     loading: 'BinderHub設定を読み込んでいます...'
@@ -1909,6 +1910,8 @@ binderhub:
         reconnect_jupyterhub: '再認証'
         modify_files_error: 'ファイルの更新に失敗しました。ネットワーク接続を確認してください。'
         load_files_error: 'ファイルの読み込みに失敗しました。ネットワーク接続を確認してください。'
+        server_unavailable: 'JupyterHubが利用できません<p>ステータスコード: {status}</p>'
+        hub_unavailable: '選択されたJupyterHubは現在停止中です。現在、新規の解析環境は作成できません。<a href="{extra}">再試行</a>'
 metadata:
     file-metadata-input:
         no_metadata: 'ファイルはありません'

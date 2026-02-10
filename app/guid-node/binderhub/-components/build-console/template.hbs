@@ -31,7 +31,8 @@
 <div local-class='build_launcher'>
     <BsButton
         data-test-binderhub-launch
-        @type='success'
+        @type={{if this.hubsAvailability 'success' ''}}
+        disabled={{not this.hubsAvailability}}
         local-class='build_launch_button'
         @onClick={{action this.safeLaunch}}
         >

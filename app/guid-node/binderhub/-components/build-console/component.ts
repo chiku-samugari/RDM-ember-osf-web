@@ -42,6 +42,8 @@ export default class BuildConsole extends Component {
 
     openPathsYamlResetConfirm?: () => void;
 
+    hubsAvailability: boolean = true;
+
     @requiredAction renewToken!: (binderhubUrl: string) => void;
 
     @requiredAction requestBuild!: (

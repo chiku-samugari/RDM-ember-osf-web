@@ -2,19 +2,24 @@ import Component from '@ember/component';
 import EmberError from '@ember/error';
 import { action, computed } from '@ember/object';
 import { later } from '@ember/runloop';
+import { inject as service } from '@ember/service';
+import Intl from 'ember-intl/services/intl';
 import { requiredAction } from 'ember-osf-web/decorators/component';
 import {
     BootstrapPath,
+    checkJupyterHubAvailability,
     getJupyterHubServerURL,
     isBinderHubConfigFulfilled,
     JupyterServer,
     JupyterServerEntry,
+    ServerState,
     validateBinderHubToken,
 } from 'ember-osf-web/guid-node/binderhub/controller';
 import BinderHubConfigModel, { JupyterHub } from 'ember-osf-web/models/binderhub-config';
 import Node from 'ember-osf-web/models/node';
 import ServerAnnotationModel from 'ember-osf-web/models/server-annotation';
 import { addPathSegment } from 'ember-osf-web/utils/url-parts';
+import Toast from 'ember-toastr/services/toast';
 
 /* eslint-disable camelcase */
 interface JupyterUser {
@@ -40,6 +45,10 @@ function validateJupyterHubToken(jupyterhub: JupyterHub) {
 }
 
 export default class JupyterServersList extends Component {
+    @service toast!: Toast;
+
+    @service intl!: Intl;
+
     binderHubConfig!: BinderHubConfigModel;
 
     @requiredAction renewToken!: (jupyterhubUrl: string) => void;
@@ -74,6 +83,8 @@ export default class JupyterServersList extends Component {
 
     serverAnnotationHash: { [key: string]: ServerAnnotationModel } = {};
 
+    hubsAvailability: boolean = true;
+
     @requiredAction requestAnnotationCreation!: (
         entry: JupyterServerEntry,
         binderhubUrl: URL,
@@ -85,6 +96,10 @@ export default class JupyterServersList extends Component {
     ) => void;
 
     @requiredAction requestAnnotationReload!: (peek: boolean) => void;
+
+    @requiredAction updateHubsAvailability!: (
+        state: ServerState,
+    ) => void;
 
     didReceiveAttrs() {
         if (!this.initialized && !this.validateToken()) {
@@ -179,6 +194,14 @@ export default class JupyterServersList extends Component {
             return null;
         }
         return jupyterhub.token.user;
+    }
+
+    async updateJHAvailability(jupyterhubUrl: string): Promise<boolean> {
+        const state = await checkJupyterHubAvailability(jupyterhubUrl);
+        if (!state.availability) {
+            this.updateHubsAvailability(state);
+        }
+        return state.availability;
     }
 
     /**
@@ -284,15 +307,18 @@ export default class JupyterServersList extends Component {
         this.set('serversLink', null);
         this.set('namedServerLimit', null);
         later(async () => {
-            const servers = await this.loadServers(jupyterhubUrl);
-            this.set('serversLink', addPathSegment(jupyterhubUrl, 'hub/home'));
-            if (servers === null) {
-                this.set('allServers', null);
-                this.set('namedServerLimit', null);
-                return;
+            const availability = await this.updateJHAvailability(jupyterhubUrl);
+            if (availability) {
+                const servers = await this.loadServers(jupyterhubUrl);
+                this.set('serversLink', addPathSegment(jupyterhubUrl, 'hub/home'));
+                if (servers === null) {
+                    this.set('allServers', null);
+                    this.set('namedServerLimit', null);
+                    return;
+                }
+                this.set('allServers', servers.entries);
+                this.set('namedServerLimit', servers.namedServerLimit);
             }
-            this.set('allServers', servers.entries);
-            this.set('namedServerLimit', servers.namedServerLimit);
         }, 0);
     }
 
@@ -411,7 +437,12 @@ export default class JupyterServersList extends Component {
         }
         const url = new URL(jupyterhub.url);
         url.pathname = server.entry.url;
-        window.open(getJupyterHubServerURL(url.toString(), undefined, path), '_blank');
+        later(async () => {
+            const availability = await this.updateJHAvailability(jupyterhub.url);
+            if (availability) {
+                window.open(getJupyterHubServerURL(url.toString(), undefined, path), '_blank');
+            }
+        }, 0);
     }
 
     @action
@@ -422,7 +453,12 @@ export default class JupyterServersList extends Component {
         }
         const url = new URL(jupyterhub.url);
         url.pathname = server.entry.url;
-        window.open(url.toString(), '_blank');
+        later(async () => {
+            const availability = await this.updateJHAvailability(url.toString());
+            if (availability) {
+                window.open(url.toString(), '_blank');
+            }
+        }, 0);
     }
 
     @action
@@ -440,19 +476,22 @@ export default class JupyterServersList extends Component {
         const server = this.showDeleteConfirmDialogTarget;
         this.set('showDeleteConfirmDialogTarget', null);
         later(async () => {
-            const serverpath = server.entry.name.length > 0 ? `servers/${server.entry.name}` : 'server';
-            await this.jupyterhubAPIAJAX(
-                server.ownerUrl,
-                `users/${user}/${serverpath}`,
-                {
-                    method: 'DELETE',
-                    contentType: 'application/json',
-                    data: JSON.stringify({ remove: true }),
-                },
-            );
-            await this.requestAnnotationDelete(server.entry.url, true);
-            const servers = await this.loadServers(server.ownerUrl);
-            this.set('allServers', servers !== null ? servers.entries : null);
+            const availability = await this.updateJHAvailability(server.ownerUrl);
+            if (availability) {
+                const serverpath = server.entry.name.length > 0 ? `servers/${server.entry.name}` : 'server';
+                await this.jupyterhubAPIAJAX(
+                    server.ownerUrl,
+                    `users/${user}/${serverpath}`,
+                    {
+                        method: 'DELETE',
+                        contentType: 'application/json',
+                        data: JSON.stringify({ remove: true }),
+                    },
+                );
+                await this.requestAnnotationDelete(server.entry.url, true);
+                const servers = await this.loadServers(server.ownerUrl);
+                this.set('allServers', servers !== null ? servers.entries : null);
+            }
         }, 0);
     }
 

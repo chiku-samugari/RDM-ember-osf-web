@@ -147,8 +147,65 @@ function normalizeUrl(url: string): string {
     return m[1];
 }
 
+function cleanURLString(urlString: string): string {
+    const url = new URL(urlString);
+    url.search = '';
+    return url.toString();
+}
+
 export function urlEquals(url1: string, url2: string): boolean {
     return normalizeUrl(url1) === normalizeUrl(url2);
+}
+
+export interface ServerState {
+    availability: boolean;
+    status: number;
+}
+
+async function checkServerAvailability(url: string): Promise<ServerState> {
+    const urlWithCacheBuster = new URL(url);
+    urlWithCacheBuster.searchParams.set('_', Date.now().toString());
+
+    try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000);
+
+        const { type, status } = await fetch(urlWithCacheBuster.toString(), {
+            method: 'GET',
+            credentials: 'omit',
+            redirect: 'manual',
+            cache: 'no-store',
+            signal: controller.signal,
+        });
+
+        clearTimeout(timeoutId);
+
+        if (type === 'opaqueredirect') {
+            return {
+                availability: true,
+                status: 302,
+            };
+        }
+
+        return {
+            availability: (status >= 200 && status < 400) || [401, 403].includes(status),
+            status,
+        };
+    } catch (error) {
+        return { availability: false, status: 0 };
+    }
+}
+
+export async function checkBinderHubAvailability(baseURLString: string) {
+    const url = new URL(baseURLString);
+    url.pathname = '/health';
+    return checkServerAvailability(url.toString());
+}
+
+export async function checkJupyterHubAvailability(baseURLString: string) {
+    const url = new URL(baseURLString);
+    url.pathname = '/hub/health';
+    return checkServerAvailability(url.toString());
 }
 
 export default class GuidNodeBinderHub extends Controller {
@@ -189,45 +246,91 @@ export default class GuidNodeBinderHub extends Controller {
 
     loggedOutDomains: string[] | null = null;
 
+    hubsAvailability: boolean = true;
+
     @computed('config')
     get loading(): boolean {
         return !this.config;
     }
 
     @action
+    updateHubsAvailability(this: GuidNodeBinderHub, serverState: ServerState) {
+        const { availability, status } = serverState;
+        if (this.get('hubsAvailability') !== availability) {
+            this.set('hubsAvailability', availability);
+            if (availability) {
+                this.removeHubStatusMessage();
+            } else {
+                this.toast.error(this.intl.t(
+                    'binderhub.error.server_unavailable',
+                    { status },
+                ));
+                this.statusMessages.addStatusMessage({
+                    id: 'binderhub.error.hub_unavailable',
+                    class: 'warning',
+                    dismiss: false,
+                    extra: cleanURLString(window.location.toString()),
+                });
+            }
+            this.statusMessages.updateMessages();
+        }
+    }
+
+    @action
     renewBinderHubToken(this: GuidNodeBinderHub, binderhubUrl: string) {
-        if (!this.config) {
-            throw new EmberError('Illegal config');
-        }
-        const binderhub = this.config.findBinderHubByURL(binderhubUrl);
-        if (!binderhub) {
-            throw new EmberError('Illegal config');
-        }
-        if (!binderhub.authorize_url) {
-            throw new EmberError('Illegal config');
-        }
-        window.location.href = getURLWithContext(binderhub.authorize_url);
+        later(async () => {
+            if (!this.config) {
+                throw new EmberError('Illegal config');
+            }
+            const binderhub = this.config.findBinderHubByURL(binderhubUrl);
+            if (!binderhub) {
+                throw new EmberError('Illegal config');
+            }
+            if (!binderhub.authorize_url) {
+                throw new EmberError('Illegal config');
+            }
+            const bhState = await checkBinderHubAvailability(binderhubUrl);
+            if (!bhState.availability) {
+                this.updateHubsAvailability(bhState);
+                return;
+            }
+            if (binderhub.jupyterhub_url) {
+                const jhState = await checkJupyterHubAvailability(binderhub.jupyterhub_url);
+                if (!jhState.availability) {
+                    this.updateHubsAvailability(jhState);
+                    return;
+                }
+            }
+            window.location.href = getURLWithContext(binderhub.authorize_url);
+        }, 0);
     }
 
     @action
     renewJupyterHubToken(this: GuidNodeBinderHub, jupyterhubUrl: string) {
-        if (!this.config) {
-            throw new EmberError('Illegal config');
-        }
-        const jupyterhub = this.config.findJupyterHubByURL(jupyterhubUrl);
-        if (jupyterhub) {
-            if (!jupyterhub.authorize_url) {
+        later(async () => {
+            if (!this.config) {
                 throw new EmberError('Illegal config');
             }
-            window.location.href = getURLWithContext(jupyterhub.authorize_url);
-            return;
-        }
-        // Maybe BinderHub not authorized
-        const binderhubCand = this.config.findBinderHubCandidateByJupyterHubURL(jupyterhubUrl);
-        if (!binderhubCand) {
-            throw new EmberError('Illegal config');
-        }
-        this.renewBinderHubToken(binderhubCand.binderhub_url);
+            const jupyterhub = this.config.findJupyterHubByURL(jupyterhubUrl);
+            if (jupyterhub) {
+                if (!jupyterhub.authorize_url) {
+                    throw new EmberError('Illegal config');
+                }
+                const state = await checkJupyterHubAvailability(jupyterhubUrl);
+                if (!state.availability) {
+                    this.updateHubsAvailability(state);
+                    return;
+                }
+                window.location.href = getURLWithContext(jupyterhub.authorize_url);
+                return;
+            }
+            // Maybe BinderHub not authorized
+            const binderhubCand = this.config.findBinderHubCandidateByJupyterHubURL(jupyterhubUrl);
+            if (!binderhubCand) {
+                throw new EmberError('Illegal config');
+            }
+            this.renewBinderHubToken(binderhubCand.binderhub_url);
+        }, 0);
     }
 
     @action
@@ -514,6 +617,14 @@ export default class GuidNodeBinderHub extends Controller {
                 throw new EmberError('Illegal Input. Input hostURL seems wired.');
             }
             this.set('selectedHost', { url: hostURL, name: hostURL.toString() });
+            this.set('hubsAvailability', true);
+            this.removeHubStatusMessage();
+            later(async () => {
+                const state = await checkBinderHubAvailability(hostURLString);
+                if (!state.availability) {
+                    this.updateHubsAvailability(state);
+                }
+            }, 0);
             updateContext('bh', hostURL.toString());
         } catch (e) {
             if (e instanceof TypeError) {
@@ -526,17 +637,23 @@ export default class GuidNodeBinderHub extends Controller {
         }
     }
 
-    // TODO: Eliminate double negation
-    @computed('currentJupyterHub.href')
+    removeHubStatusMessage() {
+        const { messages } = this.statusMessages;
+        if (messages) {
+            this.statusMessages.set('messages', messages.filter(
+                ({ id }) => id !== 'binderhub.error.hub_unavailable',
+            ));
+            this.statusMessages.updateMessages();
+        }
+    }
+
+    @computed('currentJupyterHub.href', 'hubsAvailability')
     get canLogout(): boolean {
         const jupyterhub = this.currentJupyterHub;
-        if (!jupyterhub) {
-            return false;
+        if (jupyterhub && jupyterhub.logout_url && this.hubsAvailability) {
+            return true;
         }
-        if (!jupyterhub.logout_url) {
-            return false;
-        }
-        return true;
+        return false;
     }
 
     @computed('config', 'currentBinderHubURL')
@@ -620,6 +737,12 @@ export default class GuidNodeBinderHub extends Controller {
             'dyServerAnnotations',
             this.model.serverAnnotations.toArray(),
         );
+        later(async () => {
+            const state = await checkBinderHubAvailability(defaultBinderHubURL.href);
+            if (!state.availability) {
+                this.updateHubsAvailability(state);
+            }
+        }, 0);
     }
 
     @action

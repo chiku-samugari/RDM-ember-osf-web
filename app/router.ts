@@ -143,6 +143,7 @@ Router.map(function() {
         this.route('forks');
         this.route('iqbrims');
         this.route('binderhub');
+        this.route('workflow');
         this.route('metadata');
         this.route('registrations');
         this.route('package');

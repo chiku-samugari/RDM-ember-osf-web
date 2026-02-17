@@ -1,0 +1,10 @@
+{{#if this.cedarError}}
+    <div class="alert alert-warning" role="alert">
+        {{this.cedarError}}
+    </div>
+{{/if}}
+
+<div class="form-group">
+    <label class="control-label">{{t 'workflow.console.tasks.dialog.formSection'}}</label>
+    <div class="workflow-cedar-editor" {{did-insert this.setupCedarHost}} {{did-update this.refreshCedarTemplate this.cedarTemplateObject}}></div>
+</div>

@@ -2,6 +2,7 @@
     data-test-registration-report-modal
     local-class='Modal'
     @open={{this.dialogOpen}}
+    @backdropClose={{not this.isUploading}}
     @onSubmit={{action this.submit}}
     @onHidden={{action this.hideDialog}}
     as |modal|
@@ -31,13 +32,15 @@
         </div>
     </modal.body>
     <modal.footer data-analytics-scope='RegistrationReport modal footer'>
-        <OsfButton
-            data-test-registration-report-cancel
-            data-analytics-name='Cancel'
-            @onClick={{action modal.close}}
-        >
-            {{t 'general.cancel'}}
-        </OsfButton>
+        {{#unless this.isUploading}}
+            <OsfButton
+                data-test-registration-report-cancel
+                data-analytics-name='Cancel'
+                @onClick={{action modal.close}}
+            >
+                {{t 'general.cancel'}}
+            </OsfButton>
+        {{/unless}}
         <OsfButton
             data-test-registration-report-submit
             data-analytics-name='Submit'
@@ -54,13 +57,114 @@
     </modal.footer>
 </BsModal>
 
-<OsfButton
-    data-test-registration-card-export
-    data-analytics-name='Export'
-    class={{this.buttonClass}}
-    @type='success'
-    @disabled={{this.isDisabled}}
-    @onClick={{action this.export}}
+<BsModal
+    data-test-registration-report-result-modal
+    local-class='Modal'
+    @open={{this.resultDialogOpen}}
+    @onHidden={{action this.hideResultDialog}}
+    as |modal|
 >
-    {{t 'metadata.registration-card.export'}}
-</OsfButton>
+    <modal.body data-analytics-scope='RegistrationReport result modal'>
+        <div>
+            <h4 local-class='Modal__title'>{{t 'metadata.registration-card.result-dialog.title'}}</h4>
+        </div>
+        <div local-class='Export__description'>
+            {{#if (eq this.resultState 'wekoIngested')}}
+                {{t 'metadata.registration-card.result-dialog.weko-ingested'}}
+            {{else if (eq this.resultState 'wekoInWorkflow')}}
+                {{t 'metadata.registration-card.result-dialog.weko-in-workflow'}}
+            {{/if}}
+        </div>
+        {{#if (eq this.resultState 'wekoIngested')}}
+            <p>
+                <a
+                    data-test-registration-report-result-link
+                    href={{this.resultUrl}}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                >
+                    {{this.resultUrl}}
+                </a>
+            </p>
+        {{/if}}
+    </modal.body>
+    <modal.footer data-analytics-scope='RegistrationReport result modal footer'>
+        <OsfButton
+            data-test-registration-report-result-close
+            data-analytics-name='Close'
+            @onClick={{action modal.close}}
+        >
+            {{t 'general.close'}}
+        </OsfButton>
+    </modal.footer>
+</BsModal>
+
+<div class='{{if this.vertical this.styles.ButtonGroupVertical this.styles.ButtonGroup}}'>
+    <OsfButton
+        data-test-registration-card-export
+        data-analytics-name='Export'
+        class={{this.buttonClass}}
+        @type='success'
+        @disabled={{this.isDisabled}}
+        @onClick={{action this.export}}
+    >
+        {{t 'metadata.registration-card.export'}}
+    </OsfButton>
+
+    {{#if (gt this.workflowTemplates.length 0)}}
+        <OsfButton
+            data-test-registration-card-start-workflow
+            data-analytics-name='StartWorkflow'
+            class={{this.buttonClass}}
+            @type='success'
+            @disabled={{this.isDisabled}}
+            @onClick={{action this.openWorkflowDialog}}
+        >
+            {{t 'metadata.registration-card.start-workflow'}}
+        </OsfButton>
+    {{/if}}
+</div>
+
+<BsModal
+    data-test-workflow-start-modal
+    local-class='Modal'
+    @open={{this.workflowDialogOpen}}
+    @onSubmit={{action this.submitWorkflow}}
+    @onHidden={{action (mut this.workflowDialogOpen) false}}
+    as |modal|
+>
+    <modal.body data-analytics-scope='Workflow start modal'>
+        <div>
+            <h4 local-class='Modal__title'>{{t 'metadata.registration-card.workflow-dialog.title'}}</h4>
+        </div>
+        <div local-class='Export__description'>
+            {{t 'metadata.registration-card.workflow-dialog.description'}}
+        </div>
+        <div class='form-group'>
+            <select id='workflow-selection'>
+                {{#each this.workflowTemplates as |workflow|}}
+                    <option value='{{workflow.id}}'>
+                        {{workflow.displayLabel}}
+                    </option>
+                {{/each}}
+            </select>
+        </div>
+    </modal.body>
+    <modal.footer data-analytics-scope='Workflow start modal footer'>
+        <OsfButton
+            data-test-workflow-cancel
+            data-analytics-name='Cancel'
+            @onClick={{action modal.close}}
+        >
+            {{t 'general.cancel'}}
+        </OsfButton>
+        <OsfButton
+            data-test-workflow-submit
+            data-analytics-name='Submit'
+            @type='success'
+            @onClick={{action modal.submit}}
+        >
+            {{t 'metadata.registration-card.workflow-dialog.submit'}}
+        </OsfButton>
+    </modal.footer>
+</BsModal>

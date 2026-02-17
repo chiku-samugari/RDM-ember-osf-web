@@ -1,12 +1,15 @@
 <div data-test-draft-export>
     <RegistrationReportExportButton
         @buttonClass={{local-class this.registerButtonClass}}
+        @vertical={{true}}
         @metadataType='draft_registration'
         @metadataId={{this.draftRegistration.id}}
         @metadataSchema={{this.metadataSchema}}
         @metadataSchemaLoading={{this.metadataSchemaLoading}}
         @registrationSchemaId={{this.registrationSchemaId}}
         @exportCsvUrl={{this.exportCsvUrl}}
+        @schemaName={{this.draftRegistration.registrationSchema.name}}
+        @node={{this.draftRegistration.branchedFrom}}
     />
     {{#if this.wekoItemId}}
         <p data-test-weko-item-id local-class='WekoIdLabel'>

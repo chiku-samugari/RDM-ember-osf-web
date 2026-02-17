@@ -1,0 +1,433 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <h3 class="m-t-lg m-b-md">{{t 'workflow.console.heading'}}</h3>
+            <p class="text-muted">
+                {{t 'workflow.console.description'}}
+            </p>
+        </div>
+    </div>
+
+    {{#if this.templatesError}}
+        <div class="alert alert-danger" role="alert" data-test-workflow-templates-error>
+            {{this.templatesError}}
+        </div>
+    {{/if}}
+
+    <ul class="nav nav-tabs m-b-md" role="tablist">
+        <li
+            role="presentation"
+            class={{if (eq this.activeTab "start") "active"}}
+            data-test-workflow-tab-start
+        >
+            <a role="tab" href="#" {{on "click" (fn this.setActiveTab 'start')}}>
+                {{t 'workflow.console.tab.start'}}
+            </a>
+        </li>
+        <li
+            role="presentation"
+            class={{if (eq this.activeTab "runs") "active"}}
+            data-test-workflow-tab-runs
+        >
+            <a role="tab" href="#" {{on "click" (fn this.setActiveTab 'runs')}}>
+                {{t 'workflow.console.tab.runs'}}
+            </a>
+        </li>
+        <li
+            role="presentation"
+            class={{if (eq this.activeTab "tasks") "active"}}
+            data-test-workflow-tab-tasks
+        >
+            <a role="tab" href="#" {{on "click" (fn this.setActiveTab 'tasks')}}>
+                {{t 'workflow.console.tab.tasks'}}
+                {{#if (gt this.assignedTaskCount 0)}}
+                    <span class="badge" style="background-color: #d9534f;">{{this.assignedTaskCount}}</span>
+                {{/if}}
+            </a>
+        </li>
+    </ul>
+
+    {{#if (eq this.activeTab 'start')}}
+        <div class="panel panel-default" data-test-workflow-start-panel>
+            <div class="panel-heading clearfix">
+                <strong>{{t 'workflow.console.startSectionTitle'}}</strong>
+                <button
+                    type="button"
+                    class="btn btn-default btn-xs pull-right"
+                    {{on "click" this.refreshTemplates}}
+                    disabled={{this.isRefreshing}}
+                    data-test-workflow-refresh-templates
+                >
+                    <i class="fa fa-refresh {{if this.isRefreshing 'fa-spin'}}"></i>
+                    {{t 'workflow.console.refresh'}}
+                </button>
+            </div>
+            <div class="panel-body">
+                {{#if this.activeTemplates.length}}
+                    {{#if this.canStartWorkflow}}
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <label class="control-label col-sm-3" for="workflow-template-select">
+                                    {{t 'workflow.console.workflowLabel'}}
+                                </label>
+                                <div class="col-sm-9">
+                                    <select
+                                        id="workflow-template-select"
+                                        class="form-control"
+                                        {{on "change" this.selectTemplate}}
+                                        data-test-workflow-template-select
+                                    >
+                                        <option value="">{{t 'workflow.console.selectPrompt'}}</option>
+                                        {{#each this.activeTemplates as |template|}}
+                                            <option
+                                                value={{template.id}}
+                                                selected={{eq template.id this.selectedTemplateId}}
+                                            >
+                                                {{template.displayLabel}}
+                                            </option>
+                                        {{/each}}
+                                    </select>
+                                </div>
+                            </div>
+
+                            {{#if this.selectedTemplate}}
+                                <div class="form-group">
+                                    <label class="control-label col-sm-3">
+                                        {{t 'workflow.console.definitionLabel'}}
+                                    </label>
+                                    <div class="col-sm-9 form-control-static">
+                                        {{if this.selectedTemplate.definitionName this.selectedTemplate.definitionName this.selectedTemplate.definitionId}}
+                                    </div>
+                                </div>
+                                {{#if this.selectedTemplate.description}}
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-3">
+                                            {{t 'workflow.console.descriptionLabel'}}
+                                        </label>
+                                        <div class="col-sm-9 form-control-static">
+                                            {{this.selectedTemplate.description}}
+                                        </div>
+                                    </div>
+                                {{/if}}
+                            {{/if}}
+
+                            {{#if this.selectedTemplate.definitionFormSchema}}
+                                <div style="margin-left: 15px; margin-right: 15px;">
+                                    <GuidNode::Workflow::-Components::TaskForm
+                                        @form={{this.selectedTemplate.definitionFormSchema}}
+                                        @variables={{this.prefilledStartFormVariables}}
+                                        @node={{this.node}}
+                                        @onChange={{this.handleStartFormChange}}
+                                    />
+                                </div>
+                            {{/if}}
+
+                            <div class="form-group">
+                                <div class="col-sm-offset-3 col-sm-9">
+                                    <button
+                                        type="button"
+                                        class="btn btn-primary"
+                                        disabled={{this.startDisabled}}
+                                        {{on "click" this.handleStartFormSubmit}}
+                                        data-test-workflow-start-button
+                                    >
+                                        {{#if this.isSubmitting}}
+                                            <i class="fa fa-spinner fa-spin"></i>
+                                            {{t 'workflow.console.starting'}}
+                                        {{else}}
+                                            {{t 'workflow.console.startButton'}}
+                                        {{/if}}
+                                    </button>
+                                </div>
+                            </div>
+
+                            {{#if this.submitError}}
+                                <div class="alert alert-danger" role="alert" data-test-workflow-submit-error>
+                                    {{this.submitError}}
+                                </div>
+                            {{/if}}
+
+                            {{#if this.submitSuccess}}
+                                <div class="alert alert-success" role="alert" data-test-workflow-submit-success>
+                                    {{this.submitSuccess}}
+                                </div>
+                            {{/if}}
+                        </div>
+                    {{else}}
+                        <p class="text-muted" data-test-workflow-start-permission>
+                            {{t 'workflow.console.startPermissionDenied'}}
+                        </p>
+                    {{/if}}
+                {{else}}
+                    <p class="text-muted" data-test-workflow-no-templates-message>
+                        {{t 'workflow.console.noActiveWorkflows'}}
+                    </p>
+                {{/if}}
+            </div>
+        </div>
+    {{/if}}
+
+    {{#if (eq this.activeTab 'runs')}}
+        <div class="panel panel-default" data-test-workflow-runs-panel>
+            <div class="panel-heading clearfix">
+                <strong>{{t 'workflow.console.runs.heading'}}</strong>
+                <div class="pull-right m-r-sm">
+                    <label class="checkbox-inline m-b-0">
+                        <input
+                            type="checkbox"
+                            checked={{this.hideCompletedRuns}}
+                            {{on "change" this.toggleHideCompletedRuns}}
+                            data-test-workflow-hide-completed-runs
+                        >
+                        {{t 'workflow.console.runs.hideCompleted'}}
+                    </label>
+                </div>
+                <button
+                    type="button"
+                    class="btn btn-default btn-xs pull-right"
+                    {{on "click" this.refreshRuns}}
+                    disabled={{this.isRefreshingRuns}}
+                >
+                    <i class="fa fa-refresh {{if this.isRefreshingRuns 'fa-spin'}}"></i>
+                    {{t 'workflow.console.refresh'}}
+                </button>
+            </div>
+            <div class="panel-body">
+                {{#if this.runsError}}
+                    <div class="alert alert-danger" role="alert" data-test-workflow-runs-error>
+                        {{this.runsError}}
+                    </div>
+                {{/if}}
+
+                {{#if this.isRefreshingRuns}}
+                    <p class="text-muted">
+                        <i class="fa fa-spinner fa-spin"></i>
+                        {{t 'workflow.console.runs.loading'}}
+                    </p>
+                {{/if}}
+
+                {{#if this.runs.length}}
+                    {{#if this.runsWithActions.length}}
+                        <div class="table-responsive">
+                            <table class="table table-condensed table-hover" data-test-workflow-runs-table>
+                                <thead>
+                                    <tr>
+                                        <th>{{t 'workflow.console.runs.columns.processId'}}</th>
+                                        <th>{{t 'workflow.console.runs.columns.project'}}</th>
+                                        <th>{{t 'workflow.console.runs.columns.status'}}</th>
+                                        <th>{{t 'workflow.console.runs.columns.started'}}</th>
+                                        <th>{{t 'workflow.console.runs.columns.completed'}}</th>
+                                        <th>{{t 'workflow.console.runs.columns.actions'}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {{#each this.runsWithActions as |run|}}
+                                        <tr data-test-workflow-run-row>
+                                            <td>
+                                                <span class="text-muted">{{run.engine_process_id}}</span>
+                                            </td>
+                                            <td>
+                                                {{#if run.isCurrentProject}}
+                                                    {{t 'workflow.console.runs.columns.thisProject'}}
+                                                {{else}}
+                                                    <a href={{run.projectUrl}} target="_blank">
+                                                        {{run.node_title}}
+                                                    </a>
+                                                {{/if}}
+                                            </td>
+                                            <td>
+                                                <span class="label label-default {{if run.status (concat 'status-' run.status)}}">
+                                                    {{or run.statusRaw run.status}}
+                                                </span>
+                                            </td>
+                                            <td>{{or run.started_at run.created}}</td>
+                                            <td>{{run.completed_at}}</td>
+                                            <td>
+                                                {{#if run.canCancel}}
+                                                    {{#if run.isCancelling}}
+                                                        <button type="button" class="btn btn-danger btn-xs" disabled>
+                                                            <i class="fa fa-spinner fa-spin"></i>
+                                                            {{t 'workflow.console.runs.actions.cancelling'}}
+                                                        </button>
+                                                    {{else}}
+                                                        <button
+                                                            type="button"
+                                                            class="btn btn-danger btn-xs"
+                                                            {{on "click" (fn this.openCancelDialog run)}}
+                                                            data-test-workflow-run-cancel
+                                                        >
+                                                            <i class="fa fa-times"></i>
+                                                            {{t 'workflow.console.runs.actions.cancel'}}
+                                                        </button>
+                                                    {{/if}}
+                                                {{/if}}
+                                            </td>
+                                        </tr>
+                                    {{/each}}
+                                </tbody>
+                            </table>
+                        </div>
+                    {{else}}
+                        {{#if this.runsLoaded}}
+                            <p class="text-muted">
+                                {{t 'workflow.console.runs.noMatches'}}
+                            </p>
+                        {{/if}}
+                    {{/if}}
+                {{else}}
+                    {{#if this.runsLoaded}}
+                        <p class="text-muted">
+                            {{t 'workflow.console.runs.empty'}}
+                        </p>
+                    {{/if}}
+                {{/if}}
+            </div>
+        </div>
+    {{/if}}
+
+    {{#if (eq this.activeTab 'tasks')}}
+        <div class="panel panel-default" data-test-workflow-tasks-panel>
+            <div class="panel-heading clearfix">
+                <strong>{{t 'workflow.console.tasks.heading'}}</strong>
+                <div class="pull-right m-r-sm">
+                    <label class="checkbox-inline m-b-0">
+                        <input
+                            type="checkbox"
+                            checked={{this.hideCompletedTasks}}
+                            {{on "change" this.toggleHideCompletedTasks}}
+                            data-test-workflow-hide-completed-tasks
+                        >
+                        {{t 'workflow.console.tasks.hideCompleted'}}
+                    </label>
+                </div>
+                <button
+                    type="button"
+                    class="btn btn-default btn-xs pull-right"
+                    {{on "click" this.refreshTasks}}
+                    disabled={{this.isRefreshingTasks}}
+                >
+                    <i class="fa fa-refresh {{if this.isRefreshingTasks 'fa-spin'}}"></i>
+                    {{t 'workflow.console.refresh'}}
+                </button>
+            </div>
+            <div class="panel-body">
+                {{#if this.tasksError}}
+                    <div class="alert alert-danger" role="alert" data-test-workflow-tasks-error>
+                        {{this.tasksError}}
+                    </div>
+                {{/if}}
+
+                {{#if this.taskActionSuccess}}
+                    <div class="alert alert-success" role="alert" data-test-workflow-task-success>
+                        {{this.taskActionSuccess}}
+                    </div>
+                {{/if}}
+
+                {{#if this.taskActionError}}
+                    <div class="alert alert-danger" role="alert" data-test-workflow-task-error>
+                        {{this.taskActionError}}
+                    </div>
+                {{/if}}
+
+                {{#if this.isRefreshingTasks}}
+                    <p class="text-muted">
+                        <i class="fa fa-spinner fa-spin"></i>
+                        {{t 'workflow.console.tasks.loading'}}
+                    </p>
+                {{/if}}
+
+                {{#if this.tasksWithActions.length}}
+                        <div class="table-responsive">
+                            <table class="table table-condensed table-hover" data-test-workflow-tasks-table>
+                            <thead>
+                                <tr>
+                                    <th>{{t 'workflow.console.tasks.columns.task'}}</th>
+                                    <th>{{t 'workflow.console.tasks.columns.project'}}</th>
+                                    <th>{{t 'workflow.console.tasks.columns.assignee'}}</th>
+                                    <th>{{t 'workflow.console.tasks.columns.created'}}</th>
+                                    <th>{{t 'workflow.console.tasks.columns.due'}}</th>
+                                    <th>{{t 'workflow.console.tasks.columns.status'}}</th>
+                                    <th>{{t 'workflow.console.tasks.columns.actions'}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{#each this.tasksWithActions as |task|}}
+                                    <tr data-test-workflow-task-row>
+                                        <td>
+                                            <strong>{{task.name}}</strong><br>
+                                            <span class="text-muted">{{task.business_key}}</span>
+                                        </td>
+                                        <td>
+                                            {{#if task.isCurrentProject}}
+                                                {{t 'workflow.console.tasks.columns.thisProject'}}
+                                            {{else}}
+                                                <a href={{task.projectUrl}} target="_blank">
+                                                    {{task.node_title}}
+                                                </a>
+                                            {{/if}}
+                                        </td>
+                                        <td>{{task.assigneeDisplay}}</td>
+                                        <td>{{task.created}}</td>
+                                        <td>{{task.due}}</td>
+                                        <td>
+                                            {{#if (eq task.task_status 'completed')}}
+                                                {{t 'workflow.console.tasks.statuses.completed'}}
+                                            {{else if (eq task.task_status 'cancelled')}}
+                                                {{t 'workflow.console.tasks.statuses.cancelled'}}
+                                            {{else}}
+                                                {{t 'workflow.console.tasks.statuses.pending'}}
+                                            {{/if}}
+                                        </td>
+                                        <td>
+                                            {{#if task.canComplete}}
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-primary btn-xs"
+                                                    {{on "click" (fn this.openTask task)}}
+                                                    disabled={{this.isLoadingTaskDetail}}
+                                                    data-test-workflow-task-open
+                                                >
+                                                    <i class="fa fa-pencil"></i>
+                                                    {{t 'workflow.console.tasks.actions.open'}}
+                                                </button>
+                                            {{else}}
+                                                <span class="text-muted">{{t 'workflow.console.tasks.notAssigned'}}</span>
+                                            {{/if}}
+                                        </td>
+                                    </tr>
+                                {{/each}}
+                            </tbody>
+                        </table>
+                    </div>
+                {{else}}
+                    {{#if this.tasksLoaded}}
+                        <p class="text-muted">
+                            {{t 'workflow.console.tasks.empty'}}
+                        </p>
+                    {{/if}}
+                {{/if}}
+            </div>
+        </div>
+    {{/if}}
+</div>
+
+<GuidNode::Workflow::-Components::TaskDialog
+    @open={{this.isTaskDialogOpen}}
+    @task={{this.selectedTask}}
+    @node={{this.node}}
+    @isLoading={{this.isLoadingTaskDetail}}
+    @error={{this.taskDetailError}}
+    @isSubmitting={{this.isSubmittingTaskAction}}
+    @actionError={{this.taskActionError}}
+    @onClose={{this.closeTaskDialog}}
+    @onSubmit={{this.handleTaskSubmit}}
+/>
+
+<GuidNode::Workflow::-Components::CancelRunDialog
+    @open={{this.isCancelDialogOpen}}
+    @run={{this.cancellingRun}}
+    @isSubmitting={{this.isCancellingRun}}
+    @error={{this.cancelRunError}}
+    @onClose={{this.closeCancelDialog}}
+    @onConfirm={{this.confirmCancelRun}}
+/>

@@ -1,0 +1,66 @@
+{{#let (unique-id "project-metadata-selector") as |radioGroupName|}}
+<div class="clearfix m-b-sm" {{did-insert this.initialize}} {{did-update this.updateValue @value}}>
+    <button
+        type="button"
+        class="btn btn-default btn-xs pull-right"
+        {{on "click" this.refresh}}
+        disabled={{this.loadMetadataRecords.isRunning}}
+    >
+        <i class="fa fa-refresh {{if this.loadMetadataRecords.isRunning 'fa-spin'}}"></i>
+        {{t 'workflow.console.tasks.dialog.projectMetadataSelector.refresh'}}
+    </button>
+</div>
+
+{{#if this.loadMetadataRecords.isRunning}}
+    <div class="text-muted">
+        <i class="fa fa-spinner fa-spin"></i>
+        {{t 'workflow.console.tasks.dialog.projectMetadataSelector.loading'}}
+    </div>
+{{else if (eq this.allRecords.length 0)}}
+    <div class="alert alert-info">
+        {{t 'workflow.console.tasks.dialog.projectMetadataSelector.noRecords'}}
+    </div>
+{{else}}
+    <div local-class="ProjectMetadataSelector__list">
+        {{#each this.allRecords as |record|}}
+            <div
+                local-class="ProjectMetadataSelector__card {{if record.isSelected 'ProjectMetadataSelector__card--selected'}}"
+                role="button"
+                {{on "click" (fn this.selectRecord record.guid)}}
+            >
+                <div local-class="ProjectMetadataSelector__header">
+                    <input
+                        type={{if this.isMultiSelect "checkbox" "radio"}}
+                        name={{radioGroupName}}
+                        checked={{record.isSelected}}
+                        disabled={{@disabled}}
+                    />
+                    <strong>{{record.title}}</strong>
+                    <span class="badge" local-class="{{if record.isDraft 'ProjectMetadataSelector__badge--warning' 'ProjectMetadataSelector__badge--success'}}">
+                        {{if record.isDraft (t 'workflow.console.tasks.dialog.projectMetadataSelector.statusDraft') (t 'workflow.console.tasks.dialog.projectMetadataSelector.statusRegistered')}}
+                    </span>
+                    {{#if record.url}}
+                        <a
+                            href={{record.url}}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="btn btn-xs btn-link"
+                            {{on "click" this.preventPropagation}}
+                        >
+                            <i class="fa fa-external-link"></i>
+                        </a>
+                    {{/if}}
+                </div>
+                <div local-class="ProjectMetadataSelector__details" class="text-muted">
+                    <small>
+                        {{t 'workflow.console.tasks.dialog.projectMetadataSelector.created'}}: {{record.dateCreated}}
+                        {{#if record.dateModified}}
+                            | {{t 'workflow.console.tasks.dialog.projectMetadataSelector.modified'}}: {{record.dateModified}}
+                        {{/if}}
+                    </small>
+                </div>
+            </div>
+        {{/each}}
+    </div>
+{{/if}}
+{{/let}}

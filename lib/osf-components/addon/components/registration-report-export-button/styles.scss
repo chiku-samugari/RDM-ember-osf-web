@@ -12,3 +12,18 @@
 .Export__description {
     margin: 1em 0;
 }
+
+.ButtonGroup {
+    display: inline-flex;
+    gap: 5px;
+}
+
+.ButtonGroupVertical {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    > :global(.btn) {
+        width: 100%;
+    }
+}

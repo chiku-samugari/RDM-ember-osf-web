@@ -2,7 +2,7 @@
     <BsAlert
         @type='danger'
         @dismissible={{false}}
-        @visible={{this.notAuthorized}}
+        @visible={{and this.notAuthorized this.hubsAvailability}}
         local-class='BinderHub__connection_alert'
     >
         {{t 'binderhub.error.jupyterhub_auth_error'}}
@@ -15,10 +15,12 @@
             {{t 'binderhub.error.reconnect_jupyterhub'}}
         </button>
     </BsAlert>
-    {{#if this.loading}}
+    {{# if (not this.hubsAvailability)}}
+        {{t 'binderhub.jupyter_servers_list.jupyterhub_unavailable'}}
+    {{else if this.loading}}
         {{t 'binderhub.loading'}}
     {{else}}
-        {{#if (not this.apiLoaded)}}
+        {{#if (and this.hubsAvailability (not this.apiLoaded))}}
             <a href={{this.serversLink}} target='_blank' rel='noopener'>
                 {{t 'binderhub.servers.server_hub_home'}}
             </a>

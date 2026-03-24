@@ -34,8 +34,8 @@ jobs:
         run: yarn lint:ts
       - name: lint style
         run: yarn lint:style
-      - name: lint templete
-        run: yarn lint:templete
+      - name: lint template
+        run: yarn lint:template
       - name: test node-test
         run: yarn test:node-tests
       - name: build test

@@ -1,0 +1,46 @@
+name: Unit Tests
+
+on:
+  push:
+    branches-ignore:
+      - '[0-9]*'
+  pull_request:
+    branches: [ main, develop, develop*, release* ]
+
+env:
+  SUPPRESS_NO_CONFIG_WARNING: true
+  GK_LOCK_YARN_OPTS: '--ignore-engines'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "25"
+          cache: "npm"
+      - name: Pre-Install dependencies
+        run: curl -o- -L https://yarnpkg.com/install.sh | bash && export PATH=$HOME/.yarn/bin:$PATH
+      - name: Install dependencies
+        run: yarn --prefer-offline --frozen-lockfile --ignore-engines
+      - name: lint es
+        run: yarn lint:es
+      - name: lint ts
+        run: yarn lint:ts
+      - name: lint style
+        run: yarn lint:style
+      - name: lint templete
+        run: yarn lint:templete
+      - name: test node-test
+        run: yarn test:node-tests
+      - name: build test
+        run: yarn build:test
+      - name: do test
+        run: yarn test:cover --path ./dist
+      - name: update coverage
+        run: cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js

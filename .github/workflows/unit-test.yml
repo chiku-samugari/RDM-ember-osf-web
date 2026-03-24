@@ -40,5 +40,5 @@ jobs:
         run: yarn build:test
       - name: do test
         run: yarn test:cover --path ./dist
-      - name: update coverage
-        run: cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+#      - name: update coverage
+#        run: cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js

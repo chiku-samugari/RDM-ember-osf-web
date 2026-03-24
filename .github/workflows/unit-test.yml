@@ -22,7 +22,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "25"
+          node-version: "8"
           cache: "npm"
       - name: Pre-Install dependencies
         run: curl -o- -L https://yarnpkg.com/install.sh | bash && export PATH=$HOME/.yarn/bin:$PATH

@@ -198,12 +198,18 @@ async function checkServerAvailability(url: string): Promise<ServerState> {
 
 export async function checkBinderHubAvailability(baseURLString: string) {
     const url = new URL(baseURLString);
+    if (url.pathname === '/services/tljh_repo2docker/') {
+        return { availability: true, status: 200 };
+    }
     url.pathname = '/health';
     return checkServerAvailability(url.toString());
 }
 
 export async function checkJupyterHubAvailability(baseURLString: string) {
     const url = new URL(baseURLString);
+    if (url.pathname === '/services/tljh_repo2docker/') {
+        return { availability: true, status: 200 };
+    }
     url.pathname = '/hub/health';
     return checkServerAvailability(url.toString());
 }

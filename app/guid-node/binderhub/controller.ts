@@ -619,12 +619,15 @@ export default class GuidNodeBinderHub extends Controller {
             this.set('selectedHost', { url: hostURL, name: hostURL.toString() });
             this.set('hubsAvailability', true);
             this.removeHubStatusMessage();
-            later(async () => {
-                const state = await checkBinderHubAvailability(hostURLString);
-                if (!state.availability) {
-                    this.updateHubsAvailability(state);
-                }
-            }, 0);
+            const binderhub = this.config.findBinderHubByURL(hostURLString);
+            if (binderhub && binderhub.authorize_url) {
+                later(async () => {
+                    const state = await checkBinderHubAvailability(hostURLString);
+                    if (!state.availability) {
+                        this.updateHubsAvailability(state);
+                    }
+                }, 0);
+            }
             updateContext('bh', hostURL.toString());
         } catch (e) {
             if (e instanceof TypeError) {
@@ -726,7 +729,8 @@ export default class GuidNodeBinderHub extends Controller {
      * safely use `this.model`.
      */
     setup() {
-        const defaultBinderHubURL = new URL(this.config.get('defaultBinderhub').url);
+        const defaultBinderHub = this.config.get('defaultBinderhub');
+        const defaultBinderHubURL = new URL(defaultBinderHub.url);
         this.set(
             'selectedHost',
             this.availableHosts.find(
@@ -737,12 +741,14 @@ export default class GuidNodeBinderHub extends Controller {
             'dyServerAnnotations',
             this.model.serverAnnotations.toArray(),
         );
-        later(async () => {
-            const state = await checkBinderHubAvailability(defaultBinderHubURL.href);
-            if (!state.availability) {
-                this.updateHubsAvailability(state);
-            }
-        }, 0);
+        if (defaultBinderHub.authorize_url) {
+            later(async () => {
+                const state = await checkBinderHubAvailability(defaultBinderHubURL.href);
+                if (!state.availability) {
+                    this.updateHubsAvailability(state);
+                }
+            }, 0);
+        }
     }
 
     @action

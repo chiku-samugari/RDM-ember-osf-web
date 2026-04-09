@@ -196,12 +196,15 @@ export default class JupyterServersList extends Component {
         return jupyterhub.token.user;
     }
 
-    async updateJHAvailability(jupyterhubUrl: string): Promise<boolean> {
-        const state = await checkJupyterHubAvailability(jupyterhubUrl);
-        if (!state.availability) {
-            this.updateHubsAvailability(state);
+    async updateJHAvailability(jupyterhub: JupyterHub | null): Promise<boolean> {
+        if (jupyterhub && jupyterhub.authorize_url) {
+            const state = await checkJupyterHubAvailability(jupyterhub.url);
+            if (!state.availability) {
+                this.updateHubsAvailability(state);
+            }
+            return state.availability;
         }
-        return state.availability;
+        return true;
     }
 
     /**
@@ -307,18 +310,19 @@ export default class JupyterServersList extends Component {
         this.set('serversLink', null);
         this.set('namedServerLimit', null);
         later(async () => {
-            const availability = await this.updateJHAvailability(jupyterhubUrl);
-            if (availability) {
-                const servers = await this.loadServers(jupyterhubUrl);
-                this.set('serversLink', addPathSegment(jupyterhubUrl, 'hub/home'));
-                if (servers === null) {
-                    this.set('allServers', null);
-                    this.set('namedServerLimit', null);
-                    return;
-                }
-                this.set('allServers', servers.entries);
-                this.set('namedServerLimit', servers.namedServerLimit);
+            const jupyterhub = this.binderHubConfig.findJupyterHubByURL(jupyterhubUrl);
+            if (!(await this.updateJHAvailability(jupyterhub))) {
+                return;
             }
+            const servers = await this.loadServers(jupyterhubUrl);
+            this.set('serversLink', addPathSegment(jupyterhubUrl, 'hub/home'));
+            if (servers === null) {
+                this.set('allServers', null);
+                this.set('namedServerLimit', null);
+                return;
+            }
+            this.set('allServers', servers.entries);
+            this.set('namedServerLimit', servers.namedServerLimit);
         }, 0);
     }
 
@@ -438,8 +442,7 @@ export default class JupyterServersList extends Component {
         const url = new URL(jupyterhub.url);
         url.pathname = server.entry.url;
         later(async () => {
-            const availability = await this.updateJHAvailability(jupyterhub.url);
-            if (availability) {
+            if (await this.updateJHAvailability(jupyterhub)) {
                 window.open(getJupyterHubServerURL(url.toString(), undefined, path), '_blank');
             }
         }, 0);
@@ -454,8 +457,7 @@ export default class JupyterServersList extends Component {
         const url = new URL(jupyterhub.url);
         url.pathname = server.entry.url;
         later(async () => {
-            const availability = await this.updateJHAvailability(url.toString());
-            if (availability) {
+            if (await this.updateJHAvailability(jupyterhub)) {
                 window.open(url.toString(), '_blank');
             }
         }, 0);
@@ -476,22 +478,22 @@ export default class JupyterServersList extends Component {
         const server = this.showDeleteConfirmDialogTarget;
         this.set('showDeleteConfirmDialogTarget', null);
         later(async () => {
-            const availability = await this.updateJHAvailability(server.ownerUrl);
-            if (availability) {
-                const serverpath = server.entry.name.length > 0 ? `servers/${server.entry.name}` : 'server';
-                await this.jupyterhubAPIAJAX(
-                    server.ownerUrl,
-                    `users/${user}/${serverpath}`,
-                    {
-                        method: 'DELETE',
-                        contentType: 'application/json',
-                        data: JSON.stringify({ remove: true }),
-                    },
-                );
-                await this.requestAnnotationDelete(server.entry.url, true);
-                const servers = await this.loadServers(server.ownerUrl);
-                this.set('allServers', servers !== null ? servers.entries : null);
+            if (!(await this.updateJHAvailability(jupyterhub))) {
+                return;
             }
+            const serverpath = server.entry.name.length > 0 ? `servers/${server.entry.name}` : 'server';
+            await this.jupyterhubAPIAJAX(
+                server.ownerUrl,
+                `users/${user}/${serverpath}`,
+                {
+                    method: 'DELETE',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ remove: true }),
+                },
+            );
+            await this.requestAnnotationDelete(server.entry.url, true);
+            const servers = await this.loadServers(server.ownerUrl);
+            this.set('allServers', servers !== null ? servers.entries : null);
         }, 0);
     }
 
